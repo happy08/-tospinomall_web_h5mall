@@ -4,7 +4,7 @@ export default {
     title: "B2CWebH5",
     meta: [
       { charset: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { name: "viewport", content: "width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, viewport-fit=cover" },
       { hid: "description", name: "description", content: "" }
     ],
     link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }],
@@ -28,7 +28,9 @@ export default {
     "@/plugins/vant",
     "@/plugins/vue-i18n",
     "@/api/index",
-    { src: "@/plugins/utils", ssr: false }
+    { src: "@/plugins/utils", ssr: false },
+    "@/plugins/routeguard.js",
+    "@/plugins/swiper.js"
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components

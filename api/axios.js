@@ -1,7 +1,13 @@
 //import qs from "qs";
-import { Message } from "element-ui";
 
 export default function({ $axios, app, redirect, store, route }) {
+  // router 守卫
+  console.log('------')
+  console.log(app)
+  app.router.router.beforeEach((to, from, next) => {
+    // to and from are both route objects. must call `next`.
+    next()
+  })
   $axios.defaults.timeout = 8000; // 超时
   $axios.defaults.headers["Content-Type"] = "application/json"; //"application/x-www-form-urlencoded";
 
@@ -69,11 +75,12 @@ export default function({ $axios, app, redirect, store, route }) {
 
 //提示
 const tip = msg => {
-  Message.closeAll();
-  Message({
-    message: msg,
-    type: "error"
-  });
+  // Message.closeAll();
+  // Message({
+  //   message: msg,
+  //   type: "error"
+  // });
+  alert(msg)
 };
 
 /**

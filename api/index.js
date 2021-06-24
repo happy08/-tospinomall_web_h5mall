@@ -1,7 +1,7 @@
 /**
  * api接口统一出口
  */
-import qs from "qs";
+// import qs from "qs";
 import { url } from "./config"; // 导入配置域名
 
 export default ({ app, $axios }, inject) => {

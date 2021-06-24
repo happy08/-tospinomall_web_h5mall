@@ -2,7 +2,8 @@ import { vantLocales } from "@/plugins/vue-i18n";
 
 export const state = () => ({
   locales: ["en", "zh-CN"],
-  locale: "zh-CN"
+  locale: "zh-CN",
+  token: null
 });
 
 export const mutations = {
@@ -12,5 +13,8 @@ export const mutations = {
       vantLocales(locale);
       this.$cookies.set("lang", locale);
     }
+  },
+  SET_TOKEN(state, token) {
+    state.token = token;
   }
 };
