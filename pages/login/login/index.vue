@@ -1,24 +1,33 @@
 <template>
-  <div class="login-page__container">
+  <div class="tc login-page__container">
     <!-- 验证码 -->
-    <van-field v-model="account" :placeholder="$t('login.accountPlaceholder')" />
-    <van-field v-model="password" type="password" :placeholder="$t('login.pwdPlaceholder')" />
+    <van-field class="field-container" v-model="account" :placeholder="$t('login.accountPlaceholder')" />
+    <van-field class="field-container" v-model="password" type="password" :placeholder="$t('login.pwdPlaceholder')" />
     <div class="fs-14 login-page__container--forgot">{{ $t('login.forgotPwd') }}</div>
     <!-- 登录 -->
     <van-button class="mt-60 btn_h48 fw fs-16 w-100" color="linear-gradient(270deg, #3EB5AE 0%, #70CEB6 100%)">
       {{ $t('login.loginBtn') }}
     </van-button>
+    <nuxt-link class="green iblock login-page__container--register" :to="{ name: 'register' }">立即注册</nuxt-link>
   </div>
 </template>
 
 <script>
+import { Field } from 'vant';
+
 export default {
+  components: {
+    vanField: Field
+  },
   data() {
     return {
       account: '',
       password: ''
     }
-  }
+  },
+  methods: {
+    
+  },
 }
 </script>
 
@@ -29,5 +38,9 @@ export default {
   text-align: right;
   line-height: 20px;
   padding-right: 2px;
+}
+.login-page__container--register{
+  line-height: 20px;
+  margin-top: 10px;
 }
 </style>

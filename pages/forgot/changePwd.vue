@@ -8,6 +8,7 @@
         clearable
         :placeholder="$t('login.enterCode')"
         :type="pwdType"
+        class="field-container"
       >
         <template #button>
           <!-- 睁眼 -->
@@ -22,6 +23,7 @@
         clearable
         :placeholder="$t('login.enterCode')"
         :type="comfirmPwdType"
+        class="field-container"
       >
         <template #button>
           <!-- 睁眼 -->
@@ -40,7 +42,12 @@
 </template>
 
 <script>
+import { Field } from 'vant';
+
 export default {
+  components: {
+    vanField: Field
+  },
   data() {
     return {
       pwd: '',

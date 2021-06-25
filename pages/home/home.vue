@@ -10,6 +10,7 @@
           :placeholder="$t('common.searchPlaceholder')"
           @search="onSearch"
           shape="round"
+          class="search-container"
         >
           <template #right-icon>
             <van-button
@@ -18,6 +19,7 @@
               size="small"
               @click="onSearch"
               color="linear-gradient(270deg, #3EB5AE 0%, #70CEB6 100%)"
+              class="button-container small"
             >
               {{ $t('common.search') }}
             </van-button>
@@ -28,7 +30,7 @@
       <img class="home-page-nav__message" src="@/assets/images/message-icon.png" alt="">
     </van-sticky>
     <!-- 热门搜索种类列表 -->
-    <div class="popular-search-list">
+    <div class="flex popular-search-list">
       <!-- <div class="small-single-tag" v-for="(searchItem, index) in popularSearchList" :key="'' + index"> -->
       <div class="small-single-tag" v-for="(index) in 15" :key="'' + index">
         {{ 'apple' }}
@@ -48,8 +50,8 @@
       </swiper>
     </div>
     <!-- 商品种类栏 -->
-    <div class="plr-12 mt-20 home-product">
-      <dl v-for="(product, index) in productArr" :key="'product-'+index" class="product-single__dl">
+    <div class="plr-12 flex hstart mt-20 home-product">
+      <dl v-for="(product, index) in productArr" :key="'product-'+index" class="tc product-single__dl">
         <dt class="product-single__dl--dt">
           <img :src="product.src" alt="">
         </dt>
@@ -76,7 +78,7 @@
       </swiper>
       <!-- 图片、标题、价格 -->
       <h2 class="fs-18 fw home-page__global--title">一行三列 固定</h2>
-      <div class="home-page__global--3column">
+      <div class="flex between home-page__global--3column">
         <div class="pic-title-price" v-for="index in 3" :key="index">
           <img class="pic-title-price__icon" src="https://img01.yzcdn.cn/vant/apple-1.jpg" alt="" />
           <h4 class="hidden-2 pic-title-price__title">Apple Iphone Max Pro 12，八核</h4>
@@ -85,7 +87,7 @@
       </div>
       <h2 class="fs-18 fw home-page__global--title">一行两列</h2>
       <!-- 一行两列 -->
-      <div class="flex--2column">
+      <div class="flex between flex--2column">
         <div class="pic-title-price" v-for="index in 2" :key="index">
           <img class="pic-title-price__icon" src="https://img01.yzcdn.cn/vant/apple-1.jpg" alt="" />
           <h4 class="hidden-2 pic-title-price__title">Apple Iphone Max Pro 12，八核</h4>
@@ -95,21 +97,21 @@
     </div>
     <!-- 清仓大甩卖 -->
     <div class="mlr-12 mt-20 round-8 clearance-sale">
-      <div class="clearance-sale__top">
+      <div class="flex between vcenter clearance-sale__top">
         <h2 class="fs-18 fw clearance-sale__top--title">Clearance Sale</h2>
         <!-- 倒计时 -->
         <van-count-down :time="clearanceTime">
           <template #default="timeData">
-            <span class="fs-12 fw vant-time-block">{{ timeData.hours }}</span>
-            <span class="vant-time-colon">:</span>
-            <span class="fs-12 fw vant-time-block">{{ timeData.minutes }}</span>
-            <span class="vant-time-colon">:</span>
-            <span class="fs-12 fw vant-time-block">{{ timeData.seconds }}</span>
+            <span class="fs-12 iblock fw tc vant-time-block">{{ timeData.hours }}</span>
+            <span class="iblock vant-time-colon">:</span>
+            <span class="fs-12 iblock fw tc vant-time-block">{{ timeData.minutes }}</span>
+            <span class="iblock vant-time-colon">:</span>
+            <span class="fs-12 iblock fw tc vant-time-block">{{ timeData.seconds }}</span>
           </template>
         </van-count-down>
       </div>
       <!-- 商品列表 -->
-      <div class="clearance-sale__bottom">
+      <div class="flex clearance-sale__bottom">
         <div class="round-4 clearance-product__list" v-for="(clearance, index) in clearanceLists" :key="'clearance-' + index">
           <span class="fw fs-10 clearance-product__list--tag">Sale</span>
           <img class="clearance-product__list--img" :src="clearance.src" alt="">
@@ -136,7 +138,16 @@
 </template>
 
 <script>
+import { Search, CountDown, Sticky, Tab, Tabs } from 'vant';
+
 export default {
+  components: {
+    vanSearch: Search,
+    vanSticky: Sticky,
+    vanTab: Tab,
+    vanTabs: Tabs,
+    vanCountDown: CountDown
+  },
   data() {
     return {
       searchVal: "",

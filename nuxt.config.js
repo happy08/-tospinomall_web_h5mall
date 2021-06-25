@@ -28,6 +28,7 @@ export default {
     "@/plugins/vant",
     "@/plugins/vue-i18n",
     "@/api/index",
+    "@/api/axios",
     { src: "@/plugins/utils", ssr: false },
     "@/plugins/routeguard.js",
     "@/plugins/swiper.js"
@@ -52,7 +53,7 @@ export default {
   axios: {
     proxy: true, // 开启代理
     prefix: "/api" // 请求url加个前缀 /api
-    //credentials: true // 跨域请求时是否需要使用凭证
+    // credentials: true // 跨域请求时是否需要使用凭证
   },
 
   proxy: {

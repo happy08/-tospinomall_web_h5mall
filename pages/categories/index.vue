@@ -9,7 +9,7 @@
       >
         <template #right-icon>
           <div class="search-camera">
-            <input class="search-camera__ipt" type="file" accept="image/*" capture="camera" />
+            <input class="w-100 h-100 search-camera__ipt" type="file" accept="image/*" capture="camera" />
           </div>
         </template>
       </van-search>
@@ -25,8 +25,8 @@
         <div class="product-categories__box">
           <h4 class="fw fs-10 product-categories__box--title">Vacuum cup</h4>
           <div class="flex product-categories__box--caontainer">
-            <div @click="clickItemEvent" class="product-single" v-for="index in 7" :key="index">
-              <img class="product-single__icon" src="https://img01.yzcdn.cn/vant/apple-1.jpg" />
+            <div @click="clickItemEvent" class="tc product-single" v-for="index in 7" :key="index">
+              <img class="w-100 product-single__icon" src="https://img01.yzcdn.cn/vant/apple-1.jpg" />
               <h5 class="fs-12 product-single__name">Vacuum cup</h5>
             </div>
           </div>
@@ -39,7 +39,13 @@
 </template>
 
 <script>
+import { TreeSelect, Search } from 'vant';
+
 export default {
+  components: {
+    vanTreeSelect: TreeSelect,
+    vanSearch: Search
+  },
   data() {
     return {
       searchVal: '',
@@ -137,10 +143,8 @@ export default {
 <style lang="less" scoped>
 .product-single{
   width: 70px;
-  text-align: center;
   margin-top: 15px;
   .product-single__icon{
-    width: 100%;
     height: 64px;
     object-fit: cover;
   }

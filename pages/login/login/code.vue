@@ -5,10 +5,10 @@
       clickable
       :value="code"
       :placeholder="$t('login.phoneNumber')"
-      class="phone-code-field"
+      class="field-container phone-code-field"
     >
       <template #label>
-        <span @click="showPicker = true" class="fs-14 prefix-container">
+        <span @click="showPicker = true" class="iblock fs-14 prefix-container">
           {{ prefixCode }}
           <img class="prefix-container--icon" src="@/assets/images/triangle-icon.png">
         </span>
@@ -27,9 +27,10 @@
       center
       clearable
       :placeholder="$t('login.enterCode')"
+      class="field-container"
     >
       <template #button>
-        <button class="fs-14 verification-btn" @click="sendCode">Get It</button>
+        <button class="fs-14 green verification-btn" @click="sendCode">Get It</button>
       </template>
     </van-field>
     <!-- 登录 -->
@@ -40,7 +41,13 @@
 </template>
 
 <script>
+import { Field, Popup } from 'vant';
+
 export default {
+  components: {
+    vanField: Field,
+    vanPopup: Popup
+  },
   data() {
     return {
       account: '',
@@ -64,7 +71,6 @@ export default {
 
 <style lang="less" scoped>
 .prefix-container{
-  display: inline-block;
   line-height: 20px;
   color: #383838;
   .prefix-container--icon{
@@ -77,7 +83,6 @@ export default {
 }
 .verification-btn{
   padding: 5px 11px 6px 12px;
-  color: #42B7AE;
   line-height: 20px;
   border-radius: 7.5px;
   background-color: rgba(61, 235, 220, .1);

@@ -286,55 +286,6 @@ svg {
 .m-20 {
   margin: 20px !important;
 }
-.pt-25 {
-  padding-top: 25px !important;
-}
-.pb-25 {
-  padding-bottom: 25px !important;
-}
-.pl-25 {
-  padding-left: 25px !important;
-}
-.pr-25 {
-  padding-right: 25px !important;
-}
-.ptb-25 {
-  padding-top: 25px !important;
-  padding-bottom: 25px !important;
-}
-.plr-25 {
-  padding-left: 25px !important;
-  padding-right: 25px !important;
-}
-.p-25 {
-  padding: 25px !important;
-}
-.mt-25 {
-  margin-top: 25px !important;
-}
-.mb-25 {
-  margin-bottom: 25px !important;
-}
-.ml-25 {
-  margin-left: 25px !important;
-}
-.mr-25 {
-  margin-right: 25px !important;
-}
-.mr-25 {
-  margin-right: 25px !important;
-}
-.mtb-25 {
-  margin-top: 25px !important;
-  margin-bottom: 25px !important;
-}
-.mlr-25 {
-  margin-left: 25px !important;
-  margin-right: 25px !important;
-}
-.m-25 {
-  margin: 25px !important;
-}
 .pt-30 {
   padding-top: 30px !important;
 }
@@ -499,7 +450,7 @@ svg {
   color: #ff8248;
 }
 .green {
-  color: #42b7ae;
+  color: #42b7ae!important;
 }
 .blue {
   color: #0e66de;
@@ -521,10 +472,10 @@ svg {
   background: linear-gradient(270deg, #3eb5ae 0%, #70ceb6 100%);
 }
 .bg-white {
-  background: #ffffff;
+  background-color: #ffffff;
 }
 .bg-grey {
-  background: #fafafa;
+  background-color: #fafafa;
 }
 
 .border {
@@ -538,6 +489,9 @@ svg {
 }
 .w-100 {
   width: 100%;
+}
+.h-100{
+  height: 100%;
 }
 .lh-1 {
   line-height: 1;
@@ -581,7 +535,7 @@ svg {
 }
 
 // 输入框样式
-.van-cell {
+.field-container{
   background-color: transparent!important;
   padding: 20px 0!important;
   line-height: 20px!important;
@@ -609,25 +563,23 @@ svg {
   height: 48px!important;
 }
 
-// 分割线样式
-.van-divider{
-  color: rgba(0, 0, 0, .5);
-}
-
 // 登录按钮
 .login-page__container{
-  margin-top: 49px;
+  margin-top: 50px;
 }
 
 // 搜索框样式修改
-.van-search{
+.search-container{
   .van-cell {
     padding: 0 !important;
-    height: 34px;
     align-items: center;
   }
-  .van-button--small{
-    padding: 0 13px;
+}
+
+// 按钮样式
+.button-container{
+  &.small{
+    padding: 0 14px;
   }
 }
 

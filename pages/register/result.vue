@@ -2,7 +2,7 @@
   <div class="result-page">
     <BmHeaderNav :title="$t('register.register')"></BmHeaderNav>
 
-    <div class="plr-20 result-page__container">
+    <div class="plr-20 tc result-page__container">
       <van-icon name="checked" color="#52C41A" size="54" />
       <p class="fs-18 fw result-page__container--title">{{ $t('common.congratulations') }}</p>
       <p class="light-grey fs-14 result-page__container--tip">{{ $t('register.successTip') }}</p>
@@ -17,16 +17,15 @@
 .result-page{
   background-color: #fff;
   .result-page__container{
-    padding-top: 39px;
-    text-align: center;
+    padding-top: 40px;
     .result-page__container--title{
       color: #383838;
-      margin-top: 29px;
-      line-height: 27px;
+      margin-top: 30px;
+      line-height: 28px;
     }
     .result-page__container--tip{
       line-height: 18px;
-      margin-top: 11px;
+      margin-top: 12px;
     }
   }
 }

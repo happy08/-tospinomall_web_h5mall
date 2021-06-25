@@ -18,8 +18,13 @@
 </template>
 
 <script>
+import { NavBar } from 'vant';
+
 export default {
   name: 'BmHeaderNav',
+  components: {
+    vanNavBar: NavBar
+  },
   props: {
     title: {
       type: String,
