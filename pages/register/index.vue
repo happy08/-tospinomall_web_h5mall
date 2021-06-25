@@ -49,7 +49,7 @@
     </div>
 
     <!-- 其他登录方式及协议 -->
-    <div class="mlr-20 login-page__btm">
+    <!-- <div class="mlr-20 login-page__btm">
       <van-divider>{{ $t('common.or') }}</van-divider>
       <div class="flex login-page__btm--concat">
         <img src="@/assets/images/concat-facebook.png" alt="">
@@ -58,7 +58,7 @@
         <img src="@/assets/images/concat-facebook.png" alt="">
       </div>
       <p class="fs-14 tc login-page__btm--service">By loging in,you agree to <nuxt-link to="">Tospino's Terms of Service</nuxt-link> and <nuxt-link to="">Privacy Policy</nuxt-link></p>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -127,7 +127,12 @@ export default {
         this.isNextFlag = false;
         // 手机号验证通过之后跳转到设置密码页面
         this.$router.push({
-          name: 'register-password'
+          name: 'register-password',
+          query: {
+            code: this.code,
+            phone: this.cellphone,
+            phonePrefix: this.prefixCode.split('+')[1]
+          }
         })
       }).catch(() => {
         this.isNextFlag = false;

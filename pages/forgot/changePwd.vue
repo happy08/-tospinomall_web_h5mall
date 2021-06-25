@@ -58,7 +58,6 @@ export default {
   },
   methods: {
     changeType(key, val) {
-      console.log(key, val)
       this[key] = val;
     }
   },

@@ -1,17 +1,35 @@
 <template>
   <div class="result-page">
-    <BmHeaderNav :title="$t('register.register')"></BmHeaderNav>
-
+    <BmHeaderNav :left="{ isShow: true }" :title="$t('register.register')"></BmHeaderNav>
+    <!-- 注册成功 -->
     <div class="plr-20 tc result-page__container">
       <van-icon name="checked" color="#52C41A" size="54" />
       <p class="fs-18 fw result-page__container--title">{{ $t('common.congratulations') }}</p>
       <p class="light-grey fs-14 result-page__container--tip">{{ $t('register.successTip') }}</p>
-      <van-button class="mt-60 btn_h48 fw fs-16 w-100" color="linear-gradient(270deg, #3EB5AE 0%, #70CEB6 100%)">
+      <van-button
+        class="mt-60 btn_h48 fw fs-16 w-100"
+        color="linear-gradient(270deg, #3EB5AE 0%, #70CEB6 100%)"
+        @click="loginClick">
         {{ $t('login.loginNow') }}
       </van-button>
     </div>
   </div>
 </template>
+
+<script>
+export default {
+  methods: {
+    loginClick() { // 点击登录 
+      this.$router.push({
+        name: 'login-login'
+      })
+    },
+    login() {
+
+    }
+  },
+}
+</script>
 
 <style lang="less" scoped>
 .result-page{

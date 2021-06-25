@@ -3,7 +3,8 @@ import { Toast } from 'vant';
 
 export default function({ $axios, app, redirect, store, route }) {
   $axios.defaults.timeout = 8000; // 超时
-  $axios.defaults.headers['Content-Type'] = 'application/json'; //'application/x-www-form-urlencoded';
+  
+  // $axios.defaults.headers['Content-Type'] = 'application/json'; //'application/x-www-form-urlencoded';
 
   // 全局提示
   const tip = msg => {
@@ -15,7 +16,11 @@ export default function({ $axios, app, redirect, store, route }) {
   };
 
   $axios.onRequest(config => {
-    config.headers['Authorization'] = 'Basic YnV5ZXI6YnV5ZXI=';
+    // 登录之后需要在headers中设置token
+    // config.headers['Authorization'] = 'Basic YnV5ZXI6YnV5ZXI=';
+    if (config.method === 'post') {
+      config.headers['Content-Type'] ='application/x-www-form-urlencoded'
+    }
     // //获取cookie
     // const token = app.$cookies.get('auth');
     // if (token) {
