@@ -16,7 +16,6 @@ const en = {
     accountPlaceholder: 'Phone number or Email',
     pwdPlaceholder: 'Your password (6-20)',
     loginBtn: 'Log In',
-    forgotPwd: 'Forgot Password',
     phoneNumber: 'Phone number',
     enterCode: 'Enter verification code',
     enterEmail: 'Enter your Email',

@@ -23,6 +23,17 @@ export default ({ app }, inject) => {
         qs.stringify(params)
       )
     },
+    getEmailCode(params) { // 获取邮箱验证码
+      return app.$axios.get(
+        `${url}/admin/ums/checkcode/getEmailCode?${params}`
+      )
+    },
+    checkEmailCode(params) { // 校验用户邮箱验证码
+      return app.$axios.post(
+        `${url}/admin/ums/checkcode/checkEmailCode`,
+        qs.stringify(params)
+      )
+    },
     buyerRegister(params) { // 买家用户注册
       return app.$axios.post(
         `${url}/admin/ums/buyer/register`,
@@ -31,7 +42,14 @@ export default ({ app }, inject) => {
     },
     authLogin(params) { // 登录
       return app.$axios.post(
-        `${url}/auth/oauth/token`
+        `${url}/auth/oauth/token`,
+        qs.stringify({ ...params, password: encrypt(params.password) })
+      )
+    },
+    forgetPwd(params) { // 忘记密码 修改密码
+      return app.$axios.post(
+        `${url}/admin/ums/buyer/forgetPassword`,
+        qs.stringify({ ...params, password: encrypt(params.password), repeatPassword: encrypt(params.repeatPassword) })
       )
     }
   };

@@ -11,10 +11,16 @@
       <div class="login-page__btm">
         <van-divider>{{ $t('common.or') }}</van-divider>
         <div class="flex login-page__btm--concat">
-          <img src="@/assets/images/concat-facebook.png" alt="">
-          <img src="@/assets/images/concat-facebook.png" alt="">
-          <img src="@/assets/images/concat-facebook.png" alt="">
-          <img src="@/assets/images/concat-facebook.png" alt="">
+          <!-- facebook -->
+          <i class="iconfont login-page__btm--concat--icon clr-blue">&#xe600;</i>
+          <!-- 电话 -->
+          <i class="iconfont login-page__btm--concat--icon clr-green">&#xe6cc;</i>
+          <!-- twitter -->
+          <i class="iconfont login-page__btm--concat--icon clr-wathet">&#xe601;</i>
+          <!-- 手机 -->
+          <i class="iconfont login-page__btm--concat--icon clr-purple">&#xe617;</i>
+          <!-- email -->
+          <i class="iconfont login-page__btm--concat--icon clr-brownred">&#xe635;</i>
         </div>
         <p class="fs-14 tc login-page__btm--service">By loging in,you agree to <nuxt-link to="">Tospino's Terms of Service</nuxt-link> and <nuxt-link to="">Privacy Policy</nuxt-link></p>
       </div>
@@ -45,13 +51,23 @@ export default {
     .login-page__btm--concat{
       margin: 0 auto;
       width: fit-content;
-      img{
-        width: 32px;
-        height: 32px;
-        object-fit: cover;
+      .login-page__btm--concat--icon{
+        font-size: 32px;
         margin-left: 18px;
         &:first-child{
           margin-left: 0;
+        }
+        &.clr-blue{
+          color: #1278F4;
+        }
+        &.clr-green{
+          color: #25D366;
+        }
+        &.clr-wathet{
+          color: #41AAE1;
+        }
+        &.clr-purple{
+          color: #E85A84;
         }
       }
     }

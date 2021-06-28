@@ -1,0 +1,58 @@
+{
+  "id": "2633914",
+  "name": "b2ch5",
+  "font_family": "b2ch5",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "18706452",
+      "name": "Email us",
+      "font_class": "Emailus",
+      "unicode": "e635",
+      "unicode_decimal": 58933
+    },
+    {
+      "icon_id": "1464527",
+      "name": "手机",
+      "font_class": "shouji2",
+      "unicode": "e617",
+      "unicode_decimal": 58903
+    },
+    {
+      "icon_id": "14160914",
+      "name": "相机",
+      "font_class": "xiangji",
+      "unicode": "e74e",
+      "unicode_decimal": 59214
+    },
+    {
+      "icon_id": "17486811",
+      "name": "电  话",
+      "font_class": "dianhua",
+      "unicode": "e6cc",
+      "unicode_decimal": 59084
+    },
+    {
+      "icon_id": "20290160",
+      "name": "微信",
+      "font_class": "weixin",
+      "unicode": "e604",
+      "unicode_decimal": 58884
+    },
+    {
+      "icon_id": "20616459",
+      "name": "twitter",
+      "font_class": "twitter",
+      "unicode": "e601",
+      "unicode_decimal": 58881
+    },
+    {
+      "icon_id": "2577382",
+      "name": "FaceBook",
+      "font_class": "facebook",
+      "unicode": "e600",
+      "unicode_decimal": 58880
+    }
+  ]
+}

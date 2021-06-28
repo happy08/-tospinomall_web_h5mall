@@ -1,20 +1,19 @@
 //import qs from 'qs';
 import { Toast } from 'vant';
 
+// 全局提示
+const tip = msg => {
+  Toast.clear();
+  Toast({
+    message: msg,
+    type: 'fail'
+  });
+};
+
 export default function({ $axios, app, redirect, store, route }) {
   $axios.defaults.timeout = 8000; // 超时
   
   // $axios.defaults.headers['Content-Type'] = 'application/json'; //'application/x-www-form-urlencoded';
-
-  // 全局提示
-  const tip = msg => {
-    Toast.clear();
-    Toast({
-      message: msg,
-      type: 'fail'
-    });
-  };
-
   $axios.onRequest(config => {
     // 登录之后需要在headers中设置token
     // config.headers['Authorization'] = 'Basic YnV5ZXI6YnV5ZXI=';

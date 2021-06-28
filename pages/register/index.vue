@@ -1,33 +1,42 @@
 <template>
-  <div class="pb-30 flex between column register-page">
-    <div>
-      <BmHeaderNav :left="{ isShow: true }" :title="$t('register.title')"></BmHeaderNav>
-
-      <div class="mlr-20">
-        <!-- 手机号 -->
+  <div>
+    <BmHeaderNav :left="{ isShow: true, url: '/login/login' }" :title="title"></BmHeaderNav>
+    <div class="mlr-20 pb-30 flex between column register-page">
+      <div>
+        <!-- 邮箱 -->
         <van-field
-          v-model="cellphone"
-          :placeholder="$t('login.phoneNumber')"
+          v-model="account"
+          :placeholder="$t('login.enterEmail')"
           class="field-container phone-code-field"
-          type="tel"
-        >
-          <template #label>
-            <span @click="showPicker = true" class="iblock fs-14 prefix-container">
-              {{ prefixCode }}
-              <img class="prefix-container--icon" src="@/assets/images/triangle-icon.png">
-            </span>
-          </template>
-        </van-field>
-        <!-- 手机前缀选择 -->
-        <van-popup v-model="showPicker" round position="bottom">
-          <van-picker
-            show-toolbar
-            :columns="phonePrefixs"
-            value-key="phonePrefix"
-            @cancel="showPicker = false"
-            @confirm="onConfirm"
-          />
-        </van-popup>
+          type="email"
+          v-if="$route.query.changeWay === 'email'" 
+        />
+        <!-- 手机号 --> 
+        <div v-else>
+          <van-field
+            v-model="account"
+            :placeholder="$t('login.phoneNumber')"
+            class="field-container phone-code-field"
+            type="tel"
+          >
+            <template #label>
+              <span @click="showPicker = true" class="iblock fs-14 prefix-container">
+                {{ prefixCode }}
+                <img class="prefix-container--icon" src="@/assets/images/triangle-icon.png">
+              </span>
+            </template>
+          </van-field>
+          <!-- 手机前缀选择 -->
+          <van-popup v-model="showPicker" round position="bottom">
+            <van-picker
+              show-toolbar
+              :columns="phonePrefixs"
+              value-key="phonePrefix"
+              @cancel="showPicker = false"
+              @confirm="onConfirm"
+            />
+          </van-popup>
+        </div>
         <!-- 验证码 -->
         <van-field
           v-model="code"
@@ -37,28 +46,37 @@
           class="field-container"
         >
           <template #button>
-            <van-button class="fs-14 green verification-btn" v-show="countdown === 0" @click="sendCode" :disabled="cellphone.length === 0">Get It</van-button>
+            <van-button class="fs-14 green verification-btn" v-show="countdown === 0" @click="sendCode" :disabled="account.length === 0">Get It</van-button>
             <button class="fs-14 verification-countdown-btn" v-show="countdown > 0">{{ countdown }}S</button>
           </template>
         </van-field>
         <!-- 注册，点击跳转到设置密码页面 -->
-        <van-button class="mt-60 btn_h48 fw fs-16 w-100" color="linear-gradient(270deg, #3EB5AE 0%, #70CEB6 100%)" :disabled="cellphone.length === 0 || code.length === 0" @click="jumpPwd">
+        <van-button class="mt-60 btn_h48 fw fs-16 w-100" color="linear-gradient(270deg, #3EB5AE 0%, #70CEB6 100%)" :disabled="account.length === 0 || code.length === 0" @click="jumpPwd">
           {{ $t('common.next') }}
-        </van-button>
+        </van-button> 
+      </div>
+  
+      <!-- 忘记密码时 可以切换手机和邮箱两种方式 -->
+      <div class="login-page__btm" v-if="$route.query.type === 'forgot'">
+        <van-divider>{{ $t('common.or') }}</van-divider>
+        <div class="flex login-page__btm--concat">
+          <!-- facebook -->
+          <i class="iconfont login-page__btm--concat--icon clr-blue">&#xe600;</i>
+          <!-- 电话 -->
+          <i class="iconfont login-page__btm--concat--icon clr-green">&#xe6cc;</i>
+          <!-- twitter -->
+          <i class="iconfont login-page__btm--concat--icon clr-wathet">&#xe601;</i>
+          <!-- 手机 -->
+          <nuxt-link v-if="$route.query.changeWay === 'email'" :to="{ name: 'register', query: { type: 'forgot' } }">
+            <i class="iconfont login-page__btm--concat--icon clr-purple">&#xe617;</i>
+          </nuxt-link>
+          <!-- email -->
+          <nuxt-link v-if="$route.query.changeWay === 'telephone' || !$route.query.changeWay" :to="{ name: 'register', query: { type: 'forgot', changeWay: 'email' } }">
+            <i class="iconfont login-page__btm--concat--icon clr-brownred">&#xe635;</i>
+          </nuxt-link>
+        </div>
       </div>
     </div>
-
-    <!-- 其他登录方式及协议 -->
-    <!-- <div class="mlr-20 login-page__btm">
-      <van-divider>{{ $t('common.or') }}</van-divider>
-      <div class="flex login-page__btm--concat">
-        <img src="@/assets/images/concat-facebook.png" alt="">
-        <img src="@/assets/images/concat-facebook.png" alt="">
-        <img src="@/assets/images/concat-facebook.png" alt="">
-        <img src="@/assets/images/concat-facebook.png" alt="">
-      </div>
-      <p class="fs-14 tc login-page__btm--service">By loging in,you agree to <nuxt-link to="">Tospino's Terms of Service</nuxt-link> and <nuxt-link to="">Privacy Policy</nuxt-link></p>
-    </div> -->
   </div>
 </template>
 
@@ -74,7 +92,7 @@ export default {
   },
   data() {
     return {
-      cellphone: '',
+      account: '',
       code: '',
       phonePrefixs: [],
       showPicker: false,
@@ -84,14 +102,32 @@ export default {
       isNextFlag: false
     }
   },
+  watch: {
+    "$route"(e) {
+      console.log(e.query.changeWay)
+      if (e.query.changeWay !== 'email' || !e.query.changeWay) {
+        this.getPhonePrefix()
+      }
+    }
+  },
+  computed: {
+    title() {
+      return this.$route.query.type === 'forgot' ? this.$t('forgot.title') : this.$t('register.register');
+    }
+  },
   created() {
-    // 获取手机号前缀
-    this.$api.phonePrefix().then(res => {
-      this.phonePrefixs = res.data;
-      this.prefixCode = res.data[0].phonePrefix;
-    })
+    // 手机号注册或者忘记密码时 需要先获取手机号前缀
+    if (this.$route.query.changeWay !== 'email' || !this.$route.query.changeWay) {
+      this.getPhonePrefix()
+    }
   },
   methods: {
+    getPhonePrefix() {
+      this.$api.phonePrefix().then(res => {
+        this.phonePrefixs = res.data;
+        this.prefixCode = res.data[0].phonePrefix;
+      })
+    },
     onConfirm(event) { // 选择手机号前缀
       this.prefixCode = event.phonePrefix;
       this.showPicker = false;
@@ -101,11 +137,17 @@ export default {
         return false;
       }
       this.isCodeFlag = true;
-      const params = `phone=${this.cellphone}&phonePrefix=${this.prefixCode.split('+')[1]}&userType=buyer`;
-      this.$api.getPhoneCode(params).then(res => {
+      
+      let _axios;
+      if (this.$route.query.changeWay === 'email') { // 获取邮箱验证码
+        _axios = this.$api.getEmailCode(`email=${this.account}&userType=buyer`);
+      } else { // 默认是获取手机验证码
+        _axios = this.$api.getPhoneCode(`phone=${this.account}&phonePrefix=${this.prefixCode.split('+')[1]}&userType=buyer`);
+      }
+      // 接口返回操作
+      _axios.then(res => {
         this.isCodeFlag = false;
-        // if (res.code !== 0) return;
-        this.$toast(res.data);
+        this.$toast(res.data); // 提示验证码
         this.countdown = 120; // 设置倒计时120s
         let timer = setInterval(() => {
           if (this.countdown === 0) {
@@ -123,14 +165,35 @@ export default {
         return false;
       }
       this.isNextFlag = true;
-      this.$api.checkPhoneCode({ code: this.code, phone: this.cellphone, phonePrefix: this.prefixCode.split('+')[1], userType: 'buyer' }).then(res => {
+
+      let _axios;
+      console.log(this.$route.query)
+      if (this.$route.query.changeWay === 'email') { // 校验邮箱验证码
+        _axios = this.$api.checkEmailCode({ code: this.code, email: this.account, userType: 'buyer' });
+      } else { // 校验手机验证码
+        _axios = this.$api.checkPhoneCode({ code: this.code, phone: this.account, phonePrefix: this.prefixCode.split('+')[1], userType: 'buyer' });
+      }
+      // 接口返回的操作处理
+      _axios.then(res => {
         this.isNextFlag = false;
-        // 手机号验证通过之后跳转到设置密码页面
-        this.$router.push({
+        // 如果是忘记密码，手机验证通过之后跳转到设置密码页面
+        if (this.$route.query.type === 'forgot') {
+          let changeObj = this.$route.query.changeWay === 'email' ? { email: this.account } : { phone: this.account, phonePrefix: this.prefixCode.split('+')[1] }
+          this.$router.push({
+            name: 'register-changePwd',
+            query: {
+              code: this.code,
+              ...changeObj
+            }
+          })
+          return false;
+        }
+        // 注册手机号验证通过之后跳转到设置密码页面
+        this.$router.push({ 
           name: 'register-password',
           query: {
             code: this.code,
-            phone: this.cellphone,
+            phone: this.account,
             phonePrefix: this.prefixCode.split('+')[1]
           }
         })
@@ -174,19 +237,29 @@ export default {
   border: none;
 }
 .register-page{
-  height: 100vh;
-  background-color: #fff;
+  padding-top: 50px;
+  height: calc(100vh - 46px);
   .login-page__btm{
     .login-page__btm--concat{
       margin: 0 auto;
       width: fit-content;
-      img{
-        width: 32px;
-        height: 32px;
-        object-fit: cover;
+      .login-page__btm--concat--icon{
+        font-size: 32px;
         margin-left: 18px;
-        &:first-child{
-          margin-left: 0;
+        &.clr-blue{
+          color: #1278F4;
+        }
+        &.clr-green{
+          color: #25D366;
+        }
+        &.clr-wathet{
+          color: #41AAE1;
+        }
+        &.clr-purple{
+          color: #E85A84;
+        }
+        &.clr-brownred{
+          color: #DB4437;
         }
       }
     }
