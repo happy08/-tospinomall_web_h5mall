@@ -40,10 +40,16 @@ export default ({ app }, inject) => {
         qs.stringify({ ...params, password: encrypt(params.password), repeatPassword: encrypt(params.repeatPassword) })
       )
     },
-    authLogin(params) { // 登录
+    authLogin(params) { // 账号登录
       return app.$axios.post(
         `${url}/auth/oauth/token`,
         qs.stringify({ ...params, password: encrypt(params.password) })
+      )
+    },
+    authCodeLogin(params) { // 手机/邮箱 验证码登录
+      return app.$axios.post(
+        `${url}/auth/mobile/token/sms`,
+        qs.stringify({ grant_type: 'mobile', ...params })
       )
     },
     forgetPwd(params) { // 忘记密码 修改密码

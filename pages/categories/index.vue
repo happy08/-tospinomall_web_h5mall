@@ -1,7 +1,7 @@
 <template>
   <div class="categories-page">
     <!-- 搜索栏 -->
-    <div class="mlr-20 mt-5 mb-5">
+    <div class="mlr-20 mt-4 mb-4">
       <van-search 
         v-model="searchVal" 
         placeholder="Enter key words"

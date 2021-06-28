@@ -1,4 +1,5 @@
 <template>
+  <!-- 设置密码 -->
   <div class="register-pwd">
     <BmHeaderNav :left="{ isShow: true }" :title="$t('register.title')"></BmHeaderNav>
 

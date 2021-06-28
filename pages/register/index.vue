@@ -57,22 +57,26 @@
       </div>
   
       <!-- 忘记密码时 可以切换手机和邮箱两种方式 -->
-      <div class="login-page__btm" v-if="$route.query.type === 'forgot'">
+      <!-- <div class="login-page__btm" v-if="$route.query.type === 'forgot'"> -->
+      <div class="login-page__btm">
         <van-divider>{{ $t('common.or') }}</van-divider>
         <div class="flex login-page__btm--concat">
           <!-- facebook -->
-          <i class="iconfont login-page__btm--concat--icon clr-blue">&#xe600;</i>
+          <!-- <i class="iconfont login-page__btm--concat--icon clr-blue">&#xe600;</i> -->
           <!-- 电话 -->
-          <i class="iconfont login-page__btm--concat--icon clr-green">&#xe6cc;</i>
+          <!-- <i class="iconfont login-page__btm--concat--icon clr-green">&#xe6cc;</i> -->
           <!-- twitter -->
-          <i class="iconfont login-page__btm--concat--icon clr-wathet">&#xe601;</i>
+          <!-- <i class="iconfont login-page__btm--concat--icon clr-wathet">&#xe601;</i> -->
           <!-- 手机 -->
-          <nuxt-link v-if="$route.query.changeWay === 'email'" :to="{ name: 'register', query: { type: 'forgot' } }">
-            <i class="iconfont login-page__btm--concat--icon clr-purple">&#xe617;</i>
+          <nuxt-link v-if="$route.query.changeWay === 'email'" :to="{ name: 'register', query: { type: $route.query.type === 'forgot' ? 'forgot': 'phone' } }">
+            <i class="iconfont fs-32 clr-purple">&#xe617;</i>
           </nuxt-link>
           <!-- email -->
-          <nuxt-link v-if="$route.query.changeWay === 'telephone' || !$route.query.changeWay" :to="{ name: 'register', query: { type: 'forgot', changeWay: 'email' } }">
-            <i class="iconfont login-page__btm--concat--icon clr-brownred">&#xe635;</i>
+          <nuxt-link
+            v-if="$route.query.changeWay === 'phone' || !$route.query.changeWay" 
+            :to="{ name: 'register', query: { type: $route.query.type === 'forgot' ? 'forgot': 'phone', changeWay: 'email' } }"
+          >
+            <i class="iconfont fs-32 clr-brownred">&#xe635;</i>
           </nuxt-link>
         </div>
       </div>
@@ -243,23 +247,10 @@ export default {
     .login-page__btm--concat{
       margin: 0 auto;
       width: fit-content;
-      .login-page__btm--concat--icon{
-        font-size: 32px;
+      a{
         margin-left: 18px;
-        &.clr-blue{
-          color: #1278F4;
-        }
-        &.clr-green{
-          color: #25D366;
-        }
-        &.clr-wathet{
-          color: #41AAE1;
-        }
-        &.clr-purple{
-          color: #E85A84;
-        }
-        &.clr-brownred{
-          color: #DB4437;
+        &:first-child{
+          margin-left: 0;
         }
       }
     }
