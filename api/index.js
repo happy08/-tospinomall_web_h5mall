@@ -7,11 +7,11 @@ import { encrypt } from './cryptoAES'; // 加密
 
 export default ({ app }, inject) => {
   const api = {
-    // getPhoneCode(params) { // 获取手机验证码
-    //   return app.$axios.get(
-    //     `${url}/admin/ums/checkcode/getPhoneCode?${params}`
-    //   ); //单个/批量启用禁用
-    // },
+    getHomeData() { // 获取首页的展示数据
+      return app.$axios.get(
+        `${url}/basics/app/api/index/findIndexData`
+      );
+    },
     // checkPhoneCode(params) { // 校验用户手机号码
     //   return app.$axios.post(
     //     `${url}/admin/ums/checkcode/checkPhone`,

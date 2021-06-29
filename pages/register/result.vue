@@ -4,7 +4,7 @@
     <BmHeaderNav :left="{ isShow: true }" :title="title"></BmHeaderNav>
     <div class="plr-20 tc result-page__container">
       <van-icon name="checked" color="#52C41A" size="54" />
-      <p class="fs-18 fw result-page__container--title">{{ $t('common.congratulations') }}</p>
+      <p class="fs-18 fw black result-page__container--title">{{ $t('common.congratulations') }}</p>
       <!-- 注册成功提示语 -->
       <p class="light-grey fs-14 result-page__container--tip">{{ desc }}</p>
       <van-button
@@ -46,7 +46,6 @@ export default {
   .result-page__container{
     padding-top: 40px;
     .result-page__container--title{
-      color: #383838;
       margin-top: 30px;
       line-height: 28px;
     }

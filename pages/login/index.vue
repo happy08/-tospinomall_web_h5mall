@@ -19,13 +19,13 @@
           </van-dropdown-menu>
         </div>
         <!-- title -->
-        <h1 class="tc mt-20 lagin-page__title">{{ $t('login.loginTitle') }}</h1>
+        <h1 class="tc mt-20 black lagin-page__title">{{ $t('login.loginTitle') }}</h1>
         <div class="tc login-page__container">
           <!-- 验证码 -->
           <van-field class="field-container" v-model="account" :placeholder="$t('login.accountPlaceholder')" />
           <van-field class="field-container" v-model="password" type="password" :placeholder="$t('login.pwdPlaceholder')" />
           <!-- 忘记密码 -->
-          <nuxt-link :to="{ name: 'register', query: { type: 'forgot' } }" class="fs-14 tr block login-page__container--forgot">{{ $t('forgot.title') }}</nuxt-link>
+          <nuxt-link :to="{ name: 'register', query: { type: 'forgot' } }" class="fs-14 tr block mt-12 lh-20 login-page__container--forgot">{{ $t('forgot.title') }}</nuxt-link>
           <!-- 登录 -->
           <van-button
             class="btn_h48 fw fs-16 w-100 login-btn"
@@ -34,7 +34,7 @@
             @click="login">
             {{ $t('login.loginBtn') }}
           </van-button>
-          <nuxt-link class="green iblock login-page__container--register" :to="{ name: 'register' }">立即注册</nuxt-link>
+          <nuxt-link class="green iblock mt-10 lh-20 login-page__container--register" :to="{ name: 'register' }">立即注册</nuxt-link>
         </div>
       </div>
 
@@ -64,7 +64,7 @@
           </nuxt-link>
           
         </div>
-        <p class="fs-14 tc login-page__btm--service">By loging in,you agree to <nuxt-link :to="{ name: 'services-register' }">Tospino's Terms of Service</nuxt-link> and <nuxt-link :to="{ name: 'services-privacy' }">Privacy Policy</nuxt-link></p>
+        <p class="fs-14 tc mr-20 lh-20 login-page__btm--service">By loging in,you agree to <nuxt-link :to="{ name: 'services-register' }">Tospino's Terms of Service</nuxt-link> and <nuxt-link :to="{ name: 'services-privacy' }">Privacy Policy</nuxt-link></p>
       </div>
     </div>
   </div>
@@ -115,7 +115,6 @@ export default {
   padding-top: 32px;
   height: calc(100vh - 46px);
   .lagin-page__title{
-    color: #383838;
     font-size: 28px;
     line-height: 34px;
   }
@@ -131,8 +130,6 @@ export default {
       }
     }
     .login-page__btm--service{
-      margin-top: 20px;
-      line-height: 20px;
       color: #BFBFBF;
       a{
         color: #0F66DE;
@@ -141,14 +138,8 @@ export default {
   }
 }
 .login-page__container--forgot{
-  margin-top: 12px;
   color: #BFBFBF;
-  line-height: 20px;
   padding-right: 2px;
-}
-.login-page__container--register{
-  line-height: 20px;
-  margin-top: 10px;
 }
 .login-btn{
   margin-top: 28px;

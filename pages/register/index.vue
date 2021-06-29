@@ -20,7 +20,7 @@
             type="tel"
           >
             <template #label>
-              <span @click="showPicker = true" class="iblock fs-14 prefix-container">
+              <span @click="showPicker = true" class="iblock fs-14 black lh-20 prefix-container">
                 {{ prefixCode }}
                 <img class="prefix-container--icon" src="@/assets/images/triangle-icon.png">
               </span>
@@ -46,8 +46,8 @@
           class="field-container"
         >
           <template #button>
-            <van-button class="fs-14 green verification-btn" v-show="countdown === 0" @click="sendCode" :disabled="account.length === 0">Get It</van-button>
-            <button class="fs-14 verification-countdown-btn" v-show="countdown > 0">{{ countdown }}S</button>
+            <van-button class="fs-14 green lh-20 round-8 verification-btn" v-show="countdown === 0" @click="sendCode" :disabled="account.length === 0">Get It</van-button>
+            <button class="fs-14 lh-20 round-8 verification-countdown-btn" v-show="countdown > 0">{{ countdown }}S</button>
           </template>
         </van-field>
         <!-- 注册，点击跳转到设置密码页面 -->
@@ -79,6 +79,7 @@
             <i class="iconfont fs-32 clr-brownred">&#xe635;</i>
           </nuxt-link>
         </div>
+        <p class="fs-14 tc mt-20 lh-20 login-page__btm--service">By loging in,you agree to <nuxt-link :to="{ name: 'services-register' }">Tospino's Terms of Service</nuxt-link> and <nuxt-link :to="{ name: 'services-privacy' }">Privacy Policy</nuxt-link></p>
       </div>
     </div>
   </div>
@@ -211,21 +212,15 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.prefix-container{
-  line-height: 20px;
-  color: #383838;
-  .prefix-container--icon{
-    margin-left: 1px;
-    width: 20px;
-    height: 20px;
-    object-fit: cover;
-    vertical-align: top;
-  }
+.prefix-container--icon{
+  margin-left: 1px;
+  width: 20px;
+  height: 20px;
+  object-fit: cover;
+  vertical-align: top;
 }
 .verification-btn{
   padding: 5px 11px 6px 12px;
-  line-height: 20px;
-  border-radius: 7.5px;
   background-color: rgba(61, 235, 220, .1);
   border: 1px solid #46B0B0;
   .van-button__content, &.van-button{
@@ -236,8 +231,6 @@ export default {
   padding: 5px 16px 6px 12px;
   height: 31px;
   color: #BFBFBF;
-  line-height: 20px;
-  border-radius: 7.5px;
   background-color: #eee;
   border: none;
 }
@@ -256,8 +249,6 @@ export default {
       }
     }
     .login-page__btm--service{
-      margin-top: 20px;
-      line-height: 20px;
       color: #BFBFBF;
       a{
         color: #0F66DE;
