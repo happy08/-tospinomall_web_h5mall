@@ -48,6 +48,7 @@
           <van-button
             class="mt-60 btn_h48 fw fs-16 w-100" 
             color="linear-gradient(270deg, #3EB5AE 0%, #70CEB6 100%)"
+            :disabled="account.length === 0 || code.length === 0"
             @click="login">
             {{ $t('login.loginBtn') }}
           </van-button>
@@ -87,6 +88,7 @@
 
 <script>
 import { Divider, Field, Popup } from 'vant';
+import { getPhonePrefix, getPhoneCode, getEmailCode, authCodeLogin } from '@/api/login';
 
 export default {
   components: {
@@ -120,7 +122,7 @@ export default {
   },
   methods: {
     getPhonePrefix() {
-      this.$api.phonePrefix().then(res => {
+      getPhonePrefix().then(res => {
         this.phonePrefixs = res.data;
         this.prefixCode = res.data[0].phonePrefix;
       })
@@ -137,9 +139,9 @@ export default {
       
       let _axios;
       if (this.$route.query.changeWay === 'email') { // 获取邮箱验证码
-        _axios = this.$api.getEmailCode(`email=${this.account}&userType=buyer`);
+        _axios = getEmailCode({ email: this.account, userType: 'buyer' });
       } else { // 默认是获取手机验证码
-        _axios = this.$api.getPhoneCode(`phone=${this.account}&phonePrefix=${this.prefixCode.split('+')[1]}&userType=buyer`);
+        _axios = getPhoneCode({ phone: this.account, phonePrefix: this.prefixCode.split('+')[1], userType: 'buyer' });
       }
       // 接口返回操作
       _axios.then(res => {
@@ -158,12 +160,13 @@ export default {
       })
     },
     login() { // 验证码登录
-      this.$api.authCodeLogin({
+      authCodeLogin({
         code: this.code, 
         mobile: this.$route.query.changeWay === 'email' ? this.account : this.prefixCode.split('+')[1] + this.account, 
         userType: 'buyer' 
       }).then(res => {
-        console.log(res)
+        this.$store.commit('user/SET_USERINFO', res.data.user_info);
+        this.$store.commit('user/SET_TOKEN', res.data.access_token);
       })
     }
   }

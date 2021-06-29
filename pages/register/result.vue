@@ -30,7 +30,7 @@ export default {
   methods: {
     loginClick() { // 点击登录 
       this.$router.push({
-        name: 'login-login'
+        name: 'login'
       })
     },
     login() {

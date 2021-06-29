@@ -35,6 +35,7 @@
 
 <script>
 import { Field } from 'vant';
+import { buyerRegister } from '@/api/login';
 
 export default {
   components: {
@@ -55,7 +56,7 @@ export default {
         repeatPassword: this.password
       }
       
-      this.$api.buyerRegister(_params).then(res => {
+      buyerRegister(_params).then(res => {
         this.$router.push({
           name: 'register-result'
         })

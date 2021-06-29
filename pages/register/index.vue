@@ -1,6 +1,6 @@
 <template>
   <div>
-    <BmHeaderNav :left="{ isShow: true, url: '/login/login' }" :title="title"></BmHeaderNav>
+    <BmHeaderNav :left="{ isShow: true, url: '/login' }" :title="title"></BmHeaderNav>
     <div class="mlr-20 pb-30 flex between column register-page">
       <div>
         <!-- 邮箱 -->
@@ -86,6 +86,7 @@
 
 <script>
 import { Field, Divider, Picker, Popup } from 'vant';
+import { getPhonePrefix, getPhoneCode, checkPhoneCode, getEmailCode, checkEmailCode } from '@/api/login';
 
 export default {
   components: {
@@ -127,7 +128,7 @@ export default {
   },
   methods: {
     getPhonePrefix() {
-      this.$api.phonePrefix().then(res => {
+      getPhonePrefix().then(res => {
         this.phonePrefixs = res.data;
         this.prefixCode = res.data[0].phonePrefix;
       })
@@ -144,9 +145,9 @@ export default {
       
       let _axios;
       if (this.$route.query.changeWay === 'email') { // 获取邮箱验证码
-        _axios = this.$api.getEmailCode(`email=${this.account}&userType=buyer`);
+        _axios = getEmailCode({ email: this.account, userType: 'buyer' });
       } else { // 默认是获取手机验证码
-        _axios = this.$api.getPhoneCode(`phone=${this.account}&phonePrefix=${this.prefixCode.split('+')[1]}&userType=buyer`);
+        _axios = getPhoneCode({ phone: this.account, phonePrefix: this.prefixCode.split('+')[1], userType: 'buyer' });
       }
       // 接口返回操作
       _axios.then(res => {
@@ -173,9 +174,9 @@ export default {
       let _axios;
       console.log(this.$route.query)
       if (this.$route.query.changeWay === 'email') { // 校验邮箱验证码
-        _axios = this.$api.checkEmailCode({ code: this.code, email: this.account, userType: 'buyer' });
+        _axios = checkEmailCode({ code: this.code, email: this.account, userType: 'buyer' });
       } else { // 校验手机验证码
-        _axios = this.$api.checkPhoneCode({ code: this.code, phone: this.account, phonePrefix: this.prefixCode.split('+')[1], userType: 'buyer' });
+        _axios = checkPhoneCode({ code: this.code, phone: this.account, phonePrefix: this.prefixCode.split('+')[1], userType: 'buyer' });
       }
       // 接口返回的操作处理
       _axios.then(res => {

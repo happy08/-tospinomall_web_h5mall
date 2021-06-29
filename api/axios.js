@@ -15,8 +15,9 @@ export default function({ $axios, app, redirect, store, route }) {
   
   // $axios.defaults.headers['Content-Type'] = 'application/json'; //'application/x-www-form-urlencoded';
   $axios.onRequest(config => {
-    // 登录之后需要在headers中设置token
-    config.headers['Authorization'] = 'Basic YnV5ZXI6YnV5ZXI=';
+    // 调用登录接口的时候需要固定值 Basic YnV5ZXI6YnV5ZXI= , 登录之后需要在headers中传用户token
+    // config.headers['Authorization'] = 'Basic YnV5ZXI6YnV5ZXI=';
+    
     if (config.method === 'post') {
       config.headers['Content-Type'] ='application/x-www-form-urlencoded'
     }
