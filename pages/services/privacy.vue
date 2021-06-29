@@ -1,7 +1,7 @@
 <template>
-  <!-- 注册协议 -->
+  <!-- 隐私协议 -->
   <div>
-    <BmHeaderNav :left="{ isShow: true }" :title="'注册协议'"></BmHeaderNav>
+    <BmHeaderNav :left="{ isShow: true }" :title="'隐私协议'"></BmHeaderNav>
     <div class="fs-14 mlr-20 mt-20">
       Tospino, hereinafter referred to as We, makes a firm commitment to protect
       users' personal information and privacy. The Policy will explain the
