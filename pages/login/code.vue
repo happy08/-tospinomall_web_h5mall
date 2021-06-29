@@ -3,6 +3,22 @@
     <BmHeaderNav :left="{ isShow: true }"></BmHeaderNav>
     <div class="mlr-20 pb-30 flex between column login-page">
       <div>
+        <!-- 语言切换 -->
+        <div class="clear">
+          <van-dropdown-menu v-model="lang" :overlay="false" class="fr language-dropdown-menu">
+            <van-dropdown-item get-container=".language-dropdown-menu" ref="dropdownLang">
+              <template #title>
+                <i class="iconfont fs-24 clr-blue mr-4">&#xe600;</i>{{ lang }}
+              </template>
+              <van-cell center :title="langItem.text" v-for="(langItem, index) in langOptions" :key="'lang-cell-' + index" @click="changeLang(langItem)">
+                <template #icon>
+                  <i class="iconfont fs-24 clr-blue mr-4">&#xe600;</i>
+                </template>
+              </van-cell>
+            </van-dropdown-item>
+          </van-dropdown-menu>
+        </div>
+        <!-- title -->
         <h1 class="tc lagin-page__title">{{ $t('login.loginTitle') }}</h1>
         <div class="login-page__container">
           <!-- 验证码 -->
@@ -87,14 +103,17 @@
 </template>
 
 <script>
-import { Divider, Field, Popup } from 'vant';
+import { Divider, Field, Popup, DropdownMenu, DropdownItem, Cell } from 'vant';
 import { getPhonePrefix, getPhoneCode, getEmailCode, authCodeLogin } from '@/api/login';
 
 export default {
   components: {
     vanDivider: Divider,
     vanField: Field,
-    vanPopup: Popup
+    vanPopup: Popup,
+    vanDropdownMenu: DropdownMenu,
+    vanDropdownItem: DropdownItem,
+    vanCell: Cell
   },
   data() {
     return {
@@ -102,7 +121,11 @@ export default {
       code: '',
       phonePrefixs: [],
       showPicker: false,
-      prefixCode: ''
+      prefixCode: '',
+      langOptions: [
+        { text: 'EN', value: 'en', icon: 'chat-o' },
+        { text: 'China', value: 'zh-CN', icon: 'fire-o' }
+      ]
     }
   },
   watch: {
@@ -112,6 +135,13 @@ export default {
       if (e.query.changeWay !== 'email' || !e.query.changeWay) {
         this.getPhonePrefix()
       }
+    }
+  },
+  computed: {
+    lang() { // 设置语言展示的文案
+      return this.langOptions.filter(lang => {
+        return lang.value === this.$store.state.locale;
+      })[0].text;
     }
   },
   created() {
@@ -168,6 +198,10 @@ export default {
         this.$store.commit('user/SET_USERINFO', res.data.user_info);
         this.$store.commit('user/SET_TOKEN', res.data.access_token);
       })
+    },
+    changeLang(lang) { // 切换语言
+      this.$store.commit('SET_LANG', lang.value);
+      this.$refs.dropdownLang.toggle();
     }
   }
 }
@@ -175,7 +209,7 @@ export default {
 
 <style lang="less" scoped>
 .login-page{
-  padding-top: 50px;
+  padding-top: 32px;
   height: calc(100vh - 46px);
   .lagin-page__title{
     color: #383838;

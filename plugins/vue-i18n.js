@@ -23,7 +23,7 @@ export default ({ app, store }) => {
         ...zhCNLocale,
         ...zhCN
       },
-      en: {
+      'en': {
         ...enLocale,
         ...en
       }

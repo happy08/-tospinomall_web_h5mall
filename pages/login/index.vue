@@ -3,7 +3,23 @@
     <BmHeaderNav :left="{ isShow: true }"></BmHeaderNav>
     <div class="mlr-20 pb-30 flex between column login-page">
       <div>
-        <h1 class="tc lagin-page__title">{{ $t('login.loginTitle') }}</h1>
+        <!-- 语言切换 -->
+        <div class="clear">
+          <van-dropdown-menu v-model="lang" :overlay="false" class="fr language-dropdown-menu">
+            <van-dropdown-item get-container=".language-dropdown-menu" ref="dropdownLang">
+              <template #title>
+                <i class="iconfont fs-24 clr-blue mr-4">&#xe600;</i>{{ lang }}
+              </template>
+              <van-cell center :title="langItem.text" v-for="(langItem, index) in langOptions" :key="'lang-cell-' + index" @click="changeLang(langItem)">
+                <template #icon>
+                  <i class="iconfont fs-24 clr-blue mr-4">&#xe600;</i>
+                </template>
+              </van-cell>
+            </van-dropdown-item>
+          </van-dropdown-menu>
+        </div>
+        <!-- title -->
+        <h1 class="tc mt-20 lagin-page__title">{{ $t('login.loginTitle') }}</h1>
         <div class="tc login-page__container">
           <!-- 验证码 -->
           <van-field class="field-container" v-model="account" :placeholder="$t('login.accountPlaceholder')" />
@@ -55,22 +71,40 @@
 </template>
 
 <script>
-import { Divider, Field } from 'vant';
+import { Divider, Field, DropdownMenu, DropdownItem, Cell } from 'vant';
 
 export default {
   components: {
     vanDivider: Divider,
-    vanField: Field
+    vanField: Field,
+    vanDropdownMenu: DropdownMenu,
+    vanDropdownItem: DropdownItem,
+    vanCell: Cell
   },
   data() {
     return {
       account: '',
-      password: ''
+      password: '',
+      langOptions: [
+        { text: 'EN', value: 'en', icon: 'chat-o' },
+        { text: 'China', value: 'zh-CN', icon: 'fire-o' }
+      ]
+    }
+  },
+  computed: {
+    lang() { // 设置语言展示的文案
+      return this.langOptions.filter(lang => {
+        return lang.value === this.$store.state.locale;
+      })[0].text;
     }
   },
   methods: {
     login() {
       // 登录
+    },
+    changeLang(lang) { // 切换语言
+      this.$store.commit('SET_LANG', lang.value);
+      this.$refs.dropdownLang.toggle();
     }
   },
 }
@@ -78,7 +112,7 @@ export default {
 
 <style lang="less" scoped>
 .login-page{
-  padding-top: 50px;
+  padding-top: 32px;
   height: calc(100vh - 46px);
   .lagin-page__title{
     color: #383838;
