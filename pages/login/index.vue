@@ -10,7 +10,7 @@
               <template #title>
                 <i class="iconfont fs-24 clr-blue mr-4">&#xe600;</i>{{ lang }}
               </template>
-              <van-cell center :title="langItem.text" v-for="(langItem, index) in langOptions" :key="'lang-cell-' + index" @click="changeLang(langItem)">
+              <van-cell center :title="langItem.text" v-for="(langItem, index) in langOptions" :key="'lang-cell-' + index" @click="changeLang(langItem.value)">
                 <template #icon>
                   <i class="iconfont fs-24 clr-blue mr-4">&#xe600;</i>
                 </template>
@@ -103,7 +103,7 @@ export default {
       // 登录
     },
     changeLang(lang) { // 切换语言
-      this.$store.commit('SET_LANG', lang.value);
+      this.$store.commit('SET_LANG', lang);
       this.$refs.dropdownLang.toggle();
     }
   },

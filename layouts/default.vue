@@ -10,4 +10,10 @@
   </div>
 </template>
 
+<script>
+export default {
+  name: 'LayOuts'
+}
+</script>
+
 <style></style>

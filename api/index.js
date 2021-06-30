@@ -12,6 +12,11 @@ export default ({ app }, inject) => {
         `${url}/basics/app/api/index/findIndexData`
       );
     },
+    getCurrentRate() { // 获取当前站点货币信息
+      return app.$axios.get(
+        `${url}/basics/base/rate/findSiteCurrency`
+      )
+    }
     // checkPhoneCode(params) { // 校验用户手机号码
     //   return app.$axios.post(
     //     `${url}/admin/ums/checkcode/checkPhone`,

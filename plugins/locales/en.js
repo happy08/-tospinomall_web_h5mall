@@ -1,7 +1,4 @@
 const en = {
-  app: {
-    search: "Search"
-  },
   common: {
     or: 'OR',
     next: 'Next',
@@ -9,7 +6,11 @@ const en = {
     getIt: 'Get It',
     confirm: 'Confirm',
     search: "Search",
-    searchPlaceholder: 'Search product'
+    searchPlaceholder: 'Search product',
+    home: 'Home',
+    categories: 'Categories',
+    cart: 'Cart',
+    me: 'Me'
   },
   login: {
     loginTitle: 'Log In',
