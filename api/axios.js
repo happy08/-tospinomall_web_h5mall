@@ -13,13 +13,13 @@ const tip = msg => {
 export default function({ $axios, app, redirect, store, route }) {
   $axios.defaults.timeout = 8000; // 超时
   
-  // $axios.defaults.headers['Content-Type'] = 'application/json'; //'application/x-www-form-urlencoded';
   $axios.onRequest(config => {
     // 调用登录接口的时候需要固定值 Basic YnV5ZXI6YnV5ZXI= , 登录之后需要在headers中传用户token
     // config.headers['Authorization'] = 'Basic YnV5ZXI6YnV5ZXI=';
-    
     if (config.method === 'post') {
-      config.headers['Content-Type'] ='application/x-www-form-urlencoded'
+      config.headers['Content-Type'] = config.headers['Content-Type'] || 'application/x-www-form-urlencoded';
+    } else {
+      config.headers['Content-Type'] = config.headers['Content-Type'] || 'application/json';
     }
     // //获取cookie
     // const token = app.$cookies.get('auth');

@@ -1,15 +1,25 @@
 <template>
   <!-- 商品列表，上面部分展示图片，下面部分展示信息 -->
-  <div class="flex column top-bottom-songle" >
+  <div class="flex column top-bottom-songle" :style="'width: ' + img.width + ';'">
     <!-- 商品的图片 -->
-    <img class="top-bottom-songle__img" :src="img.url" :width="img.width" :height="img.height" alt="">
+    <van-image
+      lazy-load 
+      :src="img.url" 
+      :width="img.width" 
+      :height="img.height" 
+      fit="cover" 
+      :error-icon="img.loadImage" 
+      :loading-icon="img.loadImage"
+    ></van-image>
     <!-- 商品的信息 -->
-    <div class="mt-12" v-if="detail">
-      <p class="fs-14 black" v-if="detail.desc" v-html="detail.desc"></p>
-      <van-rate class="mt-4" v-if="detail.rate" v-model="detail.rate" size="14" color="#F7B500" />
-      <div class="mt-12 flex between" v-if="detail.price">
-        <span class="red fs-16 fw" v-html="detail.price"></span>
-        <span v-if="detail.num" v-html="detail.num"></span>
+    <div class="pt-12 pb-20 plr-4" v-if="detail">
+      <p class="fs-14 black" v-if="detail.desc" v-html="detail.desc" :class="{ 'hidden-1': detail.ellipsis === 1, 'hidden-2': detail.ellipsis === 2 }"></p>
+      <van-rate class="mt-4" v-if="detail.rate" v-model="detail.rate" allow-half size="14" color="#F7B500" />
+      <div class="mt-12 flex between hidden-1 plr-4" v-if="detail.price">
+        <span class="red fs-16 fw">
+          {{ $store.state.rate.currency }}{{ detail.price }} 
+        </span>
+        <span v-if="detail.volumn" class="fs-10 clr-black-25">{{ detail.volumn }}+Sold</span>
       </div>
     </div>
   </div>
@@ -25,9 +35,10 @@ export default {
       required: true,
       default: function () {
         return {
-          url: '',
-          width: '170px',
-          height: '170px'
+          url: require('@/assets/images/product-bgd-90.png'),
+          width: '1.8rem', // 90px
+          height: '1.8rem', // 90px
+          loadImage: require('@/assets/images/product-bgd-90.png') // 加载图片
         }
       }
     },
@@ -39,21 +50,16 @@ export default {
           desc: '', // 描述语
           rate: '', // 评分
           price: 0, // 价格
-          num: '60+'
+          volumn: '60+', // 累加
+          ellipsis: 2, // 展示几行
         }
       }
     }
   },
   components: {
     vanRate: Rate
+  },
+  created() {
   }
 }
 </script>
-
-<style lang="less" scoped>
-.top-bottom-songle__img{
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-</style>

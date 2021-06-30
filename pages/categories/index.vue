@@ -1,7 +1,7 @@
 <template>
   <div class="categories-page">
     <!-- 搜索栏 -->
-    <div class="mlr-20 mt-4 mb-4">
+    <div class="mlr-12 mt-4 mb-4">
       <van-search 
         v-model="searchVal" 
         placeholder="Enter key words"
@@ -16,23 +16,28 @@
     </div>
     <!-- 侧边栏分类 -->
     <van-tree-select
-      :items="items" 
+      :items="catrgorieList" 
       :main-active-index.sync="treeActive"
       @click-nav="changeNavEvent"
       height="90vh"
     >
       <template #content>
-        <div class="product-categories__box">
-          <h4 class="fw fs-10 product-categories__box--title">Vacuum cup</h4>
-          <div class="flex product-categories__box--caontainer">
-            <div @click="clickItemEvent" class="tc product-single" v-for="index in 7" :key="index">
-              <img class="w-100 product-single__icon" src="https://img01.yzcdn.cn/vant/apple-1.jpg" />
-              <h5 class="fs-12 product-single__name">Vacuum cup</h5>
+        <div class="product-categories__box" v-for="(item, index) in leftLists" :key="index">
+          <h4 class="fw fs-10 product-categories__box--title">{{ item.name }}</h4>
+          <div class="flex flex-wrap product-categories__box--caontainer">
+            <div @click="clickItemEvent" class="tc mr-12 product-single" v-for="(childrenItem, childrenIndex) in item.children" :key="childrenIndex">
+              <van-image
+                lazy-load 
+                :src="childrenItem.icon"
+                fit="cover"
+              ></van-image>
+              <h5 class="fs-12 product-single__name" v-html="childrenItem.name"></h5>
             </div>
           </div>
         </div>
       </template>
     </van-tree-select>
+
     <!-- 底部 -->
     <BmTabbar />
   </div>
@@ -42,6 +47,21 @@
 import { TreeSelect, Search } from 'vant';
 
 export default {
+  async asyncData({ app }) {
+    const data = await app.$api.getCategoryList(); // 分类列表
+    const catrgorieList = data.data.map(item => {
+      return {
+        text: item.name,
+        id: item.id,
+        children: item.children
+      }
+    })
+    return {
+      list: data.data,
+      catrgorieList: catrgorieList,
+      leftLists: catrgorieList[0].children
+    }
+  },
   components: {
     vanTreeSelect: TreeSelect,
     vanSearch: Search
@@ -131,7 +151,7 @@ export default {
   },
   methods: {
     changeNavEvent(currentIndex) { // 点击左侧切换tab栏
-      console.log(currentIndex);
+      this.leftLists = this.catrgorieList[currentIndex].children
     },
     clickItemEvent(data) { // 点击右侧选项触发
       console.log(data);
@@ -143,10 +163,8 @@ export default {
 <style lang="less" scoped>
 .product-single{
   width: 70px;
-  margin-top: 15px;
-  .product-single__icon{
-    height: 64px;
-    object-fit: cover;
+  &:nth-child(3n+3){
+    margin-right: 0!important;
   }
   .product-single__name{
     margin-top: 8px;
@@ -155,8 +173,8 @@ export default {
   }
 }
 .product-categories__box{
-  padding: 15px 12px;
-  margin-top: 10px;
+  // padding: 15px 12px;
+  margin-top: 40px;
   &:first-child{
     margin-top: 0;
   }
@@ -164,8 +182,7 @@ export default {
     line-height: 10px;
   }
   .product-categories__box--caontainer{
-    flex-wrap: wrap;
-    justify-content: space-between;
+    margin-top: 18px;
   }
 }
 </style>
@@ -186,13 +203,14 @@ export default {
   }
   .van-tree-select__nav{
     flex: inherit;
-    width: 100px;
+    width: 94px;
     .van-sidebar-item--select::before{
       background: linear-gradient(14deg, #70CEB6 0%, #3EB5AE 100%);
     }
   }
   .van-tree-select__content{
-    padding: 10px;
+    padding-top: 24px;
+    padding-left: 24px;
   }
 }
 </style>

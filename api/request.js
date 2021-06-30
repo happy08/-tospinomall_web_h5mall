@@ -24,14 +24,14 @@ const tip = msg => {
   switch (status) {
     // 401: 未登录状态，跳转登录页
     case 401:
-      redirect('/login/login');
+      // redirect('/login');
       break;
     case 403:
       tip('登录过期，请重新登录');
       store.commit('setToken', ''); // 清除token并跳转登录页
-      setTimeout(() => {
-        redirect('/login/login');
-      }, 1000);
+      // setTimeout(() => {
+      //   redirect('/login');
+      // }, 1000);
       break;
     case 404:
       tip('请求的资源不存在');
@@ -64,16 +64,9 @@ const tip = msg => {
 
 // request拦截器
 service.interceptors.request.use(config => {
-  console.log(config)
   // if (getToken() != undefined && getToken() != 0) {
   //   config.headers['Access-Token'] = getToken() // 让每个请求携带自定义 token 请求头
   // }
-  
-  // 测试环境加上 Dev-Host 头
-  // 线上环境不需要
-  if (process.env.NODE_ENV === 'development') {
-    config.headers['Dev-Host'] = `abao.fanbi.io`
-  }
 
   return config
 }, error => {
@@ -120,7 +113,7 @@ service.interceptors.response.use(response => { // 成功
   const { response } = error;
   if (response) {
     // 请求已发出，但是不在2xx的范围
-    errorHandle(response.status, redirect, store);
+    // errorHandle(response.status, redirect, store);
     return Promise.reject(response);
   } else {
     // 处理断网的情况

@@ -1,7 +1,7 @@
 import Vue from 'vue';
-import { Button, Icon, Toast, Lazyload } from 'vant';
+import { Button, Icon, Toast, Lazyload, Image } from 'vant';
  
-Vue.use(Button).use(Icon).use(Toast).use(Lazyload);
+Vue.use(Button).use(Icon).use(Toast).use(Lazyload).use(Image);
 
 // import { Button, NavBar, Field, Divider, Picker, Popup, Icon, Tabbar, TabbarItem, Search, /*Swipe, SwipeItem,*/ Lazyload, CountDown, Sticky, Tab, Tabs, TreeSelect, Toast } from 'vant';
  

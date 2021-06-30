@@ -4,7 +4,9 @@ export const state = () => ({
   locales: ['en', 'zh-CN'],
   locale: 'en',
   token: null,
-  rate: null
+  rate: {
+    currency: null
+  }
 });
 
 export const mutations = {
