@@ -3,14 +3,13 @@ import { vantLocales } from '@/plugins/vue-i18n';
 export const state = () => ({
   locales: ['en', 'zh-CN'],
   locale: 'en',
-  token: null,
   rate: {
     currency: null
   }
 });
 
 export const mutations = {
-  SET_LANG(state, locale) {
+  SET_LANG(state, locale) { // 修改当前语言
     if (state.locales.indexOf(locale) !== -1) {
       state.locale = locale;
       this.app.i18n.locale = locale;
@@ -18,10 +17,7 @@ export const mutations = {
       this.$cookies.set('lang', locale);
     }
   },
-  SET_TOKEN(state, token) {
-    state.token = token;
-  },
-  SET_RATE(state, rate) {
+  SET_RATE(state, rate) { // 修改当前货币信息
     state.rate = rate;
   }
 };

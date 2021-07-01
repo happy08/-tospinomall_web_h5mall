@@ -9,6 +9,8 @@
         :height="'.6rem'"
         :loadUrl="require('@/assets/images/logo.png')"
         :errorUrl="require('@/assets/images/logo.png')"
+        :isLazy="false"
+        :isShow="false"
       ></BmImage>
       <!-- 搜索框 -->
       <div class="mlr-12 home-page-nav__search" ref="homeSearch">
@@ -41,6 +43,8 @@
         :height="'.64rem'"
         :loadUrl="require('@/assets/images/message-icon.png')"
         :errorUrl="require('@/assets/images/message-icon.png')"
+        :isLazy="false"
+        :isShow="false"
       ></BmImage>
     </van-sticky>
     <!-- 热门搜索种类列表 -->
@@ -70,12 +74,6 @@
             v-for="(slideItem, slideIndex) in moduleItem.componentDetails"
             :key="'swiper-slide-image-' + slideIndex"
           >
-            <!-- <van-image
-              :src="slideItem.imageUrl"
-              fit="cover" 
-              :error-icon="require('@/assets/images/product-bgd-375.png')" 
-              :loading-icon="require('@/assets/images/product-bgd-375.png')"
-            ></van-image> -->
             <BmImage
               :url="slideItem.imageUrl"
               :loadUrl="require('@/assets/images/product-bgd-375.png')"
@@ -87,16 +85,12 @@
       </div>
 
       <!-- 热区图片 -->
-      <!-- <van-image
-        v-if="moduleItem.type === 2"
-        :src="moduleItem.imageUrl"
-        fit="cover"
-      ></van-image> -->
       <BmImage
         v-if="moduleItem.type === 2"
         :url="moduleItem.imageUrl"
         :loadUrl="require('@/assets/images/product-bgd-375.png')"
         :errorUrl="require('@/assets/images/product-bgd-375.png')"
+        :isLazy="false"
       ></BmImage>
 
       <!-- 一行三列 -->
@@ -117,7 +111,7 @@
             <!-- 图片、标题、价格 id goodsId productItem.mainPictureUrl -->
             <ProductTopBtmSingle
               class="m-auto"
-              :img="{ url: productItem.imageUrl, width: '2.24rem', height: '2.4rem' }" 
+              :img="{ url: productItem.imageUrl, width: '2.24rem', height: '2.4rem', loadImage: require('@/assets/images/product-bgd-90.png') }" 
               :detail="{ desc: productItem.goodTitle, price: productItem.price, ellipsis: 2 }"
             ></ProductTopBtmSingle>
           </swiper-slide>
@@ -130,7 +124,7 @@
         <h2 class="fs-18 mlr-12 fw black mt-20 lh-20">一行两列</h2>
         <div class="mlr-12 mt-20 flex between">
           <ProductTopBtmSingle
-            :img="{ url: productType4Item.imageUrl, width: '3.4rem', height: '3.4rem' }" 
+            :img="{ url: productType4Item.imageUrl, width: '3.4rem', height: '3.4rem', loadImage: require('@/assets/images/product-bgd-170.png') }" 
             :detail="{ desc: productType4Item.goodTitle, price: productType4Item.price, rate: 2.5, volumn: productType4Item.salesVolume, ellipsis: 2 }"
             v-for="(productType4Item, productIndex) in moduleItem.componentDetails" 
             :key="productIndex"
@@ -219,7 +213,7 @@
           <empty-status v-if="searchList.length === 0" :status="'order'"></empty-status>
           <ProductTopBtmSingle
             v-else
-            :img="{ url: '', width: '3.4rem', height: '3.4rem' }" 
+            :img="{ url: '', width: '3.4rem', height: '3.4rem', loadImage: require('@/assets/images/product-bgd-170.png') }" 
             :detail="{ desc: categoryItem.name, price: 49.92, rate: 2.5, volumn: 50, ellipsis: 2 }"
             v-for="(searchItem, searchIndex) in searchList" 
             :key="'search-list-' + searchIndex"

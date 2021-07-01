@@ -26,11 +26,13 @@
           <h4 class="fw fs-10 product-categories__box--title">{{ item.name }}</h4>
           <div class="flex flex-wrap product-categories__box--caontainer">
             <div @click="clickItemEvent" class="tc mr-12 product-single" v-for="(childrenItem, childrenIndex) in item.children" :key="childrenIndex">
-              <van-image
-                lazy-load 
-                :src="childrenItem.icon"
-                fit="cover"
-              ></van-image>
+              <BmImage 
+                :url="childrenItem.icon"
+                :width="'1.4rem'"
+                :height="'1.28rem'"
+                :loadUrl="require('@/assets/images/product-bgd-90.png')"
+                :errorUrl="require('@/assets/images/product-bgd-90.png')"
+              ></BmImage>
               <h5 class="fs-12 product-single__name" v-html="childrenItem.name"></h5>
             </div>
           </div>

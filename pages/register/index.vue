@@ -173,7 +173,6 @@ export default {
       this.isNextFlag = true;
 
       let _axios;
-      console.log(this.$route.query)
       if (this.$route.query.changeWay === 'email') { // 校验邮箱验证码
         _axios = checkEmailCode({ code: this.code, email: this.account, userType: 'buyer' });
       } else { // 校验手机验证码
@@ -195,13 +194,10 @@ export default {
           return false;
         }
         // 注册手机号验证通过之后跳转到设置密码页面
+        let registerQuery = this.$route.query.changeWay === 'email' ? { code: this.code, email: this.account } : { code: this.code,code: this.code, phone: this.account, phonePrefix: this.prefixCode.split('+')[1] };
         this.$router.push({ 
           name: 'register-password',
-          query: {
-            code: this.code,
-            phone: this.account,
-            phonePrefix: this.prefixCode.split('+')[1]
-          }
+          query: registerQuery
         })
       }).catch(() => {
         this.isNextFlag = false;

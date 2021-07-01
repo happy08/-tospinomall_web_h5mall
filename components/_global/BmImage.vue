@@ -2,16 +2,18 @@
   <van-image
     :src="url" 
     :width="width" 
-    :height="width" 
-    fit="cover"
+    :height="height" 
+    fit="contain"
     :lazy-load="isLazy"
+    :show-error="isShow"
+    :show-loading="isShow"
   >
     <template v-slot:error>
       <van-image
         :src="errorUrl" 
         :width="width" 
         :height="height" 
-        fit="cover"
+        fit="contain"
       />
     </template>
     <template v-slot:loading>
@@ -19,7 +21,7 @@
         :src="errorUrl" 
         :width="width" 
         :height="height" 
-        fit="cover"
+        fit="contain"
       />
     </template>
   </van-image>
@@ -43,16 +45,23 @@ export default {
     },
     loadUrl: {
       type: String,
-      default: require('@/assets/images/product-bgd-90.png')
+      default: ''
     },
     errorUrl: {
       type: String,
-      default: require('@/assets/images/product-bgd-90.png')
+      default: ''
     },
     isLazy: {
       type: Boolean,
       default: true
+    },
+    isShow: {
+      type: Boolean,
+      default: true
     }
+  },
+  created() {
+    console.log(this.height)
   }
 }
 </script>

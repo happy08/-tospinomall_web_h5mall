@@ -7,6 +7,8 @@
       :width="img.width" 
       :height="img.height"
       :isLazy="true"
+      :loadUrl="img.loadImage"
+      :errorUrl="img.loadImage"
     ></BmImage>
     <!-- 商品的信息 -->
     <div class="pt-12 pb-20 plr-4" v-if="detail">

@@ -104,3 +104,17 @@ export function forgetPwd(params) {
     data: qs.stringify({ ...params, password: encrypt(params.password), repeatPassword: encrypt(params.repeatPassword) })
   })
 }
+
+/**
+ * 退出
+ */
+export function logout() {
+  const _local = JSON.parse(localStorage.getItem('b2c-store'));
+  return request({
+    url: '/api/auth/token/logout',
+    method: 'delete',
+    headers: {
+      Authorization: 'Basic ' + _local.user.token
+    }
+  })
+}

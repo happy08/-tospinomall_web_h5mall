@@ -1,12 +1,12 @@
-export default function(ctx) {
-  //离开页面 刷新前 将store中的数据存到localStorage
-  window.addEventListener('beforeunload', () => {
-    localStorage.setItem('b2cH5StoreCache', JSON.stringify(ctx.store.state))
-  });
-  // 获取localStorage中的store数据
-  let b2cH5StoreCache = localStorage.getItem('b2cH5StoreCache')
-  if (b2cH5StoreCache) {
-    // 将localStorage中的store数据替换到store中
-    ctx.store.replaceState(JSON.parse(b2cH5StoreCache));
-  }
+import createPersistedState from 'vuex-persistedstate'
+
+export default ({ store }) => {
+  // 如果想要等到 nuxt 加载完毕
+  // 再执行代码, 有一个函数叫做 window.onNuxtReady()
+  // window.onNuxtReady(() => {
+    createPersistedState({
+      // 在这里其实, 是想要将 vuex 数据存放到 localStorage 里面
+      key: 'b2c-store'
+    })(store)
+  // })
 }
