@@ -3,13 +3,13 @@
     <!-- 一级导航栏 -->
     <van-sticky ref="headerStickyContainer" class="w-100 home-page-nav" @scroll="stickyScroll">
       <!-- logo -->
-      <van-image
-        lazy-load 
-        :src="require('@/assets/images/logo.png')" 
-        width="0.54rem" 
-        height="0.6rem" 
-        fit="cover"
-      ></van-image>
+      <BmImage 
+        :url="require('@/assets/images/logo.png')"
+        :width="'.54rem'" 
+        :height="'.6rem'"
+        :loadUrl="require('@/assets/images/logo.png')"
+        :errorUrl="require('@/assets/images/logo.png')"
+      ></BmImage>
       <!-- 搜索框 -->
       <div class="mlr-12 home-page-nav__search" ref="homeSearch">
         <van-search
@@ -34,14 +34,14 @@
         </van-search>
       </div>
       <!-- 信息入口 -->
-      <van-image
+      <BmImage 
         class="home-page-nav__message"
-        lazy-load 
-        :src="require('@/assets/images/message-icon.png')" 
-        width="0.64rem" 
-        height="0.64rem" 
-        fit="cover"
-      ></van-image>
+        :url="require('@/assets/images/message-icon.png')"
+        :width="'.64rem'" 
+        :height="'.64rem'"
+        :loadUrl="require('@/assets/images/message-icon.png')"
+        :errorUrl="require('@/assets/images/message-icon.png')"
+      ></BmImage>
     </van-sticky>
     <!-- 热门搜索种类列表 -->
     <div class="flex popular-search-list">
@@ -70,26 +70,34 @@
             v-for="(slideItem, slideIndex) in moduleItem.componentDetails"
             :key="'swiper-slide-image-' + slideIndex"
           >
-            <van-image 
-              lazy-load 
+            <!-- <van-image
               :src="slideItem.imageUrl"
               fit="cover" 
               :error-icon="require('@/assets/images/product-bgd-375.png')" 
               :loading-icon="require('@/assets/images/product-bgd-375.png')"
-            ></van-image>
+            ></van-image> -->
+            <BmImage
+              :url="slideItem.imageUrl"
+              :loadUrl="require('@/assets/images/product-bgd-375.png')"
+              :errorUrl="require('@/assets/images/product-bgd-375.png')"
+            ></BmImage>
           </swiper-slide>
           <div class="swiper-pagination" slot="pagination"></div>
         </swiper>
       </div>
 
       <!-- 热区图片 -->
-      <van-image
+      <!-- <van-image
         v-if="moduleItem.type === 2"
-        class="home-page-nav__message"
-        lazy-load 
         :src="moduleItem.imageUrl"
         fit="cover"
-      ></van-image>
+      ></van-image> -->
+      <BmImage
+        v-if="moduleItem.type === 2"
+        :url="moduleItem.imageUrl"
+        :loadUrl="require('@/assets/images/product-bgd-375.png')"
+        :errorUrl="require('@/assets/images/product-bgd-375.png')"
+      ></BmImage>
 
       <!-- 一行三列 -->
       <div class="mlr-12 home-page__global" v-if="moduleItem.type === 3">
@@ -109,7 +117,7 @@
             <!-- 图片、标题、价格 id goodsId productItem.mainPictureUrl -->
             <ProductTopBtmSingle
               class="m-auto"
-              :img="{ url: '', width: '2.24rem', height: '1.8rem', loadImage: loadImage }" 
+              :img="{ url: productItem.imageUrl, width: '2.24rem', height: '2.4rem' }" 
               :detail="{ desc: productItem.goodTitle, price: productItem.price, ellipsis: 2 }"
             ></ProductTopBtmSingle>
           </swiper-slide>
@@ -122,7 +130,7 @@
         <h2 class="fs-18 mlr-12 fw black mt-20 lh-20">一行两列</h2>
         <div class="mlr-12 mt-20 flex between">
           <ProductTopBtmSingle
-            :img="{ url: productType4Item.imageUrl, width: '3.4rem', height: '3.4rem', loadImage: loadImage }" 
+            :img="{ url: productType4Item.imageUrl, width: '3.4rem', height: '3.4rem' }" 
             :detail="{ desc: productType4Item.goodTitle, price: productType4Item.price, rate: 2.5, volumn: productType4Item.salesVolume, ellipsis: 2 }"
             v-for="(productType4Item, productIndex) in moduleItem.componentDetails" 
             :key="productIndex"
@@ -205,18 +213,21 @@
       </div>
     </div> -->
     <!-- 滚动标签栏部分 -->
-    <van-tabs sticky swipeable animated :offset-top="44" color="#42B7AE">
-      <van-tab v-for="(categoryItem, tabIndex) in categoryList" :title="categoryItem.name" :key="'scroll-tab-' + tabIndex" title-class="pb-0">
+    <van-tabs sticky swipeable animated :offset-top="44" color="#42B7AE"  @change="getSearchList">
+      <van-tab v-for="(categoryItem, tabIndex) in categoryList" :title="categoryItem.name" :key="'scroll-tab-' + tabIndex" title-class="pb-0" :name="categoryItem.name">
         <div class="mlr-12 mt-20 flex between flex-wrap">
+          <empty-status v-if="searchList.length === 0" :status="'order'"></empty-status>
           <ProductTopBtmSingle
-            :img="{ url: '', width: '3.4rem', height: '3.4rem', loadImage: loadImage }" 
+            v-else
+            :img="{ url: '', width: '3.4rem', height: '3.4rem' }" 
             :detail="{ desc: categoryItem.name, price: 49.92, rate: 2.5, volumn: 50, ellipsis: 2 }"
-            v-for="(productIndex) in 9" 
-            :key="productIndex"
+            v-for="(searchItem, searchIndex) in searchList" 
+            :key="'search-list-' + searchIndex"
           ></ProductTopBtmSingle>
         </div>
       </van-tab>
     </van-tabs>
+
     <!-- 底部 -->
     <BmTabbar />
   </div>
@@ -224,9 +235,8 @@
 
 <script>
 import { Search, CountDown, Sticky, Tab, Tabs } from 'vant';
-const loadImage = require('@/assets/images/product-bgd-90.png');
 import ProductTopBtmSingle from '@/components/ProductTopBtmSingle';
-import { getSearchList } from '@/api/product';
+import EmptyStatus from '@/components/EmptyStatus';
 
 export default {
   components: {
@@ -235,34 +245,14 @@ export default {
     vanTab: Tab,
     vanTabs: Tabs,
     vanCountDown: CountDown,
-    ProductTopBtmSingle
+    ProductTopBtmSingle,
+    EmptyStatus
   },
   async asyncData({ app }) {
-    const [ homeData, categoryList ] = await Promise.all([
+    const [ homeData, categoryList, searchList ] = await Promise.all([
       app.$api.getHomeData(), // 组件数据
       app.$api.getCategoryList(), // 分类列表
-      // app.$api.getProductSearch({
-      //   available: 0,
-      //   brandId: 0,
-      //   brandName: "",
-      //   "categoryId": 0,
-      //   "categoryName": "",
-      //   "deliveryType": 0,
-      //   "isCashDelivery": 0,
-      //   "overseas": 0,
-      //   "pageIndex": 0,
-      //   "pageSize": 0,
-      //   "promotionPrice": 0,
-      //   "queryMaxPrice": 0,
-      //   "queryMinPrice": 0,
-      //   "recommend": 0,
-      //   "searchKeyword": "",
-      //   "shopId": 0,
-      //   "shopName": "",
-      //   "sortMap": {},
-      //   "starLevel": 0,
-      //   "supplyCountry": ""
-      // })
+      app.$api.getProductSearch({ categoryName: '' }), // 搜索商品列表
     ]);
 
     return {
@@ -274,6 +264,7 @@ export default {
         },
         ...categoryList.data
       ], // 分类列表
+      searchList: searchList.data.items
     }
   },
   data() {
@@ -320,14 +311,12 @@ export default {
           clickable: true
         }
       },
-      loadImage: loadImage
+      searchParams: { // 搜索商品列表参数
+        categoryName: '' // 分类名称
+      }
     }
   },
   created() {
-    // 获取商品分类数据
-    getSearchList({ categoryName: '男装' }).then(res => {
-      console.log(res)
-    })
   },
   methods: {
     onSearch(val) {
@@ -351,6 +340,12 @@ export default {
     onSlideChange() {
       console.log('slide change');
     },
+    getSearchList(searchVal) { // 获取搜索商品列表
+      this.searchParams.categoryName = searchVal;
+      this.$api.getProductSearch(this.searchParams).then(res => {
+        console.log(res)
+      })
+    }
   },
 };
 </script>

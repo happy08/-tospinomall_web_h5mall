@@ -2,15 +2,12 @@
   <!-- 商品列表，上面部分展示图片，下面部分展示信息 -->
   <div class="flex column top-bottom-songle" :style="'width: ' + img.width + ';'">
     <!-- 商品的图片 -->
-    <van-image
-      lazy-load 
-      :src="img.url" 
+    <BmImage 
+      :url="img.url"
       :width="img.width" 
-      :height="img.height" 
-      fit="cover" 
-      :error-icon="img.loadImage" 
-      :loading-icon="img.loadImage"
-    ></van-image>
+      :height="img.height"
+      :isLazy="true"
+    ></BmImage>
     <!-- 商品的信息 -->
     <div class="pt-12 pb-20 plr-4" v-if="detail">
       <p class="fs-14 black" v-if="detail.desc" v-html="detail.desc" :class="{ 'hidden-1': detail.ellipsis === 1, 'hidden-2': detail.ellipsis === 2 }"></p>
@@ -35,7 +32,7 @@ export default {
       required: true,
       default: function () {
         return {
-          url: require('@/assets/images/product-bgd-90.png'),
+          url: '',
           width: '1.8rem', // 90px
           height: '1.8rem', // 90px
           loadImage: require('@/assets/images/product-bgd-90.png') // 加载图片

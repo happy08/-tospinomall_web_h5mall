@@ -23,7 +23,6 @@ export default ({ app }, inject) => {
         method: 'post',
         data: params,
         headers: {
-          'Authorization': 'Basic YnV5ZXI6YnV5ZXI=',
           'Content-Type': 'application/json'
         }
       })

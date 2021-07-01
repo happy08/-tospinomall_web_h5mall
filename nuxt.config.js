@@ -107,5 +107,6 @@ export default {
         remUnit: 50
       })
     ]
-  }
+  },
+  loading: false
 };

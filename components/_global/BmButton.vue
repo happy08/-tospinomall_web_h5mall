@@ -11,22 +11,29 @@
 
 <script>
 export default {
-  name: "BmButton",
+  name: 'BmButton',
   props: {
     type: {
       type: String,
-      default: "primary-linear"
-    }
+      default: 'primary-linear'
+    },
   },
   computed: {
     style() {
-      return this.type === "primary-linear"
+      return this.type === 'primary-linear'
         ? {
-            background: "linear-gradient(270deg, #3eb5ae 0%, #70ceb6 100%)",
-            color: "white",
-            border: "0px"
+            background: 'linear-gradient(270deg, #3eb5ae 0%, #70ceb6 100%)',
+            color: '#fff',
+            border: '0px'
           }
-        : "";
+        : this.type === 'info' 
+        ? {
+          background: 'rgba(66, 183, 174, .05)',
+          color: '#42B7AE',
+          border: '.02rem solid #42B7AE',
+          height: '25px',
+          'border-radius': '.16rem'
+        } : '';
     }
   }
 };
