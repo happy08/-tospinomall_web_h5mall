@@ -33,7 +33,7 @@
                 :loadUrl="require('@/assets/images/product-bgd-90.png')"
                 :errorUrl="require('@/assets/images/product-bgd-90.png')"
               ></BmImage>
-              <h5 class="fs-12 product-single__name" v-html="childrenItem.name"></h5>
+              <h5 class="fs-12 mt-8 product-single__name" v-html="childrenItem.name"></h5>
             </div>
           </div>
         </div>
@@ -169,7 +169,6 @@ export default {
     margin-right: 0!important;
   }
   .product-single__name{
-    margin-top: 8px;
     color: rgba(0, 0, 0, .65);
     line-height: 12px;
   }

@@ -1,10 +1,86 @@
 <template>
-  <div>
-    我的
+  <div class="bg-grey user-page">
+    <!-- 账户信息展示 -->
+    <div class="bg-white plr-12 account-top">
+      <div class="flex between vcenter">
+        <!-- 头像信息 -->
+        <div class="flex between vcenter">
+          <!-- 头像 -->
+          <BmImage 
+            :url="require('@/assets/images/icon/user-icon.png')"
+            :width="'1.04rem'" 
+            :height="'1.04rem'"
+            :isLazy="false"
+            :isShow="false"
+          ></BmImage>
+          <!-- 姓名、id -->
+          <dl class="ml-10">
+            <dt class="fs-18 green fw">Nadia Spinka</dt>
+            <dd class="fs-12 grey mt-8">78****59</dd>
+          </dl>
+        </div>
+        <BmImage
+          :url="require('@/assets/images/message-icon.png')"
+          :width="'.64rem'" 
+          :height="'.64rem'"
+          :isLazy="false"
+          :isShow="false"
+        ></BmImage>
+      </div>
+      <!-- 收藏信息 -->
+      <div class="p-30 flex between">
+        <dl class="tc">
+          <dt class="fs-24 black fw">12</dt>
+          <dd class="fs-12 grey mt-4">Collection</dd>
+        </dl>
+        <dl class="tc">
+          <dt class="fs-24 black fw">35</dt>
+          <dd class="fs-12 grey mt-4">Wallet</dd>
+        </dl>
+        <dl class="tc">
+          <van-badge dot color="linear-gradient(339deg, #FF4943 0%, #FA5E69 100%)">
+            <dt class="fs-24 black fw">35</dt>
+          </van-badge>
+          <dd class="fs-12 grey mt-4">Coupon</dd>
+        </dl>
+      </div>
+    </div>
+    <!-- 我的订单 -->
+    <div class="bg-white mlr-12 round-8 plr-12 pb-20 user-page__order">
+      <van-cell class="ptb-12 plr-0" :border="false" title="My Order" is-link value="View All" value-class="green" title-class="black" to="" />
+      <div class="flex between tc">
+        <div v-for="(orderItem, orderIndex) in orderList" :key="'oder-' + orderIndex">
+          <BmImage 
+            :url="require('@/assets/images/icon/' + orderItem.icon + '.png')"
+            :width="'0.8rem'" 
+            :height="'0.8rem'"
+            :isLazy="false"
+            :isShow="false"
+          ></BmImage>
+          <p>{{ orderItem.text }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="clearfix"></div>
+    <!-- 其他设置项 -->
+    <div class="round-8 bg-white mlr-12 mt-12 hidden user-page__other">
+      <van-cell class="ptb-14 plr-12" :title="otherItem.text" v-for="(otherItem, otherIndex) in otherList" :key="'other-list-' + otherIndex">
+        <template #icon>
+          <BmImage 
+            :url="require('@/assets/images/icon/user-other-' + otherIndex + '.png')"
+            :width="'0.48rem'" 
+            :height="'0.48rem'"
+            :isLazy="false"
+            :isShow="false"
+            class="mr-12"
+          ></BmImage>
+        </template>
+      </van-cell>
+    </div>
     <!-- 登录 -->
-    <BmButton v-if="!$store.state.user.token" @click="login">登录</BmButton>
+    <!-- <BmButton v-if="!$store.state.user.token" @click="login">登录</BmButton> -->
     <!-- 退出 -->
-    <BmButton v-if="$store.state.user.token" @click="logout">退出</BmButton>
+    <!-- <BmButton v-if="$store.state.user.token" @click="logout">退出</BmButton> -->
     <!-- 底部 -->
     <BmTabbar />
   </div>
@@ -12,9 +88,67 @@
 
 <script>
 import { logout } from '@/api/login';
+import { Badge, Cell, CellGroup } from 'vant';
 
 export default {
   // middleware: 'authenticated',
+  components: {
+    vanBadge: Badge,
+    vanCell: Cell,
+    vanCellGroup: CellGroup
+  },
+  data() {
+    return {
+      orderList: [ // 订单展示项
+        {
+          icon: 'to-pay-icon',
+          text: 'To Pay'
+        },
+        {
+          icon: 'to-ship-icon',
+          text: 'To Ship'
+        },
+        {
+          icon: 'to-receive-icon',
+          text: 'To Receive'
+        },
+        {
+          icon: 'to-rate-icon',
+          text: 'To Rate'
+        },
+        {
+          icon: 'to-refund-icon',
+          text: 'To Refund'
+        }
+      ],
+      otherList: [
+        {
+          text: 'My Likes'
+        },
+        {
+          text: 'Recently Viewed'
+        },
+        {
+          text: 'My wallet'
+        },
+        {
+          text: 'Address Management'
+        },
+        {
+          text: 'My Shop'
+        },
+        {
+          text: 'Settings'
+        },
+        {
+          text: 'Feedback'
+        },
+        {
+          text: 'About Tospino'
+        }
+      ]
+    }
+  },
   methods: {
     logout() { // 退出登录
       logout().then(res => {
@@ -29,3 +163,21 @@ export default {
   },
 }
 </script>
+
+<style lang="less" scoped>
+.user-page{
+  min-height: 100vh;
+  padding-bottom: 70px;
+  font-family: 'Helvetica';
+}
+.account-top{
+  padding-bottom: 46px;
+}
+.user-page__order{
+  margin-top: -24px;
+  box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.09);
+}
+.user-page__other{
+  box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.09);
+}
+</style>

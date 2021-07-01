@@ -7,8 +7,6 @@
         :url="require('@/assets/images/logo.png')"
         :width="'.54rem'" 
         :height="'.6rem'"
-        :loadUrl="require('@/assets/images/logo.png')"
-        :errorUrl="require('@/assets/images/logo.png')"
         :isLazy="false"
         :isShow="false"
       ></BmImage>
@@ -41,8 +39,6 @@
         :url="require('@/assets/images/message-icon.png')"
         :width="'.64rem'" 
         :height="'.64rem'"
-        :loadUrl="require('@/assets/images/message-icon.png')"
-        :errorUrl="require('@/assets/images/message-icon.png')"
         :isLazy="false"
         :isShow="false"
       ></BmImage>
