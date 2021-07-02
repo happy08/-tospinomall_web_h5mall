@@ -13,6 +13,7 @@ export default {
 
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: [
+    '@/assets/css/iconfont.css',
     "@/assets/css/index.less"
     //"vant/lib/index.css"
   ],
@@ -32,7 +33,8 @@ export default {
     { src: "@/plugins/utils", ssr: false },
     "@/plugins/routeguard.js",
     "@/plugins/swiper.js",
-    { src: '@/plugins/store-cache', ssr: false }
+    { src: '@/plugins/store-cache', ssr: false },
+    { src: '@/assets/js/iconfont.js', ssr: false }
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components

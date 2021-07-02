@@ -5,12 +5,16 @@ const en = {
     congratulations: 'Congratulations!',
     getIt: 'Get It',
     confirm: 'Confirm',
-    search: "Search",
+    search: 'Search',
     searchPlaceholder: 'Search product',
     home: 'Home',
     categories: 'Categories',
     cart: 'Cart',
-    me: 'Me'
+    me: 'Me',
+    cancel: 'Cancel',
+    gander: ['Male', 'Female'],
+    maritalStatus: ['Merried', 'Unmarried'],
+    done: 'Done'
   },
   login: {
     loginTitle: 'Log In',
@@ -31,6 +35,33 @@ const en = {
   forgot: {
     title: 'Forgot Password',
     successTip: 'Congratulations!You have successfully set the password.'
+  },
+  me: {
+    about: {
+      title: 'About Tospino',
+      termMenu: 'Term of Service',
+      privacyMenu: 'Privacy policy',
+      userAgreementMenu: 'User agreement'
+    },
+    accountSetting: {
+      title: 'Account Setting',
+      harvestAddress: 'Harvest address',
+      accountSecurity: 'Account and Security',
+      paySetting: 'Payment settings',
+      langSetting: 'Language setting',
+      clearCache: 'Clear Cache'
+    },
+    userInfo: {
+      avatar: 'Avatar',
+      memberAccount: 'Member account',
+      name: 'Name',
+      nickname: 'Nickname',
+      gender: 'Gender',
+      birth: 'Date of birth',
+      maritalStatus: 'Marital status',
+      modifyNameTitle: 'Modify user name',
+      characterTip: '4-30 CHaracters'
+    }
   }
 };
 export default en;

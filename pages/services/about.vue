@@ -1,7 +1,7 @@
 <template>
-  <!-- 隐私协议 -->
+  <!-- 用户协议 -->
   <div>
-    <BmHeaderNav :left="{ isShow: true }" :title="$t('me.about.privacyMenu')"></BmHeaderNav>
+    <BmHeaderNav :left="{ isShow: true }" :title="'用户协议'"></BmHeaderNav>
     <div class="fs-14 mlr-20 mt-20">
       <p>Tospino, hereinafter referred to as We, makes a
       firm commitment to protect users' personal

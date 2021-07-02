@@ -4,7 +4,7 @@
     <div class="bg-white plr-12 account-top">
       <div class="flex between vcenter">
         <!-- 头像信息 -->
-        <div class="flex between vcenter">
+        <nuxt-link class="flex between vcenter" :to="{ name: 'me-setting-account' }">
           <!-- 头像 -->
           <BmImage 
             :url="require('@/assets/images/icon/user-icon.png')"
@@ -18,7 +18,7 @@
             <dt class="fs-18 green fw">Nadia Spinka</dt>
             <dd class="fs-12 grey mt-8">78****59</dd>
           </dl>
-        </div>
+        </nuxt-link>
         <BmImage
           :url="require('@/assets/images/message-icon.png')"
           :width="'.64rem'" 
@@ -79,15 +79,13 @@
     </div>
     <!-- 登录 -->
     <!-- <BmButton v-if="!$store.state.user.token" @click="login">登录</BmButton> -->
-    <!-- 退出 -->
-    <!-- <BmButton v-if="$store.state.user.token" @click="logout">退出</BmButton> -->
+    
     <!-- 底部 -->
     <BmTabbar />
   </div>
 </template>
 
 <script>
-import { logout } from '@/api/login';
 import { Badge, Cell, CellGroup } from 'vant';
 
 export default {
@@ -150,11 +148,7 @@ export default {
     }
   },
   methods: {
-    logout() { // 退出登录
-      logout().then(res => {
-        this.$store.commit('user/SET_TOKEN', null);
-      })
-    },
+    
     login() {
       this.$router.push({
         name: 'login'

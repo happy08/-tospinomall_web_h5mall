@@ -7,7 +7,7 @@
     </template>
     <!-- 中间内容 -->
     <template #title>
-      <div v-if="title" v-html="title"></div>
+      <h1 v-if="title" v-html="title" class="fs-18 black"></h1>
       <slot name="header-title"></slot>
     </template>
     <!-- 右侧内容 -->
