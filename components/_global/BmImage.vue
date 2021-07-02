@@ -59,9 +59,6 @@ export default {
       type: Boolean,
       default: true
     }
-  },
-  created() {
-    console.log(this.height)
   }
 }
 </script>

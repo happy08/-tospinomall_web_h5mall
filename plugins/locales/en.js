@@ -14,7 +14,12 @@ const en = {
     cancel: 'Cancel',
     gander: ['Male', 'Female'],
     maritalStatus: ['Merried', 'Unmarried'],
-    done: 'Done'
+    done: 'Done',
+    copySuccess: 'Copy success!',
+    copyError: 'Copy error!',
+    lastEmit: 'Last modified',
+    submit: 'Submit',
+    return: 'Return'
   },
   login: {
     loginTitle: 'Log In',
@@ -49,7 +54,16 @@ const en = {
       accountSecurity: 'Account and Security',
       paySetting: 'Payment settings',
       langSetting: 'Language setting',
-      clearCache: 'Clear Cache'
+      clearCache: 'Clear Cache',
+      securityTitle: 'Account security',
+      securityWelcome: ',Welcome back to security',
+      changePwd: 'Change Password',
+      bindPhone: 'Modify binding phone',
+      chnageEmail: 'Change Email',
+      verifyMethod: 'Verification method',
+      loginPwdVerify: 'Use existing login password to verify',
+      smsVerify: 'Use SMS verification',
+      emailVerify: 'Use E-mail verification code'
     },
     userInfo: {
       avatar: 'Avatar',
@@ -61,6 +75,27 @@ const en = {
       maritalStatus: 'Marital status',
       modifyNameTitle: 'Modify user name',
       characterTip: '4-30 CHaracters'
+    },
+    feedback: {
+      title: 'Feedback',
+      typeTitle: 'Type of problem feedback',
+      typeLists: ['Dysfunction', 'Optimization Suggestions', 'Other Suggestions'],
+      feedbackPlaceholder: 'Please input your mobile phone number so that we can contact you',
+      picPlaceholder: 'Please input your mobile phone number so that we can contact you'
+    },
+    authentication: {
+      title: 'Authentication',
+      currentPlaceholder: 'Enter the current login password',
+      pwdPlaceholder: '6-20 new password',
+      otherMethod: 'Use other authentication method',
+      tip: 'Must be 6-20 English letters, numbers or symbols (except spaces), and at least two types of letters, numbers and punctuation marks',
+      confirmPwdTitle: 'Confirm the new password',
+      smsTitle: 'mobile phone verification',
+      completeVerify: 'Complete certification',
+      smsReceivedTip: 'Please enter the SMS verification code received by',
+      changeResultTitle: 'Change phone number',
+      success: 'Success!',
+      changeResultTip: 'Password set sccessfully,Need to log in, it will automatically jump after 5 seconds'
     }
   }
 };

@@ -5,7 +5,7 @@
 
     <div class="bg-white">
       <!-- 账户信息信息 -->
-      <van-cell class="ptb-20 plr-20" center is-link title-class="black" :to="{ name: 'me-setting-userinfo' }">
+      <van-cell class="ptb-20 plr-20" center is-link title-class="black" :to="{ name: 'me-setting-account-userinfo' }">
         <template #title>
           <div class="flex vcenter">
             <!-- 头像 -->
@@ -18,8 +18,8 @@
             ></BmImage>
             <!-- 姓名、id -->
             <dl class="ml-10">
-              <dt class="fs-18 black fw">Nadia Spinka</dt>
-              <dd class="fs-12 grey mt-8 lh-1">78****59</dd>
+              <dt class="fs-18 black fw">{{ userInfo.name }}</dt>
+              <dd class="fs-12 grey mt-8 lh-1">{{ userInfo.id }}</dd>
             </dl>
           </div>
         </template>
@@ -28,15 +28,17 @@
       <van-cell class="ptb-20 plr-20" :title="$t('me.accountSetting.harvestAddress')" is-link title-class="black" :to="{ name: 'services-privacy' }" />
     </div>
 
-    <!-- 账户安全 -->
     <div class="mt-12">
-      <van-cell class="p-20" :title="$t('me.accountSetting.accountSecurity')" is-link title-class="black" :to="{ name: 'services-privacy' }" />
+      <!-- 账户安全 -->
+      <van-cell class="p-20" :title="$t('me.accountSetting.accountSecurity')" is-link title-class="black" :to="{ name: 'me-setting-account-security', query: { name: userInfo.name } }" />
+      <!-- 支付设置 -->
       <van-cell class="p-20" :title="$t('me.accountSetting.paySetting')" is-link title-class="black" :to="{ name: 'services-privacy' }" />
+      <!-- 语言设置 -->
       <van-cell class="p-20" :title="$t('me.accountSetting.langSetting')" is-link title-class="black" :to="{ name: 'services-privacy' }" />
     </div>
 
     <!-- 清除缓存 -->
-    <van-cell class="mt-20 p-20" :title="$t('me.accountSetting.clearCache')" is-link title-class="black" :to="{ name: 'services-privacy' }" />
+    <!-- <van-cell class="mt-20 p-20" :title="$t('me.accountSetting.clearCache')" title-class="black"/> -->
 
     <!-- 退出 -->
     <div class="plr-20 w-100 pb-20">
@@ -53,6 +55,14 @@ export default {
   components: {
     vanCell: Cell,
     vanCellGroup: CellGroup
+  },
+  data() {
+    return {
+      userInfo: {
+        name: 'Nadia Spinka',
+        id: '78****59'
+      }
+    }
   },
   created() {
     console.log(this.$store.state.user.token)

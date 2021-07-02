@@ -64,7 +64,7 @@
     <div class="clearfix"></div>
     <!-- 其他设置项 -->
     <div class="round-8 bg-white mlr-12 mt-12 hidden user-page__other">
-      <van-cell class="ptb-14 plr-12" :title="otherItem.text" v-for="(otherItem, otherIndex) in otherList" :key="'other-list-' + otherIndex">
+      <van-cell class="ptb-14 plr-12" :title="otherItem.text" v-for="(otherItem, otherIndex) in otherList" :key="'other-list-' + otherIndex" :to="{ name: otherItem.name }">
         <template #icon>
           <BmImage 
             :url="require('@/assets/images/icon/user-other-' + otherIndex + '.png')"
@@ -119,7 +119,7 @@ export default {
           text: 'To Refund'
         }
       ],
-      otherList: [
+      otherList: [ // 其他设置列表
         {
           text: 'My Likes'
         },
@@ -136,19 +136,21 @@ export default {
           text: 'My Shop'
         },
         {
-          text: 'Settings'
+          text: 'Settings',
+          name: 'me-setting-account'
         },
         {
-          text: 'Feedback'
+          text: 'Feedback',
+          name: 'me-feedback'
         },
         {
-          text: 'About Tospino'
+          text: 'About Tospino',
+          name: 'me-about'
         }
       ]
     }
   },
   methods: {
-    
     login() {
       this.$router.push({
         name: 'login'
