@@ -19,7 +19,8 @@ const en = {
     copyError: 'Copy error!',
     lastEmit: 'Last modified',
     submit: 'Submit',
-    return: 'Return'
+    return: 'Return',
+    tips: 'Tips'
   },
   login: {
     loginTitle: 'Log In',
@@ -62,7 +63,7 @@ const en = {
       chnageEmail: 'Change Email',
       verifyMethod: 'Verification method',
       loginPwdVerify: 'Use existing login password to verify',
-      smsVerify: 'Use SMS verification',
+      smsVerify: 'Use SMS verification code',
       emailVerify: 'Use E-mail verification code'
     },
     userInfo: {
@@ -95,7 +96,8 @@ const en = {
       smsReceivedTip: 'Please enter the SMS verification code received by',
       changeResultTitle: 'Change phone number',
       success: 'Success!',
-      changeResultTip: 'Password set sccessfully,Need to log in, it will automatically jump after 5 seconds'
+      changeResultTip: 'Password set sccessfully,Need to log in, it will automatically jump after 5 seconds',
+      phoneVerifyTips: ['To ensure the security of your account, changing important information requires identity verifica-tion.', 'If you have any questions during the verification process, please contact customer service.', 'Change the bound mobile phone. If the original mobile phone is disabled and the verification code cannot be obtained, please contact customer service.']
     }
   }
 };

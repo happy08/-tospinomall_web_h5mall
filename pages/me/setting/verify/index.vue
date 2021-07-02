@@ -39,7 +39,9 @@
     
     <div class="plr-20 w-100 mt-14">
       <p class="fs-14">{{ $t('me.authentication.tip') }}</p>
+      <!-- 下一步 -->
       <BmButton class="w-100 round-8 authentication-btn" @click="jump">{{ $t('common.next') }}</BmButton>
+      <!-- 其他认证方式 -->
       <p class="fs-14 green tc mt-20" @click="goback">{{ $t('me.authentication.otherMethod') }}</p>
     </div>
   </div>

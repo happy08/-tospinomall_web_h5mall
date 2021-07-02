@@ -16,12 +16,15 @@
     </div>
 
     <div class="mt-12">
+      <!-- 修改密码 -->
       <van-cell class="ptb-10 plr-20" center :title="$t('me.accountSetting.changePwd')" value-class="light-grey" is-link title-class="black" :to="{ name: 'me-setting-account-verifymethod' }">
         <template #default>
           {{ $t('common.lastEmit') }} <br/> {{ userInfo.pwd }}
         </template>
       </van-cell>
-      <van-cell class="ptb-20 plr-20" :title="$t('me.accountSetting.bindPhone')" :value="userInfo.phone" value-class="light-grey" is-link title-class="black" :to="{ name: '' }" />
+      <!-- 修改绑定手机 -->
+      <van-cell class="ptb-20 plr-20" :title="$t('me.accountSetting.bindPhone')" :value="userInfo.phone" value-class="light-grey" is-link title-class="black" :to="{ name: 'me-setting-bind' }" />
+      <!-- 修改绑定邮箱 -->
       <van-cell class="ptb-20 plr-20" :title="$t('me.accountSetting.chnageEmail')" :value="userInfo.email" value-class="light-grey" is-link title-class="black" :to="{ name: '' }" />
     </div>
   </div>
