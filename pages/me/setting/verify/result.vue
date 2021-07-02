@@ -5,7 +5,7 @@
     <div class="plr-20 tc result-page__container">
       <van-icon name="checked" color="#52C41A" size="64" />
       <p class="fs-18 fw black result-page__container--title">{{ $t('me.authentication.changeResultTitle') }}</p>
-      <!-- 注册成功提示语 -->
+      <!-- 修改成功提示语 -->
       <p class="light-grey fs-14 mt-12 result-page__container--tip">{{ $t('me.authentication.changeResultTip') }}</p>
       <van-button
         class="mt-60 btn_h48 round-8 fw fs-16 w-100 result-page__btn"
