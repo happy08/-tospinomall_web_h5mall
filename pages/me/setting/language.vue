@@ -1,5 +1,5 @@
 <template>
-  <!-- 我的-设置-账户设置-语言设置 -->
+  <!-- 我的-设置-语言设置 -->
   <div class="bg-grey vh-100">
     <BmHeaderNav :left="{ isShow: true }" :title="$t('common.accountLang')"></BmHeaderNav>
 

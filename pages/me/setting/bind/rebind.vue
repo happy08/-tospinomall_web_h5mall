@@ -1,5 +1,5 @@
 <template>
-  <!-- 我的-设置-账户设置-安全认证-重新绑定电话/邮箱 -->
+  <!-- 我的-设置-安全认证-重新绑定电话/邮箱 -->
   <div class="bg-grey vh-100">
     <BmHeaderNav :left="{ isShow: true }" :title="$t('me.authentication.associatedNumber')"></BmHeaderNav>
 

@@ -1,5 +1,5 @@
 <template>
-  <!-- 我的-设置-账户设置-支付设置页面 -->
+  <!-- 我的-设置-支付设置页面 -->
   <div class="bg-grey vh-100">
     <BmHeaderNav :left="{ isShow: true }" :title="$t('me.pay.title')"></BmHeaderNav>
 
