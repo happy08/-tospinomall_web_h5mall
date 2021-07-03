@@ -121,9 +121,12 @@ const en = {
       warnTipsList: ['1. In order to ensure the security of your account, important information changes need to be authenticated', '2. If you have any questions during the verification process, please contact customer service.', 'Change the binding phone. If the original phone is disabled and the verification code cannot be obtained, please contact the customer service.'],
       messageVerify: 'Messege authentication',
       bankCard: 'Bank Card',
-      myBankCard: 'My bank card',
       addBankBtn: 'Add bank card',
       addBankTip: 'Convenient for asset management, safe and fast payment, and enjoy bank benefits'
+    },
+    address: {
+      areacodeTitle: 'Delivery to',
+      countryTitle: 'Choose a country or region'
     }
   }
 };

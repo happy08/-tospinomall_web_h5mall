@@ -25,7 +25,7 @@
         </template>
       </van-cell>
       <!-- 收货地址 -->
-      <van-cell class="ptb-20 plr-20" :title="$t('me.accountSetting.harvestAddress')" is-link title-class="black" :to="{ name: 'services-privacy' }" />
+      <van-cell class="ptb-20 plr-20" :title="$t('me.accountSetting.harvestAddress')" is-link title-class="black" :to="{ name: 'me-setting-address' }" />
     </div>
 
     <div class="mt-12">
