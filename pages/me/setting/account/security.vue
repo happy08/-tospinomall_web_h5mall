@@ -12,7 +12,7 @@
         :isShow="false"
         class="mr-12"
       ></BmImage>
-      <p class="white">{{ $route.query.name }}{{ $t('me.accountSetting.securityWelcome') }}</p>
+      <p class="white">{{ $store.state.user.name }}{{ $t('me.accountSetting.securityWelcome') }}</p>
     </div>
 
     <div class="mt-12">

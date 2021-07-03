@@ -103,6 +103,26 @@ const en = {
       bindPhoneTitle: 'Binding mobile phone',
       bindPhoneDesc: 'Mobile phone number bingding successfully',
       iknow: 'I Know'
+    },
+    pay: {
+      title: 'Payment settings',
+      paymentPwd: 'Payment password',
+      paymentVerfity: 'Used for payment verification',
+      myBackCard: 'My bank card',
+      myBackManage: 'Manage bank cards under the account',
+      firstSetPwd: 'Please set a new 6-digit payment password',
+      firstSetPwdTip: ['Avoid using consecutive or repeated numbers, like "123456", "112233"', 'Avoid using consecutive numbers in mobile phone numbers and certificates'],
+      firstSetPwdAgain: 'Please enter the new payment password again',
+      pwdError: 'password error',
+      pwdResultTitle: 'Payment password setting',
+      pwdResultDesc: 'The payment password has been set successfully',
+      warnTip: 'Warm tips',
+      warnTipsList: ['1. In order to ensure the security of your account, important information changes need to be authenticated', '2. If you have any questions during the verification process, please contact customer service.', 'Change the binding phone. If the original phone is disabled and the verification code cannot be obtained, please contact the customer service.'],
+      messageVerify: 'Messege authentication',
+      bankCard: 'Bank Card',
+      myBankCard: 'My bank card',
+      addBankBtn: 'Add bank card',
+      addBankTip: 'Convenient for asset management, safe and fast payment, and enjoy bank benefits'
     }
   }
 };

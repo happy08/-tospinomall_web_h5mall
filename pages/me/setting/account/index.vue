@@ -30,9 +30,9 @@
 
     <div class="mt-12">
       <!-- 账户安全 -->
-      <van-cell class="p-20" :title="$t('me.accountSetting.accountSecurity')" is-link title-class="black" :to="{ name: 'me-setting-account-security', query: { name: userInfo.name } }" />
+      <van-cell class="p-20" :title="$t('me.accountSetting.accountSecurity')" is-link title-class="black" :to="{ name: 'me-setting-account-security'}" />
       <!-- 支付设置 -->
-      <van-cell class="p-20" :title="$t('me.accountSetting.paySetting')" is-link title-class="black" :to="{ name: 'services-privacy' }" />
+      <van-cell class="p-20" :title="$t('me.accountSetting.paySetting')" is-link title-class="black" :to="{ name: 'me-setting-pay' }" />
       <!-- 语言设置 -->
       <van-cell class="p-20" :title="$t('me.accountSetting.langSetting')" is-link title-class="black" :to="{ name: 'services-privacy' }" />
     </div>

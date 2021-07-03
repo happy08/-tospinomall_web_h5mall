@@ -1,0 +1,24 @@
+<template>
+  <!-- 支付设置页面 -->
+  <div class="bg-grey vh-100">
+    <BmHeaderNav :left="{ isShow: true }" :title="$t('me.pay.title')"></BmHeaderNav>
+
+    <div class="plr-20 bg-white">
+      <!-- 支付密码方式 -->
+      <van-cell class="plr-0 ptb-20" :title="$t('me.pay.paymentPwd')" :label="$t('me.pay.paymentVerfity')" center is-link :to="{ name: 'me-setting-pay-password' }" />
+      <!-- 管理银行卡 -->
+      <van-cell class="plr-0 ptb-20" :title="$t('me.pay.myBackCard')" :label="$t('me.pay.myBackManage')" center is-link :to="{ name: 'me-setting-pay-bank' }" />
+    </div>
+  </div>
+</template>
+
+<script>
+import { Cell, CellGroup } from 'vant';
+
+export default {
+  components: {
+    vanCell: Cell,
+    vanCellGroup: CellGroup
+  },
+}
+</script>
