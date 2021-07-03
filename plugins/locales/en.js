@@ -128,6 +128,10 @@ const en = {
       areacodeTitle: 'Delivery to',
       countryTitle: 'Choose a country or region'
     }
+  },
+  search: {
+    history: 'Search for history',
+    found: 'Search found'
   }
 };
 export default en;
