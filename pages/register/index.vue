@@ -166,7 +166,7 @@ export default {
         this.isCodeFlag = false;
       })
     },
-    jumpPwd() { // 验证手机号码，成功后跳转到设置密码页面 userType: 'buyer' 买家 seller 卖家 operator 运营
+    jumpPwd() { // 验证手机/邮箱号码，成功后跳转到设置密码页面 userType: 'buyer' 买家 seller 卖家 operator 运营
       if (this.isNextFlag) {
         return false;
       }

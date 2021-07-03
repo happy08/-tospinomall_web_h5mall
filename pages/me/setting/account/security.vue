@@ -25,7 +25,7 @@
       <!-- 修改绑定手机 -->
       <van-cell class="ptb-20 plr-20" :title="$t('me.accountSetting.bindPhone')" :value="userInfo.phone" value-class="light-grey" is-link title-class="black" :to="{ name: 'me-setting-bind' }" />
       <!-- 修改绑定邮箱 -->
-      <van-cell class="ptb-20 plr-20" :title="$t('me.accountSetting.chnageEmail')" :value="userInfo.email" value-class="light-grey" is-link title-class="black" :to="{ name: '' }" />
+      <van-cell class="ptb-20 plr-20" :title="$t('me.accountSetting.chnageEmail')" :value="userInfo.email" value-class="light-grey" is-link title-class="black" :to="{ name: 'me-setting-bind', query: { changeWay: 'email' } }" />
     </div>
   </div>
 </template>

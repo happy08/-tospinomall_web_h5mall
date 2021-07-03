@@ -1,5 +1,5 @@
 <template>
-  <!-- 修改绑定手机/邮箱-短信认证-提交已绑定手机的验证码 -->
+  <!-- 修改绑定手机/邮箱-短信认证-提交已绑定手机/邮箱的验证码 -->
   <div class="bg-grey vh-100">
     <BmHeaderNav :left="{ isShow: true }" :title="$t('me.authentication.smsTitle')"></BmHeaderNav>
 
@@ -66,9 +66,12 @@ export default {
         history.back();
       }
     },
-    jump() { // 跳转到实用密码验证-请确认新密码页面
+    jump() { // 跳转到重新绑定电话/邮箱页面
       this.$router.push({
-        name: 'me-setting-verify-verifypwd'
+        name: 'me-setting-bind-rebind',
+        query: {
+          changeWay: this.$route.query.changeWay
+        }
       })
     }
   },
