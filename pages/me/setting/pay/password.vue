@@ -1,5 +1,5 @@
 <template>
-  <!-- 设置/修改支付密码 -->
+  <!-- 我的-设置-账户设置-支付设置-设置/修改支付密码 -->
   <div class="bg-grey vh-100">
     <BmHeaderNav :left="{ isShow: true }" :title="$t('me.pay.paymentPwd')"></BmHeaderNav>
     <!-- 设置密码 -->

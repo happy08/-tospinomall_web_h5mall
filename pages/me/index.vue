@@ -1,4 +1,5 @@
 <template>
+  <!-- 我的页面 -->
   <div class="bg-grey user-page">
     <!-- 账户信息展示 -->
     <div class="bg-white plr-12 account-top">

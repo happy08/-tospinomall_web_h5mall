@@ -1,5 +1,5 @@
 <template>
-  <!-- 账户安全-修改密码-认证方式 -->
+  <!-- 我的-设置-账户设置-账户安全-修改密码-认证方式 -->
   <div>
     <BmHeaderNav :left="{ isShow: true }" :title="$t('me.accountSetting.verifyMethod')"></BmHeaderNav>
 

@@ -1,5 +1,5 @@
 <template>
-  <!-- 修改绑定-结果展示页面  -->
+  <!-- 我的-设置-账户设置-安全认证-绑定方式-修改绑定-结果展示页面  -->
   <div class="result-page">
     <BmHeaderNav :left="{ isShow: true }" :title="$t('me.authentication.bindPhoneTitle')"></BmHeaderNav>
     <div class="plr-20 tc result-page__container">

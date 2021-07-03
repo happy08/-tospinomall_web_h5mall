@@ -1,5 +1,5 @@
 <template>
-  <!-- 修改绑定手机-认证方式 -->
+  <!-- 我的-设置-账户设置-安全设置-修改绑定手机-认证方式 -->
   <div class="bg-grey vh-100">
     <BmHeaderNav :left="{ isShow: true, url: '/me/setting/account/security', isRep: true }" :title="$t('me.accountSetting.verifyMethod')"></BmHeaderNav>
 

@@ -1,4 +1,5 @@
 <template>
+  <!-- 首页 -->
   <div class="home-page">
     <!-- 一级导航栏 -->
     <van-sticky ref="headerStickyContainer" class="w-100 home-page-nav" @scroll="stickyScroll">

@@ -1,4 +1,5 @@
 <template>
+  <!-- 分类页面 -->
   <div class="categories-page">
     <!-- 搜索栏 -->
     <div class="mlr-12 mt-4 mb-4">

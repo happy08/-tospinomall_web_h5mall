@@ -1,5 +1,5 @@
 <template>
-  <!-- 我的账户设置 -->
+  <!-- 我的-设置-账户设置页面 -->
   <div class="bg-grey vh-100">
     <BmHeaderNav :left="{ isShow: true }" :title="$t('me.accountSetting.title')"></BmHeaderNav>
 
@@ -34,7 +34,7 @@
       <!-- 支付设置 -->
       <van-cell class="p-20" :title="$t('me.accountSetting.paySetting')" is-link title-class="black" :to="{ name: 'me-setting-pay' }" />
       <!-- 语言设置 -->
-      <van-cell class="p-20" :title="$t('me.accountSetting.langSetting')" is-link title-class="black" :to="{ name: 'services-privacy' }" />
+      <van-cell class="p-20" :title="$t('me.accountSetting.langSetting')" is-link title-class="black" :to="{ name: 'me-setting-language' }" />
     </div>
 
     <!-- 清除缓存 -->

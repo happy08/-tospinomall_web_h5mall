@@ -20,7 +20,8 @@ const en = {
     lastEmit: 'Last modified',
     submit: 'Submit',
     return: 'Return',
-    tips: 'Tips'
+    tips: 'Tips',
+    accountLang: 'Account Setting'
   },
   login: {
     loginTitle: 'Log In',

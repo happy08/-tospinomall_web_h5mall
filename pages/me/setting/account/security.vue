@@ -1,5 +1,5 @@
 <template>
-  <!-- 账户安全 -->
+  <!-- 我的-设置-账户设置-账户安全 -->
   <div>
     <BmHeaderNav :left="{ isShow: true }" :title="$t('me.accountSetting.securityTitle')"></BmHeaderNav>
     <!-- 欢迎用户语 -->

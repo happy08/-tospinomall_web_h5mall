@@ -1,5 +1,5 @@
 <template>
-  <!-- 修改密码-短信/邮箱验证 -->
+  <!-- 我的-设置-账户设置-安全设置-修改密码-短信/邮箱验证 -->
   <div class="bg-grey vh-100">
     <BmHeaderNav :left="{ isShow: true }" :title="$t('me.authentication.smsTitle')"></BmHeaderNav>
 

@@ -1,5 +1,5 @@
 <template>
-  <!-- 使用密码-验证新密码 -->
+  <!-- 我的-设置-账户设置-安全设置-使用密码-验证新密码 -->
   <div class="bg-grey vh-100">
     <BmHeaderNav :left="{ isShow: true }" :title="$t('me.authentication.confirmPwdTitle')"></BmHeaderNav>
 

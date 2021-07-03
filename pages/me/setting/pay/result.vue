@@ -1,5 +1,5 @@
 <template>
-  <!-- 账户登录密码-修改结果展示页 -->
+  <!-- 我的-设置-账户设置-支付设置-账户登录密码-修改结果展示页 -->
   <div class="result-page">
     <BmHeaderNav :left="{ isShow: true }" :title="$t('me.pay.pwdResultTitle')"></BmHeaderNav>
     <div class="plr-20 tc result-page__container">

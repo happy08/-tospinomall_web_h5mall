@@ -1,4 +1,5 @@
 <template>
+  <!-- 登录-验证码登录页面 -->
   <div>
     <BmHeaderNav :left="{ isShow: true }"></BmHeaderNav>
     <div class="mlr-20 pb-30 flex between column login-page">

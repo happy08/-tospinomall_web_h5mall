@@ -1,5 +1,5 @@
 <template>
-  <!-- 关于Tospino页面-->
+  <!-- 我的-关于Tospino页面-->
   <div>
     <BmHeaderNav :left="{ isShow: true }" :title="$t('me.about.title')"></BmHeaderNav>
     <div class="mlr-20">

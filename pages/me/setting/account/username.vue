@@ -1,5 +1,5 @@
 <template>
-  <!-- 设置-用户信息-昵称/姓名 -->
+  <!-- 我的-设置-账户设置-用户信息-修改昵称/姓名 -->
   <div class="bg-grey vh-100">
     <BmHeaderNav :left="{ isShow: true }" :title="$t('me.userInfo.modifyNameTitle')">
       <div slot="header-right" class="green" @click="onConfirm">
