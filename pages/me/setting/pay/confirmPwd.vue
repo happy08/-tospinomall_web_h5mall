@@ -55,9 +55,9 @@ export default {
   data() {
     return {
       password: '',
-      showKeyboard: true,
+      showKeyboard: false,
       errorInfo: '',
-      isFirstPwd: false // 是不是首次设置密码
+      isFirstPwd: true // 是不是首次设置密码
     }
   },
   methods: {
@@ -72,7 +72,7 @@ export default {
           this.$router.push({
             name: 'me-setting-pay-result'
           })
-        }, 300);
+        }, 100);
       }
     }
   },

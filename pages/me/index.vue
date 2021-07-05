@@ -48,7 +48,7 @@
     </div>
     <!-- 我的订单 -->
     <div class="bg-white mlr-12 round-8 plr-12 pb-20 user-page__order">
-      <van-cell class="ptb-12 plr-0" :border="false" title="My Order" is-link value="View All" value-class="green" title-class="black" to="" />
+      <van-cell class="ptb-12 plr-0" :border="false" title="My Order" is-link value="View All" value-class="green" title-class="black" :to="{ name: 'me-order' }" />
       <div class="flex between tc">
         <div v-for="(orderItem, orderIndex) in orderList" :key="'oder-' + orderIndex">
           <BmImage 
@@ -122,7 +122,8 @@ export default {
       ],
       otherList: [ // 其他设置列表
         {
-          text: 'My Likes'
+          text: 'My Likes',
+          name: 'me-likes'
         },
         {
           text: 'Recently Viewed'

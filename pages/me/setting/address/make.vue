@@ -19,16 +19,16 @@
         type="tel"
       >
         <template #right-icon>
-          <div class="flex">
+          <nuxt-link class="flex grey" :to="{ name: 'me-setting-address-areacode' }">
             {{ phonePref }}
             <van-icon name="arrow" />
-          </div>
+          </nuxt-link>
         </template>
       </van-field>
       <!-- 收货人地址 -->
       <van-field
         v-model="address"
-        placeholder="Phpne number"
+        placeholder="Address"
         class="p-20"
       >
         <template #right-icon>

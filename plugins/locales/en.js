@@ -24,7 +24,9 @@ const en = {
     accountLang: 'Account Setting',
     delete: 'Delete',
     yes: 'Yes',
-    no: 'No'
+    no: 'No',
+    dontGet: 'Don’t get',
+    resend: 'Resend after 100s'
   },
   login: {
     loginTitle: 'Log In',
@@ -125,7 +127,10 @@ const en = {
       messageVerify: 'Messege authentication',
       bankCard: 'Bank Card',
       addBankBtn: 'Add bank card',
-      addBankTip: 'Convenient for asset management, safe and fast payment, and enjoy bank benefits'
+      addBankTip: 'Convenient for asset management, safe and fast payment, and enjoy bank benefits',
+      modifyPwd: 'Modify 6-digit payment password',
+      forgotPwd: 'Forgot 6-digit payment password',
+      useCurrentPayPwd: 'Authenticate with the current payment password'
     },
     address: {
       areacodeTitle: 'Delivery to',
@@ -134,6 +139,9 @@ const en = {
       addShipAddressBtn: 'Add shipping Address',
       deleteTitle: 'Are you sure to delete the address?',
       deleteMessage: 'Will not cancel any orders gonna be sent to the address that you delete. If you need to change a new delivery address,please update the one you need and make a default to avoid impact on future delivery.'
+    },
+    order: {
+      myOrderTitle: 'My Order'
     }
   },
   search: {
