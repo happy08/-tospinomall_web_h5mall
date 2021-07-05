@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>编组 3</title>
+    <g id="4-我的" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="4-8-9设置-收货地址" transform="translate(-331.000000, -108.000000)">
+            <g id="编组-3" transform="translate(331.000000, 108.000000)">
+                <g id="编组" transform="translate(5.000000, 5.000000)" fill="#000000" fill-opacity="0.85">
+                    <polygon id="路径" points="11.254 6.22675 7.754 2.71875 8.579 1.89175 12.079 5.39975"></polygon>
+                    <polygon id="路径" fill-rule="nonzero" points="0 12.83075 14 12.83075 14 13.99975 0 13.99975"></polygon>
+                    <path d="M3.598,12.83175 L12.304,4.10575 C12.974,3.43375 12.974,2.34575 12.304,1.67375 C11.63,0.99875 10.536,0.99875 9.863,1.67375 L1.168,10.38875 L1.168,12.83175 L3.598,12.83175 Z M4.083,13.99975 L13.131,4.92975 C14.256,3.80175 14.256,1.97675 13.131,0.84975 C12.001,-0.28325 10.165,-0.28325 9.035,0.84975 L-1.42108547e-14,9.90675 L-1.42108547e-14,13.99975 L4.083,13.99975 Z" id="形状"></path>
+                </g>
+                <rect id="矩形" stroke="#979797" fill="#D8D8D8" opacity="0" x="0.5" y="0.5" width="23" height="23"></rect>
+            </g>
+        </g>
+    </g>
+</svg>

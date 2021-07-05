@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="62px" height="33px" viewBox="0 0 62 33" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>编组 4</title>
+    <g id="4-我的" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="4-8-10设置-收货地址-新建" transform="translate(-240.000000, -424.000000)">
+            <g id="编组-4" transform="translate(241.000000, 425.000000)">
+                <rect id="矩形" stroke="#BFBFBF" x="0" y="0" width="60" height="31" rx="7.5"></rect>
+                <polygon id="路径" fill="#C4C4C4" fill-rule="nonzero" points="24 15 37 15 37 16.182 24 16.182"></polygon>
+                <polygon id="路径" fill="#C4C4C4" fill-rule="nonzero" points="29 22 29 9 30.182 9 30.182 22"></polygon>
+            </g>
+        </g>
+    </g>
+</svg>
