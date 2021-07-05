@@ -8,9 +8,10 @@
       shape="round"
       placeholder="请输入搜索关键词"
       class="plr-20 bg-white ptb-12"
+      @input="inputChange"
     />
 
-    <div class="mlr-20 mt-12">
+    <div class="mlr-20 mt-12" v-show="isShowTip">
       <!-- 搜索历史 -->
       <h2 class="fs-14 black flex between vcenter">{{ $t('search.history') }} <i class="iconfont icon-shanchu delete-style" @click="deleteFn"></i></h2>
       <div class="mt-20">
@@ -22,6 +23,7 @@
         <span class="plr-10 round-8 mr-12 iblock mb-10 tag-name" v-for="(tag, index) in $t('me.feedback.typeLists')" :key="index">{{ tag }}</span>
       </div>
     </div>
+    
   </div>
 </template>
 
@@ -34,7 +36,8 @@ export default {
   },
   data() {
     return {
-      searchVal: ''
+      searchVal: '',
+      isShowTip: true
     }
   },
   methods: {
@@ -44,6 +47,9 @@ export default {
       }).then(() => { // 确认删除历史记录
 
       })
+    },
+    inputChange(val) { // 输入框内容变化时触发的事件
+      this.isShowTip = val.length === 0;
     }
   },
 }
