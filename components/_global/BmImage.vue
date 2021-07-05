@@ -7,6 +7,7 @@
     :lazy-load="isLazy"
     :show-error="isShow"
     :show-loading="isShow"
+    :round="round"
   >
     <template v-slot:error>
       <van-image
@@ -58,6 +59,10 @@ export default {
     isShow: {
       type: Boolean,
       default: true
+    },
+    round: {
+      type: Boolean,
+      default: false
     }
   }
 }

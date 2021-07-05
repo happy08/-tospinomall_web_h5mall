@@ -100,9 +100,6 @@ export default {
     padding: 6px;
   }
 }
-.mt-24{
-  margin-top: 24px;
-}
 .bank-60{
   margin-top: 60px;
 }

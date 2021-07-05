@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="361px" height="128px" viewBox="0 0 361 128" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>椭圆形</title>
+    <defs>
+        <filter x="-1.9%" y="-5.5%" width="103.7%" height="111.0%" filterUnits="objectBoundingBox" id="filter-1">
+            <feOffset dx="0" dy="1" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="1" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.111778846 0" type="matrix" in="shadowBlurOuter1" result="shadowMatrixOuter1"></feColorMatrix>
+            <feMerge>
+                <feMergeNode in="shadowMatrixOuter1"></feMergeNode>
+                <feMergeNode in="SourceGraphic"></feMergeNode>
+            </feMerge>
+        </filter>
+        <rect id="path-2" x="0" y="0" width="351" height="118" rx="8"></rect>
+        <linearGradient x1="91.1907583%" y1="19.961709%" x2="5.61347073%" y2="19.961709%" id="linearGradient-4">
+            <stop stop-color="#3EB5AE" offset="0%"></stop>
+            <stop stop-color="#84E1CA" offset="100%"></stop>
+        </linearGradient>
+        <filter x="-4.8%" y="-6.4%" width="109.7%" height="112.8%" filterUnits="objectBoundingBox" id="filter-5">
+            <feGaussianBlur stdDeviation="2" in="SourceGraphic"></feGaussianBlur>
+        </filter>
+        <filter x="-4.4%" y="-4.5%" width="108.8%" height="109.0%" filterUnits="objectBoundingBox" id="filter-6">
+            <feGaussianBlur stdDeviation="2" in="SourceGraphic"></feGaussianBlur>
+        </filter>
+    </defs>
+    <g id="4-我的" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="4-4-1我的-我的钱包" transform="translate(-7.000000, -94.000000)">
+            <g id="椭圆形" filter="url(#filter-1)" transform="translate(12.000000, 99.000000)">
+                <mask id="mask-3" fill="white">
+                    <use xlink:href="#path-2"></use>
+                </mask>
+                <use id="蒙版" fill="#FEEE5F" xlink:href="#path-2"></use>
+                <path d="M199,412 C326.301635,412 429.5,308.801635 429.5,181.5 C429.5,113.325076 404.876617,47.7007476 357.830203,5.5 C317.027815,-31.0998409 258.12671,-49 199,-49 C141.121131,-49 88.2247716,-27.6673445 47.7446663,7.5642207 C-0.809166315,49.8226957 -31.5,112.077234 -31.5,181.5 C-31.5,308.801635 71.6983652,412 199,412 Z" fill="url(#linearGradient-4)" mask="url(#mask-3)"></path>
+                <polygon id="路径-2" fill="#FFFFFF" opacity="0.137718564" filter="url(#filter-5)" mask="url(#mask-3)" transform="translate(357.332103, 130.297362) rotate(76.000000) translate(-357.332103, -130.297362) " points="379.088188 89.6119382 295.224881 159.087688 307.575008 177.297362 419.439325 83.2973619"></polygon>
+                <polygon id="路径-2备份" fill="#FFFFFF" opacity="0.220726376" filter="url(#filter-6)" mask="url(#mask-3)" transform="translate(347.532239, 137.564503) rotate(76.000000) translate(-347.532239, -137.564503) " points="416.05942 71.1220392 279.005059 186.122039 293.282397 204.006968 406.11518 111.006209"></polygon>
+            </g>
+        </g>
+    </g>
+</svg>

@@ -142,6 +142,16 @@ const en = {
     },
     order: {
       myOrderTitle: 'My Order'
+    },
+    wallet: {
+      myPure: 'My purse',
+      bill: 'Bill',
+      myBlance: 'My blance',
+      enterAmount: 'Enter a custom amount',
+      rechargeNow: 'Recharge Now',
+      rechargeInstructions: 'Recharge instructions:',
+      rechargeInstructionsTip: 'Custom recharge amount.100 free for every 1000',
+      searchBillPlaceholder: 'Enter Bill related information'
     }
   },
   search: {

@@ -129,7 +129,8 @@ export default {
           text: 'Recently Viewed'
         },
         {
-          text: 'My wallet'
+          text: 'My wallet',
+          name: 'me-wallet'
         },
         {
           text: 'Address Management'

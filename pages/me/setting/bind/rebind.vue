@@ -180,9 +180,6 @@ export default {
 .sms-tip{
   color: #666;
 }
-.mt-24{
-  margin-top: 24px;
-}
 .sms-btn{
   margin-top: 27px;
 }

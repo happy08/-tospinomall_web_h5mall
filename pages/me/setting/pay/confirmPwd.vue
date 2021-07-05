@@ -80,9 +80,6 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.mt-24{
-  margin-top: 24px;
-}
 .payment-container{
   margin-top: 24px;
   .payment-container__pwd{

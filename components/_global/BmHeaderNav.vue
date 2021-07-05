@@ -1,6 +1,6 @@
 <template>
 <!-- 导航栏 -->
-  <van-nav-bar>
+  <van-nav-bar :border="border">
     <!-- 左侧内容 -->
     <template #left>
       <van-icon v-if="left.isShow" name="arrow-left" color="#000" size="18px" @click="leftBack"></van-icon>
@@ -40,6 +40,10 @@ export default {
           isEmit: false
         }
       }
+    },
+    border: {
+      type: Boolean,
+      default: true
     }
   },
   methods: {
