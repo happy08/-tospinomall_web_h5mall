@@ -1,7 +1,7 @@
 <template>
   <!-- 我的-设置-支付设置-我的银行卡 -->
   <div>
-    <BmHeaderNav :left="{ isShow: true }" :title="$t('me.pay.bankCard')"></BmHeaderNav>
+    <BmHeaderNav :left="{ isShow: true }" :title="$t('me.pay.bankCard')" />
 
     <!-- 没有绑定银行卡 -->
     <div v-if="isBind === true" class="tc bank-60 mlr-20">

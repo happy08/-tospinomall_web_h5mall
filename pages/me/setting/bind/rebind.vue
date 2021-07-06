@@ -1,9 +1,8 @@
 <template>
   <!-- 我的-设置-安全认证-重新绑定电话/邮箱 -->
   <div class="bg-grey vh-100">
-    <BmHeaderNav :left="{ isShow: true }" :title="$t('me.authentication.associatedNumber')"></BmHeaderNav>
+    <BmHeaderNav :left="{ isShow: true }" :title="$t('me.authentication.associatedNumber')" />
 
-    
     <div class="plr-20 bg-white">
       <h3 class="fs-16 black rebind-title">{{ $t('me.authentication.rebindPhone') }}</h3>
       <!-- 邮箱绑定 -->

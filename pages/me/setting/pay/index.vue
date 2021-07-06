@@ -1,7 +1,7 @@
 <template>
   <!-- 我的-设置-支付设置页面 -->
   <div class="bg-grey vh-100">
-    <BmHeaderNav :left="{ isShow: true }" :title="$t('me.pay.title')"></BmHeaderNav>
+    <BmHeaderNav :left="{ isShow: true }" :title="$t('me.pay.title')" />
 
     <div class="plr-20 bg-white">
       <!-- 支付密码方式 -->

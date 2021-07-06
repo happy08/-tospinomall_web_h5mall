@@ -1,7 +1,8 @@
 <template>
   <!-- 我的-设置-支付设置-设置/修改支付密码 -->
   <div class="bg-grey vh-100">
-    <BmHeaderNav :left="{ isShow: true }" :title="$t('me.pay.paymentPwd')"></BmHeaderNav>
+    <BmHeaderNav :left="{ isShow: true }" :title="$t('me.pay.paymentPwd')" />
+
     <!-- 设置密码 -->
     <div class="mlr-12 payment-container">
       <!-- 首次设置输入密码提示 -->

@@ -1,14 +1,15 @@
 <template>
-  <div class="result-page">
+  <div>
     <!-- 注册、修改密码成功结果页面 -->
-    <BmHeaderNav :left="{ isShow: true }" :title="title"></BmHeaderNav>
+    <BmHeaderNav :left="{ isShow: true }" :title="title" />
+    
     <div class="plr-20 tc result-page__container">
       <van-icon name="checked" color="#52C41A" size="54" />
-      <p class="fs-18 fw black result-page__container--title">{{ $t('common.congratulations') }}</p>
+      <p class="fs-18 fw black mt-30 result-page__container--title">{{ $t('common.congratulations') }}</p>
       <!-- 注册成功提示语 -->
-      <p class="light-grey fs-14 result-page__container--tip">{{ desc }}</p>
+      <p class="light-grey fs-14 mt-12">{{ desc }}</p>
       <van-button
-        class="mt-60 btn_h48 fw fs-16 w-100"
+        class="mt-60 btn_h48 fw fs-16 round-8 w-100"
         color="linear-gradient(270deg, #3EB5AE 0%, #70CEB6 100%)"
         @click="loginClick"> 
         {{ $t('login.loginNow') }}
@@ -41,18 +42,10 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.result-page{
-  background-color: #fff;
-  .result-page__container{
-    padding-top: 40px;
-    .result-page__container--title{
-      margin-top: 30px;
-      line-height: 28px;
-    }
-    .result-page__container--tip{
-      line-height: 18px;
-      margin-top: 12px;
-    }
+.result-page__container{
+  padding-top: 40px;
+  .result-page__container--title{
+    line-height: 28px;
   }
 }
 </style>

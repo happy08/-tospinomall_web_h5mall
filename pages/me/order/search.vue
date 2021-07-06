@@ -2,6 +2,7 @@
   <!-- 首页-头部-搜索页面 -->
   <div>
     <BmHeaderNav :left="{ isShow: true }" :title="$t('common.search')" />
+
     <!-- 搜索 -->
     <van-search
       v-model="searchVal"
@@ -9,6 +10,7 @@
       placeholder="请输入搜索关键词"
       class="plr-20 bg-white ptb-12"
       @input="inputChange"
+      @search="onSearch"
     />
 
     <div class="mlr-20 mt-12" v-show="isShowTip">
@@ -17,13 +19,9 @@
       <div class="mt-20">
         <span class="plr-10 round-8 mr-12 iblock mb-10 tag-name" v-for="(tag, index) in $t('me.feedback.typeLists')" :key="index">{{ tag }}</span>
       </div>
-      <!-- 搜索发现 -->
-      <h2 class="fs-14 black">{{ $t('search.found') }}</h2>
-      <div class="mt-20">
-        <span class="plr-10 round-8 mr-12 iblock mb-10 tag-name" v-for="(tag, index) in $t('me.feedback.typeLists')" :key="index">{{ tag }}</span>
-      </div>
     </div>
-    
+    <!-- 空状态  -->
+    <empty-status v-if="lists.length === 0 && isShowTip === 0" :image="require('@/assets/images/empty/order.png')" :description="$t('common.noRecord')"></empty-status>
   </div>
 </template>
 
@@ -37,7 +35,8 @@ export default {
   data() {
     return {
       searchVal: '',
-      isShowTip: true
+      isShowTip: true,
+      lists: []
     }
   },
   methods: {
@@ -50,6 +49,9 @@ export default {
     },
     inputChange(val) { // 输入框内容变化时触发的事件
       this.isShowTip = val.length === 0;
+    },
+    onSearch(val) { // 获取搜索结果
+      this.isShowTip = 0;
     }
   },
 }

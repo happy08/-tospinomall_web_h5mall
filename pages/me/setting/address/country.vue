@@ -1,7 +1,7 @@
 <template>
   <!-- 我的-设置-收货地址-选择国家或地区 -->
   <div class="bg-grey">
-    <BmHeaderNav :left="{ isShow: true }" :title="$t('me.address.countryTitle')"></BmHeaderNav>
+    <BmHeaderNav :left="{ isShow: true }" :title="$t('me.address.countryTitle')" />
 
     <van-search
       v-model="searchVal"

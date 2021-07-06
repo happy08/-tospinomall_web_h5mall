@@ -23,10 +23,10 @@ export default {
     vanEmpty: Empty
   },
   props: {
-    status: {
-      type: String,
-      default: 'order'
-    },
+    // status: {
+    //   type: String,
+    //   default: 'order'
+    // },
     image: {
       type: String,
       default: 'default'
@@ -39,16 +39,16 @@ export default {
       type: String,
       default: ''
     },
-    empty: {
-      type: Object,
-      default: function () {
-        return {
-          tip: null, // 提示语
-          btnEvent: false, // 是否有按钮
-          height: '70vh'
-        }
-      }
-    }
+    // empty: {
+    //   type: Object,
+    //   default: function () {
+    //     return {
+    //       tip: null, // 提示语
+    //       btnEvent: false, // 是否有按钮
+    //       height: '70vh'
+    //     }
+    //   }
+    // }
   }
 }
 </script>

@@ -1,7 +1,7 @@
 <template>
   <!-- 我的-设置-账户设置页面 -->
   <div class="bg-grey vh-100">
-    <BmHeaderNav :left="{ isShow: true }" :title="$t('me.accountSetting.title')"></BmHeaderNav>
+    <BmHeaderNav :left="{ isShow: true }" :title="$t('me.accountSetting.title')" />
 
     <div class="bg-white">
       <!-- 账户信息信息 -->

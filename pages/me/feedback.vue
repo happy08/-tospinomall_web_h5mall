@@ -1,7 +1,7 @@
 <template>
   <!-- 我的-意见反馈 -->
   <div>
-    <BmHeaderNav :left="{ isShow: true }" :title="$t('me.feedback.title')"></BmHeaderNav>
+    <BmHeaderNav :left="{ isShow: true }" :title="$t('me.feedback.title')" />
 
     <div class="mt-20 mlr-20">
       <!-- 反馈类型 -->

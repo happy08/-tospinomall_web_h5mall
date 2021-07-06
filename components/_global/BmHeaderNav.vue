@@ -1,13 +1,13 @@
 <template>
 <!-- 导航栏 -->
-  <van-nav-bar :border="border">
+  <van-nav-bar :border="border" :class="bg_color">
     <!-- 左侧内容 -->
     <template #left>
-      <van-icon v-if="left.isShow" name="arrow-left" color="#000" size="18px" @click="leftBack"></van-icon>
+      <van-icon v-if="left.isShow" name="arrow-left" :color="color" size="18px" @click="leftBack"></van-icon>
     </template>
     <!-- 中间内容 -->
     <template #title>
-      <h1 v-if="title" v-html="title" class="fs-18 black"></h1>
+      <h1 v-if="title" v-html="title" :class="['fs-18', color]"></h1>
       <slot name="header-title"></slot>
     </template>
     <!-- 右侧内容 -->
@@ -44,6 +44,14 @@ export default {
     border: {
       type: Boolean,
       default: true
+    },
+    color: {
+      type: String,
+      default: 'black'
+    },
+    bg_color: {
+      type: String,
+      default: 'white'
     }
   },
   methods: {

@@ -1,7 +1,7 @@
 <template>
   <!-- 我的-设置-支付设置-支付密码 -->
   <div>
-    <BmHeaderNav :left="{ isShow: true }" :title="$t('me.pay.paymentPwd')"></BmHeaderNav>
+    <BmHeaderNav :left="{ isShow: true }" :title="$t('me.pay.paymentPwd')" />
     
     <div class="mlr-20">
       <van-cell-group>

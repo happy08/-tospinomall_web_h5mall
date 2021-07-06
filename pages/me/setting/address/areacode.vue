@@ -1,7 +1,7 @@
 <template>
   <!-- 我的-设置-收货地址-选择电话区号 -->
   <div class="bg-grey">
-    <BmHeaderNav :left="{ isShow: true }" :title="$t('me.address.areacodeTitle')"></BmHeaderNav>
+    <BmHeaderNav :left="{ isShow: true }" :title="$t('me.address.areacodeTitle')" />
 
     <van-index-bar :highlight-color="'#42b7ae'" :index-list="indexList" class="page-slider-bar">
       <div v-for="(item, name) in countrylists" :key="name">

@@ -1,6 +1,7 @@
 <template>
   <div>
-    <BmHeaderNav :left="{ isShow: true, url: '/login' }" :title="title"></BmHeaderNav>
+    <BmHeaderNav :left="{ isShow: true, url: '/login' }" :title="title" />
+    
     <div class="mlr-20 pb-30 flex between column register-page">
       <div>
         <!-- 邮箱 -->

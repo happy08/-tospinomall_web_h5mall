@@ -1,7 +1,8 @@
 <template>
   <!-- 我的-设置-安全认证-账户登录密码-修改结果展示页 -->
   <div class="result-page">
-    <BmHeaderNav :left="{ isShow: true }" :title="$t('me.authentication.changeResultTitle')"></BmHeaderNav>
+    <BmHeaderNav :left="{ isShow: true }" :title="$t('me.authentication.changeResultTitle')" />
+    
     <div class="plr-20 tc result-page__container">
       <van-icon name="checked" color="#52C41A" size="64" />
       <p class="fs-18 fw black result-page__container--title">{{ $t('me.authentication.changeResultTitle') }}</p>

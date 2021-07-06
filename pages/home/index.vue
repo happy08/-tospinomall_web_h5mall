@@ -12,7 +12,7 @@
         :isShow="false"
       ></BmImage>
       <!-- 搜索框 -->
-      <div class="mlr-12 home-page-nav__search" ref="homeSearch" @click="$router.push({ name: 'search' })">
+      <div class="mlr-12 home-page-nav__search" ref="homeSearch" @click="$router.push({ name: 'home-search' })">
         <van-search
           v-model="searchVal"
           :placeholder="$t('common.searchPlaceholder')"

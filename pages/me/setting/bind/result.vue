@@ -1,7 +1,8 @@
 <template>
   <!-- 我的-设置-安全认证-绑定方式-修改绑定-结果展示页面  -->
   <div class="result-page">
-    <BmHeaderNav :left="{ isShow: true }" :title="$t('me.authentication.bindPhoneTitle')"></BmHeaderNav>
+    <BmHeaderNav :left="{ isShow: true }" :title="$t('me.authentication.bindPhoneTitle')" />
+    
     <div class="plr-20 tc result-page__container">
       <van-icon name="checked" color="#52C41A" size="64" />
       <p class="fs-18 fw black result-page__container--title">{{ $t('me.authentication.success') }}</p>

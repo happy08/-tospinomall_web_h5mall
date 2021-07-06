@@ -1,7 +1,7 @@
 <template>
   <!-- 支付密码-修改支付密码-发送验证码 -->
   <div class="bg-grey vh-100">
-    <BmHeaderNav :left="{ isShow: true }" :title="$t('me.pay.paymentPwd')"></BmHeaderNav>
+    <BmHeaderNav :left="{ isShow: true }" :title="$t('me.pay.paymentPwd')" />
 
     <div class="mlr-20 code-container">
       <p class="fs-18 black tc">{{ $t('me.pay.firstSetPwd') }}</p>

@@ -1,7 +1,7 @@
 <template>
   <!-- 我的-设置-收货地址 -->
   <div>
-    <BmHeaderNav :left="{ isShow: true }" :title="$t('me.address.shipAddress')"></BmHeaderNav>
+    <BmHeaderNav :left="{ isShow: true }" :title="$t('me.address.shipAddress')" />
     <!-- 地址列表 -->
     <div class="p-20 address-single" v-for="(item, index) in lists" :key="index">
       <!-- top姓名手机号标签 -->

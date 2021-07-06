@@ -1,7 +1,7 @@
 <template>
   <!-- 我的-设置-账户安全-修改密码-认证方式 -->
   <div>
-    <BmHeaderNav :left="{ isShow: true }" :title="$t('me.accountSetting.verifyMethod')"></BmHeaderNav>
+    <BmHeaderNav :left="{ isShow: true }" :title="$t('me.accountSetting.verifyMethod')" />
 
     <!-- 登录密码验证 -->
     <van-cell class="ptb-20 plr-20" :title="$t('me.accountSetting.loginPwdVerify')" is-link title-class="black" :to="{ name: 'me-setting-verify' }" />

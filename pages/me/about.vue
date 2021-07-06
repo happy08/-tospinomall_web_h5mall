@@ -1,7 +1,7 @@
 <template>
   <!-- 我的-关于Tospino页面-->
   <div>
-    <BmHeaderNav :left="{ isShow: true }" :title="$t('me.about.title')"></BmHeaderNav>
+    <BmHeaderNav :left="{ isShow: true }" :title="$t('me.about.title')" />
     <div class="mlr-20">
       <van-cell class="ptb-20 plr-0" :title="$t('me.about.termMenu')" is-link title-class="black" :to="{ name: 'services-privacy' }" />
       <van-cell class="ptb-20 plr-0" :title="$t('me.about.privacyMenu')" is-link title-class="black" :to="{ name: 'services-privacy' }" />

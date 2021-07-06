@@ -1,7 +1,8 @@
 <template>
   <!-- 用户协议 -->
   <div>
-    <BmHeaderNav :left="{ isShow: true }" :title="'用户协议'"></BmHeaderNav>
+    <BmHeaderNav :left="{ isShow: true }" :title="'用户协议'" />
+    
     <div class="fs-14 mlr-20 mt-20">
       <p>Tospino, hereinafter referred to as We, makes a
       firm commitment to protect users' personal

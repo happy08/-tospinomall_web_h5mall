@@ -28,6 +28,7 @@
           :isShow="false"
         ></BmImage>
       </div>
+
       <!-- 收藏信息 -->
       <div class="p-30 flex between">
         <dl class="tc">
@@ -46,11 +47,12 @@
         </dl>
       </div>
     </div>
+
     <!-- 我的订单 -->
     <div class="bg-white mlr-12 round-8 plr-12 pb-20 user-page__order">
       <van-cell class="ptb-12 plr-0" :border="false" title="My Order" is-link value="View All" value-class="green" title-class="black" :to="{ name: 'me-order' }" />
       <div class="flex between tc">
-        <div v-for="(orderItem, orderIndex) in orderList" :key="'oder-' + orderIndex">
+        <nuxt-link v-for="(orderItem, orderIndex) in orderList" :key="'oder-' + orderIndex" :to="{ name: 'me-order', query: { type: orderItem.type } }" >
           <BmImage 
             :url="require('@/assets/images/icon/' + orderItem.icon + '.png')"
             :width="'0.8rem'" 
@@ -59,7 +61,7 @@
             :isShow="false"
           ></BmImage>
           <p>{{ orderItem.text }}</p>
-        </div>
+        </nuxt-link>
       </div>
     </div>
     <div class="clearfix"></div>
@@ -101,23 +103,26 @@ export default {
       orderList: [ // 订单展示项
         {
           icon: 'to-pay-icon',
-          text: 'To Pay'
+          text: 'To Pay', // 待付款
+          type: 1
         },
         {
           icon: 'to-ship-icon',
-          text: 'To Ship'
+          text: 'To Ship', // 待发货
+          type: 2
         },
         {
           icon: 'to-receive-icon',
-          text: 'To Receive'
+          text: 'To Receive', // 待收货
+          type: 2
         },
         {
           icon: 'to-rate-icon',
-          text: 'To Rate'
+          text: 'To Rate', // 待评价
         },
         {
           icon: 'to-refund-icon',
-          text: 'To Refund'
+          text: 'To Refund', // 退款
         }
       ],
       otherList: [ // 其他设置列表

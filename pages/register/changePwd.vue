@@ -1,7 +1,8 @@
 <template>
   <div class="forgot-page">
     <!-- 忘记密码-修改密码页面 -->
-    <BmHeaderNav :title="$t('forgot.title')"></BmHeaderNav>
+    <BmHeaderNav :title="$t('forgot.title')" />
+    
     <div class="mlr-20">
       <van-field
         v-model="pwd"

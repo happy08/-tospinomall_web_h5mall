@@ -1,7 +1,8 @@
 <template>
   <!-- 我的-设置-账户设置-用户信息 -->
   <div class="bg-grey vh-100">
-    <BmHeaderNav :left="{ isShow: true }" :title="$t('me.accountSetting.title')"></BmHeaderNav>
+    <BmHeaderNav :left="{ isShow: true }" :title="$t('me.accountSetting.title')" />
+    
     <!-- 用户头像 -->
     <van-cell class="ptb-20" center :title="$t('me.userInfo.avatar')" title-class="black">
       <template #default>

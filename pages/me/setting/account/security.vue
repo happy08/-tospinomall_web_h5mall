@@ -1,7 +1,8 @@
 <template>
   <!-- 我的-设置-账户安全 -->
   <div>
-    <BmHeaderNav :left="{ isShow: true }" :title="$t('me.accountSetting.securityTitle')"></BmHeaderNav>
+    <BmHeaderNav :left="{ isShow: true }" :title="$t('me.accountSetting.securityTitle')" />
+    
     <!-- 欢迎用户语 -->
     <div class="bg-green-linear plr-20 ptb-16 flex vcenter">
       <BmImage 

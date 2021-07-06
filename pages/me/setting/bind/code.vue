@@ -1,7 +1,7 @@
 <template>
   <!-- 我的-设置-安全认证--修改绑定手机/邮箱-短信认证-提交已绑定手机/邮箱的验证码 -->
   <div class="bg-grey vh-100">
-    <BmHeaderNav :left="{ isShow: true }" :title="$t('me.authentication.smsTitle')"></BmHeaderNav>
+    <BmHeaderNav :left="{ isShow: true }" :title="$t('me.authentication.smsTitle')" />
 
     <div class="bg-white pt-20 plr-20">
       <p class="fs-16 black">{{ $t('me.authentication.completeVerify') }}</p>

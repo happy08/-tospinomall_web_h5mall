@@ -1,7 +1,7 @@
 <template>
   <!-- 我的-设置-安全认证-使用密码-验证新密码 -->
   <div class="bg-grey vh-100">
-    <BmHeaderNav :left="{ isShow: true }" :title="$t('me.authentication.confirmPwdTitle')"></BmHeaderNav>
+    <BmHeaderNav :left="{ isShow: true }" :title="$t('me.authentication.confirmPwdTitle')" />
 
     <div class="plr-20 bg-white">
       <!-- 当前登录密码 -->
