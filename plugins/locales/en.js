@@ -28,7 +28,11 @@ const en = {
     dontGet: 'Don’t get',
     resend: 'Resend after 100s',
     noRecord: 'No Record',
-    mayLike: 'You May Also Like'
+    mayLike: 'You May Also Like',
+    product: 'Product',
+    store: 'Store',
+    edit: 'Edit',
+    all: 'All'
   },
   login: {
     loginTitle: 'Log In',
@@ -193,6 +197,11 @@ const en = {
       rechargeInstructions: 'Recharge instructions:',
       rechargeInstructionsTip: 'Custom recharge amount.100 free for every 1000',
       searchBillPlaceholder: 'Enter Bill related information'
+    },
+    likes: {
+      notProduct: 'You have not followed any product',
+      shopNow: 'Shop Now',
+      noStore: 'You have not followed any Shops'
     }
   },
   search: {

@@ -1,7 +1,7 @@
 <template>
   <!-- 空状态页面 -->
   <van-empty :description="description" class="w-100" :image="image">
-    <BmButton class="mt-12" :type="'info'" v-if="btn">{{ btn }}</BmButton>
+    <BmButton :type="'info'" v-if="btn">{{ btn }}</BmButton>
   </van-empty>
   <!-- <div class="center w-100 flex column hstart" :style="'height:' + empty.height">
     <van-image
