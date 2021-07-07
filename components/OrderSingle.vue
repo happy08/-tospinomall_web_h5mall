@@ -14,13 +14,13 @@
       ></BmImage>
     </div>
     <!-- 商品详情 -->
-    <div class="product-detail" v-if="product_num === 1">
+    <div class="tl product-detail" v-if="product_num === 1">
       <p class="fs-14 black lh-20 hidden-2">{{ product_desc }}</p>
       <p class="fs-14 lh-20 grey mt-8">{{ product_size }}</p>
     </div>
     
     <!-- 商品价格和数量 -->
-    <div class="tr">
+    <div class="tr" v-if="isShowRight">
       <p class="fs-18 fw black lh-20">{{ $store.state.rate.currency }}{{ price }}</p>
       <p class="light-grey fs-14 lh-20 mt-8">X{{ product_num }}</p>
     </div>
@@ -70,6 +70,10 @@ export default {
     product_num: { // 商品件数
       type: Number,
       default: 1
+    },
+    isShowRight: {
+      type: Boolean,
+      default: true
     }
   }
 }

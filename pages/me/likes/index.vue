@@ -20,62 +20,76 @@
 
     <!-- 商品/店铺展示 -->
     <div class="bg-white">
-      <!-- product -->
-      <div v-show="tabActive === 0">
-        <empty-status v-if="productList.length === 0" :image="require('@/assets/images/empty/result.png')" :description="$t('me.likes.notProduct')" :btn="$t('me.likes.shopNow')"></empty-status>
-      </div>
+      <!-- 无数据时展示 -->
+      <empty-status v-if="list.length === 0" :image="require('@/assets/images/empty/result.png')" :description="$t('me.likes.notProduct')" :btn="$t('me.likes.shopNow')"></empty-status>
+      <!-- 已关注的店铺列表展示 -->
+      <van-checkbox-group v-model="checkResult" ref="checkboxStoreGroup">
+        <van-cell-group>
+          <van-cell :class="{'ptb-0 plr-0': true, 'bg-f4': isTrue(item.id, checkResult) }" v-for="(item, index) in list" :key="index">
+            <!-- 选择 -->
+            <template #icon>
+              <van-checkbox v-show="edit" class="pl-16" :name="item.id" ref="checkboxes">
+                <template #icon="props">
+                  <BmImage
+                    :url="props.checked ? require('@/assets/images/icon/choose-icon.svg') : require('@/assets/images/icon/choose-default-icon.svg')"
+                    :width="'0.48rem'" 
+                    :height="'0.48rem'"
+                    :isLazy="false"
+                    :isShow="false"
+                  ></BmImage>
+                </template>
+              </van-checkbox>
+            </template>
+            <template #default>
+              <!-- 左滑单元格 -->
+              <van-swipe-cell>
 
-      <!-- store -->
-      <div v-show="tabActive === 1">
-        <!-- 没有关注的店铺时 -->
-        <empty-status v-if="storeList.length === 0" :image="require('@/assets/images/empty/result.png')" :description="$t('me.likes.noStore')" :btn="$t('me.likes.shopNow')"></empty-status>
-        <!-- 已关注的店铺列表展示 -->
-        <van-checkbox-group v-model="storeCheck" ref="checkboxStoreGroup">
-          <van-cell-group>
-            <van-cell :class="{'ptb-0 plr-0': true, 'bg-f4': isTrue(storeItem.id, storeCheck) }" v-for="(storeItem, storeIndex) in storeList" :key="storeIndex">
-              <!-- 选择 -->
-              <template #icon>
-                <van-checkbox v-show="edit" class="pl-16" :name="storeItem.id" ref="checkboxes">
-                  <template #icon="props">
-                    <BmImage
-                      :url="props.checked ? require('@/assets/images/icon/choose-icon.svg') : require('@/assets/images/icon/choose-default-icon.svg')"
-                      :width="'0.48rem'" 
-                      :height="'0.48rem'"
-                      :isLazy="false"
-                      :isShow="false"
-                    ></BmImage>
-                  </template>
-                </van-checkbox>
-              </template>
-              <template #default>
-                <!-- 左滑单元格 -->
-                <van-swipe-cell>
-                  <div class="flex pl-30 ptb-20">
-                    <BmImage 
-                      :url="require('@/assets/images/product-bgd-90.png')"
-                      :width="'1.12rem'" 
-                      :height="'1.12rem'"
-                      :isLazy="false"
-                      :isShow="false"
-                      :round="true"
-                    ></BmImage>
-                    <div class="ml-12 fs-14">
-                      <p class="black">{{ storeItem.title }}</p>
-                      <p class="color_666 mt-8">{{ storeItem.followers }} followers</p>
-                    </div>
+                <!-- 店铺的样式 -->
+                <div class="flex pl-30 ptb-20" v-if="tabActive === 1">
+                  <BmImage 
+                    :url="require('@/assets/images/product-bgd-90.png')"
+                    :width="'1.12rem'" 
+                    :height="'1.12rem'"
+                    :isLazy="false"
+                    :isShow="false"
+                    :round="true"
+                  ></BmImage>
+                  <div class="ml-12 fs-14">
+                    <p class="black">{{ item.title }}</p>
+                    <p class="color_666 mt-8">{{ item.followers }} followers</p>
                   </div>
-                  <template #right>
-                    <div class="flex hend h-100">
-                      <BmButton class="round-0 bg-yellow h-100 w-70">Unsub-scribe</BmButton>
-                      <BmButton class="round-0 bg-green h-100 w-70">Store Top</BmButton>
-                    </div>
-                  </template>
-                </van-swipe-cell>
-              </template>
-            </van-cell>
-          </van-cell-group>
-        </van-checkbox-group>
-      </div>
+                </div>
+
+                <!-- 商品的样式 -->
+                <div class="pt-26 pr-20">
+                  <OrderSingle class="pl-30 mt-20" :isShowRight="false" :product_desc="'Hassen’s new fall 2019 suede pointe…'" :product_size="'Black / L'" v-if="tabActive === 0"/>
+                  <div class="flex hend">
+                    <!-- 看相似 -->
+                    <BmButton type="default" plain class="plr-12 round-8 h-25 mt-0">{{ $t('me.likes.lookSimilar') }}</BmButton>
+                    <!-- 购物车 -->
+                    <BmButton :type="'info'" class="h-25 ml-12">
+                      <BmImage
+                        :url="require('@/assets/images/icon/cart-icon.svg')"
+                        :width="'0.32rem'" 
+                        :height="'0.28rem'"
+                        :isLazy="false"
+                        :isShow="false"
+                      ></BmImage>
+                    </BmButton>
+                  </div>
+                </div>
+
+                <template #right>
+                  <div class="flex hend h-100">
+                    <BmButton class="round-0 bg-yellow h-100 w-70">Unsub-scribe</BmButton>
+                    <BmButton class="round-0 bg-green h-100 w-70">Store Top</BmButton>
+                  </div>
+                </template>
+              </van-swipe-cell>
+            </template>
+          </van-cell>
+        </van-cell-group>
+      </van-checkbox-group>
 
       <!-- 全选与否 -->
       <div class="w-100 bg-white flex between pl-12 vcenter checkout-all-content" v-show="edit">
@@ -94,12 +108,28 @@
         <BmButton class="fs-16 round-0 v-100" @click="onUnsubscribe">Unsubscribe</BmButton>
       </div>
     </div>
+
+    <!-- 可能喜欢的推荐列表展示 -->
+    <van-divider class="plr-30 mt-24 fw fs-14 clr-black-85">
+      <i class="iconfont icon-xinaixin linear-color mr-8"></i>
+      {{ $t('common.mayLike') }}
+    </van-divider>
+    <div class="mlr-12 flex between flex-wrap">
+      <ProductTopBtmSingle
+        :img="{ url: '', width: '3.4rem', height: '3.4rem', loadImage: require('@/assets/images/product-bgd-170.png') }" 
+        :detail="{ desc: 'categoryItem.name', price: 49.92, rate: 2.5, volumn: 50, ellipsis: 2, country: 'Ghana' }"
+        v-for="(searchItem, searchIndex) in 6" 
+        :key="'search-list-' + searchIndex"
+      ></ProductTopBtmSingle>
+    </div>
   </div>
 </template>
 
 <script>
-import { Tab, Tabs, SwipeCell, Cell, Checkbox, CheckboxGroup, CellGroup } from 'vant';
+import { Tab, Tabs, SwipeCell, Cell, Checkbox, CheckboxGroup, CellGroup, Divider } from 'vant';
 import EmptyStatus from '@/components/EmptyStatus';
+import OrderSingle from '@/components/OrderSingle';
+import ProductTopBtmSingle from '@/components/ProductTopBtmSingle';
 
 export default {
   components: {
@@ -110,14 +140,15 @@ export default {
     vanCheckbox: Checkbox,
     vanCheckboxGroup: CheckboxGroup,
     vanCellGroup: CellGroup,
-    EmptyStatus
+    vanDivider: Divider,
+    EmptyStatus,
+    OrderSingle,
+    ProductTopBtmSingle
   },
   asyncData({isDev, route, store, env, params, query, req, res, redirect, error}) {
     return {
-      tabActive: 1,
-      list: [],
-      productList: [],
-      storeList: [
+      tabActive: 0,
+      list: [
         {
           id: 1,
           img: '',
@@ -138,7 +169,7 @@ export default {
         }
       ],
       edit: false,
-      storeCheck: [],
+      checkResult: [],
       isAll: false
     }
   },
@@ -181,6 +212,12 @@ export default {
   bottom: 0;
   left: 0;
   height: 56px;
+}
+.h-25{
+  height: 25px!important;
+}
+.pt-26{
+  padding-bottom: 26px;
 }
 </style>
 

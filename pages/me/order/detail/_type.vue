@@ -99,7 +99,19 @@
       </p>
     </div>
 
-    <van-divider class="pb-20 mt-24 fw fs-14 divider-custom-title">{{ $t('common.mayLike') }}</van-divider>
+    <!-- 可能喜欢的推荐列表展示 -->
+    <van-divider class="plr-30 mt-24 fw fs-14 clr-black-85">
+      <i class="iconfont icon-xinaixin linear-color mr-8"></i>
+      {{ $t('common.mayLike') }}
+    </van-divider>
+    <div class="mlr-12 flex between flex-wrap">
+      <ProductTopBtmSingle
+        :img="{ url: '', width: '3.4rem', height: '3.4rem', loadImage: require('@/assets/images/product-bgd-170.png') }" 
+        :detail="{ desc: 'categoryItem.name', price: 49.92, rate: 2.5, volumn: 50, ellipsis: 2, country: 'Ghana' }"
+        v-for="(searchItem, searchIndex) in 6" 
+        :key="'search-list-' + searchIndex"
+      ></ProductTopBtmSingle>
+    </div>
 
     <!-- 待付款 -->
     <div class="w-100 bg-white btn-content flex hend vcenter" v-if="$route.params.type == 1">
@@ -182,6 +194,7 @@ import { Cell, CellGroup, Divider, Popup, RadioGroup, Radio } from 'vant';
 import OrderSingle from '@/components/OrderSingle';
 import OrderStoreSingle from '@/components/OrderStoreSingle';
 import ClipboardJS from 'clipboard';
+import ProductTopBtmSingle from '@/components/ProductTopBtmSingle';
 
 export default {
   components: {
@@ -191,8 +204,9 @@ export default {
     vanPopup: Popup,
     vanRadioGroup: RadioGroup,
     vanRadio: Radio,
-    OrderSingle: OrderSingle,
-    OrderStoreSingle: OrderStoreSingle
+    OrderSingle,
+    OrderStoreSingle,
+    ProductTopBtmSingle
   },
   asyncData({isDev, route, store, env, params, query, req, res, redirect, error}) {
     let title = '';
@@ -285,9 +299,6 @@ export default {
 .order-price{
   padding-top: 15px;
   padding-bottom: 19px;
-}
-.divider-custom-title{
-  color: rgba(0, 0, 0, 0.85);
 }
 .btn-content{
   position: fixed;

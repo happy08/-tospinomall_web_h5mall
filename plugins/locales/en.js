@@ -201,7 +201,8 @@ const en = {
     likes: {
       notProduct: 'You have not followed any product',
       shopNow: 'Shop Now',
-      noStore: 'You have not followed any Shops'
+      noStore: 'You have not followed any Shops',
+      lookSimilar: 'Look similar'
     }
   },
   search: {

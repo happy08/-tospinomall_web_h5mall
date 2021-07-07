@@ -12,9 +12,21 @@
     ></BmImage>
     <!-- 商品的信息 -->
     <div class="pt-12 pb-20 plr-4" v-if="detail">
+      <div class="flex vcenter pb-12" v-if="detail.country">
+        <BmImage 
+          :url="detail.country_url"
+          :width="'0.36rem'" 
+          :height="'0.36rem'"
+          :isLazy="true"
+          :loadUrl="img.loadImage"
+          :errorUrl="img.loadImage"
+          round
+        ></BmImage>
+        <span class="fs-10 color_666 ml-10">{{ detail.country }}</span>
+      </div>
       <p class="fs-14 black" v-if="detail.desc" v-html="detail.desc" :class="{ 'hidden-1': detail.ellipsis === 1, 'hidden-2': detail.ellipsis === 2 }"></p>
-      <van-rate class="mt-4" v-if="detail.rate" v-model="detail.rate" allow-half size="14" color="#F7B500" />
-      <div class="mt-12 flex between hidden-1 plr-4" v-if="detail.price">
+      <van-rate class="mt-10" v-if="detail.rate" v-model="detail.rate" allow-half size="14" color="#F7B500" />
+      <div class="mt-12 flex between hidden-1 plr-4 vcenter" v-if="detail.price">
         <span class="red fs-16 fw">
           {{ $store.state.rate.currency }}{{ detail.price }} 
         </span>
@@ -51,6 +63,8 @@ export default {
           price: 0, // 价格
           volumn: '60+', // 累加
           ellipsis: 2, // 展示几行
+          country: '', // 国家
+          country_url: '' // 国家logo
         }
       }
     }
@@ -62,3 +76,9 @@ export default {
   }
 }
 </script>
+
+<style lang="less" scoped>
+.color_666{
+  color: #666;
+}
+</style>
