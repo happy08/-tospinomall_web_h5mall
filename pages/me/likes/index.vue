@@ -3,7 +3,7 @@
   <div class="bg-grey vh-100">
     <BmHeaderNav :left="{ isShow: true }">
       <!-- tab切换 -->
-      <van-tabs v-model="tabActive" slot="header-title" class="likes-tabs">
+      <van-tabs v-model="tabActive" slot="header-title" class="customs-van-tabs likes-tabs">
         <van-tab :title="$t('common.product')"></van-tab>
         <van-tab :title="$t('common.store')"></van-tab>
       </van-tabs>
@@ -229,11 +229,5 @@ export default {
 <style lang="less">
 .likes-tabs{
   width: 180px;
-  .van-tabs__nav--line{
-    padding-bottom: 0;
-  }
-  .van-tabs__line{
-    bottom: 0;
-  }
 }
 </style>

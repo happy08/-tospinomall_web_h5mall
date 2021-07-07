@@ -204,6 +204,31 @@ const en = {
       shopNow: 'Shop Now',
       noStore: 'You have not followed any Shops',
       lookSimilar: 'Look similar'
+    },
+    afterSale: {
+      title: 'Return/After-sale',
+      applySales: 'Apply for after sales',
+      cancelApplication: 'Cancel the application',
+      details: 'Details',
+      refund: 'Refund',
+      customerService: 'Customer service',
+      detailRefund: 'Detail of the Refund',
+      waitProcess: 'Please wait for the merchant to process',
+      countdown: 'Countdown',
+      processStep: ['Refund Application', 'In process', 'Recund Successfully'],
+      refundWaitTitle: 'You have initiated a refund request,please wait for Processing.',
+      refundMerchantsTip: 'Merchants ask the refund to overtime,the system will retund the refund.',
+      refundMerchantsRefuseTip: 'If the merchant refuses, you can modify the refund request and initiate again, and the merchant will process it again.',
+      refundSuccess: 'Refund Successfully',
+      refundSuccessTip: 'Due to your good reputation, we have decided to refund you first.',
+      totalRefund: 'Total refund',
+      negotiationHistory: 'Negotiation History',
+      applyReason: 'Apply for reason',
+      refundAmount: 'Refund amount',
+      applyTime: 'Apply for time',
+      refundNumber: 'Refund number',
+      refundSuccess2: 'Refund Success',
+      returnWay: 'Return way'
     }
   },
   search: {

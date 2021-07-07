@@ -31,20 +31,20 @@
 
       <!-- 收藏信息 -->
       <div class="p-30 flex between">
-        <dl class="tc">
+        <nuxt-link :to="{ name: 'me-likes' }" tag="dl" class="tc">
           <dt class="fs-24 black fw">12</dt>
           <dd class="fs-12 grey mt-4">Collection</dd>
-        </dl>
-        <dl class="tc">
+        </nuxt-link>
+        <nuxt-link :to="{ name: 'me-wallet' }" tag="dl" class="tc">
           <dt class="fs-24 black fw">35</dt>
           <dd class="fs-12 grey mt-4">Wallet</dd>
-        </dl>
-        <dl class="tc">
+        </nuxt-link>
+        <!-- <dl class="tc">
           <van-badge dot color="linear-gradient(339deg, #FF4943 0%, #FA5E69 100%)">
             <dt class="fs-24 black fw">35</dt>
           </van-badge>
           <dd class="fs-12 grey mt-4">Coupon</dd>
-        </dl>
+        </dl> -->
       </div>
     </div>
 
