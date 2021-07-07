@@ -127,14 +127,15 @@ export default {
       ],
       otherList: [ // 其他设置列表
         {
-          text: 'My Likes',
+          text: 'My Likes', // 我关注的
           name: 'me-likes'
         },
         {
-          text: 'Recently Viewed'
+          text: 'Recently Viewed', // 最近浏览
+          name: 'me-footprint'
         },
         {
-          text: 'My wallet',
+          text: 'My wallet', // 钱包
           name: 'me-wallet'
         },
         {

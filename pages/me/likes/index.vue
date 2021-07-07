@@ -14,8 +14,6 @@
         <i class="iconfont icon-shanchu fs-18 mr-12"></i>
         {{ $t('common.edit') }}
       </div>
-      
-      
     </BmHeaderNav>
 
     <!-- 商品/店铺展示 -->
@@ -25,7 +23,7 @@
       <!-- 已关注的店铺列表展示 -->
       <van-checkbox-group v-model="checkResult" ref="checkboxStoreGroup">
         <van-cell-group>
-          <van-cell :class="{'ptb-0 plr-0': true, 'bg-f4': isTrue(item.id, checkResult) }" v-for="(item, index) in list" :key="index">
+          <van-cell :border="tabActive === 0 ? false : true" :class="{'ptb-0 plr-0': true, 'bg-f4': isTrue(item.id, checkResult) }" v-for="(item, index) in list" :key="index">
             <!-- 选择 -->
             <template #icon>
               <van-checkbox v-show="edit" class="pl-16" :name="item.id" ref="checkboxes">
@@ -61,8 +59,8 @@
                 </div>
 
                 <!-- 商品的样式 -->
-                <div class="pt-26 pr-20">
-                  <OrderSingle class="pl-30 mt-20" :isShowRight="false" :product_desc="'Hassen’s new fall 2019 suede pointe…'" :product_size="'Black / L'" v-if="tabActive === 0"/>
+                <div class="pt-26 pr-20" v-if="tabActive === 0">
+                  <OrderSingle class="pl-30 mt-20" :isShowRight="false" :product_desc="'Hassen’s new fall 2019 suede pointe…'" :product_size="'Black / L'" />
                   <div class="flex hend">
                     <!-- 看相似 -->
                     <BmButton type="default" plain class="plr-12 round-8 h-25 mt-0">{{ $t('me.likes.lookSimilar') }}</BmButton>
@@ -77,6 +75,7 @@
                       ></BmImage>
                     </BmButton>
                   </div>
+                  <div class="driver-line fr"></div>
                 </div>
 
                 <template #right>
@@ -218,6 +217,12 @@ export default {
 }
 .pt-26{
   padding-bottom: 26px;
+}
+.driver-line{
+  width: 209px;
+  height: 1px;
+  background-color: #eee;
+  margin-top: 25px;
 }
 </style>
 

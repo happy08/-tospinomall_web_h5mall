@@ -186,7 +186,8 @@ const en = {
       success: 'Success!',
       paymentFailed: 'Payment Failed',
       failed: 'Fail!',
-      viewOrder: 'View order'
+      viewOrder: 'View order',
+      clearBrowingRecords: 'Clear All Browing Records?'
     },
     wallet: {
       myPure: 'My purse',
