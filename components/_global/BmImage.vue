@@ -3,7 +3,7 @@
     :src="url" 
     :width="width" 
     :height="height" 
-    fit="contain"
+    :fit="fit"
     :lazy-load="isLazy"
     :show-error="isShow"
     :show-loading="isShow"
@@ -14,7 +14,7 @@
         :src="errorUrl" 
         :width="width" 
         :height="height" 
-        fit="contain"
+        :fit="fit"
       />
     </template>
     <template v-slot:loading>
@@ -22,7 +22,7 @@
         :src="errorUrl" 
         :width="width" 
         :height="height" 
-        fit="contain"
+        :fit="fit"
       />
     </template>
   </van-image>
@@ -63,6 +63,10 @@ export default {
     round: {
       type: Boolean,
       default: false
+    },
+    fit: {
+      type: String,
+      default: 'contain'
     }
   }
 }

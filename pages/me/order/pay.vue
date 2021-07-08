@@ -45,15 +45,14 @@
 </template>
 
 <script>
-import { RadioGroup, Radio, Cell, CellGroup, Popup } from 'vant';
+import { RadioGroup, Radio, Cell, CellGroup } from 'vant';
 
 export default {
   components: {
     vanRadioGroup: RadioGroup,
     vanRadio: Radio,
     vanCell: Cell,
-    vanCellGroup: CellGroup,
-    vanPopup: Popup
+    vanCellGroup: CellGroup
   },
   data() {
     return {
