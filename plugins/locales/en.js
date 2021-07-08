@@ -250,6 +250,29 @@ const en = {
       selecApplicationType: 'Select Application Type',
       stateGoodsList: ['Not yet received the goods', 'Have received the goods'],
       reasonList: ['Take multiple shots,wrong shot,don’t want', "Don't like it, the effect is not good", 'The goods do not match the description', 'Quality issues', 'Receipt of missing goods, damaged or stained goods', 'Empty package', 'Merchant sent the wrong goods', 'Counterfeit brand', 'Other']
+    },
+    rate: {
+      evalutionCenter: 'Evalution Center',
+      rules: 'Rules',
+      evalutionRules: 'Evalution Rules',
+      evaluation: 'Evaluation',
+      review: 'Review',
+      evalution: 'Evalution',
+      productEvaluation: 'Product evaluation',
+      addPicture: 'Add picture',
+      addPictureTip: 'Does our service meet your expectations? In this release your voice…',
+      fedexPacking: 'Fedex Packing',
+      deliverySpeed: 'Delivery speed',
+      deliveryPersonnelService: 'Delivery personnel Service'
+    },
+    report: {
+      report: 'Report',
+      reason: ['The picture of the order does not agree with the goods', 'llegal fraud', 'Sex, gambling, drugs, violence, politics', 'other'],
+      supplementTip: 'Can supplement your complaint content (optional)',
+      detail: 'Review details',
+      writeThoughts: 'Write down your thoughts',
+      categoryList: ['All', 'Up to date', 'Photo/Video 300+'],
+      reviewAfterPurchase: 'Review after purchase'
     }
   },
   search: {

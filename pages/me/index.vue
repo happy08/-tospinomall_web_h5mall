@@ -52,7 +52,7 @@
     <div class="bg-white mlr-12 round-8 plr-12 pb-20 user-page__order">
       <van-cell class="ptb-12 plr-0" :border="false" title="My Order" is-link value="View All" value-class="green" title-class="black" :to="{ name: 'me-order' }" />
       <div class="flex between tc">
-        <nuxt-link v-for="(orderItem, orderIndex) in orderList" :key="'oder-' + orderIndex" :to="{ name: 'me-order', query: { type: orderItem.type } }" >
+        <nuxt-link v-for="(orderItem, orderIndex) in orderList" :key="'oder-' + orderIndex" :to="{ name: orderItem.name, query: { type: orderItem.type } }" >
           <BmImage 
             :url="require('@/assets/images/icon/' + orderItem.icon + '.png')"
             :width="'0.8rem'" 
@@ -104,21 +104,25 @@ export default {
         {
           icon: 'to-pay-icon',
           text: 'To Pay', // 待付款
+          name: 'me-order',
           type: 1
         },
         {
           icon: 'to-ship-icon',
           text: 'To Ship', // 待发货
+          name: 'me-order',
           type: 2
         },
         {
           icon: 'to-receive-icon',
           text: 'To Receive', // 待收货
+          name: 'me-order',
           type: 2
         },
         {
           icon: 'to-rate-icon',
           text: 'To Rate', // 待评价
+          name: 'me-order-rate'
         },
         {
           icon: 'to-refund-icon',
