@@ -1,7 +1,7 @@
 <template>
   <div class="vh-100 bg-grey pb-120">
     <van-sticky>
-      <BmHeaderNav :title="$t('cart.title')" >
+      <BmHeaderNav :title="$t('cart.title')" :border="false">
         <div slot="header-right" class="green fs-16" @click="onEdit">
           {{ isEdit ? $t('common.done') : $t('common.edit') }}
         </div>
@@ -108,28 +108,7 @@
       </div>
     </div>
 
-    <!-- 结算 -->
-    <!-- <van-submit-bar :price="3050" @submit="onCheckOut" :label="'Total:'" :currency="currency" class="custom-submit-bar">
-      <van-checkbox v-model="checked" @click="checkAll">
-        全选
-        <template #icon="props">
-          <div>
-            <BmImage
-              :url="props.checked ? require('@/assets/images/icon/choose-icon.svg') : require('@/assets/images/icon/choose-default-icon.svg')"
-              :width="'0.34rem'" 
-              :height="'0.34rem'"
-              :isLazy="false"
-              :isShow="false"
-            ></BmImage>
-          </div>
-        </template>
-      </van-checkbox>
-
-      <template #button>
-        <BmButton class="round-8 h-40">{{ $t('cart.checkOut') }}</BmButton>
-      </template>
-    </van-submit-bar> -->
-
+    <!-- 购物车编辑 -->
     <div class="bg-white custom-submit-bar pl-16 pr-12 flex vcenter between">
       <van-checkbox v-model="checked" @click="checkAll">
         全选
