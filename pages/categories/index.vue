@@ -26,7 +26,7 @@
         <div class="product-categories__box" v-for="(item, index) in leftLists" :key="index">
           <h4 class="fw fs-10 product-categories__box--title">{{ item.name }}</h4>
           <div class="flex flex-wrap product-categories__box--caontainer">
-            <div @click="clickItemEvent" class="tc mr-12 product-single" v-for="(childrenItem, childrenIndex) in item.children" :key="childrenIndex">
+            <div @click="clickItemEvent(childrenItem)" class="tc mr-12 product-single" v-for="(childrenItem, childrenIndex) in item.children" :key="childrenIndex">
               <BmImage 
                 :url="childrenItem.icon"
                 :width="'1.4rem'"
@@ -157,7 +157,12 @@ export default {
       this.leftLists = this.catrgorieList[currentIndex].children
     },
     clickItemEvent(data) { // 点击右侧选项触发
-      console.log(data);
+      this.$router.push({
+        name: 'categories-search',
+        query: {
+          categoryName: data.name
+        }
+      })
     }
   },
 }
