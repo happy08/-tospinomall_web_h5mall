@@ -12,13 +12,15 @@
           <span class="black fs-14 lh-18 ml-12">{{ item.name }}</span>
           <span class="black fs-14 lh-18 ml-10">{{ item.phone }}</span>
         </div>
-        <BmImage
-          :url="require('@/assets/images/icon/emit-icon.svg')"
-          :width="'0.48rem'" 
-          :height="'0.48rem'"
-          :isLazy="false"
-          :isShow="false"
-        ></BmImage>
+        <div @click="onEdit(item)">
+          <BmImage
+            :url="require('@/assets/images/icon/emit-icon.svg')"
+            :width="'0.48rem'" 
+            :height="'0.48rem'"
+            :isLazy="false"
+            :isShow="false"
+          ></BmImage>
+        </div>
       </div>
       <!-- 地址 -->
       <div class="mt-10 fs-14 black">{{ item.address }}</div>
@@ -59,6 +61,7 @@ export default {
     return {
       lists: [
         {
+          id: 1,
           name: 'Lucy',
           phone: 13165340019,
           address: 'Courtyard, Chaoyang District',
@@ -73,6 +76,15 @@ export default {
     addAddress() { // 添加收货地址
       this.$router.push({
         name: 'me-setting-address-make'
+      })
+    },
+    onEdit(address) { // 修改收货地址
+      console.log(address)
+      this.$router.push({
+        name: 'me-setting-address-make',
+        query: {
+          id: address.id
+        }
       })
     }
   },
