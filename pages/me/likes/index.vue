@@ -145,8 +145,11 @@ export default {
     ProductTopBtmSingle
   },
   asyncData({isDev, route, store, env, params, query, req, res, redirect, error}) {
+    let active = 0;
+    if (route.query.active) active = route.query.active;
+    
     return {
-      tabActive: 0,
+      tabActive: active,
       list: [
         {
           id: 1,
