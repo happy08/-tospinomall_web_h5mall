@@ -278,6 +278,14 @@ const en = {
   search: {
     history: 'Search for history',
     found: 'Search found'
+  },
+  cart: {
+    title: 'Cart',
+    emptyTip: 'The shopping cart is empty',
+    categoryList: ['All', 'Price Cut', 'Often Buy', 'Follow'],
+    checkOut: 'Check Out',
+    moveFavorite: 'Move to Favorites',
+    total: 'Total'
   }
 };
 export default en;

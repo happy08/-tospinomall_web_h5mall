@@ -207,7 +207,7 @@
     <van-tabs sticky swipeable animated :offset-top="44" color="#42B7AE"  @change="getSearchList">
       <van-tab v-for="(categoryItem, tabIndex) in categoryList" :title="categoryItem.name" :key="'scroll-tab-' + tabIndex" title-class="pb-0" :name="categoryItem.name">
         <div class="mlr-12 mt-20 flex between flex-wrap">
-          <empty-status v-if="searchList.length === 0" :image="require('@/assets/images/empty/order.png')"></empty-status>
+          <empty-status v-if="searchList.length === 0" :image="require('@/assets/images/empty/order.png')" />
           <ProductTopBtmSingle
             v-else
             :img="{ url: '', width: '3.4rem', height: '3.4rem', loadImage: require('@/assets/images/product-bgd-170.png') }" 

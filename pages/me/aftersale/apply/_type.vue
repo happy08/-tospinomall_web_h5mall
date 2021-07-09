@@ -387,17 +387,3 @@ export default {
   margin-top: 18px;
 }
 </style>
-<style lang="less">
-.custom-stepper{
-  .van-stepper__input{
-    margin: 0;
-    background-color: #fff;
-    border-top: .5px solid #E5E5E5;
-    border-bottom: .5px solid #E5E5E5;
-  }
-  .van-stepper__minus, .van-stepper__plus{
-    background-color: #fff;
-    border: .5px solid #E5E5E5;
-  }
-}
-</style>

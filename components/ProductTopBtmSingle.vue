@@ -11,7 +11,7 @@
       :errorUrl="img.loadImage"
     ></BmImage>
     <!-- 商品的信息 -->
-    <div class="pt-12 pb-20 plr-4" v-if="detail">
+    <div class="pt-12 pb-20 plr-4 bg-white" v-if="detail">
       <div class="flex vcenter pb-12" v-if="detail.country">
         <BmImage 
           :url="detail.country_url"

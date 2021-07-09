@@ -171,6 +171,9 @@ svg {
   padding-left: 12px !important;
   padding-right: 12px !important;
 }
+.pr-12 {
+  padding-right: 12px!important;
+}
 .mlr-12 {
   margin-left: 12px !important;
   margin-right: 12px !important;
@@ -229,6 +232,9 @@ svg {
 .plr-16 {
   padding-left: 16px!important;
   padding-right: 16px!important;
+}
+.pl-16 {
+  padding-left: 16px!important;
 }
 .pt-20 {
   padding-top: 20px !important;
@@ -291,6 +297,9 @@ svg {
 }
 .pb-24 {
   padding-bottom: 24px!important;
+}
+.pr-24 {
+  padding-right: 24px!important;
 }
 .pt-30 {
   padding-top: 30px !important;
@@ -478,7 +487,7 @@ svg {
   color: #ff6666;
 }
 .orange {
-  color: #ff8248;
+  color: #ff8248!important;
 }
 .green {
   color: #42b7ae!important;
@@ -493,7 +502,7 @@ svg {
   color: #999999;
 }
 .white {
-  color: #ffffff;
+  color: #ffffff!important;
 }
 .clr-blue{
   color: #1278F4;
@@ -534,6 +543,9 @@ svg {
 }
 .bg-green {
   background: #42B7AE!important;
+}
+.bg-red {
+  background-color: #FF6666!important;
 }
 
 .border {
@@ -581,7 +593,10 @@ svg {
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
 }
-
+// 删除线
+.line-through {
+  text-decoration: line-through;
+}
 //vant button reset
 .van-button--primary {
   background: linear-gradient(270deg, #3eb5ae 0%, #70ceb6 100%);
@@ -708,5 +723,31 @@ svg {
   .van-tabs__nav--complete{
     padding-left: 0!important;
     padding-right: 0!important;
+  }
+}
+
+// 步进器样式
+.custom-stepper{
+  .van-stepper__input{
+    margin: 0;
+    background-color: #fff;
+    border-top: .5px solid #E5E5E5;
+    border-bottom: .5px solid #E5E5E5;
+  }
+  .van-stepper__minus, .van-stepper__plus{
+    background-color: #fff;
+    border: .5px solid #E5E5E5;
+  }
+}
+
+// 卡片样式
+.custom-card{
+  .van-card__thumb{
+    margin-right: 16px;
+    width: 90px;
+    height: 90px;
+    img{
+      border-radius: 4px;
+    }
   }
 }

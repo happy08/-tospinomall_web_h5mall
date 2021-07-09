@@ -7,7 +7,7 @@
       <van-tab v-for="(categoryItem, tabIndex) in categoryList" :title="categoryItem" :key="'scroll-tab-' + tabIndex" title-class="border-b pb-0" :name="tabIndex">
         <div class="mlr-20 pb-20 flex between flex-wrap">
           <!-- 空列表 -->
-          <empty-status v-if="lists.length === 0" :image="require('@/assets/images/empty/order.png')"></empty-status>
+          <empty-status v-if="lists.length === 0" :image="require('@/assets/images/empty/order.png')" />
           <!-- 列表展示 -->
           <div v-else v-for="(orderitem, index) in lists" :key="index" class="pt-20">
             <OrderStoreSingle :status="tabActive === 2 ? $t('me.afterSale.refund'): ''" />

@@ -20,7 +20,7 @@
       <van-tab v-for="(productItem, tabIndex) in tabs" :title="productItem.name" :key="'scroll-tab-' + tabIndex" title-class="pb-0" :name="productItem.type">
         <div class="mlr-12 mt-20 flex between flex-wrap">
           <!-- 空状态  -->
-          <empty-status v-if="lists.length === 0" :image="require('@/assets/images/empty/order.png')" :description="$t('common.noRecord')"></empty-status>
+          <empty-status v-if="lists.length === 0" :image="require('@/assets/images/empty/order.png')" :description="$t('common.noRecord')"/>
           <div v-else>
             <!-- 订单店铺 -->
             <OrderStoreSingle>

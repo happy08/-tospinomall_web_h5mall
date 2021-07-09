@@ -21,7 +21,7 @@
       </div>
     </div>
     <!-- 空状态  -->
-    <empty-status v-if="lists.length === 0 && isShowTip === 0" :image="require('@/assets/images/empty/order.png')" :description="$t('common.noRecord')"></empty-status>
+    <empty-status v-if="lists.length === 0 && isShowTip === 0" :image="require('@/assets/images/empty/order.png')" :description="$t('common.noRecord')" />
   </div>
 </template>
 

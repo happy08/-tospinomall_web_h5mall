@@ -9,7 +9,7 @@
     <van-tabs sticky swipeable animated :offset-top="44" color="#42B7AE" class="customs-van-tabs" :ellipsis="false" @change="getList" v-model="tabActive">
       <van-tab v-for="(categoryItem, tabIndex) in categoryList" :title="categoryItem" :key="'scroll-tab-' + tabIndex" title-class="border-b pb-0" :name="tabIndex">
         <!-- 空列表 -->
-        <empty-status v-if="lists.length === 0" :image="require('@/assets/images/empty/order.png')"></empty-status>
+        <empty-status v-if="lists.length === 0" :image="require('@/assets/images/empty/order.png')" />
         <!-- 列表展示 -->
         <div v-else v-for="(orderitem, index) in lists" :key="index" class="mb-12 plr-20 bg-white pt-20 pb-24">
           <OrderStoreSingle :status="tabActive === 2 ? $t('me.afterSale.refund'): ''" />
