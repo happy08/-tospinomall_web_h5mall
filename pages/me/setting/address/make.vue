@@ -85,7 +85,7 @@
       <!-- 设置默认地址 -->
       <van-cell title="Set as the default adress" label="Reminder: This address is recommended by default for each order" title-class="black" class="p-20" >
         <template #right-icon>
-          <van-switch v-model="isDefault" active-color="#34C759" inactive-color="#dcdee0" />
+          <van-switch v-model="isDefault" active-color="#34C759" inactive-color="#dcdee0" size="0.45rem" />
         </template>
       </van-cell>
     </div>
