@@ -285,7 +285,15 @@ const en = {
     categoryList: ['All', 'Price Cut', 'Often Buy', 'Follow'],
     checkOut: 'Check Out',
     moveFavorite: 'Move to Favorites',
-    total: 'Total'
+    total: 'Total',
+    freight: 'Freight',
+    delivery: 'Delivery',
+    select: 'Select',
+    return7days: 'Return with in 7 days without reason',
+    more: 'More',
+    reply: 'Reply',
+    specification: 'Specification',
+    justForYou: 'Just For You'
   }
 };
 export default en;

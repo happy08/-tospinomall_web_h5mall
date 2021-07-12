@@ -52,6 +52,7 @@
               title="Women's Handbag High Qua-lity Pure PU Leather For … Women's Handbag High Qua-lity Pure PU Leather For …   "
               class="bg-white pt-24 ml-12 plr-0 pb-0 custom-card lh-20 width-313"
               thumb="https://img01.yzcdn.cn/vant/cat.jpeg"
+              @click="goProductDetail(singleItem.id)"
             >
               <!-- 自定义描述区域，改为展示商品型号 -->
               <template #desc>
@@ -292,6 +293,14 @@ export default {
       }).catch(() => {
 
       })
+    },
+    goProductDetail(productId) { // 跳转到商品详情页面
+      this.$router.push({
+        name: 'cart-product-id',
+        params: {
+          id: productId
+        }
+      })
     }
   },
 }
@@ -360,5 +369,4 @@ export default {
     margin-left: 0!important;
   }
 }
-
 </style>
