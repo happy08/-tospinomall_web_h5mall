@@ -1,6 +1,6 @@
 <template>
 <!-- 导航栏 -->
-  <van-nav-bar :border="border" :class="bg_color">
+  <van-nav-bar :border="border" :class="bg_color" :fixed="fixed">
     <!-- 左侧内容 -->
     <template #left>
       <van-icon v-if="left.isShow" name="arrow-left" :color="color" size="18px" @click="leftBack"></van-icon>
@@ -52,6 +52,10 @@ export default {
     bg_color: {
       type: String,
       default: 'white'
+    },
+    fixed: {
+      type: Boolean,
+      default: false
     }
   },
   methods: {

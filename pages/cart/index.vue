@@ -131,7 +131,7 @@
           <span class="black fs-14 mr-4">{{ $t('cart.total') }}:</span>
           <span class="red fs-14 fw">{{ $store.state.rate.currency }}{{ total }}</span>
         </div>
-        <BmButton class="round-8 h-40 ml-12">{{ $t('cart.checkOut') }}</BmButton>
+        <BmButton class="round-8 h-40 ml-12" @click="onCheckOut">{{ $t('cart.checkOut') }}</BmButton>
       </div>
       <!-- 编辑 -->
       <div v-show="isEdit">
@@ -148,7 +148,6 @@
 <script>
 import EmptyStatus from '@/components/EmptyStatus';
 import ProductTopBtmSingle from '@/components/ProductTopBtmSingle';
-import OrderSingle from '@/components/OrderSingle';
 import OrderStoreSingle from '@/components/OrderStoreSingle';
 import { Divider, Tab, Tabs, SwipeCell, Card, Stepper, Checkbox, CheckboxGroup, Sticky, SubmitBar } from 'vant';
 
@@ -165,7 +164,6 @@ export default {
     vanSticky: Sticky,
     vanSubmitBar: SubmitBar,
     EmptyStatus,
-    OrderSingle,
     OrderStoreSingle,
     ProductTopBtmSingle
   },
@@ -271,7 +269,12 @@ export default {
       })
     },
     onCheckOut() { // 结算
-
+      this.$router.push({
+        name: 'cart-order-id',
+        params: {
+          id: 1
+        }
+      })
     },
     watchCheckAll() { // 监听购物车中的订单是否全部选中
       let check = this.list.filter(item => {
