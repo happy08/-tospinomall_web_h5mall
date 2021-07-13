@@ -30,7 +30,7 @@
         v-model="address"
         placeholder="Address"
         class="p-20"
-        @click="addressShow"
+        @click="addressShow = true"
       >
         <template #right-icon>
           <div class="flex">
@@ -142,7 +142,7 @@ export default {
       isDefault: true,
       emitTag: '',
       isEmit: 0, // 0 需要添加 1 添加中 2添加完成
-      addressShow: true,
+      addressShow: false,
       stepActive: 0,
       stepArr: [
         {
