@@ -30,7 +30,9 @@
               :isShow="false"
             ></BmImage>
           </div>
-          <OrderStoreSingle class="pl-16 pr-30" />
+          <nuxt-link :to="{ name: 'cart-store-id', params: { id: item.id } }">
+            <OrderStoreSingle class="pl-16 pr-30" />
+          </nuxt-link>
         </div>
         <van-swipe-cell class="pl-12" v-for="singleItem in item.list" :key="'single-' + singleItem.id">
           <div class="flex vcenter">

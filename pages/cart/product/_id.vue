@@ -150,7 +150,7 @@
               <van-icon name="https://b.yzcdn.cn/vant/icon-demo-1126.png" size="0.72rem" color="#EC500D" />
               <div class="ml-8">
                 <p class="fs-14 black">Stive**8</p>
-                <van-rate class="mt-4" v-model="rate" allow-half size="0.24rem" color="#F7B500" readonly />
+                <van-rate class="mt-4" v-model="rate" allow-half size="0.24rem" color="#F7B500" readonly void-color="#DDDDDD" void-icon="star" />
               </div>
             </div>
             <div class="grey fs-14">2020-07-05</div>

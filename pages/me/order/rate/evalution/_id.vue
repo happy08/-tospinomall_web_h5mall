@@ -27,7 +27,7 @@
       <!-- 评分 -->
       <van-cell class="plr-20 ptb-20" :title="$t('me.rate.productEvaluation')" title-class="black fs-14">
         <template #label>
-          <van-rate class="mt-10" v-if="rate" v-model="rate" allow-half size="14" color="#F7B500" void-color="#DDDDDD" />
+          <van-rate class="mt-10" v-if="rate" v-model="rate" allow-half size="14" color="#F7B500" void-color="#DDDDDD" void-icon="star" />
         </template>
       </van-cell>
       <!-- 添加图片 -->
@@ -70,19 +70,19 @@
       <!-- 包装 -->
       <van-cell class="plr-20 ptb-20" :title="$t('me.rate.fedexPacking')" title-class="black fs-14">
         <template #label>
-          <van-rate class="mt-10" v-if="rate" v-model="fedexPacking" allow-half size="14" color="#F7B500" void-color="#DDDDDD" />
+          <van-rate class="mt-10" v-if="rate" v-model="fedexPacking" allow-half size="14" color="#F7B500" void-color="#DDDDDD" void-icon="star" />
         </template>
       </van-cell>
       <!-- 发货速度 -->
       <van-cell class="plr-20 ptb-20" :title="$t('me.rate.deliverySpeed')" title-class="black fs-14">
         <template #label>
-          <van-rate class="mt-10" v-if="rate" v-model="rate" allow-half size="14" color="#F7B500" void-color="#DDDDDD" />
+          <van-rate class="mt-10" v-if="rate" v-model="rate" allow-half size="14" color="#F7B500" void-color="#DDDDDD" void-icon="star" />
         </template>
       </van-cell>
       <!-- 快递人员服务 -->
       <van-cell class="plr-20 ptb-20" :title="$t('me.rate.deliveryPersonnelService')" title-class="black fs-14">
         <template #label>
-          <van-rate class="mt-10" v-if="rate" v-model="rate" allow-half size="14" color="#F7B500" void-color="#DDDDDD" />
+          <van-rate class="mt-10" v-if="rate" v-model="rate" allow-half size="14" color="#F7B500" void-color="#DDDDDD" void-icon="star" />
         </template>
       </van-cell>
     </van-cell-group>

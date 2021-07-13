@@ -1,5 +1,5 @@
 <template>
-  <!-- 购物车-商品详情-搜索页面 -->
+  <!-- 首页-头部-搜索页面 -->
   <div>
     <BmHeaderNav :left="{ isShow: true }" :title="$t('common.search')" />
     <!-- 搜索 -->

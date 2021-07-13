@@ -293,7 +293,8 @@ const en = {
     more: 'More',
     reply: 'Reply',
     specification: 'Specification',
-    justForYou: 'Just For You'
+    justForYou: 'Just For You',
+    storeInformation: 'Store information'
   }
 };
 export default en;

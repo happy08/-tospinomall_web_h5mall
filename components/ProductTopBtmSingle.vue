@@ -25,7 +25,7 @@
         <span class="fs-10 color_666 ml-10">{{ detail.country }}</span>
       </div>
       <p class="fs-14 black" v-if="detail.desc" v-html="detail.desc" :class="{ 'hidden-1': detail.ellipsis === 1, 'hidden-2': detail.ellipsis === 2 }"></p>
-      <van-rate class="mt-10" v-if="detail.rate" v-model="detail.rate" allow-half size="0.24rem" color="#F7B500" />
+      <van-rate class="mt-10" v-if="detail.rate" v-model="detail.rate" allow-half size="0.24rem" color="#F7B500" void-color="#DDDDDD" void-icon="star" />
       <div class="mt-12 flex between hidden-1 plr-4 vcenter" v-if="detail.price">
         <span class="red fs-16 fw">
           {{ $store.state.rate.currency }}{{ detail.price }} 

@@ -60,8 +60,10 @@ export default {
     }
   },
   methods: {
-    onConfirm() { // 提交支付
-
+    onConfirm() { // 提交支付,成功跳转到确认订单页面
+      this.$router.push({
+        name: 'cart-order-confirm'
+      })
     }
   },
 }
