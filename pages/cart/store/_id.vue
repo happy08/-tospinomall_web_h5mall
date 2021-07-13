@@ -37,9 +37,9 @@
       <nuxt-link :to="{ name: 'cart-store-search' }">
         <van-icon name="search" size="0.48rem" color="#383838" />
       </nuxt-link>
-      <van-tabs v-model="tabActive" class="ml-20 customs-van-tabs">
-        <van-tab title="Home"></van-tab>
-        <van-tab title="All the goods"></van-tab>
+      <van-tabs v-model="tabActive" class="customs-van-tabs w-200"  @click="changeTab">
+        <van-tab title="Home" name="tab-0"></van-tab>
+        <van-tab title="All the goods" name="tab-1"></van-tab>
       </van-tabs>
     </div>
 
@@ -87,13 +87,13 @@
 
     <!-- 底部标签栏 -->
     <van-tabbar v-model="tabbarActive">
-      <van-tabbar-item>
+      <van-tabbar-item name="home">
         <span>Home</span>
         <template #icon="props">
           <i :class="{'iconfont icon-store-home fs-24': true, 'red': props.active}"></i>
         </template>
       </van-tabbar-item>
-      <van-tabbar-item icon="search">Commondity</van-tabbar-item>
+      <van-tabbar-item icon="search" name="product" @click="changeTabbar">Commondity</van-tabbar-item>
     </van-tabbar>
   </div>
 </template>
@@ -112,7 +112,7 @@ export default {
   asyncData({isDev, route, store, env, params, query, req, res, redirect, error}) {
     return {
       tabActive: 0,
-      tabbarActive: 0,
+      tabbarActive: 'home',
       swiperFullScreenOption: {
 
       },
@@ -133,6 +133,19 @@ export default {
       }else{
         history.back();
       }
+    },
+    changeTabbar() { // 切换店铺tab
+      this.$router.replace({
+        name: 'cart-store-product-id',
+        params: {
+          id: this.$route.params.id
+        }
+      })
+    },
+    changeTab(name) { // 切换展示项
+      if (name === 'tab-1') {
+        this.changeTabbar();
+      }
     }
   },
 }
@@ -147,5 +160,11 @@ export default {
 }
 .pic-title-price{
   width: 2.06rem;
+}
+.w-200{
+  width: 180px;
+}
+.pb-16{
+  padding-bottom: 16px;
 }
 </style>

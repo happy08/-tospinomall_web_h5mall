@@ -36,30 +36,50 @@
       </van-tab>
     </van-tabs>
 
-    
+    <!-- 底部标签栏 -->
+    <van-tabbar v-model="tabbarActive">
+      <van-tabbar-item name="home" @click="changeTabbar">
+        <span>Home</span>
+        <template #icon="props">
+          <i :class="{'iconfont icon-store-home fs-24': true, 'red': props.active}"></i>
+        </template>
+      </van-tabbar-item>
+      <van-tabbar-item icon="search" name="product">Commondity</van-tabbar-item>
+    </van-tabbar>
   </div>
 </template>
 
 <script>
-import { Rate, Button, Tab, Tabs } from 'vant';
+import { Rate, Button, Tab, Tabs, Tabbar, TabbarItem } from 'vant';
 
 export default {
   components: {
     vanRate: Rate,
     vanButton: Button,
     vanTab: Tab,
-    vanTabs: Tabs
+    vanTabs: Tabs,
+    vanTabbar: Tabbar,
+    vanTabbarItem: TabbarItem
   },
   asyncData({isDev, route, store, env, params, query, req, res, redirect, error}) {
     return {
       rate: 3.5,
       tabActive: 0,
-      tabList: ['Nomination', 'Sale', 'Price', 'In stock']
+      tabList: ['Nomination', 'Sale', 'Price', 'In stock'],
+      tabbarActive: 'product'
     }
   },
   methods: {
     getSearchList() { // 获取最新数据
 
+    },
+    changeTabbar() { // 切换店铺tab
+      this.$router.replace({
+        name: 'cart-store-id',
+        params: {
+          id: this.$route.params.id
+        }
+      })
     }
   },
 }

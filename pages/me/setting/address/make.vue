@@ -30,6 +30,7 @@
         v-model="address"
         placeholder="Address"
         class="p-20"
+        @click="addressShow"
       >
         <template #right-icon>
           <div class="flex">
@@ -89,22 +90,46 @@
         </template>
       </van-cell>
     </div>
-
+    <!-- 添加地址 -->
     <div class="mlr-20 pb-20">
       <BmButton class="round-8 w-100 save-btn" @click="save">{{ $t('me.address.addShipAddressBtn') }}</BmButton>
     </div>
+
+    <!-- 修改地址 -->
+    <van-popup v-model="addressShow" position="bottom" closeable class="ptb-20">
+      <h4 class="fs-18 black lh-20 tc plr-20">Choose a country or region</h4>
+      <!-- 地址选择步骤条 -->
+      <van-steps direction="vertical" :active="stepActive" class="mt-24" @click-step="stepClick">
+        <van-step v-for="item, stepIndex in stepArr" :key="stepIndex">
+          <template #active-icon>
+            <i class="iconfont icon-dot1 green"></i>
+          </template>
+          <p class="fs-16 black">{{ item.title ? item.title : item.desc }}</p>
+        </van-step>
+      </van-steps>
+      <!-- 进行选择 -->
+      <div class="mt-42 plr-24">
+        <p class="fs-14 grey-1">Choose Street or Town</p>
+        <ul class="plr-24 fs-16 black" v-if="stepArr[stepActive].city">
+          <li class="mt-20" v-for="city, cityIndex in stepArr[stepActive].city" :key="cityIndex" @click="changeCity(city)">{{ city }}</li>
+        </ul>
+      </div>
+    </van-popup>
   </div>
 </template>
 
 <script>
-import { Cell, CellGroup, Field, Switch } from 'vant';
+import { Cell, CellGroup, Field, Switch, Popup, Step, Steps } from 'vant';
 
 export default {
   components: {
     vanCell: Cell,
     vanCellGroup: CellGroup,
     vanField: Field,
-    vanSwitch: Switch
+    vanSwitch: Switch,
+    vanPopup: Popup,
+    vanStep: Step,
+    vanSteps: Steps
   },
   data() {
     return {
@@ -116,7 +141,16 @@ export default {
       tag: 'Home',
       isDefault: true,
       emitTag: '',
-      isEmit: 0 // 0 需要添加 1 添加中 2添加完成
+      isEmit: 0, // 0 需要添加 1 添加中 2添加完成
+      addressShow: true,
+      stepActive: 0,
+      stepArr: [
+        {
+          title: '',
+          desc: '选择国家',
+          city: ['中国', '美国', '加拿大']
+        }
+      ]
     }
   },
   methods: {
@@ -139,6 +173,37 @@ export default {
       }).catch(() => {
 
       })
+    },
+    stepClick(step) { // step点击事件
+      console.log(step)
+      this.stepActive = step;
+      if (this.stepArr[step].title) { // 如果已经选择地区后的逻辑处理
+        let arr = [];
+        this.stepArr.map((item, index) => {
+          if (index < step) {
+            arr.push(item);
+          } else if (index == step) {
+            arr.push({
+              title: '',
+              desc: '选择国家',
+              city: ['中国', '美国', '加拿大']
+            })
+          }
+        });
+        console.log('---------')
+        console.log(this.stepActive)
+        this.stepArr = arr;
+        console.log(this.stepArr)
+      }
+    },
+    changeCity(city) { // 选择城市
+      this.stepArr[this.stepActive].title = city; // 选择城市
+      this.stepActive += 1;
+      this.stepArr[this.stepActive] = {
+        title: '',
+        desc: '选择省份',
+        city: ['广东省', '陕西省', '山西省']
+      }
     }
   },
 }
@@ -168,6 +233,12 @@ export default {
 .ptb-3{
   padding-top: 3px;
   padding-bottom: 3px;
+}
+.mt-42{
+  margin-top: 42px;
+}
+.grey-1{
+  color: #909AA2;
 }
 </style>
 
