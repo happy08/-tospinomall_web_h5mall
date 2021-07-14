@@ -4,7 +4,7 @@
     aria-hidden="true"
     :style="`width:${width};height:${height}`"
   >
-    <use :xlink:href="'#icon' + name" :fill="color"></use>
+    <use :xlink:href="'#icon-' + name" :fill="color"></use>
   </svg>
 </template>
 

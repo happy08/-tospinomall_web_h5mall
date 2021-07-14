@@ -1,4 +1,5 @@
 <template>
+  <!-- 登录-注册 -->
   <div>
     <BmHeaderNav :left="{ isShow: true, url: '/login' }" :title="title" />
     
@@ -13,7 +14,7 @@
           v-if="$route.query.changeWay === 'email'" 
         />
         <!-- 手机号 --> 
-        <div v-else>
+        <template v-else>
           <van-field
             v-model="account"
             :placeholder="$t('login.phoneNumber')"
@@ -37,7 +38,7 @@
               @confirm="onConfirm"
             />
           </van-popup>
-        </div>
+        </template>
         <!-- 验证码 -->
         <van-field
           v-model="code"
@@ -63,22 +64,37 @@
         <van-divider>{{ $t('common.or') }}</van-divider>
         <div class="flex login-page__btm--concat">
           <!-- facebook -->
-          <!-- <i class="iconfont login-page__btm--concat--icon clr-blue">&#xe600;</i> -->
+          <a href="#">
+            <BmIcon :name="'facebook-icon'" :width="'0.64rem'" :height="'0.64rem'"></BmIcon>
+          </a>
           <!-- 电话 -->
-          <!-- <i class="iconfont login-page__btm--concat--icon clr-green">&#xe6cc;</i> -->
+          <a href="#">
+            <BmIcon :name="'phone-icon'" :width="'0.64rem'" :height="'0.64rem'"></BmIcon>
+          </a>
           <!-- twitter -->
-          <!-- <i class="iconfont login-page__btm--concat--icon clr-wathet">&#xe601;</i> -->
-          <!-- 手机 -->
-          <nuxt-link v-if="$route.query.changeWay === 'email'" :to="{ name: 'register', query: { type: $route.query.type === 'forgot' ? 'forgot': 'phone' } }">
-            <i class="iconfont fs-32 clr-purple">&#xe617;</i>
-          </nuxt-link>
+          <a href="#">
+            <BmIcon :name="'twitter-icon'" :width="'0.64rem'" :height="'0.64rem'"></BmIcon>
+          </a>
+          <!-- google -->
+          <a href="#">
+            <BmIcon :name="'google-icon'" :width="'0.64rem'" :height="'0.64rem'"></BmIcon>
+          </a>
+          <!-- 微信 -->
+          <a href="#">
+            <BmIcon :name="'wechat-icon'" :width="'0.64rem'" :height="'0.64rem'"></BmIcon>
+          </a>
           <!-- email -->
           <nuxt-link
             v-if="$route.query.changeWay === 'phone' || !$route.query.changeWay" 
             :to="{ name: 'register', query: { type: $route.query.type === 'forgot' ? 'forgot': 'phone', changeWay: 'email' } }"
           >
-            <i class="iconfont fs-32 clr-brownred">&#xe635;</i>
+            <BmIcon :name="'email-icon'" :width="'0.64rem'" :height="'0.64rem'"></BmIcon>
           </nuxt-link>
+          <!-- 手机 -->
+          <nuxt-link v-if="$route.query.changeWay === 'email'" :to="{ name: 'register', query: { type: $route.query.type === 'forgot' ? 'forgot': 'phone' } }">
+            <BmIcon :name="'cellphone'" :width="'0.64rem'" :height="'0.64rem'"></BmIcon>
+          </nuxt-link>
+          
         </div>
         <p class="fs-14 tc mt-20 lh-20 login-page__btm--service">By loging in,you agree to <nuxt-link :to="{ name: 'services-register' }">Tospino's Terms of Service</nuxt-link> and <nuxt-link :to="{ name: 'services-privacy' }">Privacy Policy</nuxt-link></p>
       </div>
@@ -111,7 +127,6 @@ export default {
   },
   watch: {
     "$route"(e) {
-      console.log(e.query.changeWay)
       if (e.query.changeWay !== 'email' || !e.query.changeWay) {
         this.getPhonePrefix()
       }
@@ -129,7 +144,7 @@ export default {
     }
   },
   methods: {
-    getPhonePrefix() {
+    getPhonePrefix() { // 获取所有手机号前缀
       getPhonePrefix().then(res => {
         this.phonePrefixs = res.data;
         this.prefixCode = res.data[0].phonePrefix;
@@ -232,7 +247,6 @@ export default {
   border: none;
 }
 .register-page{
-  padding-top: 50px;
   height: calc(100vh - 46px);
   .login-page__btm{
     .login-page__btm--concat{

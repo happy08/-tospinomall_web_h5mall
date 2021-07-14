@@ -1,11 +1,11 @@
 <template>
   <!-- 登录-验证码登录页面 -->
   <div>
-    <BmHeaderNav :left="{ isShow: true }" />
+    <BmHeaderNav :left="{ isShow: true, url: '/home' }" :border="false" />
     <div class="mlr-20 pb-30 flex between column login-page">
       <div>
         <!-- 语言切换 -->
-        <div class="clear">
+        <!-- <div class="clear">
           <van-dropdown-menu v-model="lang" :overlay="false" class="fr language-dropdown-menu">
             <van-dropdown-item get-container=".language-dropdown-menu" ref="dropdownLang">
               <template #title>
@@ -18,7 +18,7 @@
               </van-cell>
             </van-dropdown-item>
           </van-dropdown-menu>
-        </div>
+        </div> -->
         <!-- title -->
         <h1 class="tc black lagin-page__title">{{ $t('login.loginTitle') }}</h1>
         <div class="login-page__container">
@@ -70,6 +70,7 @@
             @click="login">
             {{ $t('login.loginBtn') }}
           </van-button>
+          <nuxt-link :to="{ name: 'login' }" replace class="tc green mt-10 block">密码登录</nuxt-link>
         </div>
       </div>
 
@@ -78,24 +79,32 @@
         <van-divider>{{ $t('common.or') }}</van-divider>
         <div class="flex login-page__btm--concat">
           <!-- facebook -->
-          <a href="">
-            <i class="iconfont login-page__btm--concat--icon fs-32 clr-blue">&#xe600;</i>
+          <a href="#">
+            <BmIcon :name="'facebook-icon'" :width="'0.64rem'" :height="'0.64rem'"></BmIcon>
           </a>
           <!-- 电话 -->
-          <a href="">
-            <i class="iconfont login-page__btm--concat--icon fs-32 clr-green">&#xe6cc;</i>
+          <a href="#">
+            <BmIcon :name="'phone-icon'" :width="'0.64rem'" :height="'0.64rem'"></BmIcon>
           </a>
           <!-- twitter -->
-          <a href="">
-            <i class="iconfont login-page__btm--concat--icon fs-32 clr-wathet">&#xe601;</i>
+          <a href="#">
+            <BmIcon :name="'twitter-icon'" :width="'0.64rem'" :height="'0.64rem'"></BmIcon>
           </a>
-          <!-- 手机 -->
-          <nuxt-link :to="{ name: 'login-code' }">
-            <i class="iconfont login-page__btm--concat--icon fs-32 clr-purple">&#xe617;</i>
-          </nuxt-link>
+          <!-- google -->
+          <a href="#">
+            <BmIcon :name="'google-icon'" :width="'0.64rem'" :height="'0.64rem'"></BmIcon>
+          </a>
+          <!-- 微信 -->
+          <a href="#">
+            <BmIcon :name="'wechat-icon'" :width="'0.64rem'" :height="'0.64rem'"></BmIcon>
+          </a>
           <!-- email -->
-          <nuxt-link :to="{ name: 'login-code', query: { changeWay: 'email' } }">
-            <i class="iconfont login-page__btm--concat--icon fs-32 clr-brownred">&#xe635;</i>
+          <nuxt-link :to="{ name: 'login-code', query: { changeWay: 'email' } }" replace>
+            <BmIcon :name="'email-icon'" :width="'0.64rem'" :height="'0.64rem'"></BmIcon>
+          </nuxt-link>
+          <!-- 手机 -->
+          <nuxt-link :to="{ name: 'login-code' }" replace>
+            <BmIcon :name="'cellphone'" :width="'0.64rem'" :height="'0.64rem'"></BmIcon>
           </nuxt-link>
         </div>
         <p class="fs-14 tc mt-20 lh-20 login-page__btm--service">By loging in,you agree to <nuxt-link :to="{ name: 'services-register' }">Tospino's Terms of Service</nuxt-link> and <nuxt-link :to="{ name: 'services-privacy' }">Privacy Policy</nuxt-link></p>

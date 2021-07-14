@@ -15,9 +15,9 @@
       >
         <template #button>
           <!-- 睁眼 -->
-          <van-icon v-if="pwdType === 'text'" name="eye-o" size="24" color="#666" @click="pwdType = 'password'" />
+          <van-icon v-if="pwdType === 'text'" :name="require('@/assets/images/icon/eye-o.png')" size="24" color="#666" @click="pwdType = 'password'" />
           <!-- 闭眼 -->
-          <van-icon v-else name="closed-eye" size="24" color="#666" @click="pwdType = 'text'" />
+          <van-icon v-else :name="require('@/assets/images/icon/eye-close.png')" size="24" color="#666" @click="pwdType = 'text'" />
         </template>
       </van-field>
     </div>

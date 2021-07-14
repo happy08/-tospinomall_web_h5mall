@@ -16,9 +16,9 @@
         </div>
         <div class="purse-total__show">
           <!-- 睁眼 -->
-          <van-icon v-if="pwdType === 'text'" name="eye-o" size="30" color="#fff" @click="pwdType = 'password'" />
+          <van-icon v-if="pwdType === 'text'" :name="require('@/assets/images/icon/eye-o.png')" size="30" color="#fff" @click="pwdType = 'password'" />
           <!-- 闭眼 -->
-          <van-icon v-else name="closed-eye" size="30" color="#fff" @click="pwdType = 'text'" />
+          <van-icon v-else :name="require('@/assets/images/icon/eye-close.png')" size="30" color="#fff" @click="pwdType = 'text'" />
         </div>
       </div>
 

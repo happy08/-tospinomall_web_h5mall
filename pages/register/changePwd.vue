@@ -14,9 +14,9 @@
       >
         <template #button>
           <!-- 睁眼 -->
-          <van-icon v-if="pwdType === 'text'" name="eye-o" size="24" color="#666" @click="changeType('pwdType', 'password')" />
+          <van-icon v-if="pwdType === 'text'" :name="require('@/assets/images/icon/eye-o.png')" size="24" color="#666" @click="changeType('pwdType', 'password')" />
           <!-- 闭眼 -->
-          <van-icon v-else name="closed-eye" size="24" color="#666" @click="changeType('pwdType', 'text')" />
+          <van-icon v-else :name="require('@/assets/images/icon/eye-close.png')" size="24" color="#666" @click="changeType('pwdType', 'text')" />
         </template>
       </van-field>
       <van-field
@@ -29,9 +29,9 @@
       >
         <template #button>
           <!-- 睁眼 -->
-          <van-icon v-if="confirmPwdType === 'text'" name="eye-o" size="24" color="#666" @click="changeType('confirmPwdType', 'password')" />
+          <van-icon v-if="confirmPwdType === 'text'" :name="require('@/assets/images/icon/eye-o.png')" size="24" color="#666" @click="changeType('confirmPwdType', 'password')" />
           <!-- 闭眼 -->
-          <van-icon v-else name="closed-eye" size="24" color="#666" @click="changeType('confirmPwdType', 'text')" />
+          <van-icon v-else :name="require('@/assets/images/icon/eye-close.png')" size="24" color="#666" @click="changeType('confirmPwdType', 'text')" />
         </template>
       </van-field>
 

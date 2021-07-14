@@ -14,9 +14,9 @@
       >
         <template #button>
           <!-- 睁眼 -->
-          <van-icon v-if="pwdType === 'text'" name="eye-o" size="24" color="#666" @click="pwdType = 'password'" />
+          <van-icon v-if="pwdType === 'text'" :name="require('@/assets/images/icon/eye-o.png')" size="0.48rem" @click="pwdType = 'password'" />
           <!-- 闭眼 -->
-          <van-icon v-else name="closed-eye" size="24" color="#666" @click="pwdType = 'text'" />
+          <van-icon v-else :name="require('@/assets/images/icon/eye-close.png')" size="0.48rem" @click="pwdType = 'text'" />
         </template>
       </van-field>
       <p class="fs-14 register-pwd__tip">The password consists of 6-20 letters, numbers or symbols, and the letters should be case sensitive</p>
