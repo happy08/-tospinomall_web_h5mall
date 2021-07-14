@@ -14,7 +14,7 @@
     <!-- 商品/店铺展示 -->
     <div class="bg-white">
       <!-- 无数据时展示 -->
-      <empty-status v-if="list.length === 0" :image="require('@/assets/images/empty/result.png')" :description="$t('me.likes.notProduct')" :btn="$t('me.likes.shopNow')" />
+      <empty-status v-if="list.length === 0" :image="require('@/assets/images/empty/result.png')" :description="$t('me.likes.notProduct')" :btn="{ btn: $t('me.likes.shopNow') }" />
       <!-- 已关注的店铺列表展示 -->
       <van-checkbox-group v-model="checkResult" ref="checkboxStoreGroup">
         <van-cell :border="false" :class="{'ptb-0 plr-0': true, 'bg-f4': isTrue(item.id, checkResult) }" v-for="(item, index) in list" :key="index">

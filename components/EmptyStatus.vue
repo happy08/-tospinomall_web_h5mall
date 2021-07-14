@@ -1,17 +1,8 @@
 <template>
   <!-- 空状态页面 -->
   <van-empty :description="description" class="w-100" :image="image">
-    <BmButton :type="'info'" v-if="btn">{{ btn }}</BmButton>
+    <BmButton :type="'info'" v-if="btn.btn" @click="btnClick">{{ btn.btn }}</BmButton>
   </van-empty>
-  <!-- <div class="center w-100 flex column hstart" :style="'height:' + empty.height">
-    <van-image
-      width="3rem"
-      height="3rem"
-      :src="require('@/assets/images/empty/' + status + '.png')"
-    />
-    <p v-if="empty.tip" class="fs-14 empty-single__tip">{{ empty.tip }}</p>
-    <BmButton class="mt-12" :type="'info'" v-if="empty.btnEvent">shop now</BmButton>
-  </div> -->
 </template>
 
 <script>
@@ -23,10 +14,6 @@ export default {
     vanEmpty: Empty
   },
   props: {
-    // status: {
-    //   type: String,
-    //   default: 'order'
-    // },
     image: {
       type: String,
       default: 'default'
@@ -36,20 +23,22 @@ export default {
       default: ''
     },
     btn: {
-      type: String,
-      default: ''
+      type: Object,
+      default: function () {
+        return {
+          btn: '',
+          isEmit: false
+        }
+      }
     },
-    // empty: {
-    //   type: Object,
-    //   default: function () {
-    //     return {
-    //       tip: null, // 提示语
-    //       btnEvent: false, // 是否有按钮
-    //       height: '70vh'
-    //     }
-    //   }
-    // }
-  }
+  },
+  methods: {
+    btnClick() {
+      if(this.btn.isEmit){
+        this.$emit('btnClick');
+      }
+    }
+  },
 }
 </script>
 

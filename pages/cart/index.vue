@@ -10,7 +10,8 @@
 
     <div class="bg-white">
       <!-- 购物车为空时展示 -->
-      <empty-status v-if="list.length === 0" :image="require('@/assets/images/empty/cart.png')" :description="$t('cart.emptyTip')" :btn="$t('me.likes.shopNow')" />
+      <empty-status v-if="!$store.state.user.token" :image="require('@/assets/images/empty/cart.png')" :btn="{ btn: '去登录', isEmit: true }" @btnClick="onLogin" />
+      <empty-status v-else-if="list.length === 0" :image="require('@/assets/images/empty/cart.png')" :description="$t('cart.emptyTip')" :btn="{ btn: $t('me.likes.shopNow') }" />
       <!-- 购物车不为空 -->
       <van-tabs v-else sticky animated :offset-top="46" color="#42B7AE" class="bg-white customs-van-tabs" :ellipsis="false" @change="getList" v-model="tabActive">
         <van-tab v-for="(categoryItem, tabIndex) in $t('cart.categoryList')" :title="categoryItem" :key="'scroll-tab-' + tabIndex" title-class="border-b pb-0" :name="tabIndex" />
@@ -170,9 +171,9 @@ export default {
     ProductTopBtmSingle
   },
   asyncData({isDev, route, store, env, params, query, req, res, redirect, error}) {
-
-    return {
-      list: [
+    let list = [];
+    if (store.state.user.token) {
+      list = [
         {
           id: 1,
           step: 1,
@@ -229,7 +230,10 @@ export default {
           ],
           isAll: false
         }
-      ],
+      ];
+    }
+    return {
+      list: list,
       tabActive: 0,
       checked: false,
       isEdit: false,
@@ -237,8 +241,10 @@ export default {
     }
   },
   methods: {
-    onEdit() { // 编辑购物车
-      this.isEdit = !this.isEdit;
+    onEdit() { // 编辑购物车, 登录情况下才可以编辑购物车
+      if (this.$store.state.user.token) {
+        this.isEdit = !this.isEdit;
+      }
     },
     getList() { // 获取列表数据
 
@@ -305,6 +311,11 @@ export default {
         params: {
           id: productId
         }
+      })
+    },
+    onLogin() { // 去登录
+      this.$router.push({
+        name: 'login'
       })
     }
   },

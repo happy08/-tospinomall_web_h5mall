@@ -124,7 +124,7 @@
         <van-cell title="COMELY SHOP" center :border="false" :value="$store.state.rate.currency + '49.00'" label="（ 1 item ）" title-class="color-black-85 fs-14" value-class="red fw fs-16" />
 
         <div class="plr-12 flex between mt-40">
-          <BmButton :type="'info'" class="fs-16 round-8 w-169 h-48 add-cart-btn" @click="onAddCart">Cancel</BmButton>
+          <BmButton :type="'info'" class="fs-16 round-8 w-169 h-48 add-cart-btn" @click="onCancel">Cancel</BmButton>
           <BmButton class="fs-16 round-8 w-169 h-48" @click="goPay">Pay Now</BmButton>
         </div>
     </van-popup>
@@ -223,6 +223,9 @@ export default {
     },
     onChangeDistribution() { // 修改配送方式
       this.distributionShow = false;
+    },
+    onCancel() { // 取消支付
+
     }
   },
 }
