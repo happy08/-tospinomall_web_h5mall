@@ -89,7 +89,7 @@
     <!-- 提交 -->
     <div class="flex between vcenter pl-20 w-100 bg-white submit-container">
       <span class="fs-18 red fw">{{ $store.state.rate.currency }} 1260.00</span>
-      <BmButton class="round-0 w-120 h-56" @click="goPay">{{ $t('common.submit') }}</BmButton>
+      <BmButton class="round-0 w-120 h-56" @click="onPay">{{ $t('common.submit') }}</BmButton>
     </div>
 
     <!-- 配送方式 -->
@@ -114,6 +114,19 @@
       <div class="mt-150 plr-20">
         <BmButton class="round-8 w-100 h-48" @click="onChangeDistribution">{{ $t('common.confirm') }}</BmButton>
       </div>
+    </van-popup>
+
+      <!-- 合并付款 -->
+      <van-popup v-model="consolidatedShow" position="bottom" closeable class="pb-20">
+        <h4 class="fs-18 black fw p-20 border-b">Consolidated payment</h4>
+        <!-- 合计商品 -->
+        <van-cell title="COMELY SHOP" center :border="false" :value="$store.state.rate.currency + '49.00'" label="（ 1 item ）" title-class="color-black-85 fs-14" value-class="red fw fs-16" />
+        <van-cell title="COMELY SHOP" center :border="false" :value="$store.state.rate.currency + '49.00'" label="（ 1 item ）" title-class="color-black-85 fs-14" value-class="red fw fs-16" />
+
+        <div class="plr-12 flex between mt-40">
+          <BmButton :type="'info'" class="fs-16 round-8 w-169 h-48 add-cart-btn" @click="onAddCart">Cancel</BmButton>
+          <BmButton class="fs-16 round-8 w-169 h-48" @click="goPay">Pay Now</BmButton>
+        </div>
     </van-popup>
   </div>
 </template>
@@ -194,10 +207,15 @@ export default {
         }
       ],
       distributionShow: false,
-      distributionRadio: '1'
+      distributionRadio: '1',
+      consolidatedShow: false,
+      consolidatedRadio: '1'
     }
   },
   methods: {
+    onPay() { // 去支付前要先进行二次确认
+      this.consolidatedShow = true;
+    },
     goPay() { // 去支付
       this.$router.push({
         name: 'me-order-pay'
@@ -245,5 +263,19 @@ export default {
   border-color: #BFBFBF!important;
   background: #fff!important;
   color: #383838!important;
+}
+.add-cart-btn{
+  border-color: #E5E5E5!important;
+  background-color: rgba(255, 118, 18, 0.05)!important;
+  color: #EC500D!important;
+}
+.h-48{
+  height: 48px!important;
+}
+.w-169{
+  width: 169px!important;
+}
+.mt-40{
+  margin-top: 40px;
 }
 </style>
