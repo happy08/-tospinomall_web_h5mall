@@ -59,15 +59,15 @@
     -->
     <div v-for="(moduleItem, moduleIndex) in moduleData" :key="'module-data-'+moduleIndex">
       <!-- 整屏轮播图 -->
-      <div class="plr-12 home-swiper-container" v-if="moduleItem.type === 1">
+      <template v-if="moduleItem.type === 1">
         <swiper
           ref="swiperFullScreenRef"
-          class="mt-20 swiper"
+          class="mt-12 swiper home-banner-swiper"
           :options="swiperFullScreenOption"
           v-if="moduleItem.componentDetails.length > 0"
         >
           <swiper-slide 
-            class="round-8 hidden" 
+            class="plr-12" 
             v-for="(slideItem, slideIndex) in moduleItem.componentDetails"
             :key="'swiper-slide-image-' + slideIndex"
           >
@@ -75,11 +75,15 @@
               :url="slideItem.imageUrl"
               :loadUrl="require('@/assets/images/product-bgd-375.png')"
               :errorUrl="require('@/assets/images/product-bgd-375.png')"
+              :fit="'cover'"
+              :height="'3.72rem'"
+              :isLazy="false"
+              class="round-8 hidden"
             ></BmImage>
           </swiper-slide>
           <div class="swiper-pagination" slot="pagination"></div>
         </swiper>
-      </div>
+      </template>
 
       <!-- 热区图片 -->
       <BmImage
@@ -255,13 +259,13 @@ export default {
         },
         ...categoryList.data
       ], // 分类列表
-      searchList: searchList.data.items
+      searchList: searchList.data.items,
+      meta: {}
     }
   },
   data() {
     return {
       searchVal: '',
-      // swiperArr: ['https://img01.yzcdn.cn/vant/apple-1.jpg', 'https://img01.yzcdn.cn/vant/apple-2.jpg', 'https://img01.yzcdn.cn/vant/apple-3.jpg'],
       productArr: [
         {
           src: 'https://img01.yzcdn.cn/vant/apple-1.jpg',
@@ -300,11 +304,22 @@ export default {
         pagination: {
           el: '.swiper-pagination',
           clickable: true
-        }
+        },
+        loop: true,
+        autoplay: true
       },
       searchParams: { // 搜索商品列表参数
         categoryName: '' // 分类名称
       }
+    }
+  },
+  head() { // 头部设置，方便seo
+    return {
+      title: this.meta.title || 'Tospino Ghana online shopping',
+      meta: [
+        { hid: 'description', name: 'description', content: this.meta.description || 'Tospino Ghana online shopping' },
+        { hid: 'keywords', name: 'keywords', content: this.meta.keywords || 'Tospino Ghana online shopping' }
+      ]
     }
   },
   created() {

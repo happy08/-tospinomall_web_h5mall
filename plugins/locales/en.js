@@ -136,7 +136,8 @@ const en = {
       addBankTip: 'Convenient for asset management, safe and fast payment, and enjoy bank benefits',
       modifyPwd: 'Modify 6-digit payment password',
       forgotPwd: 'Forgot 6-digit payment password',
-      useCurrentPayPwd: 'Authenticate with the current payment password'
+      useCurrentPayPwd: 'Authenticate with the current payment password',
+      payment: 'Payment'
     },
     address: {
       areacodeTitle: 'Delivery to',

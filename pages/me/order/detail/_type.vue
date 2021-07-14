@@ -231,7 +231,7 @@ export default {
     },
     goPay() { // 跳转去待付款-支付页面
       this.$router.push({
-        name: 'me-order-pay'
+        name: 'me-setting-pay-payment'
       })
     },
     copy() { // 复制

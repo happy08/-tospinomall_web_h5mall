@@ -137,6 +137,21 @@
   // 轮播
   .swiper{
     height: 200px;
+    &.home-banner-swiper{
+      height: 186px;
+      .swiper-pagination-bullet{
+        background: rgba(255, 255, 255, .37);
+      }
+      .swiper-pagination-bullet-active{
+        background: #fff;
+        width: 19px;
+        height: 5px;
+        border-radius: 2.5px;
+      }
+      .swiper-pagination-bullets{
+        bottom: 8px;
+      }
+    }
     .swiper-slide{
       width: 100%;
       position: relative;

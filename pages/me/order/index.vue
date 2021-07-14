@@ -4,20 +4,29 @@
     <BmHeaderNav :left="{ isShow: true }" :title="$t('me.order.myOrderTitle')" :border="false" />
     
     <!-- 搜索 -->
-    <div class="flex vcenter ml-20 mr-12 mtb-8">
+    <div class="flex vcenter ml-20 mr-12">
       <van-search
         v-model="searchVal"
         shape="round"
         placeholder="请输入搜索关键词"
         class="bg-white w-100"
         @click="goSearch"
-      />
-      <i class="iconfont icon-guolv fs-24 ml-12 filter-icon" @click="filterPopup = true"></i>
+      > 
+        <!-- 右侧图标-点击拍照 -->
+        <template #right-icon>
+          <div>
+            <van-icon :name="require('@/assets/images/icon/camera-icon.png')" size="0.46rem" />
+            <!-- <input type="file" capture="camera" /> -->
+          </div>
+        </template>
+      </van-search>
+      <!-- 筛选 -->
+      <van-icon :name="require('@/assets/images/icon/filter-icon.png')" class="ml-12" @click="filterPopup = true" size="0.48rem" />
     </div>
 
     <!-- 分类 -->
     <van-tabs sticky swipeable animated :offset-top="44" color="#42B7AE"  @change="getSearchList" class="mt-12" v-model="typeActive">
-      <van-tab v-for="(productItem, tabIndex) in tabs" :title="productItem.name" :key="'scroll-tab-' + tabIndex" title-class="pb-0" :name="productItem.type">
+      <van-tab v-for="(productItem, tabIndex) in tabs" :title="productItem.name" :key="'scroll-tab-' + tabIndex" title-class="pb-0 border-b" :name="productItem.type">
         <div class="mlr-12 mt-20 flex between flex-wrap">
           <!-- 空状态  -->
           <empty-status v-if="lists.length === 0" :image="require('@/assets/images/empty/order.png')" :description="$t('common.noRecord')"/>
@@ -132,12 +141,6 @@ export default {
   },
 } 
 </script>
-
-<style lang="less" scoped>
-.filter-icon{
-  color: rgba(0, 0, 0, .65);
-}
-</style>
 
 <style lang="less">
 .order-search{

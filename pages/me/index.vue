@@ -69,16 +69,9 @@
     <div class="clearfix"></div>
     <!-- 其他设置项 -->
     <div class="round-8 bg-white mlr-12 mt-12 hidden user-page__other">
-      <van-cell class="ptb-14 plr-12" :title="otherItem.text" v-for="(otherItem, otherIndex) in otherList" :key="'other-list-' + otherIndex" :to="($store.state.user.token || otherItem.name === 'me-about') ? { name: otherItem.name, query: otherItem.query } : { name: 'login' }">
+      <van-cell class="ptb-14 plr-12" :title="otherItem.text" title-class="pl-12" v-for="(otherItem, otherIndex) in otherList" :key="'other-list-' + otherIndex" :to="($store.state.user.token || otherItem.name === 'me-about') ? { name: otherItem.name, query: otherItem.query } : { name: 'login' }">
         <template #icon>
-          <BmImage 
-            :url="require('@/assets/images/icon/user-other-' + otherIndex + '.png')"
-            :width="'0.48rem'" 
-            :height="'0.48rem'"
-            :isLazy="false"
-            :isShow="false"
-            class="mr-12"
-          ></BmImage>
+          <BmIcon :name="otherItem.icon" :width="'0.48rem'" :height="'0.48rem'"></BmIcon>
         </template>
       </van-cell>
     </div>
@@ -132,38 +125,46 @@ export default {
       otherList: [ // 其他设置列表
         {
           text: 'My Likes', // 我关注的
-          name: 'me-likes'
+          name: 'me-likes',
+          icon: 'my-likes'
         },
         {
           text: 'Recently Viewed', // 最近浏览
-          name: 'me-footprint'
+          name: 'me-footprint',
+          icon: 'recently-viewed'
         },
         {
           text: 'My wallet', // 钱包
-          name: 'me-wallet'
+          name: 'me-wallet',
+          icon: 'my-wallet'
         },
         {
-          text: 'Address Management',
-          name: 'me-setting-address'
+          text: 'Address Management', // 地址管理
+          name: 'me-setting-address',
+          icon: 'address-management'
         },
         {
-          text: 'My Shop',
+          text: 'My Shop', // 我的店铺
           name: 'me-likes',
           query: {
             active: 1
-          }
+          },
+          icon: 'my-shop'
         },
         {
-          text: 'Settings',
-          name: 'me-setting-account'
+          text: 'Settings', // 设置
+          name: 'me-setting-account',
+          icon: 'settings'
         },
         {
-          text: 'Feedback',
-          name: 'me-feedback'
+          text: 'Feedback', // 反馈
+          name: 'me-feedback',
+          icon: 'feedback'
         },
         {
-          text: 'About Tospino',
-          name: 'me-about'
+          text: 'About Tospino', // 关于
+          name: 'me-about',
+          icon: 'about-tospino'
         }
       ]
     }

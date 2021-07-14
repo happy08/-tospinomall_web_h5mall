@@ -11,7 +11,7 @@ const tip = msg => {
 };
 
 export default function({ $axios, app, redirect, store, route }) {
-  $axios.defaults.timeout = 8000; // 超时
+  $axios.defaults.timeout = 30000; // 超时
   
   $axios.onRequest(config => {
     // 调用登录接口的时候需要固定值 Basic YnV5ZXI6YnV5ZXI= , 登录之后需要在headers中传用户token
@@ -68,6 +68,7 @@ export default function({ $axios, app, redirect, store, route }) {
 
   $axios.onError(error => {
     if (error.code > 0) {
+      console.log('===================')
       console.log(error)
       return;
     }

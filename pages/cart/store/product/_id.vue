@@ -41,7 +41,7 @@
       <van-tabbar-item name="home" @click="changeTabbar">
         <span>Home</span>
         <template #icon="props">
-          <i :class="{'iconfont icon-store-home fs-24': true, 'red': props.active}"></i>
+          <BmIcon :name="'store-icon1'" :width="'0.48rem'" :height="'0.48rem'" :color="props.active ? '#FF6666': ''"></BmIcon>
         </template>
       </van-tabbar-item>
       <van-tabbar-item icon="search" name="product">Commondity</van-tabbar-item>

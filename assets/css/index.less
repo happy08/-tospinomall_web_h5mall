@@ -228,6 +228,10 @@ svg {
 .pt-14 {
   padding-top: 14px!important;
 }
+.plr-14 {
+  padding-left: 14px!important;
+  padding-right: 14px!important;
+}
 .ptb-16 {
   padding-top: 16px!important;
   padding-bottom: 16px!important;
@@ -739,6 +743,18 @@ svg {
   .van-tabs__nav--complete{
     padding-left: 0!important;
     padding-right: 0!important;
+  }
+
+  // 下拉选项卡选中后标题的样式
+  .van-tab--active{
+    .van-dropdown-menu__title{
+      color: #42B7AE;
+    }
+    .van-dropdown-menu__title::after{
+      // content: '\F009';
+      border-color: transparent transparent currentColor currentColor;
+      // display: none;
+    }
   }
 }
 

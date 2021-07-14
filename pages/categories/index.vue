@@ -62,7 +62,8 @@ export default {
     return {
       list: data.data,
       catrgorieList: catrgorieList,
-      leftLists: catrgorieList[0].children
+      leftLists: catrgorieList[0].children,
+      meta: {}
     }
   },
   components: {
@@ -150,6 +151,15 @@ export default {
         },
       ],
       treeActive: 0
+    }
+  },
+  head() { // 头部设置，方便seo
+    return {
+      title: this.meta.title || 'Tospino Ghana online shopping',
+      meta: [
+        { hid: 'description', name: 'description', content: this.meta.description || 'Tospino Ghana online shopping' },
+        { hid: 'keywords', name: 'keywords', content: this.meta.keywords || 'Tospino Ghana online shopping' }
+      ]
     }
   },
   methods: {

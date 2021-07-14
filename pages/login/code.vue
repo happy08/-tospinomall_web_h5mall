@@ -114,7 +114,7 @@
 </template>
 
 <script>
-import { Divider, Field, Popup, DropdownMenu, DropdownItem, Cell } from 'vant';
+import { Divider, Field, Popup, DropdownMenu, DropdownItem, Cell, Picker } from 'vant';
 import { getPhonePrefix, getPhoneCode, getEmailCode, authCodeLogin } from '@/api/login';
 
 export default {
@@ -124,7 +124,8 @@ export default {
     vanPopup: Popup,
     vanDropdownMenu: DropdownMenu,
     vanDropdownItem: DropdownItem,
-    vanCell: Cell
+    vanCell: Cell,
+    vanPicker: Picker
   },
   data() {
     return {

@@ -218,7 +218,7 @@ export default {
     },
     goPay() { // 去支付
       this.$router.push({
-        name: 'me-order-pay'
+        name: 'me-setting-pay-payment'
       })
     },
     onChangeDistribution() { // 修改配送方式
