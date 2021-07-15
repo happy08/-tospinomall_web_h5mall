@@ -12,8 +12,8 @@ const en = {
     cart: 'Cart',
     me: 'Me',
     cancel: 'Cancel',
-    gander: ['Male', 'Female'],
-    maritalStatus: ['Merried', 'Unmarried'],
+    gander: ['男', '女', '双性', '保密'],
+    maritalStatus: ['未婚', '已婚', '保密'],
     done: 'Done',
     copySuccess: 'Copy success!',
     copyError: 'Copy error!',
@@ -296,6 +296,18 @@ const en = {
     specification: 'Specification',
     justForYou: 'Just For You',
     storeInformation: 'Store information'
+  },
+  error: {
+    default: '连接出错!',
+    404: '请求的资源不存在',
+    408: '请求超时',
+    500: '服务器错误',
+    501: '服务未实现',
+    502: '网络错误',
+    503: '服务不可用',
+    504: '网络超时',
+    505: 'HTTP版本不受支持',
+    100000000: '网络异常'
   }
 };
 export default en;

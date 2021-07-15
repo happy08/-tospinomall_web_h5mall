@@ -14,6 +14,7 @@
 
 <script>
 import { Field } from 'vant';
+import { updateUserInfo } from '@/api/user';
 
 export default {
   components: {
@@ -31,9 +32,24 @@ export default {
   },
   methods: {
     onConfirm() { // 提交信息
-      if (this.nickname.length < 4) { // 长度要大于4
+      if (this.name.length < 4) { // 长度要大于4
+        this.$toast({
+          type: 'fail',
+          message: this.$t('me.userInfo.characterTip'),
+        })
         return false;
       }
+      
+      updateUserInfo({ [this.type]: this.name }).then(res => {
+        this.$store.commit('user/SET_USERINFO', res.data);
+        this.$toast({
+          type: 'success',
+          message: '修改成功',
+          onClose() { // 返回上一页
+            history.back();
+          }
+        })
+      })
     }
   },
 }

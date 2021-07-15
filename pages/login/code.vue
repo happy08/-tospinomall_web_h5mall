@@ -208,8 +208,8 @@ export default {
         mobile: this.$route.query.changeWay === 'email' ? this.account : this.prefixCode.split('+')[1] + this.account, 
         userType: 'buyer' 
       }).then(res => {
-        this.$store.commit('user/SET_USERINFO', res.data.user_info);
         this.$store.commit('user/SET_TOKEN', res.data.access_token);
+        this.$store.commit('user/SET_TOKENTYPE', res.data.token_type);
         // 登录成功跳转到首页
         this.$router.push({
           name: 'home'

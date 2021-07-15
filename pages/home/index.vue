@@ -12,20 +12,19 @@
         :isShow="false"
       ></BmImage>
       <!-- 搜索框 -->
-      <div class="mlr-12 home-page-nav__search" ref="homeSearch" @click="$router.push({ name: 'home-search' })">
+      <div class="mlr-12 home-page-nav__search" ref="homeSearch" @click="$router.push({ name: 'search' })">
         <van-search
           v-model="searchVal"
           :placeholder="$t('common.searchPlaceholder')"
-          @search="onSearch"
           shape="round"
           class="search-container"
+          disabled
         >
           <template #right-icon>
             <van-button
               round
               type="info"
               size="small"
-              @click="onSearch"
               color="linear-gradient(270deg, #3EB5AE 0%, #70CEB6 100%)"
               class="button-container small"
             >
@@ -44,6 +43,7 @@
         :isShow="false"
       ></BmImage>
     </van-sticky>
+
     <!-- 热门搜索种类列表 -->
     <div class="flex popular-search-list">
       <div class="black round-10 small-single-tag" v-for="(hotItem, index) in hotSearch" :key="'hot-search-' + index">
@@ -56,6 +56,7 @@
       moduleTitle： 模块标题
       moduleTitleDisplay: 是否显示组件标题 0不显示 1显示
       type： 展示格式 1 首页banner 2热区图片 3一行三列 4一行两列
+      imageLinkType: 图片链接类型（0:商品链接，1:前端分类id，2:后端分类id，3:品牌，4:FBT，5:FBM，6:外部链接）
     -->
     <div v-for="(moduleItem, moduleIndex) in moduleData" :key="'module-data-'+moduleIndex">
       <!-- 整屏轮播图 -->
@@ -323,16 +324,15 @@ export default {
     }
   },
   created() {
+    this.$api.getHomeSeo().then(res => {
+
+    })
   },
   methods: {
-    onSearch(val) {
-      console.log(val);
-    },
     stickyScroll(scrollObj) { // 吸顶滚动事件
       if (scrollObj.isFixed) {
         // 滚动时格式化样式 sticky-scroll
         if (scrollObj.scrollTop > 2) {
-          // this.$refs.headerStickyContainer.$el.setAttribute('class', this.$refs.headerStickyContainer.$el.className + ' sticky-scroll');
           this.$refs.headerStickyContainer.$el.classList.add('sticky-scroll')
         }
         if (scrollObj.scrollTop < 50) {

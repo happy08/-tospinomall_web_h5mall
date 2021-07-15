@@ -8,11 +8,11 @@
         placeholder="Enter key words"
         shape="round"
       >
-        <template #right-icon>
+        <!-- <template #right-icon>
           <div class="search-camera">
             <input class="w-100 h-100 search-camera__ipt" type="file" accept="image/*" capture="camera" />
           </div>
-        </template>
+        </template> -->
       </van-search>
     </div>
     <!-- 侧边栏分类 -->
@@ -51,8 +51,11 @@ import { TreeSelect, Search } from 'vant';
 
 export default {
   async asyncData({ app }) {
-    const data = await app.$api.getCategoryList(); // 分类列表
-    const catrgorieList = data.data.map(item => {
+    const [listData, meta] = await Promise.all([
+      app.$api.getCategoryList(), // 分类列表
+      app.$api.getCategorySeo() // 获取SEO信息
+    ])
+    const catrgorieList = listData.data.map(item => {
       return {
         text: item.name,
         id: item.id,
@@ -60,10 +63,10 @@ export default {
       }
     })
     return {
-      list: data.data,
+      list: listData.data,
       catrgorieList: catrgorieList,
       leftLists: catrgorieList[0].children,
-      meta: {}
+      meta: meta.data
     }
   },
   components: {
@@ -158,7 +161,7 @@ export default {
       title: this.meta.title || 'Tospino Ghana online shopping',
       meta: [
         { hid: 'description', name: 'description', content: this.meta.description || 'Tospino Ghana online shopping' },
-        { hid: 'keywords', name: 'keywords', content: this.meta.keywords || 'Tospino Ghana online shopping' }
+        { hid: 'keywords', name: 'keywords', content: this.meta.keyword || 'Tospino Ghana online shopping' }
       ]
     }
   },

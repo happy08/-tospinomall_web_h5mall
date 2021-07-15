@@ -7,18 +7,20 @@
         <!-- 头像信息 -->
         <div class="flex between vcenter">
           <!-- 头像 -->
-          <BmImage 
-            :url="require('@/assets/images/icon/user-icon.png')"
-            :width="'1.04rem'" 
-            :height="'1.04rem'"
-            :isLazy="false"
-            :isShow="false"
-            @click="goAccount"
-          ></BmImage>
+          <div @click="goAccount">
+            <BmImage 
+              :url="$store.state.user.userInfo.headPictureUrl ? $store.state.user.userInfo.headPictureUrl : require('@/assets/images/icon/user-icon.png')"
+              :width="'1.04rem'" 
+              :height="'1.04rem'"
+              :isLazy="false"
+              :isShow="false"
+              :round="true"
+            ></BmImage>
+          </div>
           <!-- 姓名、id -->
           <dl class="ml-10" v-if="$store.state.user.token" @click="goAccount">
-            <dt class="fs-18 green fw">Nadia Spinka</dt>
-            <dd class="fs-12 grey mt-8">78****59</dd>
+            <dt class="fs-18 green fw">{{ $store.state.user.userInfo.nickname ? $store.state.user.userInfo.nickname: '--' }}</dt>
+            <dd class="fs-12 grey mt-8">{{ $store.state.user.userInfo.id }}</dd>
           </dl>
           <div v-else class="ml-10 fs-16" @click="goLogin">请先登录</div>
         </div>
@@ -33,12 +35,12 @@
 
       <!-- 收藏信息 -->
       <div class="p-30 flex between">
-        <nuxt-link :to="{ name: 'me-likes' }" tag="dl" class="tc">
-          <dt class="fs-24 black fw">12</dt>
+        <nuxt-link :to="$store.state.user.token ? { name: 'me-likes' } : { name: 'login' }" tag="dl" class="tc">
+          <dt class="fs-24 black fw">0</dt>
           <dd class="fs-12 grey mt-4">Collection</dd>
         </nuxt-link>
-        <nuxt-link :to="{ name: 'me-wallet' }" tag="dl" class="tc">
-          <dt class="fs-24 black fw">35</dt>
+        <nuxt-link :to="$store.state.user.token ? { name: 'me-wallet' }: { name: 'login' }" tag="dl" class="tc">
+          <dt class="fs-24 black fw">0</dt>
           <dd class="fs-12 grey mt-4">Wallet</dd>
         </nuxt-link>
         <!-- <dl class="tc">
@@ -83,6 +85,7 @@
 
 <script>
 import { Badge, Cell, CellGroup } from 'vant';
+import { getUserInfo } from '@/api/user';
 
 export default {
   components: {
@@ -166,8 +169,15 @@ export default {
           name: 'me-about',
           icon: 'about-tospino'
         }
-      ]
+      ],
+      userinfo: {
+        username: '',
+        headPictureUrl: require('@/assets/images/icon/user-icon.png')
+      }
     }
+  },
+  created() {
+    // this.getUserInfo()
   },
   methods: {
     goLogin() { // 跳转到登录页面

@@ -68,18 +68,31 @@ export default function({ $axios, app, redirect, store, route }) {
 
   $axios.onError(error => {
     if (error.code > 0) {
-      console.log('===================')
       console.log(error)
+      tip(error.msg);
       return;
     }
     const { response } = error;
     if (response) {
       // 请求已发出，但是不在2xx的范围
       errorHandle(response.status, redirect, store);
+      // 可以新建一个错误页面来展示错误
+      console.log(response.status)
+      // redirect({
+      //   name: 'error',
+      //   query: {
+      //     status: response.status
+      //   }
+      // })
       return Promise.reject(response);
     } else {
       // 处理断网的情况
-      tip('网络异常');
+      redirect({
+        name: 'error',
+        query: {
+          status: 100000000
+        }
+      })
       return Promise.reject();
     }
   });
@@ -93,13 +106,13 @@ const errorHandle = (status, redirect, store) => {
   switch (status) {
     // 401: 未登录状态，跳转登录页
     case 401:
-      redirect('/login/login');
+      redirect('/login');
       break;
     case 403:
       tip('登录过期，请重新登录');
-      store.commit('setToken', ''); // 清除token并跳转登录页
+      store.commit('user/SET_TOKEN', null); // 清除token并跳转登录页
       setTimeout(() => {
-        redirect('/login/login');
+        redirect('/login');
       }, 1000);
       break;
     case 404:

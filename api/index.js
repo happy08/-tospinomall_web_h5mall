@@ -35,6 +35,24 @@ export default ({ app }, inject) => {
           'Content-Type': 'application/x-www-form-urlencoded'
         }
       })
+    },
+    getHomeSeo() { // 获取首页SEO信息
+      return app.$axios({
+        url: `${url}/basics/base/mall/seo/findIndex`,
+        method: 'get',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      })
+    },
+    getCategorySeo() { // 获取分类页面SEO信息
+      return app.$axios({
+        url: `${url}/basics/base/mall/seo/findGoodsCategory`,
+        method: 'get',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      })
     }
   };
 

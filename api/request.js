@@ -4,7 +4,7 @@ import { url } from './config'; // 导入配置域名
 
 const service = axios.create({
   baseURL: url,
-  timeout: 8000 // 请求超时时间
+  timeout: 30000 // 请求超时时间
 })
 
 // 全局提示
@@ -64,9 +64,10 @@ const tip = msg => {
 
 // request拦截器
 service.interceptors.request.use(config => {
-  // if (getToken() != undefined && getToken() != 0) {
-  //   config.headers['Access-Token'] = getToken() // 让每个请求携带自定义 token 请求头
-  // }
+  const _local = JSON.parse(localStorage.getItem('b2c-store'));
+  if (_local.user.token) {
+    config.headers['Authorization'] = _local.user.token_type + ' ' + _local.user.token;
+  }
 
   return config
 }, error => {
