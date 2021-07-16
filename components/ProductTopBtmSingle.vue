@@ -20,7 +20,7 @@
           :isLazy="true"
           :loadUrl="img.loadImage"
           :errorUrl="img.loadImage"
-          round
+          :round="true"
         ></BmImage>
         <span class="fs-10 color_666 ml-10">{{ detail.country }}</span>
       </div>

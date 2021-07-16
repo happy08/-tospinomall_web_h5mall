@@ -45,21 +45,22 @@
           <van-icon :name="require('@/assets/images/icon/arrange-'+arrangeType+'.svg')" size="0.38rem" @click="changeArrange" />
         </div>
 
-        <div class="plr-20 w-100 bg-white">
+        <div :class="{'w-100': true, 'plr-20 bg-white': arrangeType == 1, 'plr-12': arrangeType == 2} ">
           <!-- 空状态  -->
           <empty-status v-if="list.length === 0" :image="require('@/assets/images/empty/order.png')" :description="$t('common.noRecord')"/>
           <div 
             :class="{'flex between flex-wrap w-100': arrangeType == 2}"
             v-else>
-              <div 
+              <nuxt-link 
                 v-for="(searchItem, searchIndex) in list" 
                 :key="'search-list-' + searchIndex"
+                :to="{ name: 'cart-product-id', params: { id: searchItem.productId } }"
                 >
                 <!-- 商品展示两列 -->
                 <ProductTopBtmSingle
                   :img="{ url: searchItem.mainPictureUrl, width: '3.4rem', height: '3.4rem', loadImage: require('@/assets/images/product-bgd-170.png') }" 
-                  :detail="{ desc: searchItem.productTitle, price: searchItem.productPrice, rate: 2.5, volumn: searchItem.saleCount, ellipsis: 2 }"
-                  class="bg-white round-4 hidden mt-12"
+                  :detail="{ desc: searchItem.productTitle, price: searchItem.productPrice, rate: searchItem.starLevel, volumn: searchItem.saleCount, ellipsis: 2, country: searchItem.supplyCountryName, country_url: searchItem.supplyCountryIcon }"
+                  class="round-4 bg-white hidden mt-12"
                   v-if="arrangeType === 2"
                 ></ProductTopBtmSingle>
                 <!-- 商品展示一列 -->
@@ -85,7 +86,7 @@
                     </div>
                   </div>
                 </div>
-              </div>
+              </nuxt-link>
           </div>
 
         </div>
@@ -185,9 +186,14 @@ export default {
         app.$api.getProductSearch({ [searchName]: searchVal })
       ]);
 
-      list = listData.data.items;
+      // 数据列表需要格式化
+      list = listData.data.items.map(item => {
+        return {
+          ...item,
+          starLevel: parseFloat(item.starLevel)
+        }
+      });
     }
-    
     
     return {
       searchVal: searchVal,
@@ -227,6 +233,11 @@ export default {
       maxPrice: ''
     }
   },
+  filters: {
+    formatNum(val) {
+      return parseFloat(val)
+    }
+  },
   methods: {
     deleteFn() { // 删除历史记录
       this.$dialog.confirm({
@@ -246,7 +257,12 @@ export default {
     },
     onSearch(val) { // 搜索
       this.$api.getProductSearch({ searchKeyword: val }).then(res => {
-        this.list = res.data.items;
+        this.list = res.data.items.map(item => {
+          return {
+            ...item,
+            starLevel: parseFloat(item.starLevel)
+          }
+        });
         this.isShowTip = false;
       })
     },

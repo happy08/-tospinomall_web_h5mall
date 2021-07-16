@@ -53,6 +53,15 @@ export default ({ app }, inject) => {
           'Content-Type': 'application/x-www-form-urlencoded'
         }
       })
+    },
+    getProductDetail(goodId) {
+      return app.$axios({
+        url: `${url}/product/goods/client/detail/${goodId}`,
+        method: 'get',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      })
     }
   };
 

@@ -4,6 +4,7 @@
     <!-- 左侧内容 -->
     <template #left>
       <van-icon v-if="left.isShow" name="arrow-left" :color="color" size="18px" @click="leftBack"></van-icon>
+      <slot name="header-left"></slot>
     </template>
     <!-- 中间内容 -->
     <template #title>

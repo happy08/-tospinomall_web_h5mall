@@ -1,13 +1,13 @@
 <template>
   <!-- 商品详情页面 -->
   <div class="vh-100 bg-grey">
-    <van-sticky ref="detailStickyContainer" :offset-top="0" @scroll="stickyScroll" class="bg-white">
-      <BmHeaderNav :left="{ isShow: true }">
-        <nuxt-link :to="{ name: 'cart-product-search' }" tag="div" slot="header-title" class="flex between sticky-opacity">
-          <van-search v-model="searchVal" class="round-20 hidden" />
+    <van-sticky ref="detailStickyContainer" :offset-top="0" @scroll="stickyScroll">
+      <BmHeaderNav :left="{ isShow: true }" :bg_color="!isScroll ? 'col-transparent': 'white'" :border="false" :color="!isScroll ? 'white': 'black'" :class="{'fixed': !isScroll}">
+        <nuxt-link :to="{ name: 'cart-product-search' }" tag="div" slot="header-left" class="flex between sticky-opacity ml-14">
+          <van-search v-model="searchVal" disabled class="round-20 hidden" />
         </nuxt-link>
         <div slot="header-right">
-          <van-icon :name="require('@/assets/images/icon/cart-bgd.svg')" size="0.64rem" />
+          <van-icon :name="require('@/assets/images/icon/cart-bgd.svg')" size="0.64rem" class="mt-6" />
         </div>
       </BmHeaderNav>
     </van-sticky>
@@ -21,9 +21,9 @@
           :options="swiperOption"
           class="swiper-container"
         >
-          <swiper-slide v-for="(productItem, productIndex) in imgLists" :key="productIndex">
+          <swiper-slide v-for="(productItem, productIndex) in carouselMapUrls" :key="productIndex">
             <BmImage
-              :url="productItem"
+              :url="productItem.imgUrl"
               :width="'7.5rem'" 
               :height="'7.5rem'"
               :isLazy="false"
@@ -37,14 +37,16 @@
         <!-- 商品介绍 -->
         <div class="mt-12 bg-white plr-20 ptb-14">
           <div>
-            <span class="fs-16 red fw">{{ $store.state.rate.currency }}49.98</span>
-            <span class="ml-8 grey line-through">{{ $store.state.rate.currency }}260.00</span>
+            <span class="fs-16 red fw">{{ $store.state.rate.currency }}{{ goodSpuVo.minPrice }}</span>
+            <!-- 促销价 -->
+            <!-- <span class="ml-8 grey line-through">{{ $store.state.rate.currency }}260.00</span> -->
           </div>
-          <div class="fs-12 red">
+          <!-- 最小订货量/销售量 -->
+          <!-- <div class="fs-12 red">
             <span class="plr-12 ptb-4 round-8 tag-bgd mt-8 iblock">MOQ: 1PCS</span>
             <span class="plr-12 ptb-4 round-8 tag-bgd mt-8 iblock">Sold: 20PCS</span>
-          </div>
-          <p class="fs-14 block mt-12">Personal Air Cooler,4 in 1 Air Space Conditioner, Mini USB Fan Evaporatice-Humidifier Purifier With 7 Colors LED</p>
+          </div> -->
+          <p class="fs-14 block mt-12">{{ goodSpuVo.goodTitle }}</p>
         </div>
 
         <!-- 运费 -->
@@ -163,9 +165,9 @@
             :options="reviewOption"
             class="mt-12  pl-20 review-swiper"
           >
-            <swiper-slide v-for="(productItem, productIndex) in imgLists" :key="productIndex">
+            <swiper-slide v-for="(productItem, productIndex) in carouselMapUrls" :key="productIndex">
               <BmImage
-                :url="productItem"
+                :url="productItem.imgUrl"
                 :width="'2rem'" 
                 :height="'2rem'"
                 :isLazy="false"
@@ -199,9 +201,9 @@
             :options="recommendOption"
             class="mt-12  pl-20 review-swiper"
           >
-            <swiper-slide v-for="(productItem, productIndex) in imgLists" :key="productIndex">
+            <swiper-slide v-for="(productItem, productIndex) in carouselMapUrls" :key="productIndex">
               <BmImage
-                :url="productItem"
+                :url="productItem.imgUrl"
                 :width="'2rem'" 
                 :height="'2rem'"
                 :isLazy="false"
@@ -346,18 +348,17 @@ export default {
     vanSku: Sku,
     vanStepper: Stepper
   },
-  asyncData({isDev, route, store, env, params, query, req, res, redirect, error}) {
-    let imgLists = [
-      'https://img01.yzcdn.cn/vant/apple-1.jpg',
-      'https://img01.yzcdn.cn/vant/apple-2.jpg',
-      'https://img01.yzcdn.cn/vant/apple-1.jpg',
-      'https://img01.yzcdn.cn/vant/apple-2.jpg',
-      'https://img01.yzcdn.cn/vant/apple-1.jpg',
-      'https://img01.yzcdn.cn/vant/apple-2.jpg',
-    ];
+  async asyncData({app, route}) {
+    const [ detailData ] = await Promise.all([
+      app.$api.getProductDetail(route.params.id), // 获取商品详情
+    ]);
+
+    const carouselMapUrls = detailData.data.carouselMapUrls; // 商品轮播图
+    const detailsPics = detailData.data.detailsPics; // 商品详情中的图片集合
+    const goodSpuVo = detailData.data.goodSpuVo; // 商品基本信息
     
     return {
-      imgLists: imgLists,
+      carouselMapUrls: carouselMapUrls,
       isImgPreview: false,
       swiperOption: {
         pagination: {
@@ -367,12 +368,13 @@ export default {
         on: {
           click: function () { // 轮播点击事件
             ImagePreview({
-              images: imgLists,
+              images: carouselMapUrls,
               startPosition: this.activeIndex
             })
           }
         }
       },
+      goodSpuVo: goodSpuVo,
       freightActive: 1,
       rate: 3,
       reviewOption: {
@@ -481,7 +483,8 @@ export default {
         selectedProp: {
           2: [1193]
         }
-      }
+      },
+      isScroll: false
     }
   },
   methods: {
@@ -489,14 +492,14 @@ export default {
       if (scrollObj.isFixed) {
         // 滚动时格式化样式 sticky-scroll
         if (scrollObj.scrollTop > 2) {
-          // this.$refs.detailStickyContainer.$el.setAttribute('class', this.$refs.detailStickyContainer.$el.className + ' sticky-scroll');
           this.$refs.detailStickyContainer.$el.classList.add('detail-sticky-scroll');
           this.$refs.detailTabContainer.$el.classList.add('sticky-nav');
-          // console.log(this.$refs.detailTabContainer.$el.classList.add('sticky-nav'))
+          this.isScroll = true;
         }
         if (scrollObj.scrollTop < 50) {
           this.$refs.detailStickyContainer.$el.classList.remove('detail-sticky-scroll');
           this.$refs.detailTabContainer.$el.classList.remove('sticky-nav');
+          this.isScroll = false;
         }
       }
     },
@@ -515,7 +518,7 @@ export default {
 
 <style lang="less" scoped>
 .swiper-pagination{
-  bottom: 15px;
+  bottom: 38px;
   left: auto;
   right: 16px;
   width: fit-content;
@@ -553,6 +556,19 @@ export default {
 }
 .bg-ddd{
   background: #DDDDDD!important;
+}
+.col-transparent{
+  background-color: transparent!important;
+}
+.fixed{
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+}
+.mt-6{
+  margin-top: 6px;
 }
 </style>
 

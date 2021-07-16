@@ -66,7 +66,7 @@ export default {
     },
     fit: {
       type: String,
-      default: 'contain'
+      default: 'cover'
     }
   }
 }
