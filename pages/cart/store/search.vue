@@ -87,8 +87,8 @@
       </div>
 
       <div class="order-search__btn flex">
-        <button class="red fw order-search__btn--reset">Reset</button>
-        <button class="white fw bg-green-linear" @click="onFilter">Determine</button>
+        <button class="red fw fs-16 order-search__btn--reset">Reset</button>
+        <button class="white fw fs-16 bg-green-linear" @click="onFilter">Determine</button>
       </div>
     </van-popup>
   </div>

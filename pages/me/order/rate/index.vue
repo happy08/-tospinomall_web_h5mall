@@ -76,9 +76,6 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.h-32{
-  height: 32px!important;
-}
 .mt-18{
   margin-top: 18px;
 }

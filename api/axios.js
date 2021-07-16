@@ -15,11 +15,16 @@ export default function({ $axios, app, redirect, store, route }) {
   
   $axios.onRequest(config => {
     // 调用登录接口的时候需要固定值 Basic YnV5ZXI6YnV5ZXI= , 登录之后需要在headers中传用户token
-    // config.headers['Authorization'] = 'Basic YnV5ZXI6YnV5ZXI=';
+    config.headers['Authorization'] = 'Basic YnV5ZXI6YnV5ZXI=';
     if (config.method === 'post') {
       config.headers['Content-Type'] = config.headers['Content-Type'] || 'application/x-www-form-urlencoded';
     } else {
       config.headers['Content-Type'] = config.headers['Content-Type'] || 'application/json';
+    }
+
+    // 登录之后要重新复值token
+    if (store.state.user.token) {
+      config.headers['Authorization'] = `${store.state.user.token_type} ${store.state.user.token}`;
     }
     // //获取cookie
     // const token = app.$cookies.get('auth');
@@ -69,6 +74,14 @@ export default function({ $axios, app, redirect, store, route }) {
   $axios.onError(error => {
     if (error.code > 0) {
       console.log(error)
+      if (error.code === 10401) { // 用户凭证已过期，跳转到登录页面，清空存储的数据类型
+        store.commit('user/SET_TOKEN', null);
+        // setTimeout(() => {
+          redirect({
+            name: 'login'
+          })
+        // }, 300)
+      }
       tip(error.msg);
       return;
     }

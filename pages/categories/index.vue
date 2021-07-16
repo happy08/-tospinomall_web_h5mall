@@ -2,11 +2,12 @@
   <!-- 分类页面 -->
   <div class="categories-page">
     <!-- 搜索栏 -->
-    <div class="mlr-12 mt-4 mb-4">
+    <div class="mlr-12 mt-4 mb-4" @click="$router.push({ name: 'search' })">
       <van-search 
         v-model="searchVal" 
         placeholder="Enter key words"
         shape="round"
+        disabled
       >
         <!-- <template #right-icon>
           <div class="search-camera">
@@ -51,9 +52,9 @@ import { TreeSelect, Search } from 'vant';
 
 export default {
   async asyncData({ app }) {
-    const [listData, meta] = await Promise.all([
+    const [listData] = await Promise.all([
       app.$api.getCategoryList(), // 分类列表
-      app.$api.getCategorySeo() // 获取SEO信息
+      // app.$api.getCategorySeo() // 获取SEO信息
     ])
     const catrgorieList = listData.data.map(item => {
       return {
@@ -66,7 +67,7 @@ export default {
       list: listData.data,
       catrgorieList: catrgorieList,
       leftLists: catrgorieList[0].children,
-      meta: meta.data
+      meta: {}
     }
   },
   components: {
@@ -169,11 +170,12 @@ export default {
     changeNavEvent(currentIndex) { // 点击左侧切换tab栏
       this.leftLists = this.catrgorieList[currentIndex].children
     },
-    clickItemEvent(data) { // 点击右侧选项触发
+    clickItemEvent(data) { // 点击分类跳转到搜索列表页面
       this.$router.push({
-        name: 'categories-search',
+        name: 'search',
         query: {
-          categoryName: data.name
+          name: data.name,
+          type: 'categoryName'
         }
       })
     }

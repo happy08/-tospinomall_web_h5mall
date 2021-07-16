@@ -99,9 +99,6 @@ export default {
   background-color: #eee;
   margin-top: 25px;
 }
-.h-32{
-  height: 32px!important;
-}
 .time-out{
   border-color: #eee!important;
   color: #BFBFBF!important;

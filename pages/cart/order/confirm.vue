@@ -73,9 +73,6 @@ export default {
   height: 56px;
   position: fixed;
 }
-.h-32{
-  height: 32px!important;
-}
 .ml-18{
   margin-left: 18px!important;
 }

@@ -361,9 +361,6 @@ export default {
 .h-40{
   height: 40px!important;
 }
-.h-32{
-  height: 32px!important;
-}
 .pb-120{
   padding-bottom: 120px;
 }

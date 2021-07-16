@@ -245,10 +245,11 @@ export default {
     EmptyStatus
   },
   async asyncData({ app }) {
-    const [ homeData, categoryList, searchList ] = await Promise.all([
+    const [ homeData, categoryList, searchList, metaData ] = await Promise.all([
       app.$api.getHomeData(), // 组件数据
       app.$api.getCategoryList(), // 分类列表
       app.$api.getProductSearch({ categoryName: '' }), // 搜索商品列表
+      app.$api.getHomeSeo(), // 获取SEO信息
     ]);
 
     return {
@@ -261,7 +262,7 @@ export default {
         ...categoryList.data
       ], // 分类列表
       searchList: searchList.data.items,
-      meta: {}
+      meta: metaData.data
     }
   },
   data() {
@@ -324,9 +325,6 @@ export default {
     }
   },
   created() {
-    this.$api.getHomeSeo().then(res => {
-
-    })
   },
   methods: {
     stickyScroll(scrollObj) { // 吸顶滚动事件

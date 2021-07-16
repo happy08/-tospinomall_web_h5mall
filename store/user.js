@@ -20,7 +20,6 @@ export const mutations = {
     if (state.token === null) { // 退出登录 清除数据
       state.userInfo = null;
       state.token_type = null;
-      localStorage.caler();
     }
   }
 };
