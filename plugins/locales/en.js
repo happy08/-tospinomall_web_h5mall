@@ -295,7 +295,8 @@ const en = {
     reply: 'Reply',
     specification: 'Specification',
     justForYou: 'Just For You',
-    storeInformation: 'Store information'
+    storeInformation: 'Store information',
+    topReviewer: 'Top Reviewer'
   },
   error: {
     default: '连接出错!',

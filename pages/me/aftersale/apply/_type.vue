@@ -182,7 +182,7 @@
       <template #sku-stepper="props">
         <div class="tr plr-20 mt-24">
           <van-stepper v-model="props.selectedNum" input-width="0.796rem" button-size="0.42rem" :integer="true" class="custom-stepper" />
-          <div class="mt-20" v-show="props.selectedSkuComb">in stock: {{ props.selectedSkuComb.stock_num }}</div>
+          <div class="mt-20" v-if="props.selectedSkuComb">in stock: {{ props.selectedSkuComb.stock_num }}</div>
         </div>
       </template>
 

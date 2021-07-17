@@ -1,5 +1,6 @@
 <template>
   <div>
+    <!-- <Nuxt keep-alive /> -->
     <Nuxt />
 
     <!-- 开启顶部安全区适配 -->
