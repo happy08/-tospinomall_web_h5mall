@@ -4,7 +4,6 @@
     :width="width" 
     :height="height" 
     :fit="fit"
-    :lazy-load="isLazy"
     :show-error="isShow"
     :show-loading="isShow"
     :round="round"
@@ -52,10 +51,10 @@ export default {
       type: String,
       default: ''
     },
-    isLazy: {
-      type: Boolean,
-      default: true
-    },
+    // isLazy: {
+    //   type: Boolean,
+    //   default: true
+    // },
     isShow: {
       type: Boolean,
       default: true

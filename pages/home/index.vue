@@ -8,9 +8,8 @@
         :url="require('@/assets/images/logo.png')"
         :width="'.54rem'" 
         :height="'.6rem'"
-        :isLazy="false"
         :isShow="false"
-      ></BmImage>
+      />
       <!-- 搜索框 -->
       <div class="mlr-12 home-page-nav__search" ref="homeSearch" @click="$router.push({ name: 'search' })">
         <van-search
@@ -39,16 +38,15 @@
         :url="require('@/assets/images/message-icon.png')"
         :width="'.64rem'" 
         :height="'.64rem'"
-        :isLazy="false"
         :isShow="false"
-      ></BmImage>
+      />
     </van-sticky>
 
     <!-- 热门搜索种类列表 -->
     <div class="flex popular-search-list">
-      <div class="black round-10 small-single-tag" v-for="(hotItem, index) in hotSearch" :key="'hot-search-' + index">
+      <nuxt-link class="black round-10 m-helvetica small-single-tag" v-for="(hotItem, index) in hotSearch" :key="'hot-search-' + index" tag="div" :to="{ name: 'search', query: { name: hotItem.name, type: 'searchKeyword' } }">
         {{ hotItem.name }}
-      </div>
+      </nuxt-link>
     </div>
     <!-- 
       下面部分全部根据接口下发的进行视图展示 
@@ -58,7 +56,7 @@
       type： 展示格式 1 首页banner 2热区图片 3一行三列 4一行两列
       imageLinkType: 图片链接类型（0:商品链接，1:前端分类id，2:后端分类id，3:品牌，4:FBT，5:FBM，6:外部链接）
     -->
-    <div v-for="(moduleItem, moduleIndex) in moduleData" :key="'module-data-'+moduleIndex">
+    <div v-for="(moduleItem, moduleIndex) in moduleData" :key="'module-data-' + moduleIndex">
       <!-- 整屏轮播图 -->
       <template v-if="moduleItem.type === 1">
         <swiper
@@ -78,9 +76,8 @@
               :errorUrl="require('@/assets/images/product-bgd-375.png')"
               :fit="'cover'"
               :height="'3.72rem'"
-              :isLazy="false"
               class="round-8 hidden"
-            ></BmImage>
+            />
           </swiper-slide>
           <div class="swiper-pagination" slot="pagination"></div>
         </swiper>
@@ -92,8 +89,8 @@
         :url="moduleItem.imageUrl"
         :loadUrl="require('@/assets/images/product-bgd-375.png')"
         :errorUrl="require('@/assets/images/product-bgd-375.png')"
-        :isLazy="false"
-      ></BmImage>
+        @click="onHotDetail(moduleItem)"
+      />
 
       <!-- 一行三列 -->
       <div class="mlr-12 home-page__global" v-if="moduleItem.type === 3">
@@ -308,7 +305,11 @@ export default {
           clickable: true
         },
         loop: true,
-        autoplay: true
+        centeredSlides: true,
+        autoplay: {
+          delay: 2500,
+          disableOnInteraction: false,
+        },
       },
       searchParams: { // 搜索商品列表参数
         categoryName: '' // 分类名称
@@ -349,6 +350,9 @@ export default {
       this.$api.getProductSearch(this.searchParams).then(res => {
         console.log(res)
       })
+    },
+    onHotDetail(hotDetail) { // 点击热区图进行跳转 imageLinkType: 0:商品链接(商品详情页)，跳转到搜索页(1:前端分类id，2:后端分类id，3:品牌，4:FBT，5:FBM，) 6:外部链接(直接打开)
+      console.log(hotDetail)
     }
   },
 };
