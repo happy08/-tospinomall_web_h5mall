@@ -52,9 +52,9 @@ import { TreeSelect, Search } from 'vant';
 
 export default {
   async asyncData({ app }) {
-    const [listData] = await Promise.all([
+    const [listData, meta] = await Promise.all([
       app.$api.getCategoryList(), // 分类列表
-      // app.$api.getCategorySeo() // 获取SEO信息
+      app.$api.getCategorySeo() // 获取SEO信息
     ])
     const catrgorieList = listData.data.map(item => {
       return {
@@ -63,11 +63,12 @@ export default {
         children: item.children
       }
     })
+    
     return {
       list: listData.data,
       catrgorieList: catrgorieList,
       leftLists: catrgorieList[0].children,
-      meta: {}
+      meta: meta.data
     }
   },
   components: {
