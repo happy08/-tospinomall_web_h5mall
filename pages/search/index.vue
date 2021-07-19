@@ -174,16 +174,18 @@ export default {
     ProductTopBtmSingle
   },
   async asyncData({isDev, route, app}) {
-    let searchVal = route.query.name || ''; // 搜索value
-    const searchName = route.query.type; // 搜索类型
+    let searchVal = route.query.val || ''; // 搜索value
+    // const searchName = route.query.type; // 搜索类型
     let isShowTip = searchVal.length > 0 ? false : true;
-
+    console.log(route.query)
+    let _params = route.query;
+    delete _params.val;
     // 如果带着搜索的参数跳转过来的需要先获取相对应的搜索数据
     let list = [];
     if (searchVal) {
       // 获取搜索列表数据
       const [ listData ] = await Promise.all([
-        app.$api.getProductSearch({ [searchName]: searchVal })
+        app.$api.getProductSearch(_params)
       ]);
 
       // 数据列表需要格式化

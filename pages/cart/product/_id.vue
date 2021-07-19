@@ -2,10 +2,14 @@
   <!-- 商品详情页面 -->
   <div class="vh-100 bg-grey pb-56">
     <van-sticky ref="detailStickyContainer" :offset-top="0" @scroll="stickyScroll">
-      <BmHeaderNav :left="{ isShow: true }" :bg_color="!isScroll ? 'col-transparent': 'white'" :border="false" :color="!isScroll ? 'white': 'black'" :class="{'fixed': !isScroll}">
-        <nuxt-link :to="{ name: 'search' }" tag="div" slot="header-left" class="flex between sticky-opacity ml-14">
-          <van-search v-model="searchVal" disabled class="round-20 hidden" />
-        </nuxt-link>
+      <BmHeaderNav :left="{ isShow: isScroll ? true : false }" :bg_color="!isScroll ? 'col-transparent': 'white'" :border="false" :color="!isScroll ? 'white': 'black'" :class="{'fixed': !isScroll}">
+        <div slot="header-left" class="flex between">
+          <van-icon :name="require('@/assets/images/icon/back-icon.png')" size="0.64rem" v-show="!isScroll" @click="leftBack"></van-icon>
+          <nuxt-link :to="{ name: 'search' }" tag="div"  class="sticky-opacity ml-14">
+            <van-search v-model="searchVal" disabled class="round-20 hidden" />
+          </nuxt-link>
+        </div>
+        
         <div slot="header-right">
           <van-icon :name="require('@/assets/images/icon/cart-bgd.svg')" size="0.64rem" class="mt-6" />
         </div>
@@ -648,6 +652,15 @@ export default {
         title: '',
         desc: '选择省份',
         city: ['广东省', '陕西省', '山西省']
+      }
+    },
+    leftBack() {
+      if(window.history.length < 2){ //解决部分机型拿不到history
+        console.log('go home');
+        this.$router.replace('/');
+      }else{
+        console.log('back');
+        history.back();
       }
     }
   },

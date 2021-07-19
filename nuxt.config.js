@@ -1,10 +1,13 @@
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
+  server: {
+    host: '0.0.0.0'
+  },
   head: {
     title: "B2CWebH5",
     meta: [
       { charset: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, viewport-fit=cover" },
+      { name: "viewport", content: "width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, viewport-fit=cover, user-scalable=no" },
       { hid: "description", name: "description", content: "Tospino Ghana online shopping" }
     ],
     link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }],
@@ -35,7 +38,8 @@ export default {
     { src: "@/plugins/utils", ssr: false },
     "@/plugins/routeguard.js",
     "@/plugins/swiper.js",
-    { src: '@/plugins/store-cache', ssr: false }
+    { src: '@/plugins/store-cache', ssr: false },
+    { src: '@/plugins/vconsole', ssr: false }
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components

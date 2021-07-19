@@ -44,8 +44,8 @@
 
     <!-- 热门搜索种类列表 -->
     <div class="flex popular-search-list">
-      <nuxt-link class="black round-10 m-helvetica small-single-tag" v-for="(hotItem, index) in hotSearch" :key="'hot-search-' + index" tag="div" :to="{ name: 'search', query: { name: hotItem.name, type: 'searchKeyword' } }">
-        {{ hotItem.name }}
+      <nuxt-link class="black round-10 fm-pf-r small-single-tag" v-for="(hotItem, index) in hotSearch" :key="'hot-search-' + index" :to="{ name: 'search', query: { name: hotItem.name, type: 'searchKeyword' } }" v-slot="{ navigate }">
+        <div @click="navigate" role="link">{{ hotItem.name }}</div>
       </nuxt-link>
     </div>
     <!-- 
@@ -57,6 +57,7 @@
       imageLinkType: 图片链接类型（0:商品链接，1:前端分类id，2:后端分类id，3:品牌，4:FBT，5:FBM，6:外部链接）
     -->
     <div v-for="(moduleItem, moduleIndex) in moduleData" :key="'module-data-' + moduleIndex">
+      <h2 class="fs-18 mlr-12 fw black pt-20 lh-20 fm-din-alternate" v-if="moduleItem.moduleTitleDisplay">{{ moduleItem.moduleTitle }}</h2>
       <!-- 整屏轮播图 -->
       <template v-if="moduleItem.type === 1">
         <swiper
@@ -84,18 +85,21 @@
       </template>
 
       <!-- 热区图片 -->
-      <BmImage
-        v-if="moduleItem.type === 2"
-        :url="moduleItem.imageUrl"
-        :loadUrl="require('@/assets/images/product-bgd-375.png')"
-        :errorUrl="require('@/assets/images/product-bgd-375.png')"
-        @click="onHotDetail(moduleItem)"
-      />
+      <template v-if="moduleItem.type === 2">
+        <div class="fs-0 hot-container" :ref="'hotContainer' + moduleIndex">
+          <BmImage
+            :url="moduleItem.imageUrl"
+            :loadUrl="require('@/assets/images/product-bgd-375.png')"
+            :errorUrl="require('@/assets/images/product-bgd-375.png')"
+          />
+          <!-- 图片坐标 -->
+          <div v-for="hotItem, hotIndex in moduleItem.componentDetails" :key="'hot-picture-' + hotIndex" class="bg-white hot-container__position" :ref="'hotPosition' + moduleIndex + hotIndex" :style="hotStyle(hotItem, 'hotPosition' + moduleIndex + hotIndex, 'hotContainer' + moduleIndex)" @click="onHotDetail(hotItem)"></div>
+        </div>
+      </template>
+      
 
       <!-- 一行三列 -->
       <div class="mlr-12 home-page__global" v-if="moduleItem.type === 3">
-        <!-- <h2 class="fs-18 fw black mt-20 lh-20" v-if="moduleItem.moduleTitleDisplay" v-html="moduleItem.moduleTitle"></h2> -->
-        <h2 class="fs-18 fw black mt-20 lh-20">一行三列</h2>
         <!-- 轮播展示 -->
         <swiper
           ref="swiperComponentRef"
@@ -108,11 +112,13 @@
         >
           <swiper-slide v-for="(productItem, productIndex) in moduleItem.componentDetails" :key="productIndex">
             <!-- 图片、标题、价格 id goodsId productItem.mainPictureUrl -->
-            <ProductTopBtmSingle
-              class="m-auto"
-              :img="{ url: productItem.imageUrl, width: '2.24rem', height: '2.4rem', loadImage: require('@/assets/images/product-bgd-90.png') }" 
-              :detail="{ desc: productItem.goodTitle, price: productItem.price, ellipsis: 2 }"
-            ></ProductTopBtmSingle>
+            <nuxt-link :to="{ name: 'cart-product-id', params: { id: productItem.goodsId } }" class="block">
+              <ProductTopBtmSingle
+                class="m-auto"
+                :img="{ url: productItem.mainPictureUrl, width: '2.24rem', height: '1.9rem', loadImage: require('@/assets/images/product-bgd-90.png') }" 
+                :detail="{ desc: productItem.goodTitle, price: productItem.price, ellipsis: 2 }"
+              />
+            </nuxt-link>
           </swiper-slide>
           <div class="swiper-pagination" v-if="moduleItem.effect" slot="pagination"></div>
         </swiper>
@@ -120,18 +126,19 @@
 
       <!-- 一行两列 -->
       <template v-if="moduleItem.type === 4">
-        <h2 class="fs-18 mlr-12 fw black mt-20 lh-20">一行两列</h2>
         <div class="mlr-12 mt-20 flex between">
-          <ProductTopBtmSingle
-            :img="{ url: productType4Item.imageUrl, width: '3.4rem', height: '3.4rem', loadImage: require('@/assets/images/product-bgd-170.png') }" 
-            :detail="{ desc: productType4Item.goodTitle, price: productType4Item.price, rate: 2.5, volumn: productType4Item.salesVolume, ellipsis: 2 }"
+          <nuxt-link 
+            :to="{ name: 'cart-product-id', params: { id: productType4Item.goodsId } }" class="block" 
             v-for="(productType4Item, productIndex) in moduleItem.componentDetails" 
             :key="productIndex"
-          ></ProductTopBtmSingle>
+          >
+            <ProductTopBtmSingle
+              :img="{ url: productType4Item.mainPictureUrl, width: '3.4rem', height: '3.4rem', loadImage: require('@/assets/images/product-bgd-170.png') }" 
+              :detail="{ desc: productType4Item.goodTitle, price: parseFloat(productType4Item.price), rate: parseFloat(productType4Item.starLevel), volumn: parseFloat(productType4Item.salesVolume), ellipsis: 2 }"
+            />
+          </nuxt-link>
         </div>
       </template>
-
-      
     </div>
     
     <!-- 商品种类栏 -->
@@ -206,17 +213,21 @@
       </div>
     </div> -->
     <!-- 滚动标签栏部分 -->
-    <van-tabs sticky swipeable animated :offset-top="44" color="#42B7AE"  @change="getSearchList">
-      <van-tab v-for="(categoryItem, tabIndex) in categoryList" :title="categoryItem.name" :key="'scroll-tab-' + tabIndex" title-class="pb-0" :name="categoryItem.name">
-        <div class="mlr-12 mt-20 flex between flex-wrap">
+    <van-tabs sticky swipeable animated :offset-top="44" color="#42B7AE" v-model="tabCategoryActive" :before-change="getSearchList" class="mt-20 mh-83 custom-home-tab" :ellipsis="false">
+      <van-tab v-for="(categoryItem, tabIndex) in categoryList" :title="categoryItem.name" :key="'scroll-tab-' + tabIndex" :name="categoryItem.name">
+        <div class="mlr-12 flex between vcenter flex-wrap">
           <empty-status v-if="searchList.length === 0" :image="require('@/assets/images/empty/order.png')" />
-          <ProductTopBtmSingle
+          <nuxt-link
             v-else
-            :img="{ url: '', width: '3.4rem', height: '3.4rem', loadImage: require('@/assets/images/product-bgd-170.png') }" 
-            :detail="{ desc: categoryItem.name, price: 49.92, rate: 2.5, volumn: 50, ellipsis: 2 }"
-            v-for="(searchItem, searchIndex) in searchList" 
+            v-for="(searchItem, searchIndex) in searchList"
             :key="'search-list-' + searchIndex"
-          ></ProductTopBtmSingle>
+            :to="{ name: 'cart-product-id', params: { id: searchItem.productId } }"
+            class="block mt-10">
+            <ProductTopBtmSingle
+              :img="{ url: searchItem.mainPictureUrl, width: '3.4rem', height: '3.4rem', loadImage: require('@/assets/images/product-bgd-170.png') }" 
+              :detail="{ desc: searchItem.productTitle, price: searchItem.productPrice, rate: searchItem.starLevel, volumn: searchItem.saleCount, ellipsis: 2 }"
+            />
+          </nuxt-link>
         </div>
       </van-tab>
     </van-tabs>
@@ -258,7 +269,14 @@ export default {
         },
         ...categoryList.data
       ], // 分类列表
-      searchList: searchList.data.items,
+      searchList: searchList.data.items.map(item => {
+        return {
+          ...item,
+          starLevel: parseFloat(item.starLevel),
+          saleCount: parseFloat(item.saleCount),
+          productPrice: parseFloat(item.productPrice)
+        }
+      }),
       meta: metaData.data
     }
   },
@@ -313,7 +331,8 @@ export default {
       },
       searchParams: { // 搜索商品列表参数
         categoryName: '' // 分类名称
-      }
+      },
+      tabCategoryActive: '全部'
     }
   },
   head() { // 头部设置，方便seo
@@ -324,8 +343,6 @@ export default {
         { hid: 'keywords', name: 'keywords', content: this.meta.keywords || 'Tospino Ghana online shopping' }
       ]
     }
-  },
-  created() {
   },
   methods: {
     stickyScroll(scrollObj) { // 吸顶滚动事件
@@ -339,24 +356,95 @@ export default {
         }
       }
     },
-    onSwiper(swiper) {
-      console.log(swiper);
-    },
-    onSlideChange() {
-      console.log('slide change');
-    },
-    getSearchList(searchVal) { // 获取搜索商品列表
-      this.searchParams.categoryName = searchVal;
-      this.$api.getProductSearch(this.searchParams).then(res => {
-        console.log(res)
+    getSearchList(name) { // 获取搜索商品列表
+      this.tabCategoryActive = name === '全部' ? '' : name;
+      this.$api.getProductSearch({ categoryName: this.tabCategoryActive }).then(res => {
+        this.searchList = res.data.items.map(item => {
+          return {
+            ...item,
+            starLevel: parseFloat(item.starLevel),
+            saleCount: parseFloat(item.saleCount),
+            productPrice: parseFloat(item.productPrice)
+          }
+        })
       })
     },
     onHotDetail(hotDetail) { // 点击热区图进行跳转 imageLinkType: 0:商品链接(商品详情页)，跳转到搜索页(1:前端分类id，2:后端分类id，3:品牌，4:FBT，5:FBM，) 6:外部链接(直接打开)
-      console.log(hotDetail)
+      if (hotDetail.imageLinkType == 6) {
+        location.href = hotDetail.outerLink;
+        return false;
+      }
+      
+      if (hotDetail.imageLinkType == 0) { // 商品详情页
+        this.$router.push({
+          name: 'cart-product-id',
+          params: {
+            id: hotDetail.goodsId
+          }
+        })
+        return false;
+      }
+      // 下面全是跳转到搜索页面
+      let _query = null;
+      if (hotDetail.imageLinkType == 3) { // 搜索品牌
+        _query = {
+          brandId: hotDetail.brandId,
+          val: hotDetail.brandId
+        }
+      }
+      if (hotDetail.imageLinkType == 4) {
+        _query = {
+          deliveryType: 2,
+          fbtCountrys: hotDetail.fbtCountrys,
+          val: 2
+        }
+      }
+      if (hotDetail.imageLinkType == 5) {
+        _query = {
+          deliveryType: 1,
+          val: 1,
+          fbmCountrys: hotDetail.fbmCountrys
+        }
+      }
+      if (hotDetail.imageLinkType == 1 || hotDetail.imageLinkType == 2) { // 不论是前端分类还是后端分类，都传后端分类id进行搜索
+        _query = {
+          categoryId: hotDetail.serverMenuId
+        }
+      }
+
+      this.$router.push({
+        name: 'search',
+        query: _query
+      })
+    },
+    hotStyle(hotItem, ele, container) { // 热区图位置计算
+      if (process.client) {
+        this.$nextTick(() => {
+          const _w = this.$refs[container][0].clientWidth;
+          const _h = this.$refs[container][0].clientHeight;
+          console.log(_w, _h)
+          this.$refs[ele][0].style.width = (hotItem.areaWidth / 100 * _w / 50) + 'rem';
+          this.$refs[ele][0].style.left = (hotItem.positionX / 100 * _w / 50) + 'rem';
+          this.$refs[ele][0].style.height =  (hotItem.areaHeight / 100 * _h / 50) + 'rem';
+          this.$refs[ele][0].style.top = (hotItem.positionY / 100 * _h / 50) + 'rem';
+        })
+      }
     }
-  },
+  }
 };
 </script>
+
+<style lang="less" scoped>
+.hot-container{
+  position: relative;
+  .hot-container__position{
+    position: absolute;
+  }
+}
+.mh-83{
+  min-height: 83vh;
+}
+</style>
 
 <style lang="less">
 @import url('../../assets/css/home.less');

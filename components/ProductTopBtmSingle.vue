@@ -9,9 +9,10 @@
       :isLazy="true"
       :loadUrl="img.loadImage"
       :errorUrl="img.loadImage"
-    ></BmImage>
+      class="hidden round-8"
+    />
     <!-- 商品的信息 -->
-    <div class="pt-12 pb-20 plr-4 bg-white" v-if="detail">
+    <div class="pt-12 plr-4 bg-white" v-if="detail">
       <div class="flex vcenter pb-12" v-if="detail.country">
         <BmImage 
           :url="detail.country_url"
@@ -21,14 +22,16 @@
           :loadUrl="img.loadImage"
           :errorUrl="img.loadImage"
           :round="true"
-        ></BmImage>
+        />
         <span class="fs-10 color_666 ml-10">{{ detail.country }}</span>
       </div>
-      <p class="fs-14 black" v-if="detail.desc" v-html="detail.desc" :class="{ 'hidden-1': detail.ellipsis === 1, 'hidden-2': detail.ellipsis === 2 }"></p>
-      <van-rate class="mt-10" v-if="detail.rate" v-model="detail.rate" allow-half size="0.24rem" color="#F7B500" void-color="#DDDDDD" void-icon="star" />
-      <div class="mt-12 flex between hidden-1 plr-4 vcenter" v-if="detail.price">
+      <!-- 商品描述 -->
+      <p class="fs-14 black lh-20 fm-pf-r" v-if="detail.desc" v-html="detail.desc" :class="{ 'hidden-1': detail.ellipsis === 1, 'hidden-2': detail.ellipsis === 2 }"></p>
+      <!-- 评分 -->
+      <van-rate class="mt-10" v-if="detail.rate >= 0" v-model="detail.rate" allow-half size="0.24rem" color="#F7B500" void-color="#DDDDDD" void-icon="star" />
+      <div class="mt-12 flex between hidden-1 plr-4 vcenter" v-if="detail.price >= 0">
         <span class="red fs-16 fw">
-          {{ $store.state.rate.currency }}{{ detail.price }} 
+          <span class="fm-menlo">{{ $store.state.rate.currency }}</span><span class="fm-din">{{ detail.price }}</span>
         </span>
         <span v-if="detail.volumn" class="fs-10 clr-black-25">{{ detail.volumn }}+Sold</span>
       </div>
@@ -59,9 +62,9 @@ export default {
       default: function () {
         return {
           desc: '', // 描述语
-          rate: '', // 评分
+          rate: 0, // 评分
           price: 0, // 价格
-          volumn: '60+', // 累加
+          volumn: 0, // 累加
           ellipsis: 2, // 展示几行
           country: '', // 国家
           country_url: '' // 国家logo
@@ -71,8 +74,6 @@ export default {
   },
   components: {
     vanRate: Rate
-  },
-  created() {
   }
 }
 </script>
@@ -80,5 +81,8 @@ export default {
 <style lang="less" scoped>
 .color_666{
   color: #666;
+}
+.h-40{
+  height: 40px;
 }
 </style>
