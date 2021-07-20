@@ -34,7 +34,7 @@ export function getPicUrl(data) {
   return request({
     url: '/api/admin/oss/create/object/product-pic-bucket/user_pic',
     method: 'post',
-    data,
+    data: data,
     headers: {
       'Content-Type': 'form-data'
     }

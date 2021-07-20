@@ -115,5 +115,6 @@ export default {
       })
     ]
   },
-  loading: false
+  loading: false, // 加载进度条
+  resourceHints: false, // 资源提示,加快初始页面加载时间
 };
