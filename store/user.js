@@ -5,7 +5,8 @@ export const state = () => ({
   token_type: null,
   userInfo: {
     headPictureUrl: ''
-  }
+  },
+  searchList: []
 });
 
 export const mutations = {
@@ -21,6 +22,13 @@ export const mutations = {
       state.userInfo = null;
       state.token_type = null;
     }
+  },
+  SET_SEARCHLIST(state, searchItem) {
+    if (searchItem === null) {
+      state.searchList = [];
+      return false;
+    }
+    state.searchList.unshift(searchItem);
   }
 };
 

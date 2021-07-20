@@ -16,13 +16,21 @@
     <template v-if="isShowTip != -1">
       <div class="mlr-20 mt-12" v-show="isShowTip">
         <!-- 搜索历史 -->
-        <h2 class="fs-14 black flex between vcenter">{{ $t('search.history') }} <BmIcon :name="'shanchu'" :width="'0.32rem'" :height="'0.32rem'" @click="deleteFn"></BmIcon></h2>
-        <div class="mt-20">
-          <span class="plr-10 round-8 mr-12 iblock mb-10 tag-name" v-for="(tag, index) in $t('me.feedback.typeLists')" :key="index">{{ tag }}</span>
+        <h2 class="fs-14 black flex between vcenter" v-if="$store.state.user.searchList.length > 0">
+          <span>{{ $t('search.history') }}</span>
+          <div  @click="deleteFn">
+            <BmIcon :name="'shanchu'" :width="'0.32rem'" :height="'0.32rem'" />
+          </div>
+        </h2>
+        <div class="mt-12 flex flex-wrap">
+          <span class="plr-10 round-8 mr-10 iblock mb-10 lh-20 tag-name" v-for="(tag, index) in searchHistoryList" :key="index">{{ tag }}</span>
+          <span v-show="$store.state.user.searchList.length > 6 && historyNum === 6" @click="historyNum = $store.state.user.searchList.length">
+            <BmIcon :name="'down-icon'" :width="'0.64rem'" :height="'0.64rem'" />
+          </span>
         </div>
         <!-- 搜索发现 -->
-        <h2 class="fs-14 black">{{ $t('search.found') }}</h2>
-        <div class="mt-20">
+        <h2 class="fs-14 black mt-30">{{ $t('search.found') }}</h2>
+        <div class="mt-12">
           <span class="plr-10 round-8 mr-12 iblock mb-10 tag-name" v-for="(tag, index) in $t('me.feedback.typeLists')" :key="index">{{ tag }}</span>
         </div>
       </div>
@@ -173,36 +181,6 @@ export default {
     EmptyStatus,
     ProductTopBtmSingle
   },
-  async asyncData({isDev, route, app}) {
-    let searchVal = route.query.val || ''; // 搜索value
-    // const searchName = route.query.type; // 搜索类型
-    let isShowTip = searchVal.length > 0 ? false : true;
-    console.log(route.query)
-    let _params = route.query;
-    delete _params.val;
-    // 如果带着搜索的参数跳转过来的需要先获取相对应的搜索数据
-    let list = [];
-    if (searchVal) {
-      // 获取搜索列表数据
-      const [ listData ] = await Promise.all([
-        app.$api.getProductSearch(_params)
-      ]);
-
-      // 数据列表需要格式化
-      list = listData.data.items.map(item => {
-        return {
-          ...item,
-          starLevel: parseFloat(item.starLevel)
-        }
-      });
-    }
-    
-    return {
-      searchVal: searchVal,
-      isShowTip: isShowTip,
-      list: list
-    }
-  },
   data() {
     return {
       arrangeType: 1,
@@ -232,7 +210,31 @@ export default {
       sortMap: {},
       filterPopup: false,
       minPrice: '',
-      maxPrice: ''
+      maxPrice: '',
+      searchVal: '',
+      isShowTip: true,
+      list: [],
+      historyNum: 6
+    }
+  },
+  async fetch() {
+    this.searchVal = this.$route.query.val || ''; // 搜索value
+    this.isShowTip = this.searchVal.length > 0 ? false : true;
+
+    let _params = this.$route.query;
+    delete _params.val;
+    // // 如果带着搜索的参数跳转过来的需要先获取相对应的搜索数据
+    if (this.searchVal) {
+      this.$store.commit('user/SET_SEARCHLIST', this.searchVal); // 搜索历史存储
+      // 获取搜索列表数据
+      const listData = await this.$api.getProductSearch(_params);
+      // 数据列表需要格式化
+      this.list = listData.data.items.map(item => {
+        return {
+          ...item,
+          starLevel: parseFloat(item.starLevel)
+        }
+      });
     }
   },
   filters: {
@@ -240,12 +242,23 @@ export default {
       return parseFloat(val)
     }
   },
+  computed: {
+    searchHistoryList() {
+      return this.$store.state.user.searchList.filter((item, index) => {
+        return index < this.historyNum;
+      });
+    }
+  },
+  activated() {
+    this.$fetch();
+  },
   methods: {
     deleteFn() { // 删除历史记录
+      console.log('---')
       this.$dialog.confirm({
         message: '确认删除全部历史记录',
       }).then(() => { // 确认删除历史记录
-
+        this.$store.commit('user/SET_SEARCHLIST', null);
       })
     },
     inputChange(val) { // 输入框内容变化时触发的事件
@@ -258,6 +271,7 @@ export default {
       console.log(name, title)
     },
     onSearch(val) { // 搜索
+      this.$store.commit('user/SET_SEARCHLIST', val); // 搜索历史存储
       this.$api.getProductSearch({ searchKeyword: val }).then(res => {
         this.list = res.data.items.map(item => {
           return {
@@ -283,7 +297,6 @@ export default {
 
 <style lang="less" scoped>
 .tag-name{
-  line-height: 17px;
   padding-top: 6px;
   padding-bottom: 6px;
   background-color: #F8F8F8;

@@ -1,7 +1,7 @@
 <template>
   <div>
-    <Nuxt keep-alive :keep-alive-props="{ max: 3 }" />
-    <!-- <Nuxt /> -->
+    <!-- <Nuxt keep-alive :keep-alive-props="{ max: 3 }" /> -->
+    <Nuxt />
   </div>
 </template>
 

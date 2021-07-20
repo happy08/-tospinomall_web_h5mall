@@ -59,7 +59,7 @@
 
       <!-- 热门搜索种类列表 -->
       <div class="flex popular-search-list">
-        <nuxt-link class="black round-10 fm-pf-r small-single-tag" v-for="(hotItem, index) in hotSearch" :key="'hot-search-' + index" :to="{ name: 'search', query: { name: hotItem.name, type: 'searchKeyword' } }" v-slot="{ navigate }">
+        <nuxt-link class="black round-10 fm-pf-r small-single-tag" v-for="(hotItem, index) in hotSearch" :key="'hot-search-' + index" :to="{ name: 'search', query: { val: hotItem.name, searchKeyword: hotItem.name } }" v-slot="{ navigate }">
           <div @click="navigate" role="link">{{ hotItem.name }}</div>
         </nuxt-link>
       </div>
@@ -143,7 +143,8 @@
         <template v-if="moduleItem.type === 4">
           <div class="mlr-12 mt-20 flex between">
             <nuxt-link 
-              :to="{ name: 'cart-product-id', params: { id: productType4Item.goodsId } }" class="block" 
+              :to="{ name: 'cart-product-id', params: { id: productType4Item.goodsId } }"
+              class="iblock" 
               v-for="(productType4Item, productIndex) in moduleItem.componentDetails" 
               :key="productIndex"
             >
