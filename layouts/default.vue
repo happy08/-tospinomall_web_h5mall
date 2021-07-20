@@ -1,13 +1,7 @@
 <template>
   <div>
-    <!-- <Nuxt keep-alive /> -->
-    <Nuxt />
-
-    <!-- 开启顶部安全区适配 -->
-    <!-- <van-nav-bar safe-area-inset-top /> -->
-
-    <!-- 开启底部安全区适配 -->
-    <!-- <van-number-keyboard safe-area-inset-bottom /> -->
+    <Nuxt keep-alive :keep-alive-props="{ max: 3 }" />
+    <!-- <Nuxt /> -->
   </div>
 </template>
 

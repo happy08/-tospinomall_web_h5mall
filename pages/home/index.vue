@@ -43,7 +43,7 @@
     </van-sticky>
 
     <!-- 下拉刷新 -->
-    <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
+    <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
       <!-- 加载提示 -->
       <template #loading>
         <van-loading color="#42B7AE" />
@@ -228,22 +228,43 @@
         </div>
       </div> -->
       <!-- 滚动标签栏部分 -->
-      <van-tabs sticky swipeable animated :offset-top="'0.88rem'" color="#42B7AE" v-model="tabCategoryActive" :before-change="getSearchList" class="mt-20 mh-83 custom-home-tab" :ellipsis="false">
+      <van-tabs sticky swipeable animated :offset-top="'0.88rem'" color="#42B7AE" v-model="tabCategoryActive" @change="getSearchList" class="mt-20 mh-83 custom-home-tab" :ellipsis="false">
         <van-tab v-for="(categoryItem, tabIndex) in categoryList" :title="categoryItem.name" :key="'scroll-tab-' + tabIndex" :name="categoryItem.name">
-          <div class="mlr-12 waterfall" ref="waterfall">
-            <empty-status v-if="searchList.length === 0" :image="require('@/assets/images/empty/order.png')" />
-            <nuxt-link
-              v-else
-              v-for="(searchItem, searchIndex) in searchList"
-              :key="'search-list-' + searchIndex"
-              :to="{ name: 'cart-product-id', params: { id: searchItem.productId } }"
-              class="iblock mt-10 waterfall-single">
-              <ProductTopBtmSingle
-                :img="{ url: searchItem.mainPictureUrl, width: '3.4rem', height: '3.4rem', loadImage: require('@/assets/images/product-bgd-170.png') }" 
-                :detail="{ desc: searchItem.productTitle, price: searchItem.productPrice, rate: searchItem.starLevel, volumn: searchItem.saleCount, ellipsis: 2 }"
-              />
-            </nuxt-link>
-          </div>
+          <empty-status v-if="searchList.length === 0" :image="require('@/assets/images/empty/order.png')" class="mlr-12 mh-83" />
+          <van-list
+            v-else
+            v-model="loading"
+            :finished="finished"
+            @load="onLoad"
+            class="mlr-12"
+          >
+            <!-- 加载中提示 -->
+            <template #loading>
+              <div class="hcenter">
+                <van-loading color="#42B7AE" />loading...
+              </div>
+            </template>
+            <template #finished>
+              <div class="hcenter">没有多余数据了</div>
+            </template>
+            <template #error>
+              <div class="hcenter">加载失败</div>
+            </template>
+
+            <!-- 瀑布流 -->
+            <div class="flex between flex-wrap">
+              <nuxt-link
+                v-for="(searchItem, searchIndex) in searchList"
+                :key="'search-list-' + searchIndex"
+                :to="{ name: 'cart-product-id', params: { id: searchItem.productId } }"
+                class="iblock mt-10">
+                <ProductTopBtmSingle
+                  :img="{ url: searchItem.mainPictureUrl, width: '3.4rem', height: '3.4rem', loadImage: require('@/assets/images/product-bgd-170.png') }" 
+                  :detail="{ desc: searchItem.productTitle, price: searchItem.productPrice, rate: searchItem.starLevel, volumn: searchItem.saleCount, ellipsis: 2 }"
+                />
+              </nuxt-link>
+            </div>
+          </van-list>
         </van-tab>
       </van-tabs>
 
@@ -256,7 +277,7 @@
 </template>
 
 <script>
-import { Search, CountDown, Sticky, Tab, Tabs, PullRefresh, Loading } from 'vant';
+import { Search, CountDown, Sticky, Tab, Tabs, PullRefresh, Loading, List } from 'vant';
 import ProductTopBtmSingle from '@/components/ProductTopBtmSingle';
 import EmptyStatus from '@/components/EmptyStatus';
 
@@ -269,6 +290,7 @@ export default {
     vanCountDown: CountDown,
     vanPullRefresh: PullRefresh,
     vanLoading: Loading,
+    vanList: List,
     ProductTopBtmSingle,
     EmptyStatus
   },
@@ -300,21 +322,26 @@ export default {
         },
       },
       tabCategoryActive: '全部',
-      isLoading: false,
+      refreshing: false,
       hotSearch: [],
       moduleData: [],
       categoryList: [],
       searchList: [],
-      meta: {}
+      meta: {},
+      loading: false,
+      finished: false,
+      pageIndex: 1,
+      pageSize: 10,
+      tabTotal: 0
     }
   },
   async fetch() {
     const metaData = await this.$api.getHomeSeo(); // 获取SEO信息
     const homeData = await this.$api.getHomeData(); // 组件数据
     const categoryList = await this.$api.getCategoryList(); // 分类列表
-    const searchList = await this.$api.getProductSearch({ categoryName: '' }); // 搜索商品列表
+    const searchList = await this.$api.getProductSearch({ categoryName: '', pageSize: this.pageSize, pageIndex: this.pageIndex }); // 搜索商品列表
 
-    this.isLoading = false;
+    this.refreshing = false;
     this.meta = metaData.data;
     this.hotSearch = homeData.data.hotSearch; // 热门搜索
     this.moduleData = homeData.data.components; // 需要展示的模块数据
@@ -332,6 +359,8 @@ export default {
         productPrice: parseFloat(item.productPrice)
       }
     })
+
+    this.tabTotal = searchList.data.total; // 搜索商品列表商品总数目
   },
   head() { // 头部设置，方便seo
     return {
@@ -341,6 +370,9 @@ export default {
         { hid: 'keywords', name: 'keywords', content: this.meta.keywords || 'Tospino Ghana online shopping' }
       ]
     }
+  },
+  activated() {
+    this.$fetch();
   },
   methods: {
     stickyScroll(scrollObj) { // 吸顶滚动事件
@@ -355,8 +387,8 @@ export default {
       }
     },
     getSearchList(name) { // 获取搜索商品列表
-      this.tabCategoryActive = name === '全部' ? '' : name;
-      this.$api.getProductSearch({ categoryName: this.tabCategoryActive }).then(res => {
+      const categoryName = name === '全部' ? '' : name;
+      this.$api.getProductSearch({ categoryName: categoryName, pageIndex: 1, pageSize: this.pageSize }).then(res => {
         this.searchList = res.data.items.map(item => {
           return {
             ...item,
@@ -368,7 +400,6 @@ export default {
       })
     },
     onHotDetail(hotDetail) { // 点击热区图进行跳转 imageLinkType: 0:商品链接(商品详情页)，跳转到搜索页(1:前端分类id，2:后端分类id，3:品牌，4:FBT，5:FBM，) 6:外部链接(直接打开)
-      console.log(hotDetail)
       if (hotDetail.imageLinkType == 6) {
         location.href = hotDetail.outerLink;
         return false;
@@ -394,7 +425,7 @@ export default {
       if (hotDetail.imageLinkType == 4) {
         _query = {
           deliveryType: 2,
-          fbtCountrys: hotDetail.fbtCountrys,
+          fbtStocks: hotDetail.fbtCountrys,
           val: 2
         }
       }
@@ -402,7 +433,7 @@ export default {
         _query = {
           deliveryType: 1,
           val: 1,
-          fbmCountrys: hotDetail.fbmCountrys
+          fbmStocks: hotDetail.fbmCountrys
         }
       }
       if (hotDetail.imageLinkType == 1 || hotDetail.imageLinkType == 2) { // 不论是前端分类还是后端分类，都传后端分类id进行搜索
@@ -438,6 +469,31 @@ export default {
     },
     onRefresh() { // 下拉刷新
       this.$fetch();
+    },
+    onLoad() { // 滚动加载
+      if (this.tabTotal == this.searchList.length) { // 没有下一页了
+        this.finished = true;
+        this.loading = false;
+        return false;
+      }
+      this.pageIndex += 1;
+      this.$api.getProductSearch({ categoryName: this.tabCategoryActive === '全部' ? '' : this.tabCategoryActive, pageSize: this.pageSize, pageIndex: this.pageIndex }).then(res => { // 搜索商品列表
+        
+        this.tabTotal = res.data.total;
+        let list = res.data.items.map(item => { // 搜索商品列表
+          return {
+            ...item,
+            starLevel: parseFloat(item.starLevel),
+            saleCount: parseFloat(item.saleCount),
+            productPrice: parseFloat(item.productPrice)
+          }
+        })
+
+        this.searchList = this.searchList.concat(list);
+        
+        // 加载状态结束
+        this.loading = false;
+      });
     }
   },
   beforeDestroy(){
