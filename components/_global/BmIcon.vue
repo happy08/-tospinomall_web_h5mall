@@ -3,6 +3,7 @@
     class="icon"
     aria-hidden="true"
     :style="`width:${width};height:${height}`"
+    @click="iconClick"
   >
     <use :xlink:href="'#icon-' + name" :fill="color"></use>
   </svg>
@@ -10,7 +11,7 @@
 
 <script>
 export default {
-  name: "BmIcon",
+  name: 'BmIcon',
   props: {
     name: {
       type: String,
@@ -28,6 +29,11 @@ export default {
       type: String,
       default: "20px",
     },
+  },
+  methods: {
+    iconClick() {
+      this.$emit('iconClick')
+    }
   },
 };
 </script>

@@ -18,15 +18,11 @@
         <!-- 搜索历史 -->
         <h2 class="fs-14 black flex between vcenter" v-if="$store.state.user.searchList.length > 0">
           <span>{{ $t('search.history') }}</span>
-          <div  @click="deleteFn">
-            <BmIcon :name="'shanchu'" :width="'0.32rem'" :height="'0.32rem'" />
-          </div>
+          <BmIcon :name="'shanchu'" :width="'0.32rem'" :height="'0.32rem'" @iconClick="deleteFn" />
         </h2>
         <div class="mt-12 flex flex-wrap">
           <span class="plr-10 round-8 mr-10 iblock mb-10 lh-20 tag-name" v-for="(tag, index) in searchHistoryList" :key="index">{{ tag }}</span>
-          <span v-show="$store.state.user.searchList.length > 6 && historyNum === 6" @click="historyNum = $store.state.user.searchList.length">
-            <BmIcon :name="'down-icon'" :width="'0.64rem'" :height="'0.64rem'" />
-          </span>
+          <BmIcon :name="'down-icon'" :width="'0.64rem'" :height="'0.64rem'" v-show="$store.state.user.searchList.length > 6 && historyNum === 6" @iconClick="historyNum = $store.state.user.searchList.length" />
         </div>
         <!-- 搜索发现 -->
         <h2 class="fs-14 black mt-30">{{ $t('search.found') }}</h2>
