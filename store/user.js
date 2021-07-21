@@ -29,6 +29,7 @@ export const mutations = {
       return false;
     }
     state.searchList.unshift(searchItem);
+    state.searchList = [...new Set(state.searchList)]; // 去重
   }
 };
 

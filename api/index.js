@@ -54,9 +54,27 @@ export default ({ app }, inject) => {
         }
       })
     },
-    getProductDetail(goodId) {
+    getProductDetail(goodId) { // 获取商品详情
       return app.$axios({
         url: `${url}/product/goods/client/detail/${goodId}`,
+        method: 'get',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      })
+    },
+    getSearchHot(hit = 10) { // 获取搜索热搜词,默认10调数据
+      return app.$axios({
+        url: `${url}/search/productsearch/getHotResult/${hit}`,
+        method: 'get',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      })
+    },
+    getHintResult(hit = 1) { // 获得底纹词,默认1条数据
+      return app.$axios({
+        url: `${url}/search/productsearch/getHintResult/${hit}`,
         method: 'get',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'

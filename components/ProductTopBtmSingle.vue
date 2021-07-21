@@ -19,10 +19,10 @@
           :url="detail.country_url"
           :width="'0.36rem'" 
           :height="'0.36rem'"
-          :isLazy="true"
+          :isLazy="false"
           :loadUrl="img.loadImage"
           :errorUrl="img.loadImage"
-          :isShow="true"
+          :isShow="false"
           :round="true"
         />
         <span class="fs-10 color_666 ml-10">{{ detail.country }}</span>

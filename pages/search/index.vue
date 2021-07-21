@@ -6,28 +6,35 @@
     <van-search
       v-model="searchVal"
       shape="round"
-      placeholder="请输入搜索关键词"
+      :placeholder="hintName"
       class="plr-20 bg-white ptb-12 border-b"
       @input="inputChange"
       @search="onSearch"
       @focus="onFocus"
+      ref="searchContainer"
     />
+    <!-- 搜索列表展示 -->
+    <template v-if="isShowTip === -1">
+      <div class="bg-white">
+        <van-cell class="ptb-20 plr-20" v-for="(pullItem, pullIndex) in searchPullList" :key="pullIndex" :title="pullItem.suggestion" :value="''" value-class="light-grey" title-class="black" @click="toSearch(pullItem)" />
+      </div>
+    </template>
 
     <template v-if="isShowTip != -1">
       <div class="mlr-20 mt-12" v-show="isShowTip">
         <!-- 搜索历史 -->
-        <h2 class="fs-14 black flex between vcenter" v-if="$store.state.user.searchList.length > 0">
+        <h2 class="fs-14 black flex between vcenter" v-if="searchHistoryList.length > 0">
           <span>{{ $t('search.history') }}</span>
           <BmIcon :name="'shanchu'" :width="'0.32rem'" :height="'0.32rem'" @iconClick="deleteFn" />
         </h2>
         <div class="mt-12 flex flex-wrap">
-          <span class="plr-10 round-8 mr-10 iblock mb-10 lh-20 tag-name" v-for="(tag, index) in searchHistoryList" :key="index">{{ tag }}</span>
-          <BmIcon :name="'down-icon'" :width="'0.64rem'" :height="'0.64rem'" v-show="$store.state.user.searchList.length > 6 && historyNum === 6" @iconClick="historyNum = $store.state.user.searchList.length" />
+          <span class="plr-10 round-8 mr-10 iblock mb-10 lh-20 tag-name" v-for="(tagItem, tagIndex) in searchHistoryList" :key="tagIndex" @click="onSearch(tagItem)">{{ tagItem }}</span>
+          <BmIcon :name="'down-icon'" :width="'0.64rem'" :height="'0.64rem'" v-if="historyNum" @iconClick="showMoreHistory" />
         </div>
         <!-- 搜索发现 -->
         <h2 class="fs-14 black mt-30">{{ $t('search.found') }}</h2>
         <div class="mt-12">
-          <span class="plr-10 round-8 mr-12 iblock mb-10 tag-name" v-for="(tag, index) in $t('me.feedback.typeLists')" :key="index">{{ tag }}</span>
+          <span class="plr-10 round-8 mr-12 iblock mb-10 tag-name" v-for="(tag, index) in searchFindList" :key="index" @click="onSearch(tag.name)">{{ tag.name }}</span>
         </div>
       </div>
 
@@ -161,10 +168,19 @@
 </template>
 
 <script>
-import { Search, Tab, Tabs, DropdownItem, DropdownMenu, Popup, Field } from 'vant';
+import { Search, Tab, Tabs, DropdownItem, DropdownMenu, Popup, Field, Cell } from 'vant';
 import ProductTopBtmSingle from '@/components/ProductTopBtmSingle';
 import EmptyStatus from '@/components/EmptyStatus';
-
+import { getSearchPull } from '@/api/search';
+function debounce (fn,wait) {
+  var timer = null;
+  return function(){
+      if(timer !== null){
+          clearTimeout(timer);
+      }
+      timer = setTimeout(fn,wait);
+  }
+}
 export default {
   components: {
     vanSearch: Search,
@@ -174,6 +190,7 @@ export default {
     vanDropdownMenu: DropdownMenu,
     vanPopup: Popup,
     vanField: Field,
+    vanCell: Cell,
     EmptyStatus,
     ProductTopBtmSingle
   },
@@ -210,7 +227,12 @@ export default {
       searchVal: '',
       isShowTip: true,
       list: [],
-      historyNum: 6
+      historyNum: false,
+      searchHistoryList: [],
+      searchPullList: [],
+      inputChange: null,
+      searchFindList: [],
+      hintName: ''
     }
   },
   async fetch() {
@@ -219,7 +241,8 @@ export default {
 
     let _params = this.$route.query;
     delete _params.val;
-    // // 如果带着搜索的参数跳转过来的需要先获取相对应的搜索数据
+
+    // 如果带着搜索的参数跳转过来的需要先获取相对应的搜索数据
     if (this.searchVal) {
       this.$store.commit('user/SET_SEARCHLIST', this.searchVal); // 搜索历史存储
       // 获取搜索列表数据
@@ -232,33 +255,47 @@ export default {
         }
       });
     }
+
+    // 搜索发现数据
+    const findList = await this.$api.getSearchHot();
+    this.searchFindList = findList.data.result;
+
+    // 获得底纹词
+    const hintList = await this.$api.getHintResult();
+    this.hintName = hintList.data.result[0].name;
   },
-  filters: {
-    formatNum(val) {
-      return parseFloat(val)
+  watch: {
+    '$route'(e) {
+      console.log('w')
+      this.$fetch();
     }
   },
-  computed: {
-    searchHistoryList() {
-      return this.$store.state.user.searchList.filter((item, index) => {
-        return index < this.historyNum;
-      });
+  mounted() {
+    if (this.searchVal == '') { // 没有带参数进来的时候，搜索输入框需要自动聚焦
+      this.$nextTick(() => {
+        this.$refs.searchContainer.querySelector('input').focus();
+      })
     }
+    this.searchHistoryList = this.$store.state.user.searchList.filter((item, index) => {
+      return index < 6;
+    });
+    this.historyNum = this.$store.state.user.searchList.length > 6 ? true: false;
+    // 搜索防抖
+    this.inputChange = this.$utils.debounce((e) => {
+      this.isShowTip = e[0].length > 0 && this.list.length === 0 ? -1 : e[0].length === 0;
+      this.getSearchPull();
+    }, 300);
   },
   activated() {
     this.$fetch();
   },
   methods: {
     deleteFn() { // 删除历史记录
-      console.log('---')
       this.$dialog.confirm({
         message: '确认删除全部历史记录',
       }).then(() => { // 确认删除历史记录
         this.$store.commit('user/SET_SEARCHLIST', null);
       })
-    },
-    inputChange(val) { // 输入框内容变化时触发的事件
-      this.isShowTip = val.length > 0 ? -1 : val.length === 0;
     },
     changeArrange() { // 切换展示样式 1列 2列
       this.arrangeType = this.arrangeType === 1 ? 2 : 1;
@@ -267,8 +304,16 @@ export default {
       console.log(name, title)
     },
     onSearch(val) { // 搜索
-      this.$store.commit('user/SET_SEARCHLIST', val); // 搜索历史存储
-      this.$api.getProductSearch({ searchKeyword: val }).then(res => {
+      let value = val;
+      if (!val && this.hintName) value = this.hintName;
+      this.$store.commit('user/SET_SEARCHLIST', value); // 搜索历史存储
+      // 更新页面展示
+      this.searchHistoryList = this.$store.state.user.searchList.filter((item, index) => {
+        return index < 6;
+      });
+      this.searchVal = value;
+      // 获取搜索列表
+      this.$api.getProductSearch({ searchKeyword: value }).then(res => {
         this.list = res.data.items.map(item => {
           return {
             ...item,
@@ -286,6 +331,30 @@ export default {
     },
     onReset() { // 筛选重置
 
+    },
+    showMoreHistory() { // 展示更多的搜索历史
+      this.historyNum = false;
+      this.searchHistoryList = this.$store.state.user.searchList;
+    },
+    toSearch(item) {
+      this.$store.commit('user/SET_SEARCHLIST', item.suggestion); // 搜索历史存储
+      // 更新页面展示
+      this.searchHistoryList = this.$store.state.user.searchList.filter((item, index) => {
+        return index < 6;
+      });
+      this.$router.push({
+        name: 'search',
+        query: {
+          val: item.suggestion,
+          searchKeyword: item.suggestion
+        } 
+      })
+    },
+    getSearchPull() {
+      getSearchPull({ queryName: this.searchVal, hits: 10 }).then(res => {
+        this.searchPullList = res.data.suggestions;
+        this.list = [];
+      })
     }
   },
 }

@@ -92,7 +92,6 @@ const en = {
     feedback: {
       title: 'Feedback',
       typeTitle: 'Type of problem feedback',
-      typeLists: ['Dysfunction', 'Optimization Suggestions', 'Other Suggestions'],
       feedbackPlaceholder: 'Please input your mobile phone number so that we can contact you',
       picPlaceholder: 'Please input your mobile phone number so that we can contact you'
     },
