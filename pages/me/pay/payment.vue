@@ -114,7 +114,7 @@ export default {
     },
     onPay() { // 提交支付,成功跳转到确认订单页面
       this.$router.push({
-        name: 'me-setting-pay-wait' // name: 'cart-order-confirm'
+        name: 'me-pay-wait' // name: 'cart-order-confirm'
       })
     },
     onConfirm(event) { // 选择手机号前缀

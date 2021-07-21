@@ -6,9 +6,9 @@
     <div class="mlr-20">
       <van-cell-group>
         <!-- 修改支付密码,注意要判断是不是首次修改支付密码 -->
-        <van-cell class="plr-0 ptb-20" :title="$t('me.pay.modifyPwd')" center is-link :to="{ name: 'me-setting-pay-changePwd' }" />
+        <van-cell class="plr-0 ptb-20" :title="$t('me.pay.modifyPwd')" center is-link :to="{ name: 'me-pay-changePwd' }" />
         <!-- 忘记支付密码 -->
-        <van-cell class="plr-0 ptb-20" :title="$t('me.pay.forgotPwd')" center is-link :to="{ name: 'me-setting-pay-changePwd' }" />
+        <van-cell class="plr-0 ptb-20" :title="$t('me.pay.forgotPwd')" center is-link :to="{ name: 'me-pay-changePwd' }" />
       </van-cell-group>
     </div>
   </div>

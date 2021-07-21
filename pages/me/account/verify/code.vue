@@ -1,5 +1,5 @@
 <template>
-  <!-- 我的-设置-安全认证--修改绑定手机/邮箱-短信认证-提交已绑定手机/邮箱的验证码 -->
+  <!-- 我的-设置-安全认证-修改密码-短信/邮箱验证 -->
   <div class="bg-grey vh-100">
     <BmHeaderNav :left="{ isShow: true }" :title="$t('me.authentication.smsTitle')" />
 
@@ -10,7 +10,7 @@
         v-model="code"
         center
         clearable
-        :placeholder="$t('login.enterCode')" 
+        :placeholder="$t('login.enterCode')"
         class="field-container"
       >
         <template #button>
@@ -25,18 +25,9 @@
       <BmButton class="w-100 round-8 sms-btn" @click="jump">{{ $t('common.next') }}</BmButton>
       <!-- 其他认证方式 -->
       <p class="fs-14 green tc mt-24" @click="goback">{{ $t('me.authentication.otherMethod') }}</p>
-
-      <!-- 温馨提示 -->
-      <div class="fs-14 light-grey tip-container">
-        <p>{{ $t('common.tips') }}:</p>
-        <ul>
-          <li v-for="(tipItem, tipIndex) in $t('me.authentication.phoneVerifyTips')" :key="tipIndex" v-html="tipItem"></li>
-        </ul>
-      </div>
     </div>
   </div>
 </template>
-
 
 <script>
 import { Field } from 'vant';
@@ -52,7 +43,7 @@ export default {
       countdown: 0
     }
   },
-  mounted() {
+  created() {
     this.account = this.$route.query.changeWay === 'email' ? this.$store.state.user.userInfo.email : this.$store.state.user.userInfo.phone;
   },
   methods: {
@@ -61,17 +52,14 @@ export default {
     },
     goback() { // 返回上一级目录
       if(window.history.length < 2){ //解决部分机型拿不到history
-        this.$router.replace('/me/setting/bind');
+        this.$router.replace('/me/account/verifymethod');
       }else{
         history.back();
       }
     },
-    jump() { // 跳转到重新绑定电话/邮箱页面
+    jump() { // 跳转到实用密码验证-请确认新密码页面
       this.$router.push({
-        name: 'me-setting-bind-rebind',
-        query: {
-          changeWay: this.$route.query.changeWay
-        }
+        name: 'me-account-verify-verifypwd'
       })
     }
   },
@@ -100,13 +88,5 @@ export default {
   color: #BFBFBF;
   background-color: #eee;
   border: none;
-}
-.tip-container{
-  margin-top: 70px;
-  ul>li{
-    list-style: auto;
-    list-style-position: inside;
-    line-height: 17px;
-  }
 }
 </style>

@@ -139,11 +139,11 @@ export default {
       })
     },
     goback() { // 返回上一级目录
-      this.$router.replace('/me/setting/bind');
+      this.$router.replace('/me/account/bind');
     },
     jump() { // 验证手机/邮箱号码，成功后跳转到重新绑定结果展示页面
       this.$router.push({
-        name: 'me-setting-bind-result'
+        name: 'me-account-bind-result'
       })
     }
   },

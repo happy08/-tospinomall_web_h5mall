@@ -75,13 +75,13 @@ export default {
   methods: {
     addAddress() { // 添加收货地址
       this.$router.push({
-        name: 'me-setting-address-make'
+        name: 'me-address-make'
       })
     },
     onEdit(address) { // 修改收货地址
       console.log(address)
       this.$router.push({
-        name: 'me-setting-address-make',
+        name: 'me-address-make',
         query: {
           id: address.id
         }

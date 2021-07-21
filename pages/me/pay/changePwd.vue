@@ -53,7 +53,7 @@ export default {
       if (this.value.length >= 5) { // 输入密码长度等于6时说明该进行下一步确认密码
         setTimeout(() => {
           this.$router.push({
-            name: 'me-setting-pay-confirmPwd',
+            name: 'me-pay-confirmPwd',
             query: {
               pwd: this.value
             }

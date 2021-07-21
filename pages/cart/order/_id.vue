@@ -5,7 +5,7 @@
 
     <!-- 个人信息 -->
     <div class="bg-white">
-      <van-cell title="Lucy  86-13165265218" label="Gongming street, Guangming District, Shenzhen City, Guangdong Province, China" is-link :to="{ name: 'me-setting-address' }" title-class="fs-14 black" label-class="fs-14 light-grey" class="pt-20 pl-20 pr-14 pb-30" :border="false" />
+      <van-cell title="Lucy  86-13165265218" label="Gongming street, Guangming District, Shenzhen City, Guangdong Province, China" is-link :to="{ name: 'me-address' }" title-class="fs-14 black" label-class="fs-14 light-grey" class="pt-20 pl-20 pr-14 pb-30" :border="false" />
       <BmImage
         :url="require('@/assets/images/line-icon.svg')"
         :height="'0.1rem'"
@@ -218,7 +218,7 @@ export default {
     },
     goPay() { // 去支付
       this.$router.push({
-        name: 'me-setting-pay-payment'
+        name: 'me-pay-payment'
       })
     },
     onChangeDistribution() { // 修改配送方式

@@ -142,7 +142,7 @@ export default {
         },
         {
           text: 'Address Management', // 地址管理
-          name: 'me-setting-address',
+          name: 'me-address',
           icon: 'address-management'
         },
         {
@@ -155,7 +155,7 @@ export default {
         },
         {
           text: 'Settings', // 设置
-          name: 'me-setting-account',
+          name: 'me-account',
           icon: 'settings'
         },
         {
@@ -186,7 +186,7 @@ export default {
     goAccount() { // 去账户设置页面, 登录之后才可以跳转
       if (this.$store.state.user.token) {
         this.$router.push({
-          name: 'me-setting-account'
+          name: 'me-account'
         })
       }
     }

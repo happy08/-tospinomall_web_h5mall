@@ -46,7 +46,7 @@ export default {
   methods: {
     confirm() {
       this.$router.push({
-        name: 'me-setting-verify-result'
+        name: 'me-account-verify-result'
       })
     }
   },

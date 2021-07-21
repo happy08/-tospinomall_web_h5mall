@@ -68,7 +68,7 @@ export default {
     },
     goback() { // 返回上一级目录
       if(window.history.length < 2){ //解决部分机型拿不到history
-        this.$router.replace('/me/setting/account/verifymethod');
+        this.$router.replace('/me/account/verifymethod');
       }else{
         console.log('back');
         history.back();
@@ -76,7 +76,7 @@ export default {
     },
     jump() { // 跳转到实用密码验证-请确认新密码页面
       this.$router.push({
-        name: 'me-setting-verify-verifypwd'
+        name: 'me-account-verify-verifypwd'
       })
     }
   },

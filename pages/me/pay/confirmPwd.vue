@@ -71,7 +71,7 @@ export default {
           }
           // 密码正确提交成功跳转到成功结果页面
           this.$router.push({
-            name: 'me-setting-pay-result'
+            name: 'me-pay-result'
           })
         }, 100);
       }

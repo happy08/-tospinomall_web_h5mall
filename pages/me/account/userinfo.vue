@@ -34,9 +34,9 @@
         </template>
       </van-cell>
       <!-- 姓名 -->
-      <van-cell class="ptb-20 plr-20" :title="$t('me.userInfo.name')" :value="userInfo.username" value-class="light-grey" is-link title-class="black" :to="{ name: 'me-setting-account-username', query: { name: userInfo.username, type: 'username' } }" />
+      <van-cell class="ptb-20 plr-20" :title="$t('me.userInfo.name')" :value="userInfo.username" value-class="light-grey" is-link title-class="black" :to="{ name: 'me-account-username', query: { name: userInfo.username, type: 'username' } }" />
       <!-- 昵称 -->
-      <van-cell class="ptb-20 plr-20" :title="$t('me.userInfo.nickname')" :value="userInfo.nickname" value-class="light-grey" is-link title-class="black" :to="{ name: 'me-setting-account-username', query: { name: userInfo.nickname, type: 'nickname' } }" />
+      <van-cell class="ptb-20 plr-20" :title="$t('me.userInfo.nickname')" :value="userInfo.nickname" value-class="light-grey" is-link title-class="black" :to="{ name: 'me-account-username', query: { name: userInfo.nickname, type: 'nickname' } }" />
       <!-- 性别 -->
       <van-cell class="ptb-20 plr-20" :title="$t('me.userInfo.gender')" :value="userInfo.sex" value-class="light-grey" title-class="black" @click="changeInfo('sex')" is-link />
       <!-- 生日 -->

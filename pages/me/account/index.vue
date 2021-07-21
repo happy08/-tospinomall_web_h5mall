@@ -5,7 +5,7 @@
 
     <div class="bg-white">
       <!-- 账户信息信息 -->
-      <van-cell class="ptb-20 plr-20" center is-link title-class="black" :to="{ name: 'me-setting-account-userinfo' }">
+      <van-cell class="ptb-20 plr-20" center is-link title-class="black" :to="{ name: 'me-account-userinfo' }">
         <template #title>
           <div class="flex vcenter">
             <!-- 头像 -->
@@ -26,16 +26,16 @@
         </template>
       </van-cell>
       <!-- 收货地址 -->
-      <van-cell class="ptb-20 plr-20" :title="$t('me.accountSetting.harvestAddress')" is-link title-class="black" :to="{ name: 'me-setting-address' }" />
+      <van-cell class="ptb-20 plr-20" :title="$t('me.accountSetting.harvestAddress')" is-link title-class="black" :to="{ name: 'me-address' }" />
     </div>
 
     <div class="mt-12">
       <!-- 账户安全 -->
-      <van-cell class="p-20" :title="$t('me.accountSetting.accountSecurity')" is-link title-class="black" :to="{ name: 'me-setting-account-security'}" />
+      <van-cell class="p-20" :title="$t('me.accountSetting.accountSecurity')" is-link title-class="black" :to="{ name: 'me-account-security'}" />
       <!-- 支付设置 -->
-      <van-cell class="p-20" :title="$t('me.accountSetting.paySetting')" is-link title-class="black" :to="{ name: 'me-setting-pay' }" />
+      <van-cell class="p-20" :title="$t('me.accountSetting.paySetting')" is-link title-class="black" :to="{ name: 'me-pay' }" />
       <!-- 语言设置 -->
-      <van-cell class="p-20" :title="$t('me.accountSetting.langSetting')" is-link title-class="black" :to="{ name: 'me-setting-language' }" />
+      <van-cell class="p-20" :title="$t('me.accountSetting.langSetting')" is-link title-class="black" :to="{ name: 'me-language' }" />
     </div>
 
     <!-- 清除缓存 -->

@@ -19,7 +19,7 @@
         type="tel"
       >
         <template #right-icon>
-          <nuxt-link class="flex grey" :to="{ name: 'me-setting-address-areacode' }">
+          <nuxt-link class="flex grey" :to="{ name: 'me-address-areacode' }">
             {{ phonePref }}
             <van-icon name="arrow" />
           </nuxt-link>
@@ -157,7 +157,7 @@ export default {
     save() { // 保存地址
       // 地址保存成功跳转到地址列表页面
       this.$router.replace({
-        name: 'me-setting-address'
+        name: 'me-address'
       })
     },
     deleteFn() { // 删除地址
