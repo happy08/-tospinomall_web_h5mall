@@ -51,6 +51,7 @@
 
 <script>
 import { RadioGroup, Radio } from 'vant';
+import { getAddressList } from '@/api/user';
 
 export default {
   components: {
@@ -72,6 +73,9 @@ export default {
       defaultVal: '1'
     }
   },
+  mounted() {
+    this.getAddressList();
+  },
   methods: {
     addAddress() { // 添加收货地址
       this.$router.push({
@@ -85,6 +89,11 @@ export default {
         query: {
           id: address.id
         }
+      })
+    },
+    getAddressList() {
+      getAddressList({ type: 1 }).then(res => {
+        console.log(res)
       })
     }
   },

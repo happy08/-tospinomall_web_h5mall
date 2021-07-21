@@ -51,26 +51,6 @@
 import { TreeSelect, Search } from 'vant';
 
 export default {
-  async asyncData({ app }) {
-    const [listData, meta] = await Promise.all([
-      app.$api.getCategoryList(), // 分类列表
-      app.$api.getCategorySeo() // 获取SEO信息
-    ])
-    const catrgorieList = listData.data.map(item => {
-      return {
-        text: item.name,
-        id: item.id,
-        children: item.children
-      }
-    })
-    
-    return {
-      list: listData.data,
-      catrgorieList: catrgorieList,
-      leftLists: catrgorieList[0].children,
-      meta: meta.data
-    }
-  },
   components: {
     vanTreeSelect: TreeSelect,
     vanSearch: Search
@@ -155,7 +135,11 @@ export default {
           ],
         },
       ],
-      treeActive: 0
+      treeActive: 0,
+      catrgorieList: [],
+      list: [],
+      leftLists: [],
+      meta: {}
     }
   },
   head() { // 头部设置，方便seo
@@ -166,6 +150,22 @@ export default {
         { hid: 'keywords', name: 'keywords', content: this.meta.keyword || 'Tospino Ghana online shopping' }
       ]
     }
+  },
+  async fetch() {
+    const [listData, meta] = await Promise.all([
+      this.$api.getCategoryList(), // 分类列表
+      this.$api.getCategorySeo() // 获取SEO信息
+    ])
+    this.catrgorieList = listData.data.map(item => {
+      return {
+        text: item.name,
+        id: item.id,
+        children: item.children
+      }
+    })
+    this.list = listData.data;
+    this.leftLists = this.catrgorieList[0].children;
+    this.meta = meta.data;
   },
   methods: {
     changeNavEvent(currentIndex) { // 点击左侧切换tab栏

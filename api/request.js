@@ -1,6 +1,7 @@
 import * as axios from 'axios';
 import { Toast } from 'vant';
 import { url } from './config'; // 导入配置域名
+import { state, mutations } from '@/store/user';
 
 const service = axios.create({
   baseURL: url,
@@ -82,16 +83,11 @@ service.interceptors.response.use(response => { // 成功
       //0 数据成功
       return response.data; //Promise.resolve(res.data);
     }
-    // else if (response.data.code === 99) {
-    //   //token失效
-    //   store.commit('setToken', ''); // 清除token并跳转登录页
-    //   if (route.name !== 'login') {
-    //     redirect('/login?path=' + route.fullPath);
-    //     setTimeout(() => {
-    //       tip('请重新登入！');
-    //     }, 500);
-    //   }
-    // }
+    else if (response.data.code === 10401) { // 用户凭证已过期,跳转到登录页面
+      mutations.SET_TOKEN(state, null)
+      location.replace('/login');
+      return response.data;
+    }
     else {
       if (response.data.msg) {
         console.log(response.data.msg)
