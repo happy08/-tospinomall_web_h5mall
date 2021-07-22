@@ -34,3 +34,34 @@ export function getAreasTree() {
     }
   })
 }
+
+/**
+ * 查看收货地址
+ */
+export function getAddressDetail(id) {
+  return request({
+    url: `/api/admin/ums/buyer/deliveryAddress/findByIdInner/${id}`,
+    method: 'post',
+  })
+}
+
+/**
+ * 通过父级查询下一级地区
+ */
+export function getNextArea(params) {
+  return request({
+    url: '/api/basics/base/area/findByParentId',
+    method: 'get',
+    params
+  })
+}
+
+/**
+ * 修改收货地址
+ */
+export function updateAddress() {
+  return request({
+    url: '/admin/ums/buyer/deliveryAddress/updateById',
+    method: 'put'
+  })
+}

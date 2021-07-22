@@ -96,9 +96,9 @@ service.interceptors.response.use(response => { // 成功
       return response.data;
     }
     else {
-      if (response.data.msg) {
-        console.log(response.data.msg)
-        tip(response.data.msg);
+      if (response.msg) {
+        console.log(response.msg)
+        tip(response.msg);
       }
     }
     return Promise.reject(response.data);
