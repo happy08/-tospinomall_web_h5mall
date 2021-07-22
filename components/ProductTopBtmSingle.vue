@@ -78,7 +78,6 @@ export default {
     vanRate: Rate
   },
   mounted() {
-    console.log(this.detail.price)
   }
 }
 </script>

@@ -22,10 +22,12 @@
           ></van-icon>
           <nuxt-link
             :to="{ name: 'search' }"
-            tag="div"
             class="sticky-opacity ml-14"
+            v-slot="{ navigate }"
           >
-            <van-search v-model="searchVal" disabled class="round-20 hidden" />
+            <div @click="navigate" role="link">
+              <van-search v-model="searchVal" disabled class="round-20 hidden" />
+            </div>
           </nuxt-link>
         </div>
 

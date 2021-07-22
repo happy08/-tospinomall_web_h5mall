@@ -4,6 +4,7 @@
     v-on="$listeners"
     :type="type === 'primary-linear' ? 'default' : type"
     :style="style"
+    :disabled="disabled"
   >
     <slot />
   </van-button>
@@ -17,6 +18,10 @@ export default {
       type: String,
       default: 'primary-linear'
     },
+    disabled: {
+      type: Boolean,
+      default: false
+    }
   },
   computed: {
     style() {

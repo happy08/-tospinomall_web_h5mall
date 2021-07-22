@@ -52,9 +52,11 @@
     </van-cell-group>
 
     <!-- 所有商品 -->
-    <nuxt-link class="ptb-20 flex center bg-white mt-20" tag="div" :to="{ name: 'cart-store-product-id', params: { id: $route.params.id } }">
-      <span class="fs-14 black mr-20">All Products</span>
-      <van-icon name="arrow" color="rgba(0, 0, 0, 0.45)" />
+    <nuxt-link class="ptb-20 flex center bg-white mt-20" v-slot="{ navigate }" :to="{ name: 'cart-store-product-id', params: { id: $route.params.id } }">
+      <div @click="navigate" role="link">
+        <span class="fs-14 black mr-20">All Products</span>
+        <van-icon name="arrow" color="rgba(0, 0, 0, 0.45)" />
+      </div>
     </nuxt-link>
   </div>
 </template>

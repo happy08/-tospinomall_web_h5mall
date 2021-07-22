@@ -6,7 +6,7 @@
     <van-index-bar :highlight-color="'#42b7ae'" :index-list="indexList" class="page-slider-bar">
       <div v-for="(item, name) in countrylists" :key="name">
         <van-index-anchor :index="name" />
-        <van-cell class="plr-20" :title="country" v-for="(country, index) in item" :key="index" />
+        <van-cell class="plr-20" :title="country.country" v-for="(country, index) in item" :key="index" @click="goBack(country.phonePrefix)" />
       </div>
     </van-index-bar>
   </div>
@@ -35,7 +35,6 @@ export default {
   },
   methods: {
     getLists() { // 获取国家列表
-      
       getPhonePrefix().then(res => {
         // 数据格式化
         this.countrylists = {};
@@ -44,11 +43,22 @@ export default {
           res.data.forEach(item => {
             const _first = item.country.substring(0, 1).toUpperCase();
             if (_first == pref) {
-              this.countrylists[pref].push(item.country + item.phonePrefix);
+              this.countrylists[pref].push({
+                country: item.country + item.phonePrefix,
+                phonePrefix: item.phonePrefix
+              });
             }
           })
         })
       })
+    },
+    goBack(phonePrefix) {
+      this.$router.push({
+        name: 'me-address-make',
+        query: {
+          phonePrefix: phonePrefix
+        }
+      });
     }
   },
 }

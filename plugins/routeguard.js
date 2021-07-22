@@ -12,10 +12,7 @@ export default ({app, store, redirect}) => {
     //     })
     //   }
     // }
-    // 判断是否登录，已登录要获取用户信息，只获取一次
-    if (store.state.user.token && !store.state.user.userInfo) {
-      store.dispatch('user/GetUserInfo');
-    }
+    
     // 如果输入的路由不存在跳回首页
     if (to.name === null) {
       redirect({

@@ -5,21 +5,23 @@
       <div class="flex vcenter">
         <van-icon name="arrow-left" color="#383838" size="18px" @click="leftBack"></van-icon>
         <!-- 店铺详情 -->
-        <nuxt-link :to="{ name: 'cart-store-detail-id', params: { id: $route.params.id } }" tag="div" class="flex vcenter">
-          <!-- 店铺logo -->
-          <BmImage
-            :url="require('@/assets/images/product-bgd-90.png')"
-            :width="'0.96rem'" 
-            :height="'0.96rem'"
-            :isLazy="false"
-            :isShow="false"
-            class="round-8 hidden"
-          ></BmImage>
-          <!-- 店铺名、关注数 -->
-          <dl class="ml-12">
-            <dt class="fs-14 fw color-23">TOSPINO照明</dt>
-            <dd class="fs-12 light-grey mt-4">20141 followers</dd>
-          </dl>
+        <nuxt-link :to="{ name: 'cart-store-detail-id', params: { id: $route.params.id } }" v-slot="{ navigate }" class="flex vcenter">
+          <div @click="navigate" role="link">
+            <!-- 店铺logo -->
+            <BmImage
+              :url="require('@/assets/images/product-bgd-90.png')"
+              :width="'0.96rem'" 
+              :height="'0.96rem'"
+              :isLazy="false"
+              :isShow="false"
+              class="round-8 hidden"
+            ></BmImage>
+            <!-- 店铺名、关注数 -->
+            <dl class="ml-12">
+              <dt class="fs-14 fw color-23">TOSPINO照明</dt>
+              <dd class="fs-12 light-grey mt-4">20141 followers</dd>
+            </dl>
+          </div>
         </nuxt-link>
       </div>
       

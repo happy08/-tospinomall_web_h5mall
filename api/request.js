@@ -65,11 +65,18 @@ const tip = msg => {
 
 // request拦截器
 service.interceptors.request.use(config => {
+  config.headers['Authorization'] = 'Basic YnV5ZXI6YnV5ZXI=';
+  
   const _local = JSON.parse(localStorage.getItem('b2c-store'));
-  if (_local.user.token) {
+  if (_local.user.token) { // 已登录需要改变头部token
     config.headers['Authorization'] = _local.user.token_type + ' ' + _local.user.token;
   }
-
+  
+  if (config.method === 'post') {
+    config.headers['Content-Type'] = config.headers['Content-Type'] || 'application/x-www-form-urlencoded';
+  } else {
+    config.headers['Content-Type'] = config.headers['Content-Type'] || 'application/json';
+  }
   return config
 }, error => {
   // Do something with request error
@@ -110,7 +117,7 @@ service.interceptors.response.use(response => { // 成功
   const { response } = error;
   if (response) {
     // 请求已发出，但是不在2xx的范围
-    // errorHandle(response.status, redirect, store);
+    errorHandle(response.status);
     return Promise.reject(response);
   } else {
     // 处理断网的情况

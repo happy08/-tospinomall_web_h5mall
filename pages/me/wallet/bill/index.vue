@@ -4,11 +4,12 @@
     <BmHeaderNav :left="{ isShow: true }" :border="false" :title="$t('me.wallet.bill')" />
 
     <!-- 搜索框 -->
-    <nuxt-link tag="div" :to="{ name: 'me-wallet-search' }" class="bg-white plr-12 pb-14 border-b">
+    <nuxt-link :to="{ name: 'me-wallet-search' }" class="bg-white plr-12 pb-14 border-b" v-slot="{ navigate }">
       <van-search 
         v-model="searchVal" 
         :placeholder="$t('me.wallet.searchBillPlaceholder')"
         shape="round"
+        @click="navigate" role="link"
       />
     </nuxt-link>
 

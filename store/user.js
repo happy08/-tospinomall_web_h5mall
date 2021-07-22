@@ -34,11 +34,12 @@ export const mutations = {
 };
 
 export const actions = {
-  GetUserInfo({ commit, state }) {
+  GetUserInfo({ commit, state }, token) {
     return new Promise((resolve, reject) => {
-      if (state.userInfo) resolve();
+      if (state.userInfo.id) resolve();
       else
-        getUserInfo(state.token_type + ' ' + state.token).then(res => {
+        getUserInfo(token).then(res => {
+          console.log(res)
           if (res.code != 0) return false;
 
           commit('SET_USERINFO', res.data);

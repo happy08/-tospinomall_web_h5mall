@@ -9,7 +9,7 @@
           <!-- 头像 -->
           <div @click="goAccount">
             <BmImage 
-              :url="$store.state.user.userInfo ? $store.state.user.userInfo.headPictureUrl : require('@/assets/images/icon/user-icon.png')"
+              :url="$store.state.user.userInfo && $store.state.user.userInfo.headPictureUrl.length > 0 ? $store.state.user.userInfo.headPictureUrl : require('@/assets/images/icon/user-icon.png')"
               :width="'1.04rem'" 
               :height="'1.04rem'"
               :isLazy="false"
@@ -35,13 +35,17 @@
 
       <!-- 收藏信息 -->
       <div class="p-30 flex between">
-        <nuxt-link :to="$store.state.user.token ? { name: 'me-likes' } : { name: 'login' }" tag="dl" class="tc">
-          <dt class="fs-24 black fw">0</dt>
-          <dd class="fs-12 grey mt-4">Collection</dd>
+        <nuxt-link :to="$store.state.user.token ? { name: 'me-likes' } : { name: 'login' }" v-slot="{ navigate }" class="tc">
+          <dl @click="navigate" role="link">
+            <dt class="fs-24 black fw">0</dt>
+            <dd class="fs-12 grey mt-4">Collection</dd>
+          </dl>
         </nuxt-link>
-        <nuxt-link :to="$store.state.user.token ? { name: 'me-wallet' }: { name: 'login' }" tag="dl" class="tc">
-          <dt class="fs-24 black fw">0</dt>
-          <dd class="fs-12 grey mt-4">Wallet</dd>
+        <nuxt-link :to="$store.state.user.token ? { name: 'me-wallet' }: { name: 'login' }" v-slot="{ navigate }" class="tc">
+          <dl @click="navigate" role="link">
+            <dt class="fs-24 black fw">0</dt>
+            <dd class="fs-12 grey mt-4">Wallet</dd>
+          </dl>
         </nuxt-link>
         <!-- <dl class="tc">
           <van-badge dot color="linear-gradient(339deg, #FF4943 0%, #FA5E69 100%)">

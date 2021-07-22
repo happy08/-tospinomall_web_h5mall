@@ -210,10 +210,15 @@ export default {
       }).then(res => {
         this.$store.commit('user/SET_TOKEN', res.data.access_token);
         this.$store.commit('user/SET_TOKENTYPE', res.data.token_type);
-        // 登录成功跳转到首页
-        this.$router.push({
-          name: 'home'
-        })
+        // 获取用户信息
+        this.$store.dispatch('user/GetUserInfo', res.data.token_type + ' ' + res.data.access_token)
+          .then(() => {
+            // 登录成功跳转到首页
+            this.$router.push({
+              name: 'home'
+            })
+          }); // 登录获取用户信息
+        
       })
     },
     changeLang(lang) { // 切换语言

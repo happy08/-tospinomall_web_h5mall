@@ -144,7 +144,8 @@ const en = {
       shipAddress: 'Shipping Address',
       addShipAddressBtn: 'Add shipping Address',
       deleteTitle: 'Are you sure to delete the address?',
-      deleteMessage: 'Will not cancel any orders gonna be sent to the address that you delete. If you need to change a new delivery address,please update the one you need and make a default to avoid impact on future delivery.'
+      deleteMessage: 'Will not cancel any orders gonna be sent to the address that you delete. If you need to change a new delivery address,please update the one you need and make a default to avoid impact on future delivery.',
+      tag: ['Home', 'Company', 'School']
     },
     order: {
       myOrderTitle: 'My Order',

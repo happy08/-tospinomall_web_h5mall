@@ -40,19 +40,3 @@ export function getPicUrl(data) {
     }
   })
 }
-
-/**
- * 获取收货地址列表
- * type 1：收货地址，2：退货地址
- * sendModel 1：直发模式，2：集货仓模式
- */
-export function getAddressList(params) {
-  return request({
-    url: '/api/basics/base/fbt/address/find',
-    method: 'get',
-    params: params,
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
-    }
-  })
-}

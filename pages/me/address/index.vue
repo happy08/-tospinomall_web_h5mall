@@ -6,10 +6,10 @@
     <div class="p-20 address-single" v-for="(item, index) in lists" :key="index">
       <!-- top姓名手机号标签 -->
       <div class="flex between vcenter address-single__top">
-        <div class="flex vcenter">
-          <span class="white fs-12 p-4 bg-orange round-4 lh-18">Default</span>
-          <span class="white fs-12 p-4 bg-green round-4 lh-18 ml-4">Home</span>
-          <span class="black fs-14 lh-18 ml-12">{{ item.name }}</span>
+        <div class="flex vcenter fm-helvetica">
+          <!-- <span class="white fs-12 p-4 bg-orange round-4 lh-18">Default</span>
+          <span class="white fs-12 p-4 bg-green round-4 lh-18 ml-4 mr-12">Home</span> -->
+          <span class="black fs-14 lh-18">{{ item.name }}</span>
           <span class="black fs-14 lh-18 ml-10">{{ item.phone }}</span>
         </div>
         <div @click="onEdit(item)">
@@ -23,20 +23,22 @@
         </div>
       </div>
       <!-- 地址 -->
-      <div class="mt-10 fs-14 black">{{ item.address }}</div>
-      <div class="mt-10 fs-14 black">{{ item.address }}</div>
+      <div class="mt-10 fs-14 black fm-helvetica">{{ item.address }}</div>
+      <div class="mt-10 fs-14 black fm-helvetica">{{ item.completeAddress }}</div>
       <div class="mt-12">
         <van-radio-group v-model="defaultVal">
           <van-radio name="1" icon-size="0.48rem">
-            Default
             <template #icon="props">
-              <BmImage
-                :url="props.checked ? require('@/assets/images/icon/choose-icon.svg') : require('@/assets/images/icon/choose-default-icon.svg')"
-                :width="'0.48rem'" 
-                :height="'0.48rem'"
-                :isLazy="false"
-                :isShow="false"
-              ></BmImage>
+              <div class="flex vcenter">
+                <BmImage
+                  :url="props.checked ? require('@/assets/images/icon/choose-icon.svg') : require('@/assets/images/icon/choose-default-icon.svg')"
+                  :width="'0.48rem'" 
+                  :height="'0.48rem'"
+                  :isLazy="false"
+                  :isShow="false"
+                ></BmImage>
+                <span :class="{'fm-helvetica fs-14 ml-8': true, 'red': props.checked}">{{ props.checked ? 'Default': 'Set as Default' }}</span>
+              </div>
             </template>
           </van-radio>
         </van-radio-group>
@@ -51,7 +53,7 @@
 
 <script>
 import { RadioGroup, Radio } from 'vant';
-import { getAddressList } from '@/api/user';
+import { getAddressList } from '@/api/address';
 
 export default {
   components: {
@@ -60,16 +62,7 @@ export default {
   },
   asyncData({isDev, route, store, env, params, query, req, res, redirect, error}) {
     return {
-      lists: [
-        {
-          id: 1,
-          name: 'Lucy',
-          phone: 13165340019,
-          address: 'Courtyard, Chaoyang District',
-          tag: 'Home',
-          isDefault: true
-        }
-      ],
+      lists: [],
       defaultVal: '1'
     }
   },
@@ -83,7 +76,6 @@ export default {
       })
     },
     onEdit(address) { // 修改收货地址
-      console.log(address)
       this.$router.push({
         name: 'me-address-make',
         query: {
@@ -91,9 +83,9 @@ export default {
         }
       })
     },
-    getAddressList() {
-      getAddressList({ type: 1 }).then(res => {
-        console.log(res)
+    getAddressList() { // 获取地址列表
+      getAddressList().then(res => {
+        this.lists = res.data;
       })
     }
   },

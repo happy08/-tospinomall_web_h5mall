@@ -1,8 +1,8 @@
 <template>
   <!-- 我的-设置-新建收货地址 -->
   <div class="bg-grey vh-100">
-    <BmHeaderNav :left="{ isShow: true }" :title="$t('me.address.shipAddress')">
-      <div slot="header-right" class="green" @click="deleteFn">
+    <BmHeaderNav :left="{ isShow: true, url: '/me/address' }" :title="$t('me.address.shipAddress')">
+      <div slot="header-right" class="green" @click="deleteFn" v-if="$route.query.id">
         {{ $t('common.delete') }}
       </div>
     </BmHeaderNav>
@@ -10,24 +10,24 @@
     <!-- 收货地址 -->
     <div class="bg-white">
       <!-- 收货人姓名 -->
-      <van-field v-model="name" class="p-20" placeholder="The consignee" />
+      <van-field v-model="form.name" class="p-20" placeholder="The consignee" />
       <!-- 收货人电话号码 -->
       <van-field
-        v-model="phone"
+        v-model="form.phone"
         placeholder="Phpne number"
         class="p-20"
         type="tel"
       >
         <template #right-icon>
           <nuxt-link class="flex grey" :to="{ name: 'me-address-areacode' }">
-            {{ phonePref }}
+            {{ form.phonePrefix }}
             <van-icon name="arrow" />
           </nuxt-link>
         </template>
       </van-field>
       <!-- 收货人地址 -->
       <van-field
-        v-model="address"
+        v-model="allAddress"
         placeholder="Address"
         class="p-20"
         @click="addressShow = true"
@@ -41,43 +41,33 @@
       </van-field>
       <!-- 详细地址 -->
       <van-field
-        v-model="detail"
+        v-model="form.address"
         rows="4"
         type="textarea"
         class="p-20"
         placeholder="Detailed address:such as road,building number..."
       />
       <!-- 标签 -->
-      <van-cell title="Label" title-class="light-grey" ></van-cell>
-      <van-field v-model="tag" label="文本" label-width="0.72rem">
+      <van-field v-model="form.tag" label="文本" label-width="0.72rem">
         <template #input>
           <div class="flex flex-wrap">
-            <div class="fs-14 plr-12 bg-orange round-8 tag active mr-12 mb-20">Default</div>
-            <div class="fs-14 plr-12 bg-orange round-8 tag mr-12 mb-20">Default</div>
+            <div :class="{'fs-14 plr-12 bg-orange round-8 tag mr-12 mb-20': true, 'active': form.tag == (index + 1)}" v-for="tag, index in $t('me.address.tag')" :key="index" @click="form.tag = (index + 1)">{{ tag }}</div>
             <!-- 添加标签按钮 -->
-            <div @click="isEmit = 1" v-if="isEmit === 0" class="mb-20">
-              <BmImage
-                :url="require('@/assets/images/icon/add-icon.svg')"
-                :width="'1.24rem'" 
-                :height="'0.64rem'"
-                :isLazy="false"
-                :isShow="false"
-              ></BmImage>
-            </div>
+            <div @click="isEmit = 1" v-if="isEmit === 0" class="mb-20 bg-orange round-8 tag plr-24">+</div>
             <!-- 添加标签时的展示样式 -->
             <van-field
-              v-model="emitTag"
+              v-model="form.tagEditor"
               placeholder="Input label name"
               :class="{'p-0 border round-8 hidden custom-field mb-20 vcenter': true}"
               v-else-if="isEmit === 1"
             >
               <template #button>
-                <van-button size="small" type="primary" :class="{'bg-grey': emitTag.length === 0, 'bg-green': emitTag.length > 0}" @click="isEmit = 2">Add</van-button>
+                <van-button size="small" type="primary" :class="{'bg-grey': form.tagEditor.length === 0, 'bg-green': form.tagEditor.length > 0}" @click="isEmit = 2">Add</van-button>
               </template>
             </van-field>
             <!-- 添加之后的标签展示样式 -->
-            <div class="flex round-8 mb-20 hidden border-green" v-else-if="isEmit === 2">
-              <span class="plr-12 fs-14 green ptb-3">{{ emitTag }}</span>
+            <div :class="{'flex round-8 border mb-20 hidden': true, 'border-green': form.tag == form.tagEditor}" v-else-if="isEmit === 2">
+              <span :class="{'plr-12 fs-14 ptb-3': true, 'green': form.tag == form.tagEditor}" @click="form.tag = form.tagEditor">{{ form.tagEditor }}</span>
               <span class="plr-12 fs-14 bg-green white ptb-3" @click="isEmit = 1">editor</span>
             </div>
           </div>
@@ -86,32 +76,54 @@
       <!-- 设置默认地址 -->
       <van-cell title="Set as the default adress" label="Reminder: This address is recommended by default for each order" title-class="black" class="p-20" >
         <template #right-icon>
-          <van-switch v-model="isDefault" active-color="#34C759" inactive-color="#dcdee0" size="0.45rem" />
+          <van-switch v-model="form.isDefault" active-color="#34C759" inactive-color="#dcdee0" size="0.45rem" />
         </template>
       </van-cell>
     </div>
     <!-- 添加地址 -->
     <div class="mlr-20 pb-20">
-      <BmButton class="round-8 w-100 save-btn" @click="save">{{ $t('me.address.addShipAddressBtn') }}</BmButton>
+      <BmButton class="round-8 w-100 save-btn" @click="save" :disabled="isDisabled">{{ $t('me.address.addShipAddressBtn') }}</BmButton>
     </div>
 
     <!-- 修改地址 -->
-    <van-popup v-model="addressShow" position="bottom" closeable class="ptb-20">
+    <van-popup v-model="addressShow" position="bottom" closeable class="ptb-20" style="min-height: 80%;">
       <h4 class="fs-18 black lh-20 tc plr-20">Choose a country or region</h4>
       <!-- 地址选择步骤条 -->
       <van-steps direction="vertical" :active="stepActive" class="mt-24" @click-step="stepClick">
         <van-step v-for="item, stepIndex in stepArr" :key="stepIndex">
           <template #active-icon>
-            <i class="iconfont icon-dot1 green"></i>
+            <BmIcon :name="'dot1'" :color="'#42b7ae'"></BmIcon>
           </template>
-          <p class="fs-16 black">{{ item.title ? item.title : item.desc }}</p>
+          <template #inactive-icon>
+            <BmIcon :name="'dot1'" :color="'#eee'"></BmIcon>
+            <!-- <van-icon name="circle" color="#42b7ae" size="0.1rem" /> -->
+          </template>
+          <template #finish-icon>
+            <BmIcon :name="'dot1'" :color="'#42b7ae'"></BmIcon>
+          </template>
+          <!-- <p class="fs-16 black">{{ item.title ? item.title : item.desc }}</p> -->
+          <p class="fs-16 black">{{ item.name ? item.name : chooseTitle }}</p>
+        </van-step>
+        <van-step v-if="isShowChooseTitle">
+          <template #active-icon>
+            <BmIcon :name="'dot1'" :color="'#42b7ae'"></BmIcon>
+          </template>
+          <template #inactive-icon>
+            <BmIcon :name="'dot1'" :color="'#eee'"></BmIcon>
+            <!-- <van-icon name="circle" color="#42b7ae" size="0.1rem" /> -->
+          </template>
+          <template #finish-icon>
+            <BmIcon :name="'dot1'" :color="'#42b7ae'"></BmIcon>
+          </template>
+          <p class="fs-16 black">{{ chooseTitle }}</p>
         </van-step>
       </van-steps>
+      <div class="border-b mt-10 w-100"></div>
       <!-- 进行选择 -->
-      <div class="mt-42 plr-24">
-        <p class="fs-14 grey-1">Choose Street or Town</p>
-        <ul class="plr-24 fs-16 black" v-if="stepArr[stepActive].city">
-          <li class="mt-20" v-for="city, cityIndex in stepArr[stepActive].city" :key="cityIndex" @click="changeCity(city)">{{ city }}</li>
+      <div class="mt-20 plr-24">
+        <p class="fs-14 grey-1">{{ chooseTitle }}</p>
+        <ul class="plr-24 fs-16 black">
+          <li class="mt-20" v-for="city, cityIndex in chooseList" :key="cityIndex" @click="changeCity(city)">{{ city.name }}</li>
         </ul>
       </div>
     </van-popup>
@@ -120,6 +132,8 @@
 
 <script>
 import { Cell, CellGroup, Field, Switch, Popup, Step, Steps } from 'vant';
+import { getPhonePrefix } from '@/api/login';
+import { addAddress, getAreasTree } from '@/api/address';
 
 export default {
   components: {
@@ -133,31 +147,75 @@ export default {
   },
   data() {
     return {
-      phonePref: '+86',
-      name: '',
-      phone: '',
-      address: '',
-      detail: '',
-      tag: 'Home',
-      isDefault: true,
-      emitTag: '',
       isEmit: 0, // 0 需要添加 1 添加中 2添加完成
       addressShow: false,
-      stepActive: 0,
-      stepArr: [
-        {
-          title: '',
-          desc: '选择国家',
-          city: ['中国', '美国', '加拿大']
-        }
-      ]
+      stepActive: -1,
+      stepArr: [],
+      phonePrefixs: [],
+      form: {
+        name: '',
+        phone: '',
+        phonePrefix: '',
+        address: '', // 详细地址
+        countryCode: '', //国家编码
+        provinceCode: '', // 省份编码
+        cityCode: '', // 市编码
+        districtCode: '', //区编码
+        isDefault: 0, // 是否为默认地址
+        tag: '', // 标签
+        tagEditor: '', // 自定义标签
+      },
+      chooseList: [],
+      addressList: [],
+      isShowChooseTitle: true,
+      chooseAddress: {},
+      allAddress: ''
     }
   },
+  computed: {
+    isDisabled() {
+      let emptyArr = [];
+      for (const key in this.form) {
+        if (key !== 'tag' && key !== 'tagEditor' && this.form[key].length == 0) {
+          emptyArr.push(key)
+        }
+      }
+      return emptyArr.length > 0 ? true : false;
+    },
+    chooseTitle() {
+      if (this.form.countryCode === '') {
+        return '选择国家';
+      }
+      if (this.form.provinceCode === '') {
+        return '选择州/省/地区';
+      }
+      if (this.form.cityCode === '') {
+        return '选择城市';
+      }
+      return '选择街道或城镇';
+    }
+  },
+  created() {
+    // 获取手机号前缀
+    if (this.$route.query.phonePrefix) {
+      this.form.phonePrefix = this.$route.query.phonePrefix;
+    } else {
+      this.getPhonePrefix();
+    }
+    // 修改地址时要先获取用户的数据
+    this.getAreasTree();
+  },
   methods: {
-    save() { // 保存地址
-      // 地址保存成功跳转到地址列表页面
-      this.$router.replace({
-        name: 'me-address'
+    save() { // 新增/修改地址
+      let _form = Object.assign({}, this.form);
+      if (_form.tag == '') delete _form.tag;
+      if (_form.tagEditor == '') delete _form.tagEditor;
+
+      addAddress(_form).then(() => {
+        // 地址保存成功跳转到地址列表页面
+        this.$router.replace({
+          name: 'me-address'
+        })
       })
     },
     deleteFn() { // 删除地址
@@ -175,35 +233,88 @@ export default {
       })
     },
     stepClick(step) { // step点击事件
-      console.log(step)
+      if (step == this.stepArr.length && this.isShowChooseTitle) return false;
+      this.chooseList = step == 0 ? this.addressList : this.stepArr[step-1].aresChilds;
+      this.stepArr.splice(step, this.stepActive + 1);
       this.stepActive = step;
-      if (this.stepArr[step].title) { // 如果已经选择地区后的逻辑处理
-        let arr = [];
-        this.stepArr.map((item, index) => {
-          if (index < step) {
-            arr.push(item);
-          } else if (index == step) {
-            arr.push({
-              title: '',
-              desc: '选择国家',
-              city: ['中国', '美国', '加拿大']
-            })
-          }
-        });
-        console.log('---------')
-        console.log(this.stepActive)
-        this.stepArr = arr;
-        console.log(this.stepArr)
+      this.isShowChooseTitle = true;
+      
+      if (this.step == 0) { // 国家
+        this.form.countryCode = '';
+        this.form.provinceCode = '';
+        this.form.cityCode = '';
+        this.form.districtCode = '';
+      }
+      if (this.stepActive == 1) { // 省份
+        this.form.provinceCode = '';
+        this.form.cityCode = '';
+        this.form.districtCode = '';
+      }
+      if (this.stepActive == 2) { // 市
+        this.form.cityCode = '';
+        this.form.districtCode = '';
+      }
+      if (this.stepActive == 3) { // 区/街道
+        this.form.districtCode = '';
       }
     },
     changeCity(city) { // 选择城市
-      this.stepArr[this.stepActive].title = city; // 选择城市
-      this.stepActive += 1;
-      this.stepArr[this.stepActive] = {
-        title: '',
-        desc: '选择省份',
-        city: ['广东省', '陕西省', '山西省']
+      if (this.stepActive == 3) {
+        this.stepArr.splice(this.stepActive, 1, city);
+        this.addressShow = false;
+        this.isShowChooseTitle = false;
+        return false;
       }
+      this.stepArr.push(city);
+      this.stepActive += 1;
+
+      if (this.stepActive == 0) { // 国家
+        this.form.countryCode = city.code;
+        this.chooseAddress.country = city.name;
+      }
+      if (this.stepActive == 1) { // 省份
+        this.form.provinceCode = city.code;
+        this.chooseAddress.province = city.name;
+      }
+      if (this.stepActive == 2) { // 市
+        this.form.cityCode = city.code;
+        this.chooseAddress.city = city.name;
+      }
+      if (this.stepActive == 3) { // 区/街道
+        this.form.districtCode = city.code;
+        this.chooseAddress.district = city.name;
+      }
+
+      // 格式化数据列表
+      let arr = [];
+      this.chooseList.map(item => {
+        if (city.code == item.code) {
+          arr = item.aresChilds;
+        }
+      })
+      if (arr.length === 0) {
+        this.addressShow = false;
+        this.isShowChooseTitle = false;
+        let _address = '';
+        for (const key in this.chooseAddress) {
+          _address += this.chooseAddress[key] + ' ';
+        }
+        this.allAddress = _address;
+        return false;
+      }
+      this.chooseList = arr;
+    },
+    getPhonePrefix() { // 获取手机号前缀
+      getPhonePrefix().then(res => {
+        this.phonePrefixs = res.data;
+        this.form.phonePrefix = res.data[0].phonePrefix;
+      })
+    },
+    getAreasTree() { // 获取地区树
+      getAreasTree().then(res => {
+        this.addressList = res.data;
+        this.chooseList = res.data;
+      })
     }
   },
 }
@@ -228,7 +339,7 @@ export default {
   margin-top: 116px;
 }
 .border-green{
-  border: 1px solid #42B7AE;
+  border: 1px solid #42B7AE!important;
 }
 .ptb-3{
   padding-top: 3px;
