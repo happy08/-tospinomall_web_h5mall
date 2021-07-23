@@ -257,8 +257,7 @@ export default {
         cancelButtonColor: '#383838'
       }).then(res => { // 提交接口
         deleteAddress(this.$route.query.id).then(res => {
-          console.log(res)
-          // history.back();
+          history.back();
         })
       }).catch(() => {
 
@@ -266,41 +265,14 @@ export default {
     },
     stepClick(step) { // step点击事件
       if (step == this.stepArr.length && this.isShowChooseTitle) return false;
-
-      this.getNextArea(step == 0 ? {id: 0} : this.stepArr[step-1]); // 获取下一步选择
-      console.log('444444444444')
-      this.stepArr.splice(step, this.stepActive + 1);
-      this.stepActive = step;
-      this.isShowChooseTitle = true;
-      
-      if (this.step == 0) { // 国家
-        this.form.countryCode = '';
-        this.form.provinceCode = '';
-        this.form.cityCode = '';
-        this.form.districtCode = '';
-      }
-      if (this.stepActive == 1) { // 省份
-        this.form.provinceCode = '';
-        this.form.cityCode = '';
-        this.form.districtCode = '';
-      }
-      if (this.stepActive == 2) { // 市
-        this.form.cityCode = '';
-        this.form.districtCode = '';
-      }
-      if (this.stepActive == 3) { // 区/街道
-        this.form.districtCode = '';
-      }
+      this.getNextArea(step == 0 ? {id: 0} : this.stepArr[step-1], 'step' + step); // 获取下一步选择
     },
     changeCity(city) { // 选择城市
       if (this.isNext == true) { // true 有下一级
-        console.log('有下一级')
         this.getNextArea(city, true);
       } else {
         this.addressShow = false;
         this.isShowChooseTitle = false;
-        console.log('++++')
-        console.log(this.isNext)
         this.stepArr.splice(this.stepActive, 1, city);
       }
     },
@@ -339,7 +311,6 @@ export default {
     },
     chooseAddressFn() {
       this.addressShow = true;
-      // console.log('7777777777777777')
       // this.stepArr = this.assgnStepList;
     },
     addressFormat(arr, step) {
@@ -350,7 +321,7 @@ export default {
     getNextArea(city, flag, isNext) {
       getNextArea({ parentId: city.id }).then(res => {
         if (res.data.length === 0) { // 没有下一级的数据处理
-          if (!this.isNext) {
+          if (!this.isNext) { // 已经是最后一级的话
             this.stepArr.splice(this.stepActive, 1, city);
           } else { // 如果还是true就要增加数据
             if (flag) { // 下一级处理
@@ -365,15 +336,25 @@ export default {
         }
         this.isNext = isNext ? false : true;
         this.chooseList = res.data;
-        if (flag) { // 下一级处理
+
+        if (flag == true) { // 下一级处理
           this.stepActive += 1;
           this.stepArr.push(city);
+          return false;
+        }
+
+        if (flag && flag.indexOf('step') > -1) { // 点击跳转到选择的步骤
+          this.stepArr.splice(flag.split('step')[1], this.stepActive + 1);
+          this.stepActive = flag.split('step')[1] - 1;
+          this.isShowChooseTitle = true;
+          return false;
         }
       })
     },
     closePopup() { // 关闭修改地址弹窗时触发, 数据处理
       if (!this.isNext) {
         this.assgnStepList = this.stepArr; // 更新地址数据
+        console.log('---更新地址')
         let _address = '';
         this.stepArr.map(item => {
           _address += item.name;
