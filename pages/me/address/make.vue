@@ -96,7 +96,6 @@
           </template>
           <template #inactive-icon>
             <BmIcon :name="'dot1'" :color="'#eee'"></BmIcon>
-            <!-- <van-icon name="circle" color="#42b7ae" size="0.1rem" /> -->
           </template>
           <template #finish-icon>
             <BmIcon :name="'dot1'" :color="'#42b7ae'"></BmIcon>
