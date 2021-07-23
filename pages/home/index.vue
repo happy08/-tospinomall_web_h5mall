@@ -439,7 +439,7 @@ export default {
       }
       if (hotDetail.imageLinkType == 1 || hotDetail.imageLinkType == 2) { // 不论是前端分类还是后端分类，都传后端分类id进行搜索
         _query = {
-          categoryId: hotDetail.serverMenuId
+          categoryId: hotDetail.imageLinkType == 2 ? hotDetail.serverMenuId: hotDetail.frontMenuId
         }
       }
 

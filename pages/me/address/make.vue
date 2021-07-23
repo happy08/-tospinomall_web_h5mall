@@ -86,7 +86,7 @@
     </div>
 
     <!-- 修改地址 -->
-    <van-popup v-model="addressShow" position="bottom" closeable class="ptb-20" style="min-height: 80%;">
+    <van-popup v-model="addressShow" position="bottom" closeable class="ptb-20" style="min-height: 80%;" @close="closePopup">
       <h4 class="fs-18 black lh-20 tc plr-20">Choose a country or region</h4>
       <!-- 地址选择步骤条 -->
       <van-steps direction="vertical" :active="stepActive" class="mt-24" @click-step="stepClick">
@@ -101,7 +101,6 @@
           <template #finish-icon>
             <BmIcon :name="'dot1'" :color="'#42b7ae'"></BmIcon>
           </template>
-          <!-- <p class="fs-16 black">{{ item.title ? item.title : item.desc }}</p> -->
           <p class="fs-16 black">{{ item.name ? item.name : chooseTitle }}</p>
         </van-step>
         <van-step v-if="isShowChooseTitle">
@@ -110,7 +109,6 @@
           </template>
           <template #inactive-icon>
             <BmIcon :name="'dot1'" :color="'#eee'"></BmIcon>
-            <!-- <van-icon name="circle" color="#42b7ae" size="0.1rem" /> -->
           </template>
           <template #finish-icon>
             <BmIcon :name="'dot1'" :color="'#42b7ae'"></BmIcon>
@@ -133,7 +131,7 @@
 <script>
 import { Cell, CellGroup, Field, Switch, Popup, Step, Steps } from 'vant';
 import { getPhonePrefix } from '@/api/login';
-import { addAddress, getAreasTree, getAddressDetail, getNextArea } from '@/api/address';
+import { addAddress, getAddressDetail, getNextArea, updateAddress, deleteAddress } from '@/api/address';
 
 export default {
   components: {
@@ -151,6 +149,7 @@ export default {
       addressShow: false,
       stepActive: -1,
       stepArr: [],
+      assgnStepList: [],
       phonePrefixs: [],
       form: {
         name: '',
@@ -166,9 +165,8 @@ export default {
         tagEditor: '', // 自定义标签
       },
       chooseList: [],
-      addressList: [],
       isShowChooseTitle: true,
-      chooseAddress: {},
+      isNext: true,
       allAddress: ''
     }
   },
@@ -206,24 +204,43 @@ export default {
     // 修改地址时要先获取用户的数据
     if (this.$route.query.id) {
       this.getAddressDetail();
-    } else {
-      // 获取地区树
-      this.getAreasTree();
+    } else { // 新建页面
+      this.form = {
+        name: '',
+        phone: '',
+        phonePrefix: '',
+        address: '', // 详细地址
+        countryCode: '', //国家编码
+        provinceCode: '', // 省份编码
+        cityCode: '', // 市编码
+        districtCode: '', //区编码
+        isDefault: false, // 是否为默认地址
+        tag: '', // 标签
+        tagEditor: '', // 自定义标签
+      }
+      this.isEmit = 1;
+      this.getNextArea({ id: 0 });
     }
   },
   methods: {
     save() { // 新增/修改地址
-      let _form = Object.assign({}, this.form);
+      let _form = {
+        ...this.form,
+        isDefault: this.form.isDefault ? 1 : 0
+      };
       if (_form.tag == '') delete _form.tag;
       if (_form.tagEditor == '') delete _form.tagEditor;
+      if (_form.tag === _form.tagEditor) _form.tag = '';
+
       if (this.$route.query.id) { // 修改地址的时候需要传
         _form = {
           ..._form,
           id: this.$route.query.id
         }
       }
-
-      addAddress(_form).then(() => {
+      
+      let _ajax = this.$route.query.id ? updateAddress(_form) : addAddress(_form);
+      _ajax.then(() => {
         // 地址保存成功跳转到地址列表页面
         this.$router.replace({
           name: 'me-address'
@@ -239,14 +256,19 @@ export default {
         cancelButtonText: this.$t('common.no'),
         cancelButtonColor: '#383838'
       }).then(res => { // 提交接口
-
+        deleteAddress(this.$route.query.id).then(res => {
+          console.log(res)
+          // history.back();
+        })
       }).catch(() => {
 
       })
     },
     stepClick(step) { // step点击事件
       if (step == this.stepArr.length && this.isShowChooseTitle) return false;
-      this.chooseList = step == 0 ? this.addressList : this.stepArr[step-1].aresChilds;
+
+      this.getNextArea(step == 0 ? {id: 0} : this.stepArr[step-1]); // 获取下一步选择
+      console.log('444444444444')
       this.stepArr.splice(step, this.stepActive + 1);
       this.stepActive = step;
       this.isShowChooseTitle = true;
@@ -271,101 +293,21 @@ export default {
       }
     },
     changeCity(city) { // 选择城市
-      console.log(city)
-      if (this.stepActive == 0) { // 国家
-        this.form.countryCode = city.code;
-        this.chooseAddress.country = city.name;
-      }
-      if (this.stepActive == 1) { // 省份
-        this.form.provinceCode = city.code;
-        this.chooseAddress.province = city.name;
-      }
-      if (this.stepActive == 2) { // 市
-        this.form.cityCode = city.code;
-        this.chooseAddress.city = city.name;
-      }
-      if (this.stepActive == 3) { // 区/街道
-        this.form.districtCode = city.code;
-        this.chooseAddress.district = city.name;
-      }
-      if (this.stepActive == 3) {
+      if (this.isNext == true) { // true 有下一级
+        console.log('有下一级')
+        this.getNextArea(city, true);
+      } else {
+        this.addressShow = false;
+        this.isShowChooseTitle = false;
+        console.log('++++')
+        console.log(this.isNext)
         this.stepArr.splice(this.stepActive, 1, city);
-        this.addressShow = false;
-        this.isShowChooseTitle = false;
-        let _address = '';
-        for (const key in this.chooseAddress) {
-          _address += this.chooseAddress[key];
-        }
-        this.allAddress = _address;
-        return false;
       }
-      this.stepArr.push(city);
-      this.stepActive += 1;
-
-      // 格式化数据列表
-      let arr = [];
-      this.chooseList.map(item => {
-        if (city.code == item.code) {
-          arr = item.aresChilds;
-        }
-      })
-      if (arr.length === 0) {
-        this.addressShow = false;
-        this.isShowChooseTitle = false;
-        let _address = '';
-        for (const key in this.chooseAddress) {
-          _address += this.chooseAddress[key];
-        }
-        this.allAddress = _address;
-        return false;
-      }
-      this.chooseList = arr;
     },
     getPhonePrefix() { // 获取手机号前缀
       getPhonePrefix().then(res => {
         this.phonePrefixs = res.data;
         this.form.phonePrefix = res.data[0].phonePrefix;
-      })
-    },
-    getAreasTree() { // 获取地区树
-      getAreasTree().then(res => {
-        this.addressList = res.data;
-        this.chooseList = res.data;
-        
-        let arr = [];
-        this.addressList.map(country => { // 国家
-          if (country.code == this.stepArr[0].code) {
-            arr.push(country);
-            this.chooseAddress.country = country.name;
-            if (country.aresChilds.length > 0 && this.stepArr[1]) {
-              country.aresChilds.map(province => { // 省
-                if (province.code == this.stepArr[1].code) {
-                  arr.push(province);
-                  this.chooseAddress.province = province.name;
-                   if (province.aresChilds.length > 0 && this.stepArr[2]) {
-                     province.aresChilds.map(city => { // 市
-                      if (city.code == this.stepArr[2].code) {
-                        arr.push(city);
-                        this.chooseAddress.city = city.name;
-                        if (city.aresChilds.length > 0 && this.stepArr[3]) {
-                          city.aresChilds.map(district => { // 区
-                            if (district.code == this.stepArr[3].code) {
-                              arr.push(district);
-                              this.chooseAddress.district = district.name;
-                            }
-                          })
-                        }
-                      }
-                     })
-                   }
-                }
-              })
-            }
-          }
-        })
-
-        this.stepArr = arr;
-        this.chooseList = [arr[arr.length - 1]];
       })
     },
     getAddressDetail() { // 查看地址信息
@@ -380,25 +322,72 @@ export default {
           provinceCode: res.data.provinceCode, // 省份编码
           cityCode: res.data.cityCode, // 市编码
           districtCode: res.data.districtCode, //区编码
-          isDefault: res.data.isDefault, // 是否为默认地址
-          tag: res.data.tag, // 标签
+          isDefault: res.data.isDefault == 1 ? true : false, // 是否为默认地址
+          tag: res.data.tagEditor ? res.data.tagEditor : res.data.tag, // 标签
           tagEditor: res.data.tagEditor, // 自定义标签
         }
 
+        this.isEmit = res.data.tagEditor ? 2 : 0;
+
         this.stepArr = res.data.areaList;
+        this.assgnStepList = res.data.areaList;
         this.stepActive = res.data.areaList.length - 1;
         this.isShowChooseTitle = false;
-
-        this.getAreasTree();
+        // 获取地址的时候默认是最后一级
+        this.getNextArea(res.data.areaList[res.data.areaList.length - 2], false, true);
       })
     },
     chooseAddressFn() {
       this.addressShow = true;
+      // console.log('7777777777777777')
+      // this.stepArr = this.assgnStepList;
     },
     addressFormat(arr, step) {
       return arr.map(item => {
         return item.aresChilds;
       })
+    },
+    getNextArea(city, flag, isNext) {
+      getNextArea({ parentId: city.id }).then(res => {
+        if (res.data.length === 0) { // 没有下一级的数据处理
+          if (!this.isNext) {
+            this.stepArr.splice(this.stepActive, 1, city);
+          } else { // 如果还是true就要增加数据
+            if (flag) { // 下一级处理
+              this.stepActive += 1;
+              this.stepArr.push(city);
+            }
+          }
+          this.isNext = false;
+          this.addressShow = false;
+          this.isShowChooseTitle = false;
+          return false;
+        }
+        this.isNext = isNext ? false : true;
+        this.chooseList = res.data;
+        if (flag) { // 下一级处理
+          this.stepActive += 1;
+          this.stepArr.push(city);
+        }
+      })
+    },
+    closePopup() { // 关闭修改地址弹窗时触发, 数据处理
+      if (!this.isNext) {
+        this.assgnStepList = this.stepArr; // 更新地址数据
+        let _address = '';
+        this.stepArr.map(item => {
+          _address += item.name;
+        })
+        this.allAddress = _address;
+
+        this.form = {
+          ...this.form,
+          countryCode: this.assgnStepList[0] ? this.assgnStepList[0].code : '',
+          provinceCode: this.assgnStepList[1] ? this.assgnStepList[1].code : '',
+          cityCode: this.assgnStepList[2] ? this.assgnStepList[2].code : '',
+          districtCode: this.assgnStepList[3] ? this.assgnStepList[3].code : ''
+        };
+      }
     }
   },
 }

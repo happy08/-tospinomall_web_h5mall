@@ -266,7 +266,6 @@ export default {
   },
   watch: {
     '$route'(e) {
-      console.log('w')
       this.$fetch();
     }
   },

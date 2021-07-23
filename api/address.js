@@ -59,9 +59,39 @@ export function getNextArea(params) {
 /**
  * 修改收货地址
  */
-export function updateAddress() {
+export function updateAddress(data) {
   return request({
-    url: '/admin/ums/buyer/deliveryAddress/updateById',
-    method: 'put'
+    url: '/api/admin/ums/buyer/deliveryAddress/updateById',
+    method: 'put',
+    data: qs.stringify(data),
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
+  })
+}
+
+/**
+ * 删除地址
+ */
+export function deleteAddress(id) {
+  return request({
+    url: `/api/admin/ums/buyer/deliveryAddress/deleteById/${id}`,
+    method: 'delete',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
+  })
+}
+
+/**
+ * 修改指定地址为默认地址
+ */
+export function updateDefaultAddress(id) {
+  return request({
+    url: `/api/admin/ums/buyer/deliveryAddress/updateIsDefault/${id}`,
+    method: 'put',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
   })
 }
