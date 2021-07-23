@@ -446,9 +446,8 @@
       :sku="sku"
       :goods="goodSpuVo"
       :goods-id="goodSpuVo.id"
-      :initial-sku="initialSku"
-      reset-stepper-on-hide
-      reset-selected-sku-on-hide
+      @add-cart="onAddCart"
+      @buy-clicked="onBuyNow"
     >
       <!-- 自定义头部价格展示 -->
       <template #sku-header="props">
@@ -499,17 +498,17 @@
       </template>
 
       <!-- 操作按钮区域 -->
-      <template slot="sku-actions">
+      <template #sku-actions="props">
         <div class="mlr-12 mb-12 mt-10 flex between">
           <!-- 加入购物车 -->
           <BmButton
             :type="'info'"
             class="fs-16 round-8 w-169 h-48 add-cart-btn"
-            @click="onAddCart"
+            @click="props.skuEventBus.$emit('sku:add-cart')"
             >Add to cart</BmButton
           >
           <!-- 立即购买 -->
-          <BmButton class="fs-16 round-8 w-169 h-48" @click="onBuyNow"
+          <BmButton class="fs-16 round-8 w-169 h-48" @click="props.skuEventBus.$emit('sku:buy')"
             >Buy Now</BmButton
           >
         </div>
@@ -663,104 +662,6 @@ export default {
         tree: [],
         list: []
       },
-      // sku: {
-      //   // 所有sku规格类目与其值的从属关系，比如商品有颜色和尺码两大类规格，颜色下面又有红色和蓝色两个规格值。
-      //   // 可以理解为一个商品可以有多个规格类目，一个规格类目下可以有多个规格值。
-      //   tree: [
-      //     {
-      //       k: 'Color',
-      //       k_id: '1',
-      //       v: [
-      //         {
-      //           id: '30349',
-      //           name: '天蓝色'
-      //         },
-      //         {
-      //           id: '1215',
-      //           name: '白色'
-      //         }
-      //       ],
-      //       k_s: 's1'
-      //     },
-      //     {
-      //       k: 'Size',
-      //       k_id: '2',
-      //       v: [
-      //         {
-      //           id: '1193',
-      //           name: 'S'
-      //         },
-      //         {
-      //           id: '1194',
-      //           name: 'M'
-      //         },
-      //         {
-      //           id: '1195',
-      //           name: 'L'
-      //         },
-      //         {
-      //           id: '1196',
-      //           name: 'XL'
-      //         }
-      //       ],
-      //       k_s: 's2'
-      //     }
-      //   ],
-      //   // 所有 sku 的组合列表，如下是：白色1、白色2、天蓝色1、天蓝色2
-      //   list: [
-      //     {
-      //       id: 2259,
-      //       price: 120, //价格
-      //       s1: '1215',
-      //       s2: '1193',
-      //       s3: '0',
-      //       s4: '0',
-      //       s5: '0',  
-      //       stock_num: 20, //库存 
-      //       goods_id: 946755
-      //     },
-      //     {
-      //       id: 2260,
-      //       price: 110,
-      //       s1: '1215',
-      //       s2: '1194',
-      //       s3: '0',
-      //       s4: '0',
-      //       s5: '0',  
-      //       stock_num: 2, //库存 
-      //       goods_id: 946755
-      //     },
-      //     {
-      //       id: 2257,
-      //       price: 130,
-      //       s1: '30349',
-      //       s2: '1193',
-      //       s3: '0',
-      //       s4: '0',
-      //       s5: '0',  
-      //       stock_num: 40, //库存 
-      //       goods_id: 946755
-      //     },
-      //     {
-      //       id: 2258,
-      //       price: 100,
-      //       s1: '30349',
-      //       s2: '0',
-      //       s3: '0',
-      //       s4: '0',
-      //       s5: '0',  
-      //       stock_num: 50, //库存 
-      //       goods_id: 946755
-      //     }
-      //   ],
-      //   price: '5.00',
-      //   stock_num: 227, // 商品总库存
-      //   none_sku: false,  // 是否隐藏无规格商品 
-      //   hide_stock: false,  // 是否隐藏剩余库存
-      //   messages: []
-      // },
-      // quota: 10, //限购数量 
-      // quota_used: 0,  //已经购买过的数量
       initialSku:{
         // s1: '1011',
         // s2: '1193',
@@ -819,24 +720,47 @@ export default {
         k: item.attrName, // 规格类目名称
         k_id: item.attrId,
         k_s: 's' + item.attrId, // sku 组合列表（下方 list）中当前类目对应的 key 值，value 值会是从属于当前类目的一个规格值 id
-        v: []
+        v: [],
+        largeImageMode: false
       })
       item.attrValues.forEach(attrItem => { // 种类属性
         this.sku.tree[itemInxdex].v.push({
           id: attrItem.attrValueId,
-          name: attrItem.attrValue
+          name: attrItem.attrValue,
+          previewImgUrl: 'http://product-pic-bucket.oss-cn-beijing.aliyuncs.com/uploads/1626332543455_4'
         })
         attrItem.skuList.forEach(skuItem => { // 商品组合列表
           _skuList.push({ // sku 组合列表
             id: skuItem.skuId,
             [this.sku.tree[itemInxdex].k_s]: attrItem.attrValueId,
-            price: skuItem.skuPrice,
+            price: skuItem.skuPrice * 100, // list中的价格单位是分，所以需要乘以100
             stock_num: skuItem.stockNum
           })
         })
       })
     })
-    this.sku.list = _skuList;
+
+    // 数组合并去重
+    let arr = [];
+    _skuList.forEach((item) => {
+      let flag = true;
+      let obj = item;
+      arr.forEach((newItem, index) => {
+        if (item.id === newItem.id) { // id一直合并对象属性
+          obj = {
+            ...item,
+            ...newItem
+          }
+          arr[index] = obj;
+          flag = false;
+        }
+      })
+      if (flag) {
+        arr.push(obj);
+      }
+    })
+
+    this.sku.list = arr;
   },
   activated() {
     getCurrentDefaultAddress().then(res => { // 查看是否有默认地址
@@ -907,8 +831,8 @@ export default {
         }
       }
     },
-    onBuyNow() { // 立即购买
-
+    onBuyNow(sku) { // 立即购买
+      console.log(sku)
     },
     onAddCart() { // 加入购物车
 

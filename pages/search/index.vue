@@ -254,6 +254,11 @@ export default {
           starLevel: parseFloat(item.starLevel)
         }
       });
+      this.$store.commit('user/SET_SEARCHLIST', this.searchVal); // 搜索历史存储
+      // 更新页面展示
+      this.searchHistoryList = this.$store.state.user.searchList.filter((item, index) => {
+        return index < 6;
+      });
     }
 
     // 搜索发现数据
@@ -266,7 +271,6 @@ export default {
   },
   watch: {
     '$route'(e) {
-      console.log(e)
       this.$fetch();
     }
   },
