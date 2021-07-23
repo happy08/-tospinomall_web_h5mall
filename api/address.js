@@ -95,3 +95,13 @@ export function updateDefaultAddress(id) {
     }
   })
 }
+
+/**
+ * 查询当前买家的默认收货地址
+ */
+export function getCurrentDefaultAddress() {
+  return request({
+    url: '/api/admin/ums/buyer/deliveryAddress/findCurrentDefault',
+    method: 'post'
+  })
+}

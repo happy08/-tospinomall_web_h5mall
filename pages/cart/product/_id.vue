@@ -109,94 +109,98 @@
             <template #title>
               <div class="flex vcenter">
                 <span class="fw fs-12 block">{{ $t("cart.freight") }}</span>
-                <span
+                <!-- <span
                   class="ml-12 fs-12 grey fm-helvetica"
                   @click="deliveryShow = true"
                   >{{ $t("cart.delivery") }}: CHY0.00</span
-                >
+                > -->
+                <span class="ml-12 fs-12 grey fm-helvetica">请选择收货地址</span>
               </div>
             </template>
           </van-cell>
-          <!-- 步骤条 -->
-          <van-steps :active="freightActive" class="mt-20 plr-0">
-            <van-step>
-              China
-              <!-- 自定义未激活状态图标 -->
-              <template #inactive-icon>
-                <van-icon
-                  :name="require('@/assets/images/icon/plane-default.png')"
-                  size="0.48rem"
-                />
-              </template>
-              <!-- 自定义激活状态图标 -->
-              <template #active-icon>
-                <van-icon
-                  :name="require('@/assets/images/icon/plane-active.png')"
-                  size="0.48rem"
-                />
-              </template>
-              <!-- 自定义激活状态图标 -->
-              <template #finish-icon>
-                <van-icon
-                  :name="require('@/assets/images/icon/plane-active.png')"
-                  size="0.48rem"
-                />
-              </template>
-            </van-step>
-            <van-step>
-              Accra
-              <!-- 自定义未激活状态图标 -->
-              <template #inactive-icon>
-                <van-icon
-                  :name="require('@/assets/images/icon/transfer-default.png')"
-                  size="0.48rem"
-                />
-              </template>
-              <!-- 自定义激活状态图标 -->
-              <template #active-icon>
-                <van-icon
-                  :name="require('@/assets/images/icon/transfer-active.png')"
-                  size="0.48rem"
-                />
-              </template>
-              <!-- 自定义激活状态图标 -->
-              <template #finish-icon>
-                <van-icon
-                  :name="require('@/assets/images/icon/transfer-active.png')"
-                  size="0.48rem"
-                />
-              </template>
-            </van-step>
-            <van-step>
-              Ghana
-              <!-- 自定义未激活状态图标 -->
-              <template #inactive-icon>
-                <van-icon
-                  :name="require('@/assets/images/icon/arrive-default.png')"
-                  size="0.48rem"
-                />
-              </template>
-              <!-- 自定义激活状态图标 -->
-              <template #active-icon>
-                <van-icon
-                  :name="require('@/assets/images/icon/arrive-active.png')"
-                  size="0.48rem"
-                />
-              </template>
-              <!-- 自定义激活状态图标 -->
-              <template #finish-icon>
-                <van-icon
-                  :name="require('@/assets/images/icon/arrive-active.png')"
-                  size="0.48rem"
-                />
-              </template>
-            </van-step>
-          </van-steps>
-          <p class="mt-16 fs-14 light-grey fm-helvetica">
-            Finish the order before 23:59 today, and the goods are expected to
-            be delivered before 23:30 on janu-ary 2nd.
-          </p>
-          <p class="mt-8 orange fs-12">From January 3rd to January 27th</p>
+          <!-- 货源地到收货地 -->
+          <template>
+            <!-- 步骤条 -->
+            <van-steps :active="freightActive" class="mt-20 plr-0">
+              <van-step>
+                China
+                <!-- 自定义未激活状态图标 -->
+                <template #inactive-icon>
+                  <van-icon
+                    :name="require('@/assets/images/icon/plane-default.png')"
+                    size="0.48rem"
+                  />
+                </template>
+                <!-- 自定义激活状态图标 -->
+                <template #active-icon>
+                  <van-icon
+                    :name="require('@/assets/images/icon/plane-active.png')"
+                    size="0.48rem"
+                  />
+                </template>
+                <!-- 自定义激活状态图标 -->
+                <template #finish-icon>
+                  <van-icon
+                    :name="require('@/assets/images/icon/plane-active.png')"
+                    size="0.48rem"
+                  />
+                </template>
+              </van-step>
+              <van-step>
+                Accra
+                <!-- 自定义未激活状态图标 -->
+                <template #inactive-icon>
+                  <van-icon
+                    :name="require('@/assets/images/icon/transfer-default.png')"
+                    size="0.48rem"
+                  />
+                </template>
+                <!-- 自定义激活状态图标 -->
+                <template #active-icon>
+                  <van-icon
+                    :name="require('@/assets/images/icon/transfer-active.png')"
+                    size="0.48rem"
+                  />
+                </template>
+                <!-- 自定义激活状态图标 -->
+                <template #finish-icon>
+                  <van-icon
+                    :name="require('@/assets/images/icon/transfer-active.png')"
+                    size="0.48rem"
+                  />
+                </template>
+              </van-step>
+              <van-step>
+                Ghana
+                <!-- 自定义未激活状态图标 -->
+                <template #inactive-icon>
+                  <van-icon
+                    :name="require('@/assets/images/icon/arrive-default.png')"
+                    size="0.48rem"
+                  />
+                </template>
+                <!-- 自定义激活状态图标 -->
+                <template #active-icon>
+                  <van-icon
+                    :name="require('@/assets/images/icon/arrive-active.png')"
+                    size="0.48rem"
+                  />
+                </template>
+                <!-- 自定义激活状态图标 -->
+                <template #finish-icon>
+                  <van-icon
+                    :name="require('@/assets/images/icon/arrive-active.png')"
+                    size="0.48rem"
+                  />
+                </template>
+              </van-step>
+            </van-steps>
+            <p class="mt-16 fs-14 light-grey fm-helvetica">
+              Finish the order before 23:59 today, and the goods are expected to
+              be delivered before 23:30 on janu-ary 2nd.
+            </p>
+            <p class="mt-8 orange fs-12">From January 3rd to January 27th</p>
+          </template>
         </div>
       </van-tab>
       <van-tab title="Param" name="Param">
@@ -519,34 +523,41 @@
     </van-sku>
 
     <!-- 地址选择 -->
-    <van-popup v-model="addressShow" position="bottom" closeable class="ptb-20">
+    <van-popup v-model="addressShow" position="bottom" closeable class="ptb-20" style="min-height: 80%;" @close="closePopup">
       <h4 class="fs-18 black lh-20 tc plr-20">Choose a country or region</h4>
       <!-- 地址选择步骤条 -->
-      <van-steps
-        direction="vertical"
-        :active="stepActive"
-        class="mt-24"
-        @click-step="stepClick"
-      >
-        <van-step v-for="(item, stepIndex) in stepArr" :key="stepIndex">
+      <van-steps direction="vertical" :active="stepActive" class="mt-24" @click-step="stepClick">
+        <van-step v-for="item, stepIndex in stepArr" :key="stepIndex">
           <template #active-icon>
-            <i class="iconfont icon-dot1 green"></i>
+            <BmIcon :name="'dot1'" :color="'#42b7ae'"></BmIcon>
           </template>
-          <p class="fs-16 black">{{ item.title ? item.title : item.desc }}</p>
+          <template #inactive-icon>
+            <BmIcon :name="'dot1'" :color="'#eee'"></BmIcon>
+          </template>
+          <template #finish-icon>
+            <BmIcon :name="'dot1'" :color="'#42b7ae'"></BmIcon>
+          </template>
+          <p class="fs-16 black">{{ item.name ? item.name : chooseTitle }}</p>
+        </van-step>
+        <van-step v-if="isShowChooseTitle">
+          <template #active-icon>
+            <BmIcon :name="'dot1'" :color="'#42b7ae'"></BmIcon>
+          </template>
+          <template #inactive-icon>
+            <BmIcon :name="'dot1'" :color="'#eee'"></BmIcon>
+          </template>
+          <template #finish-icon>
+            <BmIcon :name="'dot1'" :color="'#42b7ae'"></BmIcon>
+          </template>
+          <p class="fs-16 black">{{ chooseTitle }}</p>
         </van-step>
       </van-steps>
+      <div class="border-b mt-10 w-100"></div>
       <!-- 进行选择 -->
-      <div class="mt-42 plr-24">
-        <p class="fs-14 grey-1">Choose Street or Town</p>
-        <ul class="plr-24 fs-16 black" v-if="stepArr[stepActive].city">
-          <li
-            class="mt-20"
-            v-for="(city, cityIndex) in stepArr[stepActive].city"
-            :key="cityIndex"
-            @click="changeCity(city)"
-          >
-            {{ city }}
-          </li>
+      <div class="mt-20 plr-24">
+        <p class="fs-14 grey-1">{{ chooseTitle }}</p>
+        <ul class="plr-24 fs-16 black">
+          <li class="mt-20" v-for="city, cityIndex in chooseList" :key="cityIndex" @click="changeCity(city)">{{ city.name }}</li>
         </ul>
       </div>
     </van-popup>
@@ -596,6 +607,7 @@
 <script>
 import { ImagePreview, Cell, Step, Steps, Rate, Sticky, Search, Tab, Tabs, Popup, Sku, Stepper } from 'vant';
 import { getDeliveryInfo } from '@/api/cart';
+import { getCurrentDefaultAddress, getNextArea } from '@/api/address';
 
 export default {
   components: {
@@ -760,13 +772,17 @@ export default {
       isScroll: false,
       addressShow: false,
       stepActive: 0,
-      stepArr: [
-        {
-          title: '',
-          desc: '选择国家',
-          city: ['中国', '美国', '加拿大']
-        }
-      ]
+      stepArr: [],
+      isShowChooseTitle: true,
+      chooseList: [],
+      form: {
+        address: '', // 详细地址
+        countryCode: '', //国家编码
+        provinceCode: '', // 省份编码
+        cityCode: '', // 市编码
+        districtCode: '', //区编码
+      },
+      assgnStepList: []
     }
   },
   async fetch() {
@@ -820,9 +836,28 @@ export default {
         })
       })
     })
-    // console.log(detailData.data)
     this.sku.list = _skuList;
-   
+  },
+  activated() {
+    getCurrentDefaultAddress().then(res => { // 查看是否有默认地址
+      if (res.data.length === 0) { // 没有默认地址的情况下获取国家列表
+        this.getNextArea({ id: 0 });
+        return false;
+      };
+      this.stepArr = res.data.areaList;
+      this.stepActive = res.data.areaList.length - 1;
+      this.isShowChooseTitle = false;
+      this.form = {
+        // address: res.data.address, // 详细地址
+        countryCode: res.data.countryCode, //国家编码
+        provinceCode: res.data.provinceCode, // 省份编码
+        cityCode: res.data.cityCode, // 市编码
+        districtCode: res.data.districtCode //区编码
+      }
+      // 获取地址的时候默认是最后一级
+      this.getNextArea(res.data.areaList[res.data.areaList.length - 2], false, true);
+    })
+    this.$fetch();
   },
   head() {
     return {
@@ -840,6 +875,20 @@ export default {
     stockNUmFormat(val) {
       console.log(val)
       return Object.keys(val) ? val.stock_num : 0
+    }
+  },
+  computed: {
+    chooseTitle() {
+      if (this.form.countryCode === '') {
+        return '选择国家';
+      }
+      if (this.form.provinceCode === '') {
+        return '选择州/省/地区';
+      }
+      if (this.form.cityCode === '') {
+        return '选择城市';
+      }
+      return '选择街道或城镇';
     }
   },
   methods: {
@@ -868,34 +917,16 @@ export default {
 
     },
     stepClick(step) { // step点击事件
-      console.log(step)
-      this.stepActive = step;
-      if (this.stepArr[step].title) { // 如果已经选择地区后的逻辑处理
-        let arr = [];
-        this.stepArr.map((item, index) => {
-          if (index < step) {
-            arr.push(item);
-          } else if (index == step) {
-            arr.push({
-              title: '',
-              desc: '选择国家',
-              city: ['中国', '美国', '加拿大']
-            })
-          }
-        });
-        console.log('---------')
-        console.log(this.stepActive)
-        this.stepArr = arr;
-        console.log(this.stepArr)
-      }
+      if (step == this.stepArr.length && this.isShowChooseTitle) return false;
+      this.getNextArea(step == 0 ? {id: 0} : this.stepArr[step-1], 'step' + step); // 获取下一步选择
     },
     changeCity(city) { // 选择城市
-      this.stepArr[this.stepActive].title = city; // 选择城市
-      this.stepActive += 1;
-      this.stepArr[this.stepActive] = {
-        title: '',
-        desc: '选择省份',
-        city: ['广东省', '陕西省', '山西省']
+      if (this.isNext == true) { // true 有下一级
+        this.getNextArea(city, true);
+      } else {
+        this.addressShow = false;
+        this.isShowChooseTitle = false;
+        this.stepArr.splice(this.stepActive, 1, city);
       }
     },
     leftBack() {
@@ -913,9 +944,57 @@ export default {
         startPosition: index
       })
     },
-    getDeliveryInfo() { // 获取运费模板
-      getDeliveryInfo().then(res => {
-        console.log(res)
+    getNextArea(city, flag, isNext) {
+      getNextArea({ parentId: city.id }).then(res => {
+        if (res.data.length === 0) { // 没有下一级的数据处理
+          if (!this.isNext) { // 已经是最后一级的话
+            this.stepArr.splice(this.stepActive, 1, city);
+          } else { // 如果还是true就要增加数据
+            if (flag) { // 下一级处理
+              this.stepActive += 1;
+              this.stepArr.push(city);
+            }
+          }
+          this.isNext = false;
+          this.addressShow = false;
+          this.isShowChooseTitle = false;
+          return false;
+        }
+        this.isNext = isNext ? false : true;
+        this.chooseList = res.data;
+
+        if (flag == true) { // 下一级处理
+          this.stepActive += 1;
+          this.stepArr.push(city);
+          return false;
+        }
+
+        if (flag && flag.indexOf('step') > -1) { // 点击跳转到选择的步骤
+          this.stepArr.splice(flag.split('step')[1], this.stepActive + 1);
+          this.stepActive = flag.split('step')[1] - 1;
+          this.isShowChooseTitle = true;
+          return false;
+        }
+      })
+    },
+    closePopup() { // 关闭修改地址弹窗时触发, 数据处理
+      if (!this.isNext) {
+        this.assgnStepList = this.stepArr;
+        this.form = {
+          countryCode: this.assgnStepList[0] ? this.assgnStepList[0].code : '',
+          provinceCode: this.assgnStepList[1] ? this.assgnStepList[1].code : '',
+          cityCode: this.assgnStepList[2] ? this.assgnStepList[2].code : '',
+          districtCode: this.assgnStepList[3] ? this.assgnStepList[3].code : ''
+        }
+      }
+    },
+    getDeliveryInfo() { // 获取配送运费模板信息
+      let _form = {
+        ...this.form,
+        skuId: this.goodSpuVo.id
+      }
+      getDeliveryInfo(_form).then(res => {
+        console.log(res);
       })
     }
   },

@@ -5,8 +5,11 @@ import request from './request';
  */
 export function getDeliveryInfo(data) {
   return request({
-    url: '/product/goods/client/get/delivery/info',
+    url: '/api/product/goods/client/get/delivery/info',
     method: 'post',
-    data
+    data: data,
+    headers: {
+      'Content-Type': 'application/json'
+    }
   })
 }

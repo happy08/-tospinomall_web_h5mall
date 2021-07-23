@@ -89,16 +89,13 @@ service.interceptors.response.use(response => { // 成功
     if (response.data.code === 0) {
       //0 数据成功
       return response.data; //Promise.resolve(res.data);
-    }
-    else if (response.data.code === 10401) { // 用户凭证已过期,跳转到登录页面
+    } else if (response.data.code === 10401) { // 用户凭证已过期,跳转到登录页面
       mutations.SET_TOKEN(state, null)
       location.replace('/login');
       return response.data;
-    }
-    else {
-      if (response.msg) {
-        console.log(response.msg)
-        tip(response.msg);
+    } else {
+      if (response.data.msg) {
+        tip(response.data.msg);
       }
     }
     return Promise.reject(response.data);
