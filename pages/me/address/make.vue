@@ -1,7 +1,7 @@
 <template>
   <!-- 我的-设置-新建收货地址 -->
   <div class="bg-grey vh-100">
-    <BmHeaderNav :left="{ isShow: true, url: '/me/address' }" :title="$t('me.address.shipAddress')">
+    <BmHeaderNav :left="{ isShow: true }" :title="$t('me.address.shipAddress')">
       <div slot="header-right" class="green" @click="deleteFn" v-if="$route.query.id">
         {{ $t('common.delete') }}
       </div>
@@ -242,9 +242,7 @@ export default {
       let _ajax = this.$route.query.id ? updateAddress(_form) : addAddress(_form);
       _ajax.then(() => {
         // 地址保存成功跳转到地址列表页面
-        this.$router.replace({
-          name: 'me-address'
-        })
+        this.$router.go(-1);
       })
     },
     deleteFn() { // 删除地址
@@ -257,7 +255,7 @@ export default {
         cancelButtonColor: '#383838'
       }).then(res => { // 提交接口
         deleteAddress(this.$route.query.id).then(res => {
-          history.back();
+          this.$router.go(-1);
         })
       }).catch(() => {
 
