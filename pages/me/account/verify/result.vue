@@ -20,6 +20,7 @@
 
 <script>
 export default {
+  middleware: 'authenticated',
   methods: {
     loginClick() { // 点击登录 
       this.$router.push({

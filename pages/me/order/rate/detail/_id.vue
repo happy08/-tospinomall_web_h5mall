@@ -102,6 +102,7 @@
 import { Rate, Field } from 'vant';
 
 export default {
+  middleware: 'authenticated',
   components: {
     vanRate: Rate,
     vanField: Field

@@ -50,6 +50,7 @@
 import { Field, Uploader } from 'vant';
 
 export default {
+  middleware: 'authenticated',
   components: {
     vanField: Field,
     vanUploader: Uploader

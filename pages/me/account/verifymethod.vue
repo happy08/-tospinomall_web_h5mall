@@ -16,6 +16,7 @@
 import { Cell, CellGroup } from 'vant';
 
 export default {
+  middleware: 'authenticated',
   components: {
     vanCell: Cell,
     vanCellGroup: CellGroup,

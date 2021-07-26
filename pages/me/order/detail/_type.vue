@@ -197,6 +197,7 @@ import ClipboardJS from 'clipboard';
 import ProductTopBtmSingle from '@/components/ProductTopBtmSingle';
 
 export default {
+  middleware: 'authenticated',
   components: {
     vanCell: Cell,
     vanCellGroup: CellGroup,

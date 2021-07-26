@@ -73,6 +73,7 @@ import Moment from 'moment';
 import { updateUserInfo, getPicUrl } from '@/api/user';
 
 export default {
+  middleware: 'authenticated',
   components: {
     vanCell: Cell,
     vanCellGroup: CellGroup,

@@ -91,6 +91,7 @@
 import { Badge, Cell, CellGroup } from 'vant';
 
 export default {
+  middleware: 'authenticated',
   components: {
     vanBadge: Badge,
     vanCell: Cell,

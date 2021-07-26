@@ -23,6 +23,7 @@
 
 <script>
 export default {
+  middleware: 'authenticated',
   asyncData({isDev, route, store, env, params, query, req, res, redirect, error}) {
     let title = ''; // 标题
     let status = ''; // 状态语

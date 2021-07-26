@@ -19,6 +19,7 @@
 
 <script>
 export default {
+  middleware: 'authenticated',
   methods: {
     onConfirm() {
 

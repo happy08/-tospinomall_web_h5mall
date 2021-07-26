@@ -100,6 +100,7 @@
 import { Checkbox, Cell, Tab, Tabs, Rate, CellGroup } from 'vant';
 
 export default {
+  middleware: 'authenticated',
   components: {
     vanCheckbox: Checkbox,
     vanCell: Cell,

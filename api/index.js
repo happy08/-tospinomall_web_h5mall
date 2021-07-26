@@ -3,7 +3,6 @@
  */
 import qs from 'qs';
 import { url } from './config'; // 导入配置域名
-import { encrypt } from './cryptoAES'; // 加密
 
 export default ({ app }, inject) => {
   const api = {
@@ -17,11 +16,11 @@ export default ({ app }, inject) => {
         `${url}/basics/base/rate/findSiteCurrency`
       )
     },
-    getProductSearch(params) { // 搜索获取商品列表
+    getProductSearch(data) { // 搜索获取商品列表
       return app.$axios({
         url: `${url}/search/productsearch/query`,
         method: 'post',
-        data: params,
+        data: data,
         headers: {
           'Content-Type': 'application/json'
         }
@@ -76,6 +75,16 @@ export default ({ app }, inject) => {
       return app.$axios({
         url: `${url}/search/productsearch/getHintResult/${hit}`,
         method: 'get',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      })
+    },
+    getCartList(params) {
+      return app.$axios({
+        url: `${url}/carts/shoppingCart/findListPage`,
+        method: 'get',
+        params: params,
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
         }

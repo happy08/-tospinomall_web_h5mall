@@ -36,6 +36,7 @@ import ClipboardJS from 'clipboard';
 import { Step, Steps } from 'vant';
 
 export default {
+  middleware: 'authenticated',
   components: {
     vanStep: Step,
     vanSteps: Steps

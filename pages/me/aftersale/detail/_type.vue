@@ -133,6 +133,7 @@ import OrderStoreSingle from '@/components/OrderStoreSingle';
 import ClipboardJS from 'clipboard';
 
 export default {
+  middleware: 'authenticated',
   components: {
     vanStep: Step,
     vanSteps: Steps,

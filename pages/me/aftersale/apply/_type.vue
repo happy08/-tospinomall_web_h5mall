@@ -203,6 +203,7 @@ import OrderSingle from '@/components/OrderSingle';
 import { Cell, CellGroup, Uploader, Field, Checkbox, Switch, Stepper, Popup, RadioGroup, Radio, Sku } from 'vant';
 
 export default {
+  middleware: 'authenticated',
   components: {
     vanCell: Cell,
     vanCellGroup: CellGroup,

@@ -35,6 +35,7 @@ import OrderSingle from '@/components/OrderSingle';
 import OrderStoreSingle from '@/components/OrderStoreSingle';
 
 export default {
+  middleware: 'authenticated',
   components: {
     vanTab: Tab,
     vanTabs: Tabs,

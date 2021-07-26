@@ -28,7 +28,7 @@ export default function({ $axios, app, redirect, store, route }) {
     }
     // //获取cookie
     // const token = app.$cookies.get('auth');
-    // if (token) {
+    // if (store.state.user.token) {
     //   config.headers.Authorization = token;
     // }
 
@@ -46,16 +46,19 @@ export default function({ $axios, app, redirect, store, route }) {
         //0 数据成功
         return res.data; //Promise.resolve(res.data);
       }
-      // else if (res.data.code === 99) {
-      //   //token失效
-      //   store.commit('setToken', ''); // 清除token并跳转登录页
-      //   if (route.name !== 'login') {
-      //     redirect('/login?path=' + route.fullPath);
-      //     setTimeout(() => {
-      //       tip('请重新登入！');
-      //     }, 500);
-      //   }
-      // }
+      else if (res.data.code === 10401) {
+        //token失效
+        console.log(res)
+        
+        // store.commit('user/SET_TOKEN', null); // 清除token并跳转登录页
+        // console.log(store.state)
+        // if (route.name !== 'login') {
+        //   redirect('/login');
+        //   setTimeout(() => {
+        //     tip('请重新登入！');
+        //   }, 500);
+        // }
+      }
       else {
         if (res.data.msg) {
           console.log(res.data.msg)
@@ -76,10 +79,11 @@ export default function({ $axios, app, redirect, store, route }) {
       console.log(error)
       if (error.code === 10401) { // 用户凭证已过期，跳转到登录页面，清空存储的数据类型
         store.commit('user/SET_TOKEN', null);
+        console.log(store.state.user.token)
         // setTimeout(() => {
-          redirect({
-            name: 'login'
-          })
+          // redirect({
+          //   name: 'login'
+          // })
         // }, 300)
       }
       tip(error.msg);

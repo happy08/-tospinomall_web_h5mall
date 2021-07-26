@@ -48,6 +48,7 @@
 import { RadioGroup, Radio, Cell, CellGroup, Field } from 'vant';
 
 export default {
+  middleware: 'authenticated',
   components: {
     vanRadio: Radio,
     vanRadioGroup: RadioGroup,

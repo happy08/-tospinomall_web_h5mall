@@ -50,6 +50,7 @@
 import { NoticeBar, Field, Uploader } from 'vant';
 
 export default {
+  middleware: 'authenticated',
   components: {
     vanNoticeBar: NoticeBar,
     vanField: Field,

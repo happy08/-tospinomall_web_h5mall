@@ -31,8 +31,8 @@
               :isShow="false"
             ></BmImage>
           </div>
-          <nuxt-link :to="{ name: 'cart-store-id', params: { id: item.id } }">
-            <OrderStoreSingle class="pl-16 pr-30" />
+          <nuxt-link :to="{ name: 'cart-store-id', params: { id: item.id } }" v-slot="{ navigate }">
+            <OrderStoreSingle class="pl-16 pr-30" @click="navigate" role="link" />
           </nuxt-link>
         </div>
         <van-swipe-cell class="pl-12" v-for="singleItem in item.list" :key="'single-' + singleItem.id">
@@ -96,7 +96,7 @@
     </div>
 
     <!-- 可能喜欢的推荐列表展示 -->
-    <div>
+    <div v-if="likeList.length">
       <van-divider class="plr-30 mt-24 fw fs-14 clr-black-85">
         <i class="iconfont icon-xinaixin linear-color mr-8"></i>
         {{ $t('common.mayLike') }}
@@ -105,7 +105,7 @@
         <ProductTopBtmSingle
           :img="{ url: '', width: '3.4rem', height: '3.4rem', loadImage: require('@/assets/images/product-bgd-170.png') }" 
           :detail="{ desc: 'categoryItem.name', price: 49.92, rate: 2.5, volumn: 50, ellipsis: 2, country: 'Ghana' }"
-          v-for="(searchItem, searchIndex) in 6" 
+          v-for="(searchItem, searchIndex) in 6"
           :key="'search-list-' + searchIndex"
           class="mb-12"
         ></ProductTopBtmSingle>
@@ -170,75 +170,29 @@ export default {
     OrderStoreSingle,
     ProductTopBtmSingle
   },
-  asyncData({isDev, route, store, env, params, query, req, res, redirect, error}) {
-    let list = [];
-    if (store.state.user.token) {
-      list = [
-        {
-          id: 1,
-          step: 1,
-          price: 29.65,
-          cost: 39.96,
-          color: 'Black',
-          size: 'L',
-          result: [],
-          list: [
-            {
-              id: 1,
-              step: 1,
-              price: 29.65,
-              cost: 39.96,
-              color: 'Black',
-              size: 'L',
-            },
-            {
-              id: 2,
-              step: 1,
-              price: 29.65,
-              cost: 39.96,
-              color: 'Black',
-              size: 'L',
-            }
-          ],
-          isAll: false
-        },
-        {
-          id: 2,
-          step: 1,
-          price: 29.65,
-          cost: 39.96,
-          color: 'Black',
-          size: 'L',
-          result: [],
-          list: [
-            {
-              id: 1,
-              step: 1,
-              price: 29.65,
-              cost: 39.96,
-              color: 'Black',
-              size: 'L',
-            },
-            {
-              id: 2,
-              step: 1,
-              price: 29.65,
-              cost: 39.96,
-              color: 'Black',
-              size: 'L',
-            }
-          ],
-          isAll: false
-        }
-      ];
-    }
+  data() {
     return {
-      list: list,
+      list: [],
       tabActive: 0,
       checked: false,
       isEdit: false,
-      total: 0
+      total: 0,
+      pageNum: 1,
+      pageSize: 10,
+      queryType: 1, // 查询类型（ 1 查询全部 2降价查询 3经常购买 4 关注商品列表）
+      likeList: [],
+      totalAmount: 0, // 总金额
     }
+  },
+  async fetch() {
+    const listData = await this.$api.getCartList({ pageNum: this.pageNum, pageSize: this.pageSize, queryType: this.queryType });
+    this.list = listData.data.storeList; // 购物车列表
+    this.total = listData.data.totalQuantity; // 总数量
+    this.totalAmount = listData.data.totalAmount; // 总金额
+    console.log(this.list)
+  },
+  activated() {
+    this.$fetch();
   },
   methods: {
     onEdit() { // 编辑购物车, 登录情况下才可以编辑购物车

@@ -50,6 +50,7 @@ import { Cell, CellGroup } from 'vant';
 import Moment from 'moment';
 
 export default {
+  middleware: 'authenticated',
   components: {
     vanCell: Cell,
     vanCellGroup: CellGroup

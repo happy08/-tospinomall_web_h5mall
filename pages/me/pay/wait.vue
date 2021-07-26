@@ -42,6 +42,7 @@
 
 <script>
 export default {
+  middleware: 'authenticated',
   methods: {
     onPayCompleted() { // 支付完成
 

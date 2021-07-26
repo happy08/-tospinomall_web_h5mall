@@ -93,6 +93,7 @@
 import { Cell, CellGroup, Rate, Uploader, Checkbox } from 'vant';
 
 export default {
+  middleware: 'authenticated',
   components: {
     vanCell: Cell,
     vanCellGroup: CellGroup,

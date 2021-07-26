@@ -45,6 +45,7 @@
 import { PasswordInput, NumberKeyboard } from 'vant';
 
 export default {
+  middleware: 'authenticated',
   components: {
     vanPasswordInput: PasswordInput,
     vanNumberKeyboard: NumberKeyboard

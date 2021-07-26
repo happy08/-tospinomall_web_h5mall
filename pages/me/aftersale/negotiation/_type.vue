@@ -20,6 +20,7 @@
 import OrderStoreSingle from '@/components/OrderStoreSingle';
 
 export default {
+  middleware: 'authenticated',
   components: {
     OrderStoreSingle
   },

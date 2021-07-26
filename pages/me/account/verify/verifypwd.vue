@@ -34,6 +34,7 @@
 import { Field } from 'vant';
 
 export default {
+  middleware: 'authenticated',
   components: {
     vanField: Field
   },

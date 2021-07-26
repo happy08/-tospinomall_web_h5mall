@@ -133,6 +133,7 @@ import { getPhonePrefix } from '@/api/login';
 import { addAddress, getAddressDetail, getNextArea, updateAddress, deleteAddress } from '@/api/address';
 
 export default {
+  middleware: 'authenticated',
   components: {
     vanCell: Cell,
     vanCellGroup: CellGroup,

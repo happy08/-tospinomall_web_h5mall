@@ -29,6 +29,7 @@
 import { Search } from 'vant';
 
 export default {
+  middleware: 'authenticated',
   components: {
     vanSearch: Search
   },

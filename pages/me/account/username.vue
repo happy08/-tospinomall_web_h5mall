@@ -17,6 +17,7 @@ import { Field } from 'vant';
 import { updateUserInfo } from '@/api/user';
 
 export default {
+  middleware: 'authenticated',
   components: {
     vanField: Field
   },

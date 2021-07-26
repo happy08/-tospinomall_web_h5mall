@@ -76,6 +76,7 @@ import { Field, Divider, Picker, Popup } from 'vant';
 import { getPhonePrefix, getPhoneCode, checkPhoneCode, getEmailCode, checkEmailCode } from '@/api/login';
 
 export default {
+  middleware: 'authenticated',
   components: {
     vanField: Field,
     vanDivider: Divider,

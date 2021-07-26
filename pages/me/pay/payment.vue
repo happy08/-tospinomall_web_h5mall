@@ -74,6 +74,7 @@ import { RadioGroup, Radio, Cell, CellGroup, Field, Popup, Picker } from 'vant';
 import { getPhonePrefix } from '@/api/login';
 
 export default {
+  middleware: 'authenticated',
   components: {
     vanRadioGroup: RadioGroup,
     vanRadio: Radio,

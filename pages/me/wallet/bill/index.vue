@@ -51,6 +51,7 @@ import { Search } from 'vant';
 import Moment from 'moment';
 
 export default {
+  middleware: 'authenticated',
   components: {
     vanSearch: Search
   },

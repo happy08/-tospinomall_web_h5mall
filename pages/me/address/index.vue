@@ -50,6 +50,7 @@ import { RadioGroup, Radio } from 'vant';
 import { getAddressList, updateDefaultAddress } from '@/api/address';
 
 export default {
+  middleware: 'authenticated',
   components: {
     vanRadioGroup: RadioGroup,
     vanRadio: Radio

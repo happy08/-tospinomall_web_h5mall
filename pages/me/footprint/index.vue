@@ -95,6 +95,7 @@ import OrderSingle from '@/components/OrderSingle';
 import ProductTopBtmSingle from '@/components/ProductTopBtmSingle';
 
 export default {
+  middleware: 'authenticated',
   components: {
     vanTab: Tab,
     vanTabs: Tabs,

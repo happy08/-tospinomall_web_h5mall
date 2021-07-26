@@ -24,6 +24,7 @@ import { IndexBar, IndexAnchor, Cell, Search } from 'vant';
 import { getPhonePrefix } from '@/api/login';
 
 export default {
+  middleware: 'authenticated',
   components: {
     vanIndexBar: IndexBar,
     vanIndexAnchor: IndexAnchor,
