@@ -99,11 +99,11 @@
             <BmIcon :name="'wechat-icon'" :width="'0.64rem'" :height="'0.64rem'"></BmIcon>
           </a>
           <!-- email -->
-          <nuxt-link :to="{ name: 'login-code', query: { changeWay: 'email' } }" replace>
+          <nuxt-link :to="{ name: 'login-code', query: { changeWay: 'email' } }" replace v-if="this.$route.query.changeWay !== 'email'">
             <BmIcon :name="'email-icon'" :width="'0.64rem'" :height="'0.64rem'"></BmIcon>
           </nuxt-link>
           <!-- 手机 -->
-          <nuxt-link :to="{ name: 'login-code' }" replace>
+          <nuxt-link :to="{ name: 'login-code' }" replace v-if="this.$route.query.changeWay">
             <BmIcon :name="'cellphone'" :width="'0.64rem'" :height="'0.64rem'"></BmIcon>
           </nuxt-link>
         </div>
@@ -206,25 +206,24 @@ export default {
       authCodeLogin({
         code: this.code, 
         mobile: this.$route.query.changeWay === 'email' ? this.account : this.prefixCode.split('+')[1] + this.account, 
-        userType: 'buyer' 
+        userType: 'buyer'
       }).then(res => {
-        this.$store.commit('user/SET_TOKEN', res.data.access_token);
-        this.$store.commit('user/SET_TOKENTYPE', res.data.token_type);
+        this.$store.commit('user/SET_TOKEN', res.data.token_type + ' ' + res.data.access_token);
         // 获取用户信息
-        this.$store.dispatch('user/GetUserInfo', res.data.token_type + ' ' + res.data.access_token)
-          .then(() => {
-            // 登录成功跳转到首页
-            this.$router.push({
-              name: 'home'
-            })
-          }); // 登录获取用户信息
+        this.$store.dispatch('user/GetUserInfo', res.data.token_type + ' ' + res.data.access_token);
+        // 登录成功跳转到首页
+        setTimeout(() => {
+          this.$router.push({
+            name: 'home'
+          })
+        }, 300);
         
       })
     },
-    changeLang(lang) { // 切换语言
-      this.$store.commit('SET_LANG', lang.value);
-      this.$refs.dropdownLang.toggle();
-    }
+    // changeLang(lang) { // 切换语言
+    //   this.$store.commit('SET_LANG', lang.value);
+    //   this.$refs.dropdownLang.toggle();
+    // }
   }
 }
 </script>

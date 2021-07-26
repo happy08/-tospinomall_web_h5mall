@@ -6,12 +6,6 @@ import zhCNLocale from 'vant/lib/locale/lang/zh-CN';
 import en from './locales/en.js';
 import zhCN from './locales/zh-CN.js';
 
-// import { Locale } from 'vant';
-// // 引入英文语言包
-// import enUS from 'vant/es/locale/lang/en-US';
-
-// Locale.use('en-US', enUS);
-
 Vue.use(VueI18n);
 
 
@@ -42,9 +36,4 @@ export default ({ app, store }) => {
   });
   
   vantLocales(store.state.locale || 'en');
-
-  // 获取当前语言货币汇率
-  app.$api.getCurrentRate().then(res => {
-    store.commit('SET_RATE', res.data);
-  });
 };

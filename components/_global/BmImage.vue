@@ -8,6 +8,7 @@
     :show-loading="isShow"
     :round="round"
     :lazy-load="isLazy"
+    @click="onClick"
   >
     <template v-slot:error>
       <van-image
@@ -68,6 +69,11 @@ export default {
       type: String,
       default: 'cover'
     }
-  }
+  },
+  methods: {
+    onClick() {
+      this.$emit('onClick');
+    }
+  },
 }
 </script>

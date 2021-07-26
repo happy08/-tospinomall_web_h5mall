@@ -12,7 +12,7 @@ const tip = msg => {
 
 export default function({ $axios, app, redirect, store, route }) {
   $axios.defaults.timeout = 30000; // 超时
-  
+
   $axios.onRequest(config => {
     // 调用登录接口的时候需要固定值 Basic YnV5ZXI6YnV5ZXI= , 登录之后需要在headers中传用户token
     config.headers['Authorization'] = 'Basic YnV5ZXI6YnV5ZXI=';
@@ -21,14 +21,20 @@ export default function({ $axios, app, redirect, store, route }) {
     } else {
       config.headers['Content-Type'] = config.headers['Content-Type'] || 'application/json';
     }
-
+    console.log(22222222222222222)
+    console.log(store.state)
     // 登录之后要重新复值token
-    if (store.state.user.token) {
-      config.headers['Authorization'] = `${store.state.user.token_type} ${store.state.user.token}`;
+    if (store.state.user.authToken) {
+      config.headers['Authorization'] = `${store.state.user.authToken}`;
     }
+    // const _local = JSON.parse(localStorage.getItem('b2c-store'));
+    // console.log(localStorage.getItem('b2c-store'))
+    // if (_local.user.authToken) { // 已登录需要改变头部token
+    //   config.headers['Authorization'] = _local.user.authToken;
+    // }
     // //获取cookie
-    // const token = app.$cookies.get('auth');
-    // if (store.state.user.token) {
+    // const token = app.$cookies.get('authToken');
+    // if (store.state.user.authToken) {
     //   config.headers.Authorization = token;
     // }
 
@@ -48,16 +54,8 @@ export default function({ $axios, app, redirect, store, route }) {
       }
       else if (res.data.code === 10401) {
         //token失效
-        console.log(res)
-        
-        // store.commit('user/SET_TOKEN', null); // 清除token并跳转登录页
-        // console.log(store.state)
-        // if (route.name !== 'login') {
-        //   redirect('/login');
-        //   setTimeout(() => {
-        //     tip('请重新登入！');
-        //   }, 500);
-        // }
+        // store.commit('user/SET_TOKEN', null); //清除token 因为有些页面未登录的情况下可看，故不在此处跳转登录页面，而在页面中进行判断
+        console.log(store.state.user)
       }
       else {
         if (res.data.msg) {
@@ -78,8 +76,8 @@ export default function({ $axios, app, redirect, store, route }) {
     if (error.code > 0) {
       console.log(error)
       if (error.code === 10401) { // 用户凭证已过期，跳转到登录页面，清空存储的数据类型
-        store.commit('user/SET_TOKEN', null);
-        console.log(store.state.user.token)
+        // store.commit('user/SET_TOKEN', null);
+        console.log(store.state.user.authToken)
         // setTimeout(() => {
           // redirect({
           //   name: 'login'
@@ -127,7 +125,7 @@ const errorHandle = (status, redirect, store) => {
       break;
     case 403:
       tip('登录过期，请重新登录');
-      store.commit('user/SET_TOKEN', null); // 清除token并跳转登录页
+      // store.commit('user/SET_TOKEN', null); // 清除token并跳转登录页
       setTimeout(() => {
         redirect('/login');
       }, 1000);

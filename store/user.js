@@ -1,26 +1,23 @@
 import { getUserInfo } from '@/api/user';
 
 export const state = () => ({
-  token: null,
-  token_type: null,
-  userInfo: {
-    headPictureUrl: ''
-  },
+  authToken: null,
+  userInfo: null,
   searchList: []
 });
 
 export const mutations = {
   SET_USERINFO(state, userInfo) { // 提交用户信息
     state.userInfo = userInfo;
-  },
-  SET_TOKENTYPE(state, token_type) { // token类型
-    state.token_type = token_type;
+    this.$cookies.set('userInfo', userInfo);
   },
   SET_TOKEN(state, token) { // 提交token
-    state.token = token;
-    if (state.token === null) { // 退出登录 清除数据
+    state.authToken = token;
+    this.$cookies.set('authToken', token);
+    if (state.authToken === null) { // 退出登录 清除数据
       state.userInfo = null;
-      state.token_type = null;
+      this.$cookies.set('authToken', null);
+      this.$cookies.set('userInfo', null);
     }
   },
   SET_SEARCHLIST(state, searchItem) {
@@ -34,13 +31,14 @@ export const mutations = {
 };
 
 export const actions = {
-  GetUserInfo({ commit, state }, token) {
+  GetUserInfo({ commit, state }, authToken) {
     return new Promise((resolve, reject) => {
-      if (state.userInfo.id) resolve();
-      else
-        getUserInfo(token).then(res => {
-          console.log(res)
+      if (state.userInfo) resolve();
+      else 
+        getUserInfo(authToken).then(res => {
           if (res.code != 0) return false;
+          console.log(66666666666)
+          console.log(authToken)
 
           commit('SET_USERINFO', res.data);
 

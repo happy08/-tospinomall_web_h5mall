@@ -80,13 +80,42 @@ export default ({ app }, inject) => {
         }
       })
     },
-    getCartList(params) {
+    getCartList(params) { // 获取购物车列表
       return app.$axios({
         url: `${url}/carts/shoppingCart/findListPage`,
         method: 'get',
         params: params,
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      })
+    },
+    getLikeStoreList(params) { // 获取关注店铺列表
+      return app.$axios({
+        url: `${url}/admin/attention/store/query/page`,
+        method: 'get',
+        params: params,
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      })
+    },
+    getLikeProduct(params) { // 获取关注商品列表
+      return app.$axios({
+        url: `${url}/admin/buyerAttention/query/page`,
+        method: 'get',
+        params: params,
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      })
+    },
+    getUserInfo(token) { // 获取用户信息
+      return app.$axios({
+        url: `${url}/admin/ums/buyer/findCurrentUserinfo`,
+        method: 'get',
+        headers: {
+          Authorization: token
         }
       })
     }

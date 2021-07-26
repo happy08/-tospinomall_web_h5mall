@@ -72,7 +72,7 @@
               :isLazy="false"
               :isShow="false"
               :fit="'cover'"
-            ></BmImage>
+            />
           </swiper-slide>
           <div class="swiper-pagination" slot="pagination"></div>
         </swiper>
@@ -99,7 +99,7 @@
         </div>
 
         <!-- 运费 -->
-        <div class="mt-12 bg-white plr-20 pb-10">
+        <div class="mt-12 bg-white plr-20">
           <van-cell
             class="ptb-14 plr-0"
             is-link
@@ -114,16 +114,17 @@
                   @click="deliveryShow = true"
                   >{{ $t("cart.delivery") }}: CHY0.00</span
                 > -->
-                <span class="ml-12 fs-12 grey fm-helvetica">请选择收货地址</span>
+                <span class="ml-12 fs-12 grey fm-helvetica">{{ completeAddress ? completeAddress : '请选择收货地址'}}</span>
               </div>
             </template>
           </van-cell>
           <!-- 货源地到收货地 -->
-          <template>
+          <template v-if="completeAddress">
             <!-- 步骤条 -->
             <van-steps :active="freightActive" class="mt-20 plr-0">
+              <!-- 发货地址 -->
               <van-step>
-                China
+                {{ storeInfo.deliveryCountryName }}
                 <!-- 自定义未激活状态图标 -->
                 <template #inactive-icon>
                   <van-icon
@@ -146,7 +147,8 @@
                   />
                 </template>
               </van-step>
-              <van-step>
+              <!-- 配送类型( 1 FBM 2 FBT ) FBM不展示中转站 -->
+              <van-step v-if="goodSpuVo.deliveryType != 1">
                 Accra
                 <!-- 自定义未激活状态图标 -->
                 <template #inactive-icon>
@@ -170,8 +172,9 @@
                   />
                 </template>
               </van-step>
+              <!-- 收货地址 -->
               <van-step>
-                Ghana
+                {{ completeAddress }}
                 <!-- 自定义未激活状态图标 -->
                 <template #inactive-icon>
                   <van-icon
@@ -199,7 +202,7 @@
               Finish the order before 23:59 today, and the goods are expected to
               be delivered before 23:30 on janu-ary 2nd.
             </p>
-            <p class="mt-8 orange fs-12">From January 3rd to January 27th</p>
+            <p class="mt-8 orange fs-12 pb-10">From January 3rd to January 27th</p>
           </template>
         </div>
       </van-tab>
@@ -209,9 +212,8 @@
           <van-cell
             class="ptb-14 plr-0"
             is-link
-            :to="{}"
             :border="false"
-            @click="productShow = true"
+            @click="onSelect"
           >
             <template #title>
               <div class="flex vcenter">
@@ -223,18 +225,18 @@
             </template>
           </van-cell>
           <!-- 商品图片 -->
-          <div class="flex between mt-20">
+          <div class="flex between">
             <BmImage
-              :url="require('@/assets/images/product-bgd-90.png')"
+              :url="selectItem.imgUrl"
               :width="'2rem'"
               :height="'2rem'"
               :isLazy="false"
-              :isShow="false"
+              :isShow="true"
               :fit="'cover'"
-              v-for="item in 3"
-              :key="item"
+              v-for="(selectItem, selectIndex) in carouselMapUrls"
+              :key="'select-' + selectIndex"
               class="round-4 border"
-            ></BmImage>
+            />
           </div>
           <!-- 商品服务与承诺 -->
           <van-cell
@@ -341,7 +343,7 @@
       </van-tab>
       <van-tab title="Similar" name="Similar">
         <!-- 可能感兴趣的 -->
-        <div class="mt-12 bg-white pb-20 pt-16">
+        <div class="mt-12 bg-white ptb-20">
           <h3 class="black flex between vcenter plr-20 fn fm-helvetica">
             <span class="fs-16">{{ $t("cart.justForYou") }}</span>
             <span class="fs-14">{{ $t("cart.more") }}</span>
@@ -351,10 +353,11 @@
             ref="swiperRecommendRef"
             :options="recommendOption"
             class="mt-12 pl-20 review-swiper"
+            v-if="likeList.length"
           >
             <swiper-slide
-              v-for="(productItem, productIndex) in carouselMapUrls"
-              :key="productIndex"
+              v-for="(productItem, productIndex) in likeList"
+              :key="'like-index-' + productIndex"
             >
               <BmImage
                 :url="productItem.imgUrl"
@@ -428,15 +431,8 @@
       </div>
       <!-- 按钮 -->
       <div class="plr-12 flex between">
-        <BmButton
-          :type="'info'"
-          class="fs-16 round-8 w-169 h-48 add-cart-btn"
-          @click="onAddCart"
-          >Add to cart</BmButton
-        >
-        <BmButton class="fs-16 round-8 w-169 h-48" @click="onBuyNow"
-          >Buy Now</BmButton
-        >
+        <BmButton :type="'info'" class="fs-16 round-8 w-169 h-48 add-cart-btn" @click="onAddCart" >Add to cart</BmButton>
+        <BmButton class="fs-16 round-8 w-169 h-48" @click="onBuyNow">Buy Now</BmButton>
       </div>
     </van-popup>
 
@@ -446,39 +442,20 @@
       :sku="sku"
       :goods="goodSpuVo"
       :goods-id="goodSpuVo.id"
-      @add-cart="onAddCart"
-      @buy-clicked="onBuyNow"
+      :hide_stock="false"
+      @sku-selected="getSkuInfo"
+      :initial-sku="initialSku"
+      hide-selected-text
+      hide-stock
+      ref="productSku"
     >
-      <!-- 自定义头部价格展示 -->
-      <template #sku-header="props">
-        <div class="mlr-20 mt-30 flex">
-          <BmImage
-            :url="goodSpuVo.picture"
-            :width="'2.08rem'"
-            :height="'2.08rem'"
-            :isLazy="false"
-            :isShow="false"
-            :fit="'cover'"
-            class="border round-4 hidden"
-          ></BmImage>
-          <!-- 商品价格/id -->
-          <div class="ml-12 flex column hend">
-            <div class="fs-16 red fw">
-              <span class="fm-menlo">{{ $store.state.rate.currency }}</span>
-              <span class="fm-din">{{ props.price }}</span>
-            </div>
-            <div class="mt-14 fs-12 light-grey fm-pf-r">
-              ID: {{ goodSpuVo.id }}
-            </div>
-          </div>
-        </div>
-      </template>
-      <!-- 自定义 sku-header-price -->
+      <!-- 自定义头部价格/展示商品id -->
       <template #sku-header-price="props">
-        <div class="fs-16 red fw">
+        <div class="fs-16 red fw flex vcenter">
           <span class="fm-menlo">{{ $store.state.rate.currency }}</span>
           <span class="fm-din">{{ props.price }}</span>
         </div>
+        <div class="mt-14 fs-12 light-grey fm-pf-r">ID: {{ goodSpuVo.id }}</div>
       </template>
 
       <!-- 商品数量选择区域 -->
@@ -490,6 +467,7 @@
             button-size="0.42rem"
             :integer="true"
             class="custom-stepper"
+            @change="getSkuInfo(props, 'stepper')"
           />
           <div class="mt-20" v-if="props.selectedSkuComb">
             in stock: {{ props.selectedSkuComb.stock_num }}
@@ -499,25 +477,17 @@
 
       <!-- 操作按钮区域 -->
       <template #sku-actions="props">
-        <div class="mlr-12 mb-12 mt-10 flex between">
-          <!-- 加入购物车 -->
-          <BmButton
-            :type="'info'"
-            class="fs-16 round-8 w-169 h-48 add-cart-btn"
-            @click="props.skuEventBus.$emit('sku:add-cart')"
-            >Add to cart</BmButton
-          >
-          <!-- 立即购买 -->
-          <BmButton class="fs-16 round-8 w-169 h-48" @click="props.skuEventBus.$emit('sku:buy')"
-            >Buy Now</BmButton
-          >
-        </div>
         <!-- 缺货 -->
-        <div class="mlr-12 mb-30 mt-10">
-          <BmButton class="fs-16 round-8 w-100 h-48 bg-ddd" @click="onOutStock"
-            >out of stock</BmButton
-          >
+        <div class="mlr-12 mb-30 mt-10" v-if="props.selectedSkuComb && props.selectedSkuComb.stock_num == 0">
+          <BmButton class="fs-16 round-8 w-100 h-48 bg-ddd" @click="onOutStock">out of stock</BmButton>
         </div>
+        <div class="mlr-12 mb-12 mt-10 flex between" v-else>
+          <!-- 加入购物车 -->
+          <BmButton :type="'info'" class="fs-16 round-8 w-169 h-48 add-cart-btn" @click="onAddCart">Add to cart</BmButton>
+          <!-- 立即购买 -->
+          <BmButton class="fs-16 round-8 w-169 h-48" @click="onBuyNow">Buy Now</BmButton>
+        </div>
+        
       </template>
     </van-sku>
 
@@ -526,7 +496,7 @@
       <h4 class="fs-18 black lh-20 tc plr-20">Choose a country or region</h4>
       <!-- 地址选择步骤条 -->
       <van-steps direction="vertical" :active="stepActive" class="mt-24" @click-step="stepClick">
-        <van-step v-for="item, stepIndex in stepArr" :key="stepIndex">
+        <van-step v-for="item, stepIndex in stepArr" :key="'step-' + stepIndex">
           <template #active-icon>
             <BmIcon :name="'dot1'" :color="'#42b7ae'"></BmIcon>
           </template>
@@ -556,36 +526,26 @@
       <div class="mt-20 plr-24">
         <p class="fs-14 grey-1">{{ chooseTitle }}</p>
         <ul class="plr-24 fs-16 black">
-          <li class="mt-20" v-for="city, cityIndex in chooseList" :key="cityIndex" @click="changeCity(city)">{{ city.name }}</li>
+          <li class="mt-20" v-for="city, cityIndex in chooseList" :key="'city-' + cityIndex" @click="changeCity(city)">{{ city.name }}</li>
         </ul>
       </div>
     </van-popup>
 
     <!-- 加入购入车/收藏/店铺/立即购买 -->
     <div class="bg-white flex vcenter between pl-10 product-detail__operate">
-      <!-- 客服 -->
-      <van-icon
-        :name="require('@/assets/images/icon/chat-icon.png')"
-        size="0.6rem"
-      />
-      <!-- 店铺 -->
-      <nuxt-link
-        :to="{ name: 'cart-store-id', params: { id: storeInfo.storeId } }"
-      >
-        <van-icon
-          :name="require('@/assets/images/icon/store-icon.png')"
+      <div>
+        <!-- 客服 -->
+        <!-- <van-icon
+          :name="require('@/assets/images/icon/chat-icon.png')"
           size="0.6rem"
-        />
-      </nuxt-link>
-      <!-- 收藏 0未关注 1已关注 -->
-      <van-icon
-        :name="
-          goodSpuVo.isAttention
-            ? require('@/assets/images/icon/collect-active-icon.png')
-            : require('@/assets/images/icon/collect-icon.png')
-        "
-        size="0.6rem"
-      />
+        /> -->
+        <!-- 店铺 -->
+        <nuxt-link :to="{ name: 'cart-store-id', params: { id: storeInfo.storeId } }">
+          <van-icon :name="require('@/assets/images/icon/store-icon.png')" size="0.6rem" />
+        </nuxt-link>
+        <!-- 收藏 0未关注 1已关注 -->
+        <van-icon :name="goodSpuVo.isAttention ? require('@/assets/images/icon/collect-active-icon.png') : require('@/assets/images/icon/collect-icon.png')" size="0.6rem" />
+      </div>
       <div class="flex">
         <!-- 加入购物车 -->
         <BmButton
@@ -644,7 +604,7 @@ export default {
         storeId: ''
       }, // 店铺信息
       servicePromises: [], // 商品的服务与承诺
-      freightActive: 1,
+      freightActive: 0,
       rate: 3,
       reviewOption: {
         slidesPerView: 'auto',
@@ -662,13 +622,8 @@ export default {
         tree: [],
         list: []
       },
-      initialSku:{
-        // s1: '1011',
-        // s2: '1193',
-        // selectedNum: 1,
-        // selectedProp: {
-        //   2: [1193]
-        // }
+      initialSku: { // 初始化商品格式/已选择的商品格式
+        selectedNum: 3
       },
       isScroll: false,
       addressShow: false,
@@ -683,7 +638,10 @@ export default {
         cityCode: '', // 市编码
         districtCode: '', //区编码
       },
-      assgnStepList: []
+      assgnStepList: [],
+      completeAddress: '',
+      selectSku: null,
+      likeList: [], // 推荐商品列表
     }
   },
   async fetch() {
@@ -712,7 +670,7 @@ export default {
       list: [],
       price: detailData.data.goodSpuVo.minPrice,
       // stock_num: 0, // 总库存
-      // hide_stock: false, //是否显示商品剩余库存
+      hide_stock: true, //是否隐藏商品剩余库存
     };
     let _skuList = [];
     detailData.data.saleAttr.forEach((item, itemInxdex) => { // 规格种类
@@ -727,7 +685,7 @@ export default {
         this.sku.tree[itemInxdex].v.push({
           id: attrItem.attrValueId,
           name: attrItem.attrValue,
-          previewImgUrl: 'http://product-pic-bucket.oss-cn-beijing.aliyuncs.com/uploads/1626332543455_4'
+          // previewImgUrl: attrItem.attrPicture
         })
         attrItem.skuList.forEach(skuItem => { // 商品组合列表
           _skuList.push({ // sku 组合列表
@@ -747,6 +705,7 @@ export default {
       let obj = item;
       arr.forEach((newItem, index) => {
         if (item.id === newItem.id) { // id一直合并对象属性
+          newItem.stock_num = newItem.stock_num < item.stock_num ? newItem.stock_num : item.stock_num; // 库存选择相比较小的那一个
           obj = {
             ...item,
             ...newItem
@@ -759,11 +718,17 @@ export default {
         arr.push(obj);
       }
     })
-
+  
     this.sku.list = arr;
+    this.initialSku = {
+      ...arr[0],
+      selectedNum: 1
+    }
   },
   activated() {
     getCurrentDefaultAddress().then(res => { // 查看是否有默认地址
+      console.log(res)
+      if (res.code != 0) return false;
       if (res.data.length === 0) { // 没有默认地址的情况下获取国家列表
         this.getNextArea({ id: 0 });
         return false;
@@ -778,10 +743,14 @@ export default {
         cityCode: res.data.cityCode, // 市编码
         districtCode: res.data.districtCode //区编码
       }
+      this.completeAddress = res.data.completeAddress; // 完整地址
       // 获取地址的时候默认是最后一级
       this.getNextArea(res.data.areaList[res.data.areaList.length - 2], false, true);
     })
-    this.$fetch();
+    // 如果上次请求超过一分钟了，就再次发起请求
+    if (this.$fetchState.timestamp <= Date.now() - 60000) {
+      this.$fetch();
+    }
   },
   head() {
     return {
@@ -795,10 +764,6 @@ export default {
   filters: {
     reviewNumFormat(val) { // 评论数字格式化
       return val > 100 ? val + '+' : val;
-    },
-    stockNUmFormat(val) {
-      console.log(val)
-      return Object.keys(val) ? val.stock_num : 0
     }
   },
   computed: {
@@ -831,11 +796,13 @@ export default {
         }
       }
     },
-    onBuyNow(sku) { // 立即购买
-      console.log(sku)
+    onBuyNow() { // 立即购买
+      this.selectSku = this.$refs.productSku.getSkuData();
+      console.log(this.selectSku)
     },
     onAddCart() { // 加入购物车
-
+      this.selectSku = this.$refs.productSku.getSkuData();
+      console.log(this.selectSku)
     },
     onOutStock() { // 缺货
 
@@ -910,6 +877,12 @@ export default {
           cityCode: this.assgnStepList[2] ? this.assgnStepList[2].code : '',
           districtCode: this.assgnStepList[3] ? this.assgnStepList[3].code : ''
         }
+        // 拼接展示完整的地址
+        let _address = '';
+        this.assgnStepList.map(item => {
+          _address += item.name;
+        })
+        this.completeAddress = _address;
       }
     },
     getDeliveryInfo() { // 获取配送运费模板信息
@@ -919,6 +892,29 @@ export default {
       }
       getDeliveryInfo(_form).then(res => {
         console.log(res);
+      })
+    },
+    getSkuInfo(value, type) { // 获取选中的商品的规格
+      console.log(value)
+      console.log(type)
+      if (this.$refs.productSku) {
+        this.selectSku = this.$refs.productSku.getSkuData();
+        // if (type === 'stepper') {
+        //   this.initialSku = {
+        //     ...this.$refs.productSku.getSkuData(),
+        //     selectedNum: value.selectedNum
+        //   };
+        // }
+      }
+    },
+    onSelect() { // 选择产品规格
+      if (this.$store.state.user.authToken) {
+        this.productShow = true;
+        return false;
+      }
+      // 未登录情况下跳转到登录页面
+      this.$router.push({
+        name: 'login'
       })
     }
   },

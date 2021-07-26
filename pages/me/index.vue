@@ -15,12 +15,12 @@
               :isLazy="false"
               :isShow="false"
               :round="true"
-            ></BmImage>
+            />
           </div>
           <!-- 姓名、id -->
-          <dl class="ml-10" v-if="$store.state.user.token" @click="goAccount">
+          <dl class="ml-10" v-if="$store.state.user.authToken" @click="goAccount">
             <dt class="fs-18 green fw">{{ $store.state.user.userInfo ? $store.state.user.userInfo.nickname: '--' }}</dt>
-            <dd class="fs-12 grey mt-8">{{ $store.state.user.userInfo.id }}</dd>
+            <dd class="fs-12 grey mt-8" v-if="$store.state.user.userInfo">{{ $store.state.user.userInfo.id }}</dd>
           </dl>
           <div v-else class="ml-10 fs-16" @click="goLogin">请先登录</div>
         </div>
@@ -30,18 +30,18 @@
           :height="'.64rem'"
           :isLazy="false"
           :isShow="false"
-        ></BmImage>
+        />
       </div>
 
       <!-- 收藏信息 -->
       <div class="p-30 flex between">
-        <nuxt-link :to="$store.state.user.token ? { name: 'me-likes' } : { name: 'login' }" v-slot="{ navigate }" class="tc">
+        <nuxt-link :to="$store.state.user.authToken ? { name: 'me-likes' } : { name: 'login' }" v-slot="{ navigate }" class="tc">
           <dl @click="navigate" role="link">
             <dt class="fs-24 black fw">0</dt>
             <dd class="fs-12 grey mt-4">Collection</dd>
           </dl>
         </nuxt-link>
-        <nuxt-link :to="$store.state.user.token ? { name: 'me-wallet' }: { name: 'login' }" v-slot="{ navigate }" class="tc">
+        <nuxt-link :to="$store.state.user.authToken ? { name: 'me-wallet' }: { name: 'login' }" v-slot="{ navigate }" class="tc">
           <dl @click="navigate" role="link">
             <dt class="fs-24 black fw">0</dt>
             <dd class="fs-12 grey mt-4">Wallet</dd>
@@ -58,9 +58,9 @@
 
     <!-- 我的订单 -->
     <div class="bg-white mlr-12 round-8 plr-12 pb-20 user-page__order">
-      <van-cell class="ptb-12 plr-0" :border="false" title="My Order" is-link value="View All" value-class="green" title-class="black" :to="$store.state.user.token ? { name: 'me-order' } : { name: 'login' }" />
+      <van-cell class="ptb-12 plr-0" :border="false" title="My Order" is-link value="View All" value-class="green" title-class="black" :to="$store.state.user.authToken ? { name: 'me-order' } : { name: 'login' }" />
       <div class="flex between tc">
-        <nuxt-link v-for="(orderItem, orderIndex) in orderList" :key="'oder-' + orderIndex" :to="$store.state.user.token ? { name: orderItem.name, query: { type: orderItem.type } } : { name: 'login' }" >
+        <nuxt-link v-for="(orderItem, orderIndex) in orderList" :key="'oder-' + orderIndex" :to="$store.state.user.authToken ? { name: orderItem.name, query: { type: orderItem.type } } : { name: 'login' }" >
           <BmImage 
             :url="require('@/assets/images/icon/' + orderItem.icon + '.png')"
             :width="'0.8rem'" 
@@ -75,7 +75,7 @@
     <div class="clearfix"></div>
     <!-- 其他设置项 -->
     <div class="round-8 bg-white mlr-12 mt-12 hidden user-page__other">
-      <van-cell class="ptb-14 plr-12" :title="otherItem.text" title-class="pl-12" v-for="(otherItem, otherIndex) in otherList" :key="'other-list-' + otherIndex" :to="($store.state.user.token || otherItem.name === 'me-about') ? { name: otherItem.name, query: otherItem.query } : { name: 'login' }">
+      <van-cell class="ptb-14 plr-12" :title="otherItem.text" title-class="pl-12" v-for="(otherItem, otherIndex) in otherList" :key="'other-list-' + otherIndex" :to="($store.state.user.authToken || otherItem.name === 'me-about') ? { name: otherItem.name, query: otherItem.query } : { name: 'login' }">
         <template #icon>
           <BmIcon :name="otherItem.icon" :width="'0.48rem'" :height="'0.48rem'"></BmIcon>
         </template>
@@ -91,7 +91,6 @@
 import { Badge, Cell, CellGroup } from 'vant';
 
 export default {
-  middleware: 'authenticated',
   components: {
     vanBadge: Badge,
     vanCell: Cell,
@@ -189,7 +188,7 @@ export default {
       })
     },
     goAccount() { // 去账户设置页面, 登录之后才可以跳转
-      if (this.$store.state.user.token) {
+      if (this.$store.state.user.authToken) {
         this.$router.push({
           name: 'me-account'
         })

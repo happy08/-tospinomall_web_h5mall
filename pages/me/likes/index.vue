@@ -1,7 +1,7 @@
 <template>
   <!-- 我的-关注 -->
-  <div class="bg-grey vh-100">
-    <BmHeaderNav :left="{ isShow: true }">
+  <div class="bg-grey vh-100 pt-46">
+    <BmHeaderNav :left="{ isShow: true }" :fixed="true">
       <!-- tab切换 -->
       <van-tabs v-model="tabActive" slot="header-title" class="customs-van-tabs likes-tabs">
         <van-tab :title="$t('common.product')"></van-tab>
@@ -109,18 +109,20 @@
     </div>
 
     <!-- 可能喜欢的推荐列表展示 -->
-    <van-divider class="plr-30 mt-24 fw fs-14 clr-black-85">
-      <i class="iconfont icon-xinaixin linear-color mr-8"></i>
-      {{ $t('common.mayLike') }}
-    </van-divider>
-    <div class="mlr-12 flex between flex-wrap">
-      <ProductTopBtmSingle
-        :img="{ url: '', width: '3.4rem', height: '3.4rem', loadImage: require('@/assets/images/product-bgd-170.png') }" 
-        :detail="{ desc: 'categoryItem.name', price: 49.92, rate: 2.5, volumn: 50, ellipsis: 2, country: 'Ghana' }"
-        v-for="(searchItem, searchIndex) in 6" 
-        :key="'search-list-' + searchIndex"
-      ></ProductTopBtmSingle>
-    </div>
+    <template v-if="likeList.length">
+      <van-divider class="plr-30 mt-24 fw fs-14 clr-black-85">
+        <i class="iconfont icon-xinaixin linear-color mr-8"></i>
+        {{ $t('common.mayLike') }}
+      </van-divider>
+      <div class="mlr-12 flex between flex-wrap">
+        <ProductTopBtmSingle
+          :img="{ url: '', width: '3.4rem', height: '3.4rem', loadImage: require('@/assets/images/product-bgd-170.png') }" 
+          :detail="{ desc: 'categoryItem.name', price: 49.92, rate: 2.5, volumn: 50, ellipsis: 2, country: 'Ghana' }"
+          v-for="(searchItem, searchIndex) in likeList" 
+          :key="'search-list-' + searchIndex"
+        ></ProductTopBtmSingle>
+      </div>
+    </template>
   </div>
 </template>
 
@@ -145,35 +147,39 @@ export default {
     OrderSingle,
     ProductTopBtmSingle
   },
-  asyncData({isDev, route, store, env, params, query, req, res, redirect, error}) {
-    let active = 0;
-    if (route.query.active) active = route.query.active;
-    
+  data() {
     return {
-      tabActive: active,
-      list: [
-        {
-          id: 1,
-          img: '',
-          title: 'Microsoft official flagship store',
-          followers: '260'
-        },
-        {
-          id: 2,
-          img: '',
-          title: 'Microsoft official flagship store',
-          followers: '260'
-        },
-        {
-          id: 3,
-          img: '',
-          title: 'Microsoft official flagship store',
-          followers: '260'
-        }
-      ],
+      tabActive: 0,
+      list: [],
       edit: false,
       checkResult: [],
-      isAll: false
+      isAll: false,
+      pageNum: 1,
+      pageSize: 10,
+      total: 0,
+      likeList: []
+    }
+  },
+  async fetch() {
+    if (this.$route.query.active) this.tabActive = this.$route.query.active;
+
+    // const listData = await this.$api.getLikeStoreList({ pageNum: this.pageNum, pageSize: this.pageSize }); // 获取关注店铺列表
+    // this.list = listData.data.records; // 关注店铺列表
+    // this.total = listData.data.total; // 店铺总数
+    console.log(1111111111111111111)
+    console.log(this.$store.state.user)
+    // 获取商品列表
+    const listData = await this.$api.getLikeProduct({ pageNum: this.pageNum, pageSize: this.pageSize }); // 获取关注店铺列表
+    console.log('-------------------')
+    console.log(listData)
+    this.list = listData.data.records; // 关注店铺列表
+    this.total = listData.data.total; // 店铺总数
+    
+  },
+  activated() {
+    // 如果上次请求超过一分钟了，就再次发起请求
+    if (this.$fetchState.timestamp <= Date.now() - 60000) {
+      this.$fetch();
     }
   },
   methods: {
@@ -227,6 +233,9 @@ export default {
   height: 1px;
   background-color: #eee;
   margin-top: 25px;
+}
+.pt-46{
+  padding-top: 46px;
 }
 </style>
 

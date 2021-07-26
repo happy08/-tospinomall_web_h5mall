@@ -10,7 +10,7 @@
 
     <div class="bg-white">
       <!-- 购物车为空时展示 -->
-      <empty-status v-if="!$store.state.user.token" :image="require('@/assets/images/empty/cart.png')" :btn="{ btn: '去登录', isEmit: true }" @btnClick="onLogin" />
+      <empty-status v-if="!$store.state.user.authToken" :image="require('@/assets/images/empty/cart.png')" :btn="{ btn: '去登录', isEmit: true }" @btnClick="onLogin" />
       <empty-status v-else-if="list.length === 0" :image="require('@/assets/images/empty/cart.png')" :description="$t('cart.emptyTip')" :btn="{ btn: $t('me.likes.shopNow') }" />
       <!-- 购物车不为空 -->
       <van-tabs v-else sticky animated :offset-top="46" color="#42B7AE" class="bg-white customs-van-tabs" :ellipsis="false" @change="getList" v-model="tabActive">
@@ -19,81 +19,82 @@
     </div>
 
     <!-- 数据列表展示 -->
-    <div class="pt-14 pb-12 bg-white" v-for="item in list" :key="item.id">
-      <van-checkbox-group v-model="item.result" :ref="'checkboxGroup-' + item.id" @change="storeChangeCheck($event, item)">
-        <div class="flex vcenter pl-12">
-          <div @click="storeCheckAll(item)">
+    <template v-if="list.length > 0">
+      <div class="pt-14 pb-12 bg-white" v-for="item in list" :key="item.id">
+        <van-checkbox-group v-model="item.result" :ref="'checkboxGroup-' + item.id" @change="storeChangeCheck($event, item)">
+          <div class="flex vcenter pl-12">
             <BmImage
               :url="item.isAll ? require('@/assets/images/icon/choose-icon.svg') : require('@/assets/images/icon/choose-default-icon.svg')"
               :width="'0.34rem'" 
               :height="'0.34rem'"
               :isLazy="false"
               :isShow="false"
-            ></BmImage>
+              @onClick="storeCheckAll(item)"
+            />
+            <nuxt-link :to="{ name: 'cart-store-id', params: { id: item.storeId } }" v-slot="{ navigate }">
+              <OrderStoreSingle class="pl-16 pr-30" @click="navigate" role="link" />
+            </nuxt-link>
           </div>
-          <nuxt-link :to="{ name: 'cart-store-id', params: { id: item.id } }" v-slot="{ navigate }">
-            <OrderStoreSingle class="pl-16 pr-30" @click="navigate" role="link" />
-          </nuxt-link>
-        </div>
-        <van-swipe-cell class="pl-12" v-for="singleItem in item.list" :key="'single-' + singleItem.id">
-          <div class="flex vcenter">
-            <!-- 选中与否 -->
-            <van-checkbox :name="item.id + '-' + singleItem.id" class="custom-checkbox" >
-              <template #icon="props">
-                <div>
-                  <BmImage
-                    :url="props.checked ? require('@/assets/images/icon/choose-icon.svg') : require('@/assets/images/icon/choose-default-icon.svg')"
-                    :width="'0.34rem'" 
-                    :height="'0.34rem'"
-                    :isLazy="false"
-                    :isShow="false"
-                  ></BmImage>
-                </div>
-              </template>
-            </van-checkbox>
-            <van-card
-              title="Women's Handbag High Qua-lity Pure PU Leather For … Women's Handbag High Qua-lity Pure PU Leather For …   "
-              class="bg-white pt-24 ml-12 plr-0 pb-0 custom-card lh-20 width-313"
-              thumb="https://img01.yzcdn.cn/vant/cat.jpeg"
-              @click="goProductDetail(singleItem.id)"
-            >
-              <!-- 自定义描述区域，改为展示商品型号 -->
-              <template #desc>
-                <div class="bg-f8 pl-10 mt-8 round-4 flex vcenter pr-10 fit-width">
-                  <span class="grey pr-24">{{ item.color }}/{{ item.size }}</span>
-                  <van-icon name="arrow-down" color="#B6B6B6" size="0.16rem" />
-                </div>
-              </template>
-              <!-- 标签 -->
-              <template #tags>
-                <div class="flex">
-                  <span class="mt-8 fs-10 iblock product-tag">Ships from China</span>
-                </div>
-              </template>
-              <!-- 自定义数量 -->
-              <template #num>
-                <van-stepper v-model="item.step" input-width="0.796rem" button-size="0.42rem" :integer="true" class="mt-6 custom-stepper" />
-              </template>
-              <!-- 自定义价格 -->
-              <template #price>
-                <div class="mt-8">
-                  <span class="red fs-16 fw">{{ $store.state.rate.currency }}{{ item.price }}</span>
-                  <span class="grey fs-12 ml-10 line-through">{{ $store.state.rate.currency }}{{ item.cost }}</span>
-                </div>
-              </template>
-            </van-card>
-          </div>
-          
-          <template #right>
-            <div class="v-100 flex">
-              <van-button square text="Often Buy" class="v-100 w-70 bg-f0 black plr-12 fs-14 border-no" />
-              <van-button square text="Collect" class="v-100 w-70 bg-yellow white plr-12 fs-14 border-no" />
-              <van-button square text="Delete" class="v-100 w-70 bg-red white plr-12 fs-14 border-no" />
+          <van-swipe-cell class="pl-12" v-for="singleItem in item.products" :key="'single-' + singleItem.id">
+            <div class="flex vcenter">
+              <!-- 选中与否 -->
+              <van-checkbox :name="item.storeId + '-' + singleItem.id" class="custom-checkbox" >
+                <template #icon="props">
+                  <div>
+                    <BmImage
+                      :url="props.checked ? require('@/assets/images/icon/choose-icon.svg') : require('@/assets/images/icon/choose-default-icon.svg')"
+                      :width="'0.34rem'" 
+                      :height="'0.34rem'"
+                      :isLazy="false"
+                      :isShow="false"
+                    />
+                  </div>
+                </template>
+              </van-checkbox>
+              <van-card
+                title="Women's Handbag High Qua-lity Pure PU Leather For … Women's Handbag High Qua-lity Pure PU Leather For …   "
+                class="bg-white pt-24 ml-12 plr-0 pb-0 custom-card lh-20 width-313"
+                thumb="https://img01.yzcdn.cn/vant/cat.jpeg"
+                @click="goProductDetail(singleItem.id)"
+              >
+                <!-- 自定义描述区域，改为展示商品型号 -->
+                <template #desc>
+                  <div class="bg-f8 pl-10 mt-8 round-4 flex vcenter pr-10 fit-width">
+                    <span class="grey pr-24">{{ item.color }}/{{ item.size }}</span>
+                    <van-icon name="arrow-down" color="#B6B6B6" size="0.16rem" />
+                  </div>
+                </template>
+                <!-- 标签 -->
+                <template #tags>
+                  <div class="flex">
+                    <span class="mt-8 fs-10 iblock product-tag">Ships from China</span>
+                  </div>
+                </template>
+                <!-- 自定义数量 -->
+                <template #num>
+                  <van-stepper v-model="item.step" input-width="0.796rem" button-size="0.42rem" :integer="true" class="mt-6 custom-stepper" />
+                </template>
+                <!-- 自定义价格 -->
+                <template #price>
+                  <div class="mt-8">
+                    <span class="red fs-16 fw">{{ $store.state.rate.currency }}{{ item.price }}</span>
+                    <span class="grey fs-12 ml-10 line-through">{{ $store.state.rate.currency }}{{ item.cost }}</span>
+                  </div>
+                </template>
+              </van-card>
             </div>
-          </template>
-        </van-swipe-cell>
-      </van-checkbox-group>
-    </div>
+            
+            <template #right>
+              <div class="v-100 flex">
+                <van-button square text="Often Buy" class="v-100 w-70 bg-f0 black plr-12 fs-14 border-no" />
+                <van-button square text="Collect" class="v-100 w-70 bg-yellow white plr-12 fs-14 border-no" />
+                <van-button square text="Delete" class="v-100 w-70 bg-red white plr-12 fs-14 border-no" />
+              </div>
+            </template>
+          </van-swipe-cell>
+        </van-checkbox-group>
+      </div>
+    </template>
 
     <!-- 可能喜欢的推荐列表展示 -->
     <div v-if="likeList.length">
@@ -108,7 +109,7 @@
           v-for="(searchItem, searchIndex) in 6"
           :key="'search-list-' + searchIndex"
           class="mb-12"
-        ></ProductTopBtmSingle>
+        />
       </div>
     </div>
 
@@ -124,7 +125,7 @@
               :height="'0.34rem'"
               :isLazy="false"
               :isShow="false"
-            ></BmImage>
+            />
           </div>
         </template>
       </van-checkbox>
@@ -182,21 +183,32 @@ export default {
       queryType: 1, // 查询类型（ 1 查询全部 2降价查询 3经常购买 4 关注商品列表）
       likeList: [],
       totalAmount: 0, // 总金额
+      discountAmount: 0, // 优惠金额
     }
   },
   async fetch() {
     const listData = await this.$api.getCartList({ pageNum: this.pageNum, pageSize: this.pageSize, queryType: this.queryType });
-    this.list = listData.data.storeList; // 购物车列表
+    this.list = listData.data.storeList.map(storeItem => {
+      return {
+        ...storeItem,
+        result: [],
+        isAll: false, // 是否全选
+      }
+    }); // 购物车列表
     this.total = listData.data.totalQuantity; // 总数量
     this.totalAmount = listData.data.totalAmount; // 总金额
+    this.discountAmount = listData.data.discountAmount; // 优惠金额
     console.log(this.list)
   },
   activated() {
-    this.$fetch();
+    // 如果上次请求超过一分钟了，就再次发起请求
+    if (this.$fetchState.timestamp <= Date.now() - 60000) {
+      this.$fetch();
+    }
   },
   methods: {
     onEdit() { // 编辑购物车, 登录情况下才可以编辑购物车
-      if (this.$store.state.user.token) {
+      if (this.$store.state.user.authToken) {
         this.isEdit = !this.isEdit;
       }
     },

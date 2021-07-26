@@ -63,13 +63,23 @@ const tip = msg => {
   }
 };
 
+const getCookie = (cname) => {
+  var name = cname + '=';
+  var ca = document.cookie.split(';');
+  for(var i=0; i<ca.length; i++) 
+  {
+    var c = ca[i].trim();
+    if (c.indexOf(name)==0) return c.substring(name.length,c.length);
+  }
+  return '';
+}
+
 // request拦截器
 service.interceptors.request.use(config => {
   config.headers['Authorization'] = 'Basic YnV5ZXI6YnV5ZXI=';
-  
-  const _local = JSON.parse(localStorage.getItem('b2c-store'));
-  if (_local.user.token) { // 已登录需要改变头部token
-    config.headers['Authorization'] = _local.user.token_type + ' ' + _local.user.token;
+
+  if (getCookie('authToken')) { // 已登录需要改变头部token
+    config.headers['Authorization'] = decodeURIComponent(getCookie('authToken'));
   }
   
   if (config.method === 'post') {
@@ -77,7 +87,7 @@ service.interceptors.request.use(config => {
   } else {
     config.headers['Content-Type'] = config.headers['Content-Type'] || 'application/json';
   }
-  return config
+  return config;
 }, error => {
   // Do something with request error
   console.log(error) // for debug
@@ -90,8 +100,8 @@ service.interceptors.response.use(response => { // 成功
       //0 数据成功
       return response.data; //Promise.resolve(res.data);
     } else if (response.data.code === 10401) { // 用户凭证已过期,跳转到登录页面
-      mutations.SET_TOKEN(state, null)
-      location.replace('/login');
+      // mutations.SET_TOKEN(state, null)
+      // location.replace('/login'); // 因为有些页面未登录的情况下可看，故不在此处跳转登录页面，而在页面中进行判断
       return response.data;
     } else {
       if (response.data.msg) {

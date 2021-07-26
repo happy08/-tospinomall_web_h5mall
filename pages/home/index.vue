@@ -373,7 +373,11 @@ export default {
     }
   },
   activated() {
-    this.$fetch();
+    // 如果上次请求超过一分钟了，就再次发起请求
+    if (this.$fetchState.timestamp <= Date.now() - 60000) {
+      this.$fetch();
+      console.log('+++++++++++++')
+    }
   },
   methods: {
     stickyScroll(scrollObj) { // 吸顶滚动事件

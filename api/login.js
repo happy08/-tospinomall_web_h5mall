@@ -109,12 +109,13 @@ export function forgetPwd(params) {
  * 退出
  */
 export function logout() {
-  const _local = JSON.parse(localStorage.getItem('b2c-store'));
+  // const _local = JSON.parse(localStorage.getItem('b2c-store'));
   return request({
     url: '/api/auth/token/logout',
     method: 'delete',
     headers: {
-      Authorization: 'Basic ' + _local.user.token
+      // Authorization: 'Basic ' + _local.user.token
+      Authorization: 'Basic ' + $cookies('authToken')
     }
   })
 }
