@@ -283,7 +283,7 @@ const en = {
   cart: {
     title: 'Cart',
     emptyTip: 'The shopping cart is empty',
-    categoryList: ['All', 'Price Cut', 'Often Buy', 'Follow'],
+    categoryList: ['All', 'Price Cut', 'Often Buy'/*, 'Follow'*/],
     checkOut: 'Check Out',
     moveFavorite: 'Move to Favorites',
     total: 'Total',

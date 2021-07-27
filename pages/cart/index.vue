@@ -11,15 +11,16 @@
     <div class="bg-white">
       <!-- 购物车为空时展示 -->
       <empty-status v-if="!$store.state.user.authToken" :image="require('@/assets/images/empty/cart.png')" :btn="{ btn: '去登录', isEmit: true }" @btnClick="onLogin" />
-      <empty-status v-else-if="list.length === 0" :image="require('@/assets/images/empty/cart.png')" :description="$t('cart.emptyTip')" :btn="{ btn: $t('me.likes.shopNow') }" />
-      <!-- 购物车不为空 -->
+      <!-- 分类TAB -->
       <van-tabs v-else sticky animated :offset-top="46" color="#42B7AE" class="bg-white customs-van-tabs" :ellipsis="false" @change="getList" v-model="tabActive">
         <van-tab v-for="(categoryItem, tabIndex) in $t('cart.categoryList')" :title="categoryItem" :key="'scroll-tab-' + tabIndex" title-class="border-b pb-0" :name="tabIndex" />
       </van-tabs>
     </div>
 
+    <!-- 空数据 -->
+    <empty-status v-if="list.length === 0" :image="require('@/assets/images/empty/cart.png')" :description="$t('cart.emptyTip')" :btn="{ btn: $t('me.likes.shopNow') }" />
     <!-- 数据列表展示 -->
-    <template v-if="list.length > 0">
+    <template v-else>
       <div class="pt-14 pb-12 bg-white" v-for="item in list" :key="item.id">
         <van-checkbox-group v-model="item.result" :ref="'checkboxGroup-' + item.id" @change="storeChangeCheck($event, item)">
           <div class="flex vcenter pl-12">
@@ -31,9 +32,8 @@
               :isShow="false"
               @onClick="storeCheckAll(item)"
             />
-            <nuxt-link :to="{ name: 'cart-store-id', params: { id: item.storeId } }" v-slot="{ navigate }">
-              <OrderStoreSingle class="pl-16 pr-30" @click="navigate" role="link" />
-            </nuxt-link>
+            <!-- 店铺 -->
+            <OrderStoreSingle class="pl-16 pr-30" @goStoreDetail="goStoreDetail(item.storeId)" :logo="item.storeLogo" :name="item.storeName" />
           </div>
           <van-swipe-cell class="pl-12" v-for="singleItem in item.products" :key="'single-' + singleItem.id">
             <div class="flex vcenter">
@@ -52,33 +52,54 @@
                 </template>
               </van-checkbox>
               <van-card
-                title="Women's Handbag High Qua-lity Pure PU Leather For … Women's Handbag High Qua-lity Pure PU Leather For …   "
-                class="bg-white pt-24 ml-12 plr-0 pb-0 custom-card lh-20 width-313"
-                thumb="https://img01.yzcdn.cn/vant/cat.jpeg"
-                @click="goProductDetail(singleItem.id)"
+                :title="singleItem.productName"
+                class="bg-white pt-24 ml-12 plr-0 pb-0 lh-20 width-313 fm-helvetica"
+                @click="goProductDetail(singleItem.productId)"
               >
+                <!-- 自定义图片 -->
+                <template #thumb>
+                  <BmImage
+                    :url="singleItem.mainPictureUrl"
+                    :width="'1.8rem'" 
+                    :height="'1.8rem'"
+                    :isLazy="false"
+                    :isShow="true"
+                    :fit="'cover'"
+                    :errorUrl="require('@/assets/images/product-bgd-90.png')"
+                  />
+                </template>
                 <!-- 自定义描述区域，改为展示商品型号 -->
                 <template #desc>
                   <div class="bg-f8 pl-10 mt-8 round-4 flex vcenter pr-10 fit-width">
-                    <span class="grey pr-24">{{ item.color }}/{{ item.size }}</span>
+                    <span class="grey pr-24">
+                      <span v-for="(attrItem, attrIndex) in singleItem.productAttr" :key="'attr-item-' + attrIndex">{{ attrItem.attrValue }} {{ attrIndex != singleItem.productAttr.length-1 ? '/' : '' }} </span>
+                    </span>
                     <van-icon name="arrow-down" color="#B6B6B6" size="0.16rem" />
                   </div>
                 </template>
                 <!-- 标签 -->
                 <template #tags>
-                  <div class="flex">
-                    <span class="mt-8 fs-10 iblock product-tag">Ships from China</span>
+                  <div class="flex mt-8 vcenter hidden round-8 product-tag">
+                    <BmImage
+                      :url="require('@/assets/images/icon/plane-icon.png')"
+                      :width="'0.36rem'" 
+                      :height="'0.36rem'"
+                      :isLazy="false"
+                      :isShow="false"
+                      :fit="'cover'"
+                    />
+                    <span class="fs-10 plr-8">发货来自{{ singleItem.shipAddress }}</span>
                   </div>
                 </template>
                 <!-- 自定义数量 -->
                 <template #num>
-                  <van-stepper v-model="item.step" input-width="0.796rem" button-size="0.42rem" :integer="true" class="mt-6 custom-stepper" />
+                  <van-stepper v-model="singleItem.quantity" input-width="0.796rem" button-size="0.42rem" :integer="true" class="mt-6 custom-stepper" />
                 </template>
                 <!-- 自定义价格 -->
                 <template #price>
                   <div class="mt-8">
-                    <span class="red fs-16 fw">{{ $store.state.rate.currency }}{{ item.price }}</span>
-                    <span class="grey fs-12 ml-10 line-through">{{ $store.state.rate.currency }}{{ item.cost }}</span>
+                    <span class="red fs-16 fw">{{ $store.state.rate.currency }}{{ singleItem.addCartPrice }}</span>
+                    <!-- <span class="grey fs-12 ml-10 line-through">{{ $store.state.rate.currency }}{{ item.cost }}</span> -->
                   </div>
                 </template>
               </van-card>
@@ -188,6 +209,7 @@ export default {
   },
   async fetch() {
     const listData = await this.$api.getCartList({ pageNum: this.pageNum, pageSize: this.pageSize, queryType: this.queryType });
+    console.log(listData.data)
     this.list = listData.data.storeList.map(storeItem => {
       return {
         ...storeItem,
@@ -213,7 +235,9 @@ export default {
       }
     },
     getList() { // 获取列表数据
-
+      this.queryType = this.tabActive + 1;
+      this.pageNum = 1;
+      this.$fetch();
     },
     storeCheckAll(store, isAll) { // 店铺内部全选与否
       let isCheck = isAll ? !isAll : store.isAll;
@@ -283,6 +307,14 @@ export default {
       this.$router.push({
         name: 'login'
       })
+    },
+    goStoreDetail(storeId) {
+      this.$router.push({
+        name: 'cart-store-id',
+        params: {
+          id: storeId
+        }
+      })
     }
   },
 }
@@ -290,12 +322,10 @@ export default {
 
 <style lang="less" scoped>
 .product-tag{
-  padding: 3px 8px 3px 22px;
+  height: 18px;
   position: relative;
-  background-image: url('../../assets/images/icon/cart-tag-1.svg');
-  background-size: 100% 100%;
-  background-repeat: no-repeat;
-  background-position: center center;
+  border: 1px solid #42b7ae;
+  width: fit-content;
 }
 .mt-6{
   margin-top: 6px;
