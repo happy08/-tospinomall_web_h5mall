@@ -22,7 +22,6 @@ export default function({ $axios, app, redirect, store, route }) {
       config.headers['Content-Type'] = config.headers['Content-Type'] || 'application/json';
     }
     console.log(22222222222222222)
-    console.log(store.state)
     // 登录之后要重新复值token
     if (store.state.user.authToken) {
       config.headers['Authorization'] = `${store.state.user.authToken}`;
@@ -54,8 +53,9 @@ export default function({ $axios, app, redirect, store, route }) {
       }
       else if (res.data.code === 10401) {
         //token失效
-        // store.commit('user/SET_TOKEN', null); //清除token 因为有些页面未登录的情况下可看，故不在此处跳转登录页面，而在页面中进行判断
-        console.log(store.state.user)
+        store.commit('user/SET_TOKEN', null); //清除token 因为有些页面未登录的情况下可看，故不在此处跳转登录页面，而在页面中进行判断
+        // console.log(store.state.user)
+        console.log('token失效');
       }
       else {
         if (res.data.msg) {

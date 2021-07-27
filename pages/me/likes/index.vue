@@ -19,7 +19,7 @@
     <!-- 商品/店铺展示 -->
     <div class="bg-white">
       <!-- 无数据时展示 -->
-      <empty-status v-if="list.length === 0" :image="require('@/assets/images/empty/result.png')" :description="$t('me.likes.notProduct')" :btn="{ btn: $t('me.likes.shopNow') }" />
+      <empty-status v-if="list.length === 0" :image="require('@/assets/images/empty/result.png')" :description="tabActive == 0 ? $t('me.likes.notProduct') : $t('me.likes.noStore')" :btn="{ btn: $t('me.likes.shopNow'), isEmit: true }" @emptyClick="emptyClick" />
       <!-- 已关注的店铺列表展示 -->
       <van-checkbox-group v-model="checkResult" ref="checkboxStoreGroup">
         <van-cell-group>
@@ -166,12 +166,9 @@ export default {
     // const listData = await this.$api.getLikeStoreList({ pageNum: this.pageNum, pageSize: this.pageSize }); // 获取关注店铺列表
     // this.list = listData.data.records; // 关注店铺列表
     // this.total = listData.data.total; // 店铺总数
-    console.log(1111111111111111111)
-    console.log(this.$store.state.user)
+
     // 获取商品列表
-    const listData = await this.$api.getLikeProduct({ pageNum: this.pageNum, pageSize: this.pageSize }); // 获取关注店铺列表
-    console.log('-------------------')
-    console.log(listData)
+    const listData = this.tabActive == 0 ? await this.$api.getLikeProduct({ pageNum: this.pageNum, pageSize: this.pageSize }) : await this.$api.getLikeStoreList({ pageNum: this.pageNum, pageSize: this.pageSize }); // 获取关注商品列表
     this.list = listData.data.records; // 关注店铺列表
     this.total = listData.data.total; // 店铺总数
     
@@ -192,6 +189,12 @@ export default {
     checkAll() {
       this.isAll = !this.isAll;
       this.$refs.checkboxStoreGroup.toggleAll(this.isAll);
+    },
+    emptyClick() { // 关注列表没数据时，点击按钮跳转到首页
+      console.log('跳转')
+      this.$router.push({
+        name: 'home'
+      })
     }
   },
 }

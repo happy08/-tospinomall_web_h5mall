@@ -53,10 +53,11 @@ export default ({ app }, inject) => {
         }
       })
     },
-    getProductDetail(goodId) { // 获取商品详情
+    getProductDetail(goodId, params) { // 获取商品详情
       return app.$axios({
         url: `${url}/product/goods/client/detail/${goodId}`,
         method: 'get',
+        params: params,
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
         }

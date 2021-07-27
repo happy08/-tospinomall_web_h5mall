@@ -33,8 +33,7 @@ export const actions = {
     // const rate = $cookies.get('rate'); // 单位
     // const lang = $cookies.get('lang'); // 语言
     const authToken = $cookies.get('authToken'); // 用户token
-    console.log('333333333333333333333333333')
-    console.log(authToken)
+    console.log('持久化')
     // 如果有token获取用户信息
     if (authToken) {
       commit('user/SET_TOKEN', authToken);
@@ -42,5 +41,6 @@ export const actions = {
       commit('user/SET_USERINFO', userInfoData.data);
     }
     const userInfo = $cookies.get('userInfo'); // 用户信息
+    const searchList = $cookies.get('searchList');
   },
 }

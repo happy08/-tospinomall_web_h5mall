@@ -23,10 +23,11 @@ export const mutations = {
   SET_SEARCHLIST(state, searchItem) {
     if (searchItem === null) {
       state.searchList = [];
-      return false;
+    } else {
+      state.searchList.unshift(searchItem);
+      state.searchList = [...new Set(state.searchList)]; // 去重
     }
-    state.searchList.unshift(searchItem);
-    state.searchList = [...new Set(state.searchList)]; // 去重
+    this.$cookies.set('searchList', state.searchList);
   }
 };
 

@@ -5,6 +5,7 @@
     :type="type === 'primary-linear' ? 'default' : type"
     :style="style"
     :disabled="disabled"
+    @click="btnClick"
   >
     <slot />
   </van-button>
@@ -40,6 +41,11 @@ export default {
           'border-radius': '.16rem'
         } : '';
     }
-  }
+  },
+  methods: {
+    btnClick() {
+      this.$emit('btnClick');
+    }
+  },
 };
 </script>

@@ -1,7 +1,7 @@
 <template>
   <!-- 空状态页面 -->
   <van-empty :description="description" class="w-100" :image="image">
-    <BmButton :type="'info'" v-if="btn.btn" @click="btnClick">{{ btn.btn }}</BmButton>
+    <BmButton :type="'info'" v-if="btn.btn" @btnClick="emptyClick">{{ btn.btn }}</BmButton>
   </van-empty>
 </template>
 
@@ -33,9 +33,9 @@ export default {
     },
   },
   methods: {
-    btnClick() {
+    emptyClick() {
       if(this.btn.isEmit){
-        this.$emit('btnClick');
+        this.$emit('emptyClick');
       }
     }
   },

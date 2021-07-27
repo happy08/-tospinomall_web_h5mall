@@ -63,6 +63,7 @@ const tip = msg => {
   }
 };
 
+// 获取cookie中的数据
 const getCookie = (cname) => {
   var name = cname + '=';
   var ca = document.cookie.split(';');
@@ -73,12 +74,20 @@ const getCookie = (cname) => {
   }
   return '';
 }
+// 设置cookie的值
+// const setCookie = (cname,cvalue,exdays) => {
+//   var d = new Date();
+//   d.setTime(d.getTime()+(exdays*24*60*60*1000));
+//   var expires = 'expires='+d.toGMTString();
+//   document.cookie = cname + '=' + cvalue + '; ' + expires;
+// }
 
 // request拦截器
 service.interceptors.request.use(config => {
   config.headers['Authorization'] = 'Basic YnV5ZXI6YnV5ZXI=';
-
-  if (getCookie('authToken')) { // 已登录需要改变头部token
+  console.log('线下请求')
+  if (getCookie('authToken') != 'null') { // 已登录需要改变头部token
+    console.log('-----------')
     config.headers['Authorization'] = decodeURIComponent(getCookie('authToken'));
   }
   
@@ -100,7 +109,7 @@ service.interceptors.response.use(response => { // 成功
       //0 数据成功
       return response.data; //Promise.resolve(res.data);
     } else if (response.data.code === 10401) { // 用户凭证已过期,跳转到登录页面
-      // mutations.SET_TOKEN(state, null)
+      mutations.SET_TOKEN(state, null);
       // location.replace('/login'); // 因为有些页面未登录的情况下可看，故不在此处跳转登录页面，而在页面中进行判断
       return response.data;
     } else {

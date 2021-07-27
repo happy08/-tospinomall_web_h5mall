@@ -448,6 +448,7 @@
       hide-selected-text
       hide-stock
       ref="productSku"
+      class="custom-sku-container"
     >
       <!-- 自定义头部价格/展示商品id -->
       <template #sku-header-price="props">
@@ -455,7 +456,7 @@
           <span class="fm-menlo">{{ $store.state.rate.currency }}</span>
           <span class="fm-din">{{ props.price }}</span>
         </div>
-        <div class="mt-14 fs-12 light-grey fm-pf-r">ID: {{ goodSpuVo.id }}</div>
+        <div class="mt-14 fs-12 light-grey fm-pf-r" v-if="props.selectedSkuComb">ID: {{ props.selectedSkuComb.id }}</div>
       </template>
 
       <!-- 商品数量选择区域 -->
@@ -467,6 +468,7 @@
             button-size="0.42rem"
             :integer="true"
             class="custom-stepper"
+            :max="props.selectedSkuComb ? props.selectedSkuComb.stock_num : 100000"
             @change="getSkuInfo(props, 'stepper')"
           />
           <div class="mt-20" v-if="props.selectedSkuComb">
@@ -544,7 +546,7 @@
           <van-icon :name="require('@/assets/images/icon/store-icon.png')" size="0.6rem" />
         </nuxt-link>
         <!-- 收藏 0未关注 1已关注 -->
-        <van-icon :name="goodSpuVo.isAttention ? require('@/assets/images/icon/collect-active-icon.png') : require('@/assets/images/icon/collect-icon.png')" size="0.6rem" />
+        <van-icon :name="goodSpuVo.isAttention ? require('@/assets/images/icon/collect-active-icon.png') : require('@/assets/images/icon/collect-icon.png')" size="0.6rem" @click="attentionProduct" />
       </div>
       <div class="flex">
         <!-- 加入购物车 -->
@@ -567,6 +569,7 @@
 import { ImagePreview, Cell, Step, Steps, Rate, Sticky, Search, Tab, Tabs, Popup, Sku, Stepper } from 'vant';
 import { getDeliveryInfo } from '@/api/cart';
 import { getCurrentDefaultAddress, getNextArea } from '@/api/address';
+import { getSkuStock, attentionProduct } from '@/api/product';
 
 export default {
   components: {
@@ -645,7 +648,12 @@ export default {
     }
   },
   async fetch() {
-    const detailData = await this.$api.getProductDetail(this.$route.params.id); // 获取商品详情;
+    // 判断登录之后，获取详情时要带userid
+    let _detailParams = {};
+    if (this.$store.state.user.userInfo.id) {
+      _detailParams.userId = this.$store.state.user.userInfo.id
+    }
+    const detailData = await this.$api.getProductDetail(this.$route.params.id, _detailParams); // 获取商品详情;
 
     this.carouselMapUrls = detailData.data.carouselMapUrls; // 商品轮播图
     this.previewImages = detailData.data.carouselMapUrls.map(item => { // 轮播图预览图片
@@ -727,7 +735,6 @@ export default {
   },
   activated() {
     getCurrentDefaultAddress().then(res => { // 查看是否有默认地址
-      console.log(res)
       if (res.code != 0) return false;
       if (res.data.length === 0) { // 没有默认地址的情况下获取国家列表
         this.getNextArea({ id: 0 });
@@ -796,13 +803,13 @@ export default {
         }
       }
     },
-    onBuyNow() { // 立即购买
-      this.selectSku = this.$refs.productSku.getSkuData();
-      console.log(this.selectSku)
+    async onBuyNow() { // 立即购买 num大于0才可以进行下一步操作
+      const num = await this.getSkuStock();
+      console.log(num);
     },
-    onAddCart() { // 加入购物车
-      this.selectSku = this.$refs.productSku.getSkuData();
-      console.log(this.selectSku)
+    async onAddCart() { // 加入购物车 num大于0才可以进行下一步操作
+      const num = await this.getSkuStock();
+      console.log(num);
     },
     onOutStock() { // 缺货
 
@@ -822,10 +829,8 @@ export default {
     },
     leftBack() {
       if(window.history.length < 2){ //解决部分机型拿不到history
-        console.log('go home');
         this.$router.replace('/');
       }else{
-        console.log('back');
         history.back();
       }
     },
@@ -896,15 +901,15 @@ export default {
     },
     getSkuInfo(value, type) { // 获取选中的商品的规格
       console.log(value)
-      console.log(type)
+      // console.log(type)
       if (this.$refs.productSku) {
         this.selectSku = this.$refs.productSku.getSkuData();
-        // if (type === 'stepper') {
-        //   this.initialSku = {
-        //     ...this.$refs.productSku.getSkuData(),
-        //     selectedNum: value.selectedNum
-        //   };
-        // }
+        if (type === 'stepper') {
+          this.selectSku = {
+            ...this.selectSku,
+            selectedNum: value.selectedNum
+          };
+        }
       }
     },
     onSelect() { // 选择产品规格
@@ -915,6 +920,25 @@ export default {
       // 未登录情况下跳转到登录页面
       this.$router.push({
         name: 'login'
+      })
+    },
+    getSkuStock() { // 判断库存是否充足
+      this.selectSku = this.$refs.productSku.getSkuData();
+      return new Promise(resolve => {
+        getSkuStock(this.selectSku.selectedSkuComb.id).then(res => {
+          resolve(res.data);
+        })
+      })
+    },
+    attentionProduct() { // 关注商品
+      if (!this.$store.state.user.authToken) {
+        this.$router.push({
+          name: 'login',
+        })
+        return false;
+      }
+      attentionProduct({ goodId: this.goodSpuVo.id}).then(res => {
+        this.goodSpuVo.isAttention = 1;
       })
     }
   },
