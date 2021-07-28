@@ -1,5 +1,5 @@
 <template>
-  <div class="soldout-container" :style="'width: ' + width + ';height: ' + height + ';'">
+  <div class="soldout-container" :style="'width: ' + width + ';height: ' + height + ';'" @click="onClick">
     <div class="white fs-12 lh-1 flex center soldout-container__tip"  v-if="isShow">
       <span>Sold Out</span>
     </div>
@@ -22,7 +22,12 @@ export default {
       type: Boolean,
       default: false
     }
-  }
+  },
+  methods: {
+    onClick() {
+      this.$emit('onClick');
+    }
+  },
 }
 </script>
 

@@ -8,21 +8,24 @@
       <div class="flex vcenter">
         <!-- 店铺logo -->
         <BmImage
-          :url="require('@/assets/images/product-bgd-90.png')"
+          :url="detailData.storeLogoUrl"
           :width="'0.96rem'" 
           :height="'0.96rem'"
           :isLazy="false"
           :isShow="false"
           class="round-8 hidden"
+          :errorUrl="require('@/assets/images/product-bgd-90.png')"
         ></BmImage>
         <!-- 店铺名、关注数 -->
         <dl class="ml-12">
-          <dt class="fs-14 fw color-23 max-w-160">TOSPINO照明</dt>
-          <dd class="fs-12 light-grey mt-4">20141 followers</dd>
+          <dt class="fs-14 fw color-23 max-w-160">{{ detailData.storeName }}</dt>
+          <dd class="fs-12 light-grey mt-4">{{ detailData.collectNum }} followers</dd>
         </dl>
       </div>
-      <!-- 关注 -->
-      <van-button plain color="#FC2B31" class="round-8 h-26 plr-8" @click="onSubscribe">
+      <!-- 取消订阅 -->
+      <van-button  v-if="detailData && detailData.isAttention == 1" color="#FC2B31" class="round-8 h-26 plr-8" @click="onSubscribe(false)">Unsubscribe</van-button>
+      <!-- 订阅 -->
+      <van-button plain color="#FC2B31" class="round-8 h-26 plr-8" @click="onSubscribe(true)" v-else>
         +
         <span class="ml-4">Subscribe</span>
       </van-button>
@@ -46,9 +49,13 @@
 
     <van-cell-group class="mt-20" :border="false">
       <!-- 开店时间 -->
-      <van-cell title="Open a shop time" title-class="black fs-14" class="p-20" value="09/09/2020" value-class="light-grey" />
+      <van-cell title="Open a shop time" title-class="black fs-14" class="p-20" :value="detailData.createTime" value-class="light-grey" />
       <!-- 品牌销售 -->
-      <van-cell title="Sales of the brand" title-class="black fs-14" class="p-20" value="8.62 low" value-class="light-grey" />
+      <van-cell title="Sales of the brand" title-class="black fs-14" class="p-20" value-class="light-grey">
+        <template #default>
+          <span v-for="(item, index) in detailData.brandNameList" :key="index">{{ item }}</span>
+        </template>
+      </van-cell>
     </van-cell-group>
 
     <!-- 所有商品 -->
@@ -63,6 +70,7 @@
 
 <script>
 import { Cell, CellGroup, Rate } from 'vant';
+import { storeFollow, storeCancelFollow } from '@/api/store';
 
 export default {
   components: {
@@ -70,15 +78,25 @@ export default {
     vanCellGroup: CellGroup,
     vanRate: Rate
   },
-  asyncData({isDev, route, store, env, params, query, req, res, redirect, error}) {
+  data() {
     return {
-      rate: 4
+      rate: 4,
+      detailData: {}
     }
   },
-  methods: {
-    onSubscribe() { // 订阅
+  async fetch() {
+    const detailData = await this.$api.getStoreInfo({ sellerId: this.$route.query.sellerId, storeId: this.$route.params.id, userId: this.$store.state.user.userInfo.id });
+    if (detailData.code != 0) return false;
 
-    }
+    this.detailData = detailData.data;
+  },
+  methods: {
+    onSubscribe(flag) { // 订阅/取消订阅 flag: true 订阅 false 取消订阅
+      let _axios = flag ? storeFollow({ sellerId: this.$route.query.sellerId, storeId: this.$route.params.id }) : storeCancelFollow([this.$route.params.id]);
+      _axios.then(res => {
+        this.$fetch();
+      })
+    },
   },
 }
 </script>

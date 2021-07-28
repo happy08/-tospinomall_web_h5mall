@@ -423,8 +423,8 @@ export default {
       let _query = null;
       if (hotDetail.imageLinkType == 3) { // 搜索品牌
         _query = {
-          brandId: hotDetail.brandId,
-          val: hotDetail.brandId
+          brandId: hotDetail.brandIds,
+          val: hotDetail.brandIds
         }
       }
       if (hotDetail.imageLinkType == 4) {
@@ -443,7 +443,7 @@ export default {
       }
       if (hotDetail.imageLinkType == 1 || hotDetail.imageLinkType == 2) { // 不论是前端分类还是后端分类，都传后端分类id进行搜索
         _query = {
-          categoryId: hotDetail.imageLinkType == 2 ? hotDetail.serverMenuId: hotDetail.frontMenuId
+          categoryId: hotDetail.imageLinkType == 2 ? hotDetail.serverMenuIds: hotDetail.frontMenuIds
         }
       }
 

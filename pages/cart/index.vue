@@ -54,12 +54,11 @@
                 </template>
               </van-checkbox>
               <van-card
-                :title="singleItem.productName"
                 class="bg-white pt-24 ml-12 plr-0 pb-0 lh-20 width-313 fm-helvetica"
               >
                 <!-- 自定义图片 -->
                 <template #thumb>
-                  <SoldOut :isShow="singleItem.stock ? false: true" @click="goProductDetail(singleItem.productId)">
+                  <SoldOut :isShow="singleItem.stock ? false: true" @onClick="goProductDetail(singleItem.productId)">
                     <BmImage
                       :url="singleItem.mainPictureUrl"
                       :width="'1.8rem'" 
@@ -70,7 +69,10 @@
                       :errorUrl="require('@/assets/images/product-bgd-90.png')"
                     />
                   </SoldOut>
-                  
+                </template>
+                <!-- 自定义标题 -->
+                <template #title>
+                  <span @click="goProductDetail(singleItem.productId)">{{ singleItem.productName }}</span>
                 </template>
                 <!-- 自定义描述区域，改为展示商品型号 -->
                 <template #desc>

@@ -119,6 +119,16 @@ export default ({ app }, inject) => {
           Authorization: token
         }
       })
+    },
+    getStoreInfo(params) { // 获取店铺详情
+      return app.$axios({
+        url: `${url}/admin/ums/seller/store/buyer/findByIdAndSellerId`,
+        method: 'get',
+        params: params,
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      })
     }
   };
 

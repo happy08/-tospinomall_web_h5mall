@@ -3,7 +3,7 @@
   <div class="bg-grey vh-100 pt-46">
     <BmHeaderNav :left="{ isShow: true }" :fixed="true">
       <!-- tab切换 -->
-      <van-tabs v-model="tabActive" slot="header-title" class="customs-van-tabs likes-tabs">
+      <van-tabs v-model="tabActive" slot="header-title" class="customs-van-tabs likes-tabs" @click="getList">
         <van-tab :title="$t('common.product')"></van-tab>
         <van-tab :title="$t('common.store')"></van-tab>
       </van-tabs>
@@ -30,50 +30,51 @@
                 <template #icon="props">
                   <BmImage
                     :url="props.checked ? require('@/assets/images/icon/choose-icon.png') : require('@/assets/images/icon/choose-default-icon.png')"
-                    :width="'0.48rem'" 
-                    :height="'0.48rem'"
+                    :width="'0.32rem'" 
+                    :height="'0.32rem'"
                     :isLazy="false"
                     :isShow="false"
-                  ></BmImage>
+                  />
                 </template>
               </van-checkbox>
             </template>
             <template #default>
               <!-- 左滑单元格 -->
               <van-swipe-cell>
-
                 <!-- 店铺的样式 -->
                 <div class="flex pl-30 ptb-20" v-if="tabActive === 1">
-                  <BmImage 
-                    :url="require('@/assets/images/product-bgd-90.png')"
-                    :width="'1.12rem'" 
-                    :height="'1.12rem'"
-                    :isLazy="false"
-                    :isShow="false"
-                    :round="true"
-                  ></BmImage>
+                  <div>
+                    <BmImage 
+                      :url="item.productImg"
+                      :width="'1.12rem'" 
+                      :height="'1.12rem'"
+                      :isLazy="false"
+                      :isShow="false"
+                      :round="true"
+                      :errorUrl="require('@/assets/images/product-bgd-90.png')"
+                    />
+                  </div>
                   <div class="ml-12 fs-14">
-                    <p class="black">{{ item.title }}</p>
+                    <p class="black hidden-2">{{ item.productName }}</p>
                     <p class="color_666 mt-8">{{ item.followers }} followers</p>
                   </div>
                 </div>
 
                 <!-- 商品的样式 -->
                 <div class="pt-26 pr-20" v-if="tabActive === 0">
-                  <OrderSingle class="pl-30 mt-20" :isShowRight="false" :product_desc="'Hassen’s new fall 2019 suede pointe…'" :product_size="'Black / L'" />
+                  <OrderSingle class="pl-30 mt-20" :isShowRight="false" :product_desc="item.productName" :image="item.productImg" :price="item.productPrice" />
                   <div class="flex hend">
                     <!-- 看相似 -->
                     <BmButton type="default" plain class="plr-12 round-8 h-25 mt-0">{{ $t('me.likes.lookSimilar') }}</BmButton>
                     <!-- 购物车 -->
-                    <BmButton :type="'info'" class="h-25 ml-12">
-                      <BmImage
-                        :url="require('@/assets/images/icon/cart-icon.svg')"
-                        :width="'0.32rem'" 
-                        :height="'0.28rem'"
-                        :isLazy="false"
-                        :isShow="false"
-                      ></BmImage>
-                    </BmButton>
+                    <BmImage
+                      :url="require('@/assets/images/icon/add-cart-btn.png')"
+                      :width="'0.92rem'" 
+                      :height="'0.52rem'"
+                      :isLazy="false"
+                      :isShow="false"
+                      class="ml-12"
+                    />
                   </div>
                   <div class="driver-line fr"></div>
                 </div>
@@ -96,8 +97,8 @@
           <template #icon>
             <BmImage
               :url="isAll ? require('@/assets/images/icon/choose-icon.png') : require('@/assets/images/icon/choose-default-icon.png')"
-              :width="'0.48rem'" 
-              :height="'0.48rem'"
+              :width="'0.32rem'" 
+              :height="'0.32rem'"
               :isLazy="false"
               :isShow="false"
             ></BmImage>
@@ -163,14 +164,12 @@ export default {
   async fetch() {
     if (this.$route.query.active) this.tabActive = this.$route.query.active;
 
-    // const listData = await this.$api.getLikeStoreList({ pageNum: this.pageNum, pageSize: this.pageSize }); // 获取关注店铺列表
-    // this.list = listData.data.records; // 关注店铺列表
-    // this.total = listData.data.total; // 店铺总数
-
     // 获取商品列表
-    const listData = this.tabActive == 0 ? await this.$api.getLikeProduct({ pageNum: this.pageNum, pageSize: this.pageSize }) : await this.$api.getLikeStoreList({ pageNum: this.pageNum, pageSize: this.pageSize }); // 获取关注商品列表
-    this.list = listData.data.records; // 关注店铺列表
-    this.total = listData.data.total; // 店铺总数
+    const listData = this.tabActive == 0 ? await this.$api.getLikeProduct({ pageNum: this.pageNum, pageSize: this.pageSize }) : await this.$api.getLikeStoreList({ pageNum: this.pageNum, pageSize: this.pageSize }); // 获取关注商品/店铺列表
+    if (listData.code != 0) return false;
+    console.log(listData)
+    this.list = listData.data.records; // 关注商品/店铺列表
+    this.total = listData.data.total; // 商品/店铺总数
     
   },
   activated() {
@@ -191,10 +190,12 @@ export default {
       this.$refs.checkboxStoreGroup.toggleAll(this.isAll);
     },
     emptyClick() { // 关注列表没数据时，点击按钮跳转到首页
-      console.log('跳转')
       this.$router.push({
         name: 'home'
       })
+    },
+    getList() {
+      this.$fetch();
     }
   },
 }

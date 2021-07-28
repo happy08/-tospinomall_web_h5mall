@@ -1,9 +1,9 @@
 <template>
   <!-- 订单列表展示组件 -->
-  <div class="flex w-100 between">
+  <div class="flex w-100">
     <!-- 商品图片 -->
     <!-- 商品数量大于1，展示商品的缩略图 -->
-    <div>
+    <div class="border">
       <BmImage 
         :url="image"
         :width="img_width" 
@@ -16,7 +16,8 @@
     <!-- 商品详情 -->
     <div class="tl product-detail" v-if="product_num === 1">
       <p class="fs-14 black lh-20 hidden-2">{{ product_desc }}</p>
-      <p class="fs-14 lh-20 grey mt-8">{{ product_size }}</p>
+      <p class="fs-14 lh-20 grey mt-8" v-if="product_size">{{ product_size }}</p>
+      <p class="fs-16 red fw lh-20 mt-12" v-if="price >= 0">{{ $store.state.rate.currency }}{{ price }}</p>
     </div>
     
     <!-- 商品价格和数量 -->
