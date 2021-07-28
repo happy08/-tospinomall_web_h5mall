@@ -11,7 +11,7 @@
         :isLazy="isLazy"
         :loadUrl="loadUrl"
         :errorUrl="errorUrl"
-      ></BmImage>
+      />
     </div>
     <!-- 商品详情 -->
     <div class="tl product-detail" v-if="product_num === 1">

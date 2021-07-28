@@ -52,3 +52,69 @@ export function addCart(data) {
     data: qs.stringify(data)
   })
 }
+
+/**
+ * 删除购物车 skuIds多个用下划线_分割
+ */
+export function removeCart(data) {
+  return request({
+    url: '/api/carts/shoppingCart/removeCart',
+    method: 'delete',
+    data: qs.stringify(data),
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
+  })
+}
+
+/**
+ * 设置经常购买
+ */
+export function setOftenBuy(data) {
+  return request({
+    url: '/api/carts/shoppingCart/setOftenBuy',
+    method: 'put',
+    data: qs.stringify(data),
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
+  })
+}
+
+/**
+ * 购物车总数查询
+ */
+export function getCartCount() {
+  return request({
+    url: '/api/carts/shoppingCart/findCount',
+    method: 'get',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
+  })
+}
+
+/**
+ * 添加收藏
+ */
+export function moveToFavorite(data) {
+  return request({
+    url: '/api/carts/shoppingCart/moveToFavorites',
+    method: 'delete',
+    data: data,
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
+  })
+}
+
+/**
+ * 计算商品价格
+ */
+export function getCalculatePrice(data) {
+  return request({
+    url: '/api/carts/shoppingCart/calculatePrice',
+    method: 'put',
+    data
+  })
+}

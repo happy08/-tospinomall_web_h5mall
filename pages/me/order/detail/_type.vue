@@ -165,7 +165,7 @@
               <van-radio :name="index" icon-size="0.48rem">
                 <template #icon="props">
                   <BmImage
-                    :url="props.checked ? require('@/assets/images/icon/choose-icon.svg') : require('@/assets/images/icon/choose-default-icon.svg')"
+                    :url="props.checked ? require('@/assets/images/icon/choose-icon.png') : require('@/assets/images/icon/choose-default-icon.png')"
                     :width="'0.48rem'" 
                     :height="'0.48rem'"
                     :isLazy="false"

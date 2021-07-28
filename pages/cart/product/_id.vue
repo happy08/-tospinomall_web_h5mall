@@ -257,7 +257,8 @@
               >{{ $t("cart.topReviewer") }}
               {{ hotEvaluates.total | reviewNumFormat }}</span
             >
-            <span class="fs-14">{{ $t("cart.more") }}</span>
+            <!-- 更多评论 -->
+            <nuxt-link class="fs-14" :to="{ name: 'me-order-rate-detail-list' }">{{ $t("cart.more") }}</nuxt-link>
           </h3>
           <!-- 评论展示 -->
           <div
@@ -305,6 +306,7 @@
               ref="swiperReviewRef"
               :options="reviewOption"
               class="mt-12 pl-20 review-swiper"
+              v-if="reviewItem.pictures.length"
             >
               <swiper-slide
                 v-for="(reviewPicItem, reviewPicIndex) in reviewItem.pictures"
@@ -346,7 +348,7 @@
         <div class="mt-12 bg-white ptb-20">
           <h3 class="black flex between vcenter plr-20 fn fm-helvetica">
             <span class="fs-16">{{ $t("cart.justForYou") }}</span>
-            <span class="fs-14">{{ $t("cart.more") }}</span>
+            <nuxt-link class="fs-14" :to="{ }">{{ $t("cart.more") }}</nuxt-link>
           </h3>
           <!-- 推荐商品 -->
           <swiper
@@ -376,6 +378,7 @@
         <!-- 产品说明信息 -->
         <div
           class="mt-12 bg-white ptb-12 plr-20 fs-14 black fm-helvetica"
+          v-if="goodSpuVo.description"
           v-html="goodSpuVo.description"
         ></div>
         <BmImage
@@ -487,7 +490,7 @@
           </div>
           <div class="mlr-12 mb-12 mt-10 flex between" v-else>
             <!-- 加入购物车 -->
-            <BmButton :type="'info'" class="fs-16 round-8 w-169 h-48 add-cart-btn" @click="onAddCart">Add to cart</BmButton>
+            <BmButton :type="'info'" class="fs-16 round-8 w-169 h-48 add-cart-btn" @click="onConfirm">Add to cart</BmButton>
             <!-- 立即购买 -->
             <BmButton class="fs-16 round-8 w-169 h-48" @click="onBuyNow">Buy Now</BmButton>
           </div>
@@ -665,6 +668,8 @@ export default {
     }
     const detailData = await this.$api.getProductDetail(this.$route.params.id, _detailParams); // 获取商品详情;
 
+    if (!detailData.data) return false;
+
     this.carouselMapUrls = detailData.data.carouselMapUrls; // 商品轮播图
     this.previewImages = detailData.data.carouselMapUrls.map(item => { // 轮播图预览图片
       return item.imgUrl;
@@ -744,7 +749,7 @@ export default {
     this.selectCarousel = arr.filter((item,index) => {
       return index < 3;
     }); // 商品选择的图片集合
-    this.initialSku = {
+    this.initialSku = this.selectSku = {
       ...arr[0],
       selectedNum: 1
     }
@@ -918,7 +923,7 @@ export default {
     getDeliveryInfo() { // 获取配送运费模板信息
       let _form = {
         ...this.form,
-        skuId: this.initialSku.id
+        skuId: this.selectSku.selectedSkuComb.id
       }
       getDeliveryInfo(_form).then(res => {
         if (res.data.length == 0) { // 无模板
@@ -941,6 +946,7 @@ export default {
     },
     onSelect() { // 选择产品规格
       if (this.$store.state.user.authToken) {
+        this.skuType = 1;
         this.productShow = true;
         return false;
       }
@@ -971,7 +977,7 @@ export default {
     async onConfirm() { // 确认加入
       const num = await this.getSkuStock();
       if (num > this.selectSku.selectedNum) {
-        if (this.skuType === 2) { // 加入购物车
+        if (this.skuType === 2 || this.skuType === 1) { // 加入购物车
           addCart({ quantity: this.selectSku.selectedNum, skuId: this.selectSku.selectedSkuComb.id }).then(res => {
             this.$toast.success('添加成功');
             this.productShow = false;
@@ -1068,6 +1074,10 @@ export default {
 }
 .w-120 {
   width: 120px !important;
+}
+.ptb-2{
+  padding-top: 2px;
+  padding-bottom: 2px;
 }
 </style>
 

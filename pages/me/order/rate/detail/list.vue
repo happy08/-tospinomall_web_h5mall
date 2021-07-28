@@ -1,5 +1,5 @@
 <template>
-  <!-- 我的-订单-评价-评价列表/商品-商品详情-评价列表 -->
+  <!-- 订单评价列表/商品-商品详情-评价列表 -->
   <div class="vh-100 bg-grey">
     <BmHeaderNav :left="{ isShow: true }" :title="$t('me.rate.review')" />
     <!-- 评价列表分类 -->
@@ -9,7 +9,7 @@
         <van-checkbox class="flex" @click="isCurrent = !isCurrent">
           <template #icon>
             <BmImage
-              :url="isCurrent ? require('@/assets/images/icon/choose-icon.svg') : require('@/assets/images/icon/choose-default-icon.svg')"
+              :url="isCurrent ? require('@/assets/images/icon/choose-icon.png') : require('@/assets/images/icon/choose-default-icon.png')"
               :width="'0.34rem'" 
               :height="'0.34rem'"
               :isLazy="false"
@@ -109,11 +109,17 @@ export default {
     vanRate: Rate,
     vanCellGroup: CellGroup
   },
-  asyncData({isDev, route, store, env, params, query, req, res, redirect, error}) {
+  data() {
     return {
       isCurrent: false,
       rate: 2.5
     }
+  },
+  async fetch() {
+
+  },
+  activated() {
+    this.$fetch(); // 评价列表每次进入都要重新刷新数据
   },
   methods: {
     getList() { // 获取数据

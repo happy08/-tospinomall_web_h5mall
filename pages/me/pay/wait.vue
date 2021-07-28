@@ -6,7 +6,7 @@
       <!-- 支付详情 -->
       <div class="mt-24 tc plr-20">
         <BmImage
-          :url="require('@/assets/images/icon/choose-icon.svg')"
+          :url="require('@/assets/images/icon/choose-icon.png')"
           :width="'0.96rem'" 
           :height="'0.96rem'"
           :isLazy="false"

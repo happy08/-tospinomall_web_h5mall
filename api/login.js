@@ -1,6 +1,7 @@
 import request from './request';
 import qs from 'qs';
 import { encrypt } from './cryptoAES'; // 加密解密
+import _i18n from '@/plugins/vue-i18n';
 
 // 前端做了api前缀处理代理，所以所有的接口都需要加上前缀/api才可以和设置匹配, post请求需要将参数转化为字符串
 
@@ -76,7 +77,13 @@ export function authLogin(params) { // 账号登录
   return request({
     url: '/api/auth/oauth/token',
     method: 'post',
-    data: qs.stringify({ ...params, password: encrypt(params.password) })
+    data: qs.stringify({ ...params, password: encrypt(params.password) }),
+    headers: {
+      Authorization: 'Basic YnV5ZXI6YnV5ZXI=',
+      clientType: 'web',
+      version: '1.0.0',
+      language: VueI18n.locale
+    }
   })
 }
 
@@ -84,12 +91,18 @@ export function authLogin(params) { // 账号登录
  * 手机/邮箱 验证码登录
  */
 export function authCodeLogin(params) {
+  console.log(_i18n())
+  console.log(_i18n().locale)
+  return false
   return request({
     url: '/api/auth/mobile/token/sms',
     method: 'post',
     data: qs.stringify({ grant_type: 'mobile', ...params }),
     headers: {
-      'Authorization': 'Basic YnV5ZXI6YnV5ZXI='
+      Authorization: 'Basic YnV5ZXI6YnV5ZXI=',
+      clientType: 'web',
+      version: '1.0.0',
+      language: VueI18n.locale
     }
   })
 }

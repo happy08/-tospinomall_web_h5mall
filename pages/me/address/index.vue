@@ -29,7 +29,7 @@
       <div class="mt-10 fs-14 black fm-helvetica">{{ item.completeAddress }}</div>
       <div class="mt-12 flex vcenter" @click="onSetDeafult(item.id)">
         <BmImage
-          :url="item.isDefault ? require('@/assets/images/icon/choose-icon.svg') : require('@/assets/images/icon/choose-default-icon.svg')"
+          :url="item.isDefault ? require('@/assets/images/icon/choose-icon.png') : require('@/assets/images/icon/choose-default-icon.png')"
           :width="'0.48rem'" 
           :height="'0.48rem'"
           :isLazy="false"

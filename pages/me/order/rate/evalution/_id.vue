@@ -54,7 +54,7 @@
       <van-checkbox class="flex vcenter p-20" @click="isAnonymous = !isAnonymous">
         <template #icon>
           <BmImage
-            :url="isAnonymous ? require('@/assets/images/icon/choose-icon.svg') : require('@/assets/images/icon/choose-default-icon.svg')"
+            :url="isAnonymous ? require('@/assets/images/icon/choose-icon.png') : require('@/assets/images/icon/choose-default-icon.png')"
             :width="'0.34rem'" 
             :height="'0.34rem'"
             :isLazy="false"
