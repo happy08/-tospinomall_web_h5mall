@@ -446,7 +446,8 @@ export default {
         this.loading = false;
         return false;
       }
-      this.pageIndex += 1;
+      this.sort.pageIndex += 1;
+      
       this.$api.getProductSearch(this.sort).then(res => { // 搜索商品列表
         
         this.total = res.data.total;
@@ -475,7 +476,8 @@ export default {
         this.sort = {
           shopId: this.$route.params.id, pageIndex: this.pageIndex, pageSize: this.pageSize,
           sortMap: {
-            sale_count: 0
+            key: 'sale_count',
+            value: 0
           }
         }
       }
@@ -490,7 +492,8 @@ export default {
         this.sort = {
           shopId: this.$route.params.id, pageIndex: this.pageIndex, pageSize: this.pageSize,
           sortMap: {
-            promotion_price: this.priceSortType == 1 ? 1 : 0
+            key: 'promotion_price',
+            value: this.priceSortType == 1 ? 1 : 0
           }
         }
       } else {
