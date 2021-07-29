@@ -13,3 +13,17 @@ export function cancelAttentionGood(data) {
     }
   })
 }
+
+/**
+ * 删除浏览商品的记录
+ */
+export function deleteFootprintRecord(data) {
+  return request({
+    url: '/api/product/goods/buyer/delete/browse/record',
+    method: 'post',
+    data: data,
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+}

@@ -289,9 +289,6 @@ export default {
   background-color: #eee;
   margin-top: 25px;
 }
-.pt-46{
-  padding-top: 46px;
-}
 </style>
 
 <style lang="less">

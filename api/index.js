@@ -139,6 +139,16 @@ export default ({ app }, inject) => {
           'Content-Type': 'application/x-www-form-urlencoded'
         }
       })
+    },
+    getFootprintList(params) { // 获取用户浏览商品列表
+      return app.$axios({
+        url: `${url}/product/goods/buyer/browse/record`,
+        method: 'get',
+        params: params,
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      })
     }
   };
 
