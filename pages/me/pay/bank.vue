@@ -24,7 +24,7 @@
                 :height="'0.48rem'"
                 :isLazy="false"
                 :isShow="false"
-              ></BmImage>
+              />
             </div>
             <dl class="ml-12">
               <dt class="white fs-16">China Merchants bank</dt>

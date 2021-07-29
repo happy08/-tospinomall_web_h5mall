@@ -15,7 +15,7 @@
           :isShow="false"
           class="round-8 hidden"
           :errorUrl="require('@/assets/images/product-bgd-90.png')"
-        ></BmImage>
+        />
         <!-- 店铺名、关注数 -->
         <dl class="ml-12">
           <dt class="fs-14 fw color-23 max-w-160">{{ detailData.storeName }}</dt>

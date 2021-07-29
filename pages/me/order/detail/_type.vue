@@ -166,11 +166,11 @@
                 <template #icon="props">
                   <BmImage
                     :url="props.checked ? require('@/assets/images/icon/choose-icon.png') : require('@/assets/images/icon/choose-default-icon.png')"
-                    :width="'0.48rem'" 
-                    :height="'0.48rem'"
+                    :width="'0.32rem'" 
+                    :height="'0.32rem'"
                     :isLazy="false"
                     :isShow="false"
-                  ></BmImage>
+                  />
                 </template>
               </van-radio>
             </template>

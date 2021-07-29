@@ -12,7 +12,7 @@
         :isLazy="false"
         :isShow="false"
         class="block"
-      ></BmImage>
+      />
     </div>
 
     <!-- 订单商品列表 -->

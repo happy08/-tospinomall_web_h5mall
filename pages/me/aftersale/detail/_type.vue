@@ -22,7 +22,7 @@
                   :isLazy="false"
                   :isShow="false"
                   :round="true"
-                ></BmImage>
+                />
               </template>
               <!-- 已完成状态图标 -->
               <template #finish-icon>
@@ -33,7 +33,7 @@
                   :isLazy="false"
                   :isShow="false"
                   :round="true"
-                ></BmImage>
+                />
               </template>
               {{ stepItem }}
             </van-step>
@@ -62,7 +62,7 @@
               :isLazy="false"
               :isShow="false"
               :round="true"
-            ></BmImage>
+            />
             <div class="ml-10">
               <p class="fw fs-14 black">{{ $t('me.afterSale.refundSuccess') }}</p>
               <p class="fs-12 light-grey mt-14">07-07-2020 13:34:00</p>

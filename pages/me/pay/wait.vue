@@ -11,7 +11,7 @@
           :height="'0.96rem'"
           :isLazy="false"
           :isShow="false"
-        ></BmImage>
+        />
         <h3 class="fs-16 black mt-24">Awaiting Payment</h3>
         <p class="mt-12 fs-14 black">If you have paid, click“Payment complete” to check</p>
       </div>

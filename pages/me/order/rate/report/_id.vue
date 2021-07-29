@@ -19,11 +19,11 @@
               <template #icon="props">
                 <BmImage
                   :url="props.checked ? require('@/assets/images/icon/choose-icon.png') : require('@/assets/images/icon/choose-default-icon.png')"
-                  :width="'0.34rem'" 
-                  :height="'0.34rem'"
+                  :width="'0.32rem'" 
+                  :height="'0.32rem'"
                   :isLazy="false"
                   :isShow="false"
-                ></BmImage>
+                />
               </template>
               <p class="black fs-14">{{ item }}</p>
             </van-radio>

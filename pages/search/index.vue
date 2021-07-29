@@ -83,7 +83,7 @@
                       :height="'1.8rem'"
                       :fit="'cover'"
                       class="border round-4"
-                    ></BmImage>
+                    />
                   </div>
                   <div class="ml-14 w-230 hidden-1">
                     <p class="fs-14 black hidden-1" v-html="searchItem.productTitle"></p>

@@ -21,7 +21,7 @@
             :height="'0.48rem'"
             :isLazy="false"
             :isShow="false"
-          ></BmImage>
+          />
         </div>
       </div>
       <!-- 地址 -->
@@ -30,11 +30,11 @@
       <div class="mt-12 flex vcenter" @click="onSetDeafult(item.id)">
         <BmImage
           :url="item.isDefault ? require('@/assets/images/icon/choose-icon.png') : require('@/assets/images/icon/choose-default-icon.png')"
-          :width="'0.48rem'" 
-          :height="'0.48rem'"
+          :width="'0.32rem'" 
+          :height="'0.32rem'"
           :isLazy="false"
           :isShow="false"
-        ></BmImage>
+        />
         <span :class="{'fm-helvetica fs-14 ml-8': true, 'red': item.isDefault}">{{ item.isDefault ? 'Default': 'Set as Default' }}</span>
       </div>
     </div>

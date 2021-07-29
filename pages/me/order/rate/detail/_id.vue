@@ -14,7 +14,7 @@
           :isShow="false"
           :fit="'cover'"
           class="border"
-        ></BmImage>
+        />
       </div>
       <p class="fs-14 black ml-12 mr-30 lh-20">Hassen’s new fall single shoes fashion wedding…</p>
       <!-- 加入购物车 -->
@@ -25,7 +25,7 @@
           :height="'0.28rem'"
           :isLazy="false"
           :isShow="false"
-        ></BmImage>
+        />
       </BmButton>
     </div>
     
@@ -43,7 +43,7 @@
               :isShow="false"
               :fit="'cover'"
               :round="true"
-            ></BmImage>
+            />
           </div>
           <p class="ml-14 fs-14 black fw">Ave</p>          
         </div>
@@ -65,7 +65,7 @@
         :isShow="false"
         :fit="'cover'"
         class="mt-20"
-      ></BmImage>
+      />
       <!-- 你的意见、信息、点赞 -->
       <div class="mt-43 flex between vcenter">
         <van-field v-model="thoughts" class="custom-field" :border="false" :placeholder="$t('me.report.writeThoughts')" />
@@ -79,7 +79,7 @@
             :isLazy="false"
             :isShow="false"
             :fit="'cover'"
-          ></BmImage>
+          />
         </div>
         <!-- 点赞 -->
         <div class="flex vcenter">
@@ -91,7 +91,7 @@
             :isLazy="false"
             :isShow="false"
             :fit="'cover'"
-          ></BmImage>
+          />
         </div>
       </div>
     </div>

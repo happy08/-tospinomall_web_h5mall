@@ -10,11 +10,11 @@
           <template #icon>
             <BmImage
               :url="isCurrent ? require('@/assets/images/icon/choose-icon.png') : require('@/assets/images/icon/choose-default-icon.png')"
-              :width="'0.34rem'" 
-              :height="'0.34rem'"
+              :width="'0.32rem'" 
+              :height="'0.32rem'"
               :isLazy="false"
               :isShow="false"
-            ></BmImage>
+            />
           </template>
           <span class="ml-12 fs-14 lh-20 black">Current commodity</span>
         </van-checkbox>
@@ -49,7 +49,7 @@
               :isShow="false"
               :fit="'cover'"
               :round="true"
-            ></BmImage>
+            />
           </div>
           <p class="ml-14 fs-14 black fw">Ave</p>          
         </div>
@@ -73,7 +73,7 @@
           :fit="'cover'"
           v-for="item in 3"
           :key="item"
-        ></BmImage>
+        />
       </div>
       <!-- report按钮 -->
       <BmButton :type="'info'" class="h-30 round-8 black time-out mt-12 fr" @click="onReport">{{ $t('me.report.report') }}</BmButton>

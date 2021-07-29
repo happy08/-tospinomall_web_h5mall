@@ -37,7 +37,7 @@
             :isLazy="false"
             :isShow="false"
             class="ml-12"
-          ></BmImage>
+          />
         </van-uploader>
       </div>
       <!-- 提交 -->

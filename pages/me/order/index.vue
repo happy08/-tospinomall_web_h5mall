@@ -42,7 +42,7 @@
                   :height="'0.48rem'"
                   :isLazy="false"
                   @click="deleteFn"
-                ></BmImage>
+                />
               </div>
             </OrderStoreSingle>
             <!-- 订单列表详情 -->

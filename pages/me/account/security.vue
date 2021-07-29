@@ -12,7 +12,7 @@
         :isLazy="false"
         :isShow="false"
         class="mr-12"
-      ></BmImage>
+      />
       <p class="white">{{ $store.state.user.name }}{{ $t('me.accountSetting.securityWelcome') }}</p>
     </div>
 

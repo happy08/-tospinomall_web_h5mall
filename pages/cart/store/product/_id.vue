@@ -15,7 +15,7 @@
               :height="'1.8rem'"
               :fit="'cover'"
               class="border round-4 hidden"
-            ></BmImage>
+            />
           </div>
           <!-- 商品详情 -->
           <div class="ml-14 w-230">

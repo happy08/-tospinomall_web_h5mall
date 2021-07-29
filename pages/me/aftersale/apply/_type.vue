@@ -59,11 +59,11 @@
         <template #icon>
           <BmImage
             :url="isGreenment ? require('@/assets/images/icon/choose-icon.png') : require('@/assets/images/icon/choose-default-icon.png')"
-            :width="'0.34rem'" 
-            :height="'0.34rem'"
+            :width="'0.32rem'" 
+            :height="'0.32rem'"
             :isLazy="false"
             :isShow="false"
-          ></BmImage>
+          />
         </template>
         <span class="ml-14 fs-14 lh-20 grey-666">Read and agree to the Door-to-Door Pick-up Service Agreement</span>
       </van-checkbox>
@@ -112,11 +112,11 @@
                 <template #icon="props">
                   <BmImage
                     :url="props.checked ? require('@/assets/images/icon/choose-icon.png') : require('@/assets/images/icon/choose-default-icon.png')"
-                    :width="'0.48rem'" 
-                    :height="'0.48rem'"
+                    :width="'0.32rem'" 
+                    :height="'0.32rem'"
                     :isLazy="false"
                     :isShow="false"
-                  ></BmImage>
+                  />
                 </template>
               </van-radio>
             </template>
@@ -153,7 +153,7 @@
             :isShow="false"
             :fit="'cover'"
             class="border"
-          ></BmImage>
+          />
           <!-- 商品价格/id -->
           <div class="ml-12 flex column hend">
             <span class="fs-16 red fw">{{ $store.state.rate.currency }} {{ props.price }}</span>

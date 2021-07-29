@@ -18,7 +18,7 @@
                 :isShow="false"
                 :fit="'cover'"
                 class="border"
-              ></BmImage>
+              />
             </div>
             <p class="fs-14 black ml-12">Hassen’s new fall single shoes fashion wedding…</p>
           </div>
@@ -43,7 +43,7 @@
                   :isLazy="false"
                   :isShow="false"
                   :fit="'cover'"
-                ></BmImage>
+                />
                 <div class="mt-6 fs-12 lh-1">{{ $t('me.rate.addPicture') }}</div>
               </div>
             </van-uploader>
@@ -55,11 +55,11 @@
         <template #icon>
           <BmImage
             :url="isAnonymous ? require('@/assets/images/icon/choose-icon.png') : require('@/assets/images/icon/choose-default-icon.png')"
-            :width="'0.34rem'" 
-            :height="'0.34rem'"
+            :width="'0.32rem'" 
+            :height="'0.32rem'"
             :isLazy="false"
             :isShow="false"
-          ></BmImage>
+          />
         </template>
         <span class="ml-14 fs-14 lh-20 grey-666">Read and agree to the Door-to-Door Pick-up Service Agreement</span>
       </van-checkbox>

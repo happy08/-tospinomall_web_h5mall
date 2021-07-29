@@ -47,7 +47,7 @@
                   :url="require('@/assets/images/product-bgd-90.png')"
                   :width="'1.8rem'" 
                   :height="'1.8rem'"
-                ></BmImage>
+                />
               </div>
               <div class="ml-14 w-230">
                 <p class="fs-14 black hidden-1">A portable coffee  cup, a tiny peo…A portable coffee  cup, a tiny peo…</p>

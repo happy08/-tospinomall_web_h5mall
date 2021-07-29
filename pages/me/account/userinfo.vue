@@ -16,7 +16,7 @@
             :isShow="false"
             class="mr-12"
             :round="true"
-          ></BmImage>
+          />
         </van-uploader>
         <!-- <input type="file" @change="uploadAvatar"> -->
       </template>

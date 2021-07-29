@@ -27,7 +27,7 @@
               :isLazy="false"
               :isShow="false"
               :round="true"
-            ></BmImage>
+            />
             <!-- 名字和时间 -->
             <div class="ml-12">
               <p class="fs-14 black">Recharge your balance</p>

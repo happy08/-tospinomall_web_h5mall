@@ -106,7 +106,7 @@
                   :height="'0.32rem'"
                   :isLazy="false"
                   :isShow="false"
-                ></BmImage>
+                />
               </template>
               <span class="ml-14 fs-14 lh-20 black">{{ $t('common.all') }}</span>
             </van-checkbox>
@@ -177,7 +177,7 @@ export default {
     }
   },
   async fetch() {
-    if (this.$route.query.active) this.tabActive = this.$route.query.active;
+    this.tabActive = this.$route.query.active ? this.$route.query.active : 0;
     this.edit = false;
     this.checkResult = [];
 

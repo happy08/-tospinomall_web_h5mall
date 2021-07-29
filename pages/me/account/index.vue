@@ -16,7 +16,7 @@
               :isLazy="false"
               :isShow="false"
               :round="true"
-            ></BmImage>
+            />
             <!-- 姓名、id -->
             <dl class="ml-10">
               <dt class="fs-18 black fw">{{ $store.state.user.userInfo ? $store.state.user.userInfo.nickname: '--' }}</dt>

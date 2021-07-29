@@ -28,8 +28,8 @@
           <div class="flex vcenter pl-12">
             <BmImage
               :url="item.isAll ? require('@/assets/images/icon/choose-icon.png') : require('@/assets/images/icon/choose-default-icon.png')"
-              :width="'0.34rem'" 
-              :height="'0.34rem'"
+              :width="'0.32rem'" 
+              :height="'0.32rem'"
               :isLazy="false"
               :isShow="false"
               @onClick="storeCheckAll(item)"
@@ -45,8 +45,8 @@
                   <div>
                     <BmImage
                       :url="!singleItem.stock ? require('@/assets/images/icon/unchoose-icon.png') : props.checked ? require('@/assets/images/icon/choose-icon.png') : require('@/assets/images/icon/choose-default-icon.png')"
-                      :width="'0.34rem'" 
-                      :height="'0.34rem'"
+                      :width="'0.32rem'" 
+                      :height="'0.32rem'"
                       :isLazy="false"
                       :isShow="false"
                     />
@@ -152,8 +152,8 @@
           <div>
             <BmImage
               :url="props.checked ? require('@/assets/images/icon/choose-icon.png') : require('@/assets/images/icon/choose-default-icon.png')"
-              :width="'0.34rem'" 
-              :height="'0.34rem'"
+              :width="'0.32rem'" 
+              :height="'0.32rem'"
               :isLazy="false"
               :isShow="false"
             />

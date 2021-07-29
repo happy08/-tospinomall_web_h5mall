@@ -28,7 +28,7 @@
               :isShow="false"
               v-for="item in 4"
               :key="item"
-            ></BmImage>
+            />
           </div>
         </template>
       </van-cell>

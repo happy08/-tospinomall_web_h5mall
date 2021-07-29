@@ -67,7 +67,7 @@
             :height="'0.8rem'"
             :isLazy="false"
             :isShow="false"
-          ></BmImage>
+          />
           <p>{{ orderItem.text }}</p>
         </nuxt-link>
       </div>
