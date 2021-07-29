@@ -25,7 +25,6 @@
                 :isLazy="false"
                 :isShow="true"
                 class="round-8 hidden"
-                :errorUrl="require('@/assets/images/product-bgd-90.png')"
               />
               <!-- 店铺名、关注数 -->
               <dl class="ml-12 fm-helvetica">
@@ -222,7 +221,6 @@
             :height="'1.8rem'"
             :fit="'cover'"
             class="border round-4 hidden"
-            :errorUrl="require('@/assets/images/product-bgd-90.png')"
           />
           <!-- 商品详情 -->
           <div class="ml-14 w-230">

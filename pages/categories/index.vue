@@ -32,8 +32,6 @@
                 :url="childrenItem.icon"
                 :width="'1.4rem'"
                 :height="'1.28rem'"
-                :loadUrl="require('@/assets/images/product-bgd-90.png')"
-                :errorUrl="require('@/assets/images/product-bgd-90.png')"
               />
               <h5 class="fs-12 mt-8 product-single__name" v-html="childrenItem.name"></h5>
             </div>

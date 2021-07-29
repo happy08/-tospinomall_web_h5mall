@@ -35,69 +35,115 @@
       </van-tabs>
     </div>
 
-    <!-- 评价详情 -->
-    <div class="mt-12 plr-20 pt-14 bg-white pb-20">
-      <!-- 用户头像、昵称、日期 -->
-      <div class="flex between vcenter">
-        <div class="flex vcenter">
-          <div>
+    <!-- 评价列表 -->
+    <template v-if="list.length">
+      <div class="mt-12 plr-20 pt-14 bg-white pb-20" v-for="(item, index) in list" :key="'review-' + index">
+        <!-- 用户头像、昵称、日期 -->
+        <div class="flex between vcenter" @click="goDetail(item.id)">
+          <div class="flex vcenter">
             <BmImage
-              :url="require('@/assets/images/product-bgd-90.png')"
+              :url="item.buyerPortrait"
               :width="'0.64rem'" 
               :height="'0.64rem'"
               :isLazy="false"
-              :isShow="false"
+              :isShow="true"
               :fit="'cover'"
               :round="true"
+              :errorUrl="require('@/assets/images/icon/user-icon.png')"
+            />
+            <p class="ml-14 fs-14 black fw">{{ item.buyerName }}</p>          
+          </div>
+          <div class="light-grey fs-14">{{ item.createTime }}</div>
+        </div>
+        <!-- 评分 -->
+        <div class="mt-14 flex vcenter" @click="goDetail(item.id)">
+          <van-rate v-model="item.goodsScores" allow-half readonly size="14" color="#F7B500" void-color="#DDDDDD" void-icon="star" />
+          <div class="grey ml-12">{{ item.saleAttr }}</div>
+        </div>
+        <!-- 描述 -->
+        <p class="black fs-14 mt-10" @click="goDetail(item.id)">{{ item.content }}</p>
+        <!-- 展示图片 -->
+        <div class="mt-20 flex flex-wrap" v-if="item.pictures.length > 0" @click="goDetail(item.id)">
+          <div v-for="(picItem, picIndex) in item.pictures" :key="'pic-' + picItem.id">
+            <BmImage
+              :url="picItem.imgUrl"
+              :width="'2.12rem'" 
+              :height="'2.12rem'"
+              :isLazy="false"
+              :isShow="true"
+              :fit="'cover'"
+              :class="{'border round-2 hidden': true, 'ml-8': picIndex != 0}"
+              v-if="picItem.fileType == 1"
             />
           </div>
-          <p class="ml-14 fs-14 black fw">Ave</p>          
         </div>
-        <div class="light-grey fs-14">March 6 2020</div>
-      </div>
-      <!-- 评分 -->
-      <div class="mt-14 flex vcenter">
-        <van-rate v-model="rate" allow-half size="14" color="#F7B500" void-color="#DDDDDD" void-icon="star" />
-        <div class="grey ml-12">Black / L</div>
-      </div>
-      <!-- 描述 -->
-      <p class="black fs-14 mt-10">A great one, with coupons; Small and delicate appearance, preheat for 30 seconds before starting up, uniform air output, space saving, suitable for small family</p>
-      <!-- 展示图片 -->
-      <div class="mt-20 flex between flex-wrap">
-        <BmImage
-          :url="require('@/assets/images/product-bgd-90.png')"
-          :width="'2.12rem'" 
-          :height="'2.12rem'"
-          :isLazy="false"
-          :isShow="false"
-          :fit="'cover'"
-          v-for="item in 3"
-          :key="item"
-        />
-      </div>
-      <!-- report按钮 -->
-      <BmButton :type="'info'" class="h-30 round-8 black time-out mt-12 fr" @click="onReport">{{ $t('me.report.report') }}</BmButton>
-      <div class="clear"></div>
-
-      <!--  -->
-      <van-cell-group class="mt-12" :border="false">
-        <!-- 包装 -->
-        <van-cell class="plr-0 ptb-20" :title="$t('me.report.reviewAfterPurchase')" title-class="fw black fs-14" label-class="fs-14 color-666" label="The quality is very good. Mom likes it very much" />
-        <!-- 发货速度 -->
-        <van-cell class="plr-0 ptb-20" title-class="fs-14">
-          <template #title>
-            <span class="red">Official customer service: </span>
-            <span class="color-666">Thank you for your sup-port of our products</span>
+        
+        <!--  -->
+        <van-cell-group class="mt-20" :border="false">
+          <!-- 追加评论 -->
+          <template v-if="item.additionalEvaluates.length > 0">
+            <p class="fw black fs-14">购买后追评</p>
+            <div v-for="addItem in item.additionalEvaluates" :key="'add-review-' + addItem.id">
+              <!-- 描述 -->
+              <p class="black fs-14 mt-10">{{ addItem.content }}</p>
+              <!-- 展示图片 -->
+              <div class="mt-20 flex flex-wrap">
+                <div v-for="(addPicItem, addPicIndex) in addItem.pictures" :key="'add-pic-' + addPicItem.id">
+                  <BmImage
+                    :url="addPicItem.imgUrl"
+                    :width="'2.12rem'" 
+                    :height="'2.12rem'"
+                    :isLazy="false"
+                    :isShow="true"
+                    :fit="'cover'"
+                    :class="{'border round-2 hidden': true, 'ml-8': addPicIndex != 0}"
+                    v-if="addPicItem.fileType == 1"
+                  />
+                </div>
+              </div>
+            </div>
           </template>
-        </van-cell>
-      </van-cell-group>
-    </div>
+          <van-cell class="plr-0 ptb-20" :title="$t('me.report.reviewAfterPurchase')" title-class="fw black fs-14" label-class="fs-14 color-666" label="The quality is very good. Mom likes it very much" />
+          <!-- 卖家回复 -->
+          <template v-if="item.sellerReplyList.length > 0">
+            <van-cell class="plr-0 ptb-10" title-class="fs-14" v-for="(replyItem, replyIndex) in item.sellerReplyList" :key="'reply-' + replyIndex">
+              <template #title>
+                <span class="red">{{ replyItem.replyName }} Official customer service: </span>
+                <span class="color-666">{{ replyItem.replyContent }}</span>
+              </template>
+            </van-cell>
+          </template>
+        </van-cell-group>
+
+        <div class="clear flex hend vcenter mt-12">
+          <!-- report按钮 -->
+          <BmButton :type="'info'" class="h-30 round-8 black time-out fr" @btnClick="onReport">{{ $t('me.report.report') }}</BmButton>
+          <div class="ml-20">
+            <BmImage
+              :url="require('@/assets/images/icon/message-icon.png')"
+              :width="'0.48rem'" 
+              :height="'0.48rem'"
+              :isLazy="false"
+              :isShow="false"
+              :fit="'cover'"
+              class=""
+            />
+          </div>
+          <div class="ml-12">
+            <span>{{ item.glike }}</span>
+            <BmIcon :name="'likes-icon'" :width="'0.48rem'" :height="'0.48rem'" :color="'#262626'" @iconClick="addGive(item.id)"/>
+          </div>
+        </div>
+      </div>
+    </template>
+    
 
   </div>
 </template>
 
 <script>
 import { Checkbox, Cell, Tab, Tabs, Rate, CellGroup } from 'vant';
+import { getRateList, addGive } from '@/api/product';
 
 export default {
   middleware: 'authenticated',
@@ -112,24 +158,52 @@ export default {
   data() {
     return {
       isCurrent: false,
-      rate: 2.5
+      rate: 2.5,
+      tabActive: 0,
+      list: []
     }
   },
   async fetch() {
 
   },
   activated() {
-    this.$fetch(); // 评价列表每次进入都要重新刷新数据
+    this.getList();
+    // this.$fetch(); // 评价列表每次进入都要重新刷新数据
   },
   methods: {
     getList() { // 获取数据
+      getRateList({ goodsId: this.$route.query.id }).then(res => {
+        if (res.code != 0) return false;
 
+        this.list = res.data.records.map(item => {
+          return {
+            ...item,
+            pictures: item.pictures.filter((picItem, picIndex) => {
+              return picIndex < 3;
+            })
+          }
+        });
+      })
     },
     onReport() { // 举报
       this.$router.push({
         name: 'me-order-rate-report-id',
         params: {
           id: 0
+        }
+      })
+    },
+    addGive(id) { // 点赞
+      addGive(id).then(res => {
+        if (res.code != 0) return false;
+        this.getList();
+      })
+    },
+    goDetail(id) { // 跳转到评价详情
+      this.$router.push({
+        name: 'me-order-rate-detail-id',
+        params: {
+          id: id
         }
       })
     }

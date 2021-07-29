@@ -14,7 +14,6 @@
           :isLazy="false"
           :isShow="false"
           class="round-8 hidden"
-          :errorUrl="require('@/assets/images/product-bgd-90.png')"
         />
         <!-- 店铺名、关注数 -->
         <dl class="ml-12">

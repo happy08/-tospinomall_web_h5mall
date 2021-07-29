@@ -51,7 +51,7 @@ export default {
     },
     errorUrl: {
       type: String,
-      default: null
+      default: require('@/assets/images/product-bgd-90.png')
     },
     isLazy: {
       type: Boolean,

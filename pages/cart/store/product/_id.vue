@@ -1,5 +1,5 @@
 <template>
-  <!-- 店铺-所有商品 -->
+  <!-- 店铺-所有商品---该页面暂时无用 -->
   <div class="vh-100 bg-grey">
     <BmHeaderNav :left="{ isShow: true }" :title="$t('cart.storeInformation')" />
 

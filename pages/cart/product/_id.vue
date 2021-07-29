@@ -258,7 +258,7 @@
               {{ hotEvaluates.total | reviewNumFormat }}</span
             >
             <!-- 更多评论 -->
-            <nuxt-link class="fs-14" :to="{ name: 'me-order-rate-detail-list' }">{{ $t("cart.more") }}</nuxt-link>
+            <nuxt-link class="fs-14" :to="{ name: 'me-order-rate-detail-list', query: { id: goodSpuVo.id } }">{{ $t("cart.more") }}</nuxt-link>
           </h3>
           <!-- 评论展示 -->
           <div

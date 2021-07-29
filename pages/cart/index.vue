@@ -66,7 +66,6 @@
                       :isLazy="false"
                       :isShow="true"
                       :fit="'cover'"
-                      :errorUrl="require('@/assets/images/product-bgd-90.png')"
                     />
                   </SoldOut>
                 </template>
