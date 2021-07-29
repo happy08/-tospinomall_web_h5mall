@@ -8,44 +8,44 @@
         <van-tab :title="$t('common.store')"></van-tab>
       </van-tabs>
       <!-- 操作 -->
-      <div slot="header-right" class="fs-16 color_666" v-show="!edit" @click="edit = true">{{ $t('common.done') }}</div>
+      <div slot="header-right" class="fs-16 color_666" v-show="!edit" @click="onEdit">{{ $t('common.edit') }}</div>
       <!-- 编辑 -->
-      <div slot="header-right" class="fs-16 color_666" v-show="edit" @click="edit = false">
+      <div slot="header-right" class="fs-16 color_666" v-show="edit" @click="onEdit">
         <i class="iconfont icon-shanchu fs-18 mr-12"></i>
-        {{ $t('common.edit') }}
+        {{ $t('common.done') }}
       </div>
     </BmHeaderNav>
 
-    <!-- 商品/店铺展示 -->
-    <div class="bg-white">
-      <!-- 无数据时展示 -->
-      <empty-status v-if="list.length === 0" :image="require('@/assets/images/empty/result.png')" :description="tabActive == 0 ? $t('me.likes.notProduct') : $t('me.likes.noStore')" :btn="{ btn: $t('me.likes.shopNow'), isEmit: true }" @emptyClick="emptyClick" />
-      <!-- 已关注的店铺列表展示 -->
-      <van-checkbox-group v-model="checkResult" ref="checkboxStoreGroup">
-        <van-cell-group>
-          <van-cell :border="tabActive === 0 ? false : true" :class="{'ptb-0 plr-0': true, 'bg-f4': isTrue(item.id, checkResult) }" v-for="(item, index) in list" :key="index">
-            <!-- 选择 -->
-            <template #icon>
-              <van-checkbox v-show="edit" class="pl-16" :name="item.id" ref="checkboxes">
-                <template #icon="props">
-                  <BmImage
-                    :url="props.checked ? require('@/assets/images/icon/choose-icon.png') : require('@/assets/images/icon/choose-default-icon.png')"
-                    :width="'0.32rem'" 
-                    :height="'0.32rem'"
-                    :isLazy="false"
-                    :isShow="false"
-                  />
-                </template>
-              </van-checkbox>
-            </template>
-            <template #default>
-              <!-- 左滑单元格 -->
-              <van-swipe-cell>
-                <!-- 店铺的样式 -->
-                <div class="flex pl-30 ptb-20" v-if="tabActive === 1">
-                  <div>
+    <van-pull-refresh v-model="isLoading" :head-height="80" @refresh="onRefresh" class="vh-100">
+      <!-- 商品/店铺展示 -->
+      <div class="bg-white">
+        <!-- 无数据时展示 -->
+        <empty-status v-if="list.length === 0" :image="require('@/assets/images/empty/result.png')" :description="tabActive == 0 ? $t('me.likes.notProduct') : $t('me.likes.noStore')" :btn="{ btn: $t('me.likes.shopNow'), isEmit: true }" @emptyClick="emptyClick" />
+        <!-- 已关注的店铺列表展示 -->
+        <van-checkbox-group v-model="checkResult" ref="checkboxStoreGroup">
+          <van-cell-group>
+            <van-cell :border="tabActive === 0 ? false : true" :class="{'ptb-0 plr-0': true, 'bg-f4': isTrue(item.id, checkResult) }" v-for="(item, index) in list" :key="index">
+              <!-- 选择 -->
+              <template #icon>
+                <van-checkbox v-show="edit" class="pl-16" :name="tabActive ==1 ? item.storeId : item.productId" ref="checkboxes">
+                  <template #icon="props">
+                    <BmImage
+                      :url="props.checked ? require('@/assets/images/icon/choose-icon.png') : require('@/assets/images/icon/choose-default-icon.png')"
+                      :width="'0.32rem'" 
+                      :height="'0.32rem'"
+                      :isLazy="false"
+                      :isShow="false"
+                    />
+                  </template>
+                </van-checkbox>
+              </template>
+              <template #default>
+                <!-- 左滑单元格 -->
+                <van-swipe-cell :disabled="edit">
+                  <!-- 店铺的样式 -->
+                  <div class="flex pl-30 ptb-20" v-if="tabActive === 1">
                     <BmImage 
-                      :url="item.productImg"
+                      :url="item.storeLogoUrl"
                       :width="'1.12rem'" 
                       :height="'1.12rem'"
                       :isLazy="false"
@@ -53,85 +53,88 @@
                       :round="true"
                       :errorUrl="require('@/assets/images/product-bgd-90.png')"
                     />
+                    <div class="ml-12 fs-14 fm-helvetica">
+                      <p class="black hidden-2">{{ item.storeName }}</p>
+                      <p class="color_666 mt-8">{{ item.followers }} followers</p>
+                    </div>
                   </div>
-                  <div class="ml-12 fs-14">
-                    <p class="black hidden-2">{{ item.productName }}</p>
-                    <p class="color_666 mt-8">{{ item.followers }} followers</p>
-                  </div>
-                </div>
 
-                <!-- 商品的样式 -->
-                <div class="pt-26 pr-20" v-if="tabActive === 0">
-                  <OrderSingle class="pl-30 mt-20" :isShowRight="false" :product_desc="item.productName" :image="item.productImg" :price="item.productPrice" />
-                  <div class="flex hend">
-                    <!-- 看相似 -->
-                    <BmButton type="default" plain class="plr-12 round-8 h-25 mt-0">{{ $t('me.likes.lookSimilar') }}</BmButton>
-                    <!-- 购物车 -->
-                    <BmImage
-                      :url="require('@/assets/images/icon/add-cart-btn.png')"
-                      :width="'0.92rem'" 
-                      :height="'0.52rem'"
-                      :isLazy="false"
-                      :isShow="false"
-                      class="ml-12"
-                    />
+                  <!-- 商品的样式 -->
+                  <div class="pt-26 pr-20" v-if="tabActive === 0">
+                    <OrderSingle class="pl-30 pt-20" :isShowRight="false" :product_desc="item.productName" :image="item.productImg" :price="item.productPrice" />
+                    <div class="flex hend">
+                      <!-- 看相似 -->
+                      <BmButton type="default" plain class="plr-12 round-8 h-25 mt-0">{{ $t('me.likes.lookSimilar') }}</BmButton>
+                      <!-- 购物车 -->
+                      <BmImage
+                        :url="require('@/assets/images/icon/add-cart-btn.png')"
+                        :width="'0.92rem'" 
+                        :height="'0.52rem'"
+                        :isLazy="false"
+                        :isShow="false"
+                        class="ml-12"
+                      />
+                    </div>
+                    <div class="driver-line fr"></div>
                   </div>
-                  <div class="driver-line fr"></div>
-                </div>
 
-                <template #right>
-                  <div class="flex hend h-100">
-                    <BmButton class="round-0 bg-yellow h-100 w-70">Unsub-scribe</BmButton>
-                    <BmButton class="round-0 bg-green h-100 w-70">Store Top</BmButton>
-                  </div>
-                </template>
-              </van-swipe-cell>
+                  <template #right>
+                    <div class="flex hend h-100">
+                      <BmButton class="round-0 bg-yellow h-100 w-70" @click="onUnsubscribe(item)">Unsub-scribe</BmButton>
+                      <BmButton class="round-0 bg-green h-100 w-70" @click="onTop(item)">Store Top</BmButton>
+                    </div>
+                  </template>
+                </van-swipe-cell>
+              </template>
+            </van-cell>
+          </van-cell-group>
+        </van-checkbox-group>
+
+        <!-- 全选与否 -->
+        <div class="w-100 bg-white flex between pl-12 vcenter checkout-all-content" v-show="edit">
+          <van-checkbox class="flex vcenter v-100" @click="checkAll">
+            <template #icon>
+              <BmImage
+                :url="isAll ? require('@/assets/images/icon/choose-icon.png') : require('@/assets/images/icon/choose-default-icon.png')"
+                :width="'0.32rem'" 
+                :height="'0.32rem'"
+                :isLazy="false"
+                :isShow="false"
+              ></BmImage>
             </template>
-          </van-cell>
-        </van-cell-group>
-      </van-checkbox-group>
-
-      <!-- 全选与否 -->
-      <div class="w-100 bg-white flex between pl-12 vcenter checkout-all-content" v-show="edit">
-        <van-checkbox class="flex vcenter v-100" @click="checkAll">
-          <template #icon>
-            <BmImage
-              :url="isAll ? require('@/assets/images/icon/choose-icon.png') : require('@/assets/images/icon/choose-default-icon.png')"
-              :width="'0.32rem'" 
-              :height="'0.32rem'"
-              :isLazy="false"
-              :isShow="false"
-            ></BmImage>
-          </template>
-          <span class="ml-14 fs-14 lh-20 black">{{ $t('common.all') }}</span>
-        </van-checkbox>
-        <BmButton class="fs-16 round-0 v-100" @click="onUnsubscribe">Unsubscribe</BmButton>
+            <span class="ml-14 fs-14 lh-20 black">{{ $t('common.all') }}</span>
+          </van-checkbox>
+          <BmButton class="fs-16 round-0 v-100" @click="onUnsubscribe">Unsubscribe</BmButton>
+        </div>
       </div>
-    </div>
 
-    <!-- 可能喜欢的推荐列表展示 -->
-    <template v-if="likeList.length">
-      <van-divider class="plr-30 mt-24 fw fs-14 clr-black-85">
-        <i class="iconfont icon-xinaixin linear-color mr-8"></i>
-        {{ $t('common.mayLike') }}
-      </van-divider>
-      <div class="mlr-12 flex between flex-wrap">
-        <ProductTopBtmSingle
-          :img="{ url: '', width: '3.4rem', height: '3.4rem', loadImage: require('@/assets/images/product-bgd-170.png') }" 
-          :detail="{ desc: 'categoryItem.name', price: 49.92, rate: 2.5, volumn: 50, ellipsis: 2, country: 'Ghana' }"
-          v-for="(searchItem, searchIndex) in likeList" 
-          :key="'search-list-' + searchIndex"
-        ></ProductTopBtmSingle>
-      </div>
-    </template>
+      <!-- 可能喜欢的推荐列表展示 -->
+      <template v-if="likeList.length">
+        <van-divider class="plr-30 mt-24 fw fs-14 clr-black-85">
+          <i class="iconfont icon-xinaixin linear-color mr-8"></i>
+          {{ $t('common.mayLike') }}
+        </van-divider>
+        <div class="mlr-12 flex between flex-wrap">
+          <ProductTopBtmSingle
+            :img="{ url: '', width: '3.4rem', height: '3.4rem', loadImage: require('@/assets/images/product-bgd-170.png') }" 
+            :detail="{ desc: 'categoryItem.name', price: 49.92, rate: 2.5, volumn: 50, ellipsis: 2, country: 'Ghana' }"
+            v-for="(searchItem, searchIndex) in likeList" 
+            :key="'search-list-' + searchIndex"
+          ></ProductTopBtmSingle>
+        </div>
+      </template>
+    </van-pull-refresh>
+    
   </div>
 </template>
 
 <script>
-import { Tab, Tabs, SwipeCell, Cell, Checkbox, CheckboxGroup, CellGroup, Divider } from 'vant';
+import { Tab, Tabs, SwipeCell, Cell, Checkbox, CheckboxGroup, CellGroup, Divider, PullRefresh } from 'vant';
 import EmptyStatus from '@/components/EmptyStatus';
 import OrderSingle from '@/components/OrderSingle';
 import ProductTopBtmSingle from '@/components/ProductTopBtmSingle';
+import { storeCancelFollow } from '@/api/store';
+import { cancelAttentionGood } from '@/api/product';
 
 export default {
   middleware: 'authenticated',
@@ -144,6 +147,7 @@ export default {
     vanCheckboxGroup: CheckboxGroup,
     vanCellGroup: CellGroup,
     vanDivider: Divider,
+    vanPullRefresh: PullRefresh,
     EmptyStatus,
     OrderSingle,
     ProductTopBtmSingle
@@ -158,32 +162,51 @@ export default {
       pageNum: 1,
       pageSize: 10,
       total: 0,
-      likeList: []
+      likeList: [],
+      isLoading: false
     }
   },
   async fetch() {
     if (this.$route.query.active) this.tabActive = this.$route.query.active;
+    this.edit = false;
+    this.checkResult = [];
 
     // 获取商品列表
     const listData = this.tabActive == 0 ? await this.$api.getLikeProduct({ pageNum: this.pageNum, pageSize: this.pageSize }) : await this.$api.getLikeStoreList({ pageNum: this.pageNum, pageSize: this.pageSize }); // 获取关注商品/店铺列表
+    this.isLoading = false;
     if (listData.code != 0) return false;
-    console.log(listData)
+    
     this.list = listData.data.records; // 关注商品/店铺列表
     this.total = listData.data.total; // 商品/店铺总数
-    
   },
   activated() {
-    // 如果上次请求超过一分钟了，就再次发起请求
-    if (this.$fetchState.timestamp <= Date.now() - 60000) {
-      this.$fetch();
-    }
+    this.$fetch();
   },
   methods: {
     isTrue(val, list) { // 判断是否选中
+      if (this.checkResult.length === this.list.length && this.checkResult.length > 0) {
+        this.isAll = true;
+      } else {
+        this.isAll = false;
+      }
       return list.length > 0 && list.indexOf(val) > -1;
     },
-    onUnsubscribe() { // 取消订阅
+    onUnsubscribe(item) { // 取消订阅
+      this.$dialog.confirm({
+        message: '确定取消订阅?',
+        onfirmButtonText: this.$t('common.confirm'),
+        confirmButtonColor: '#42B7AE',
+        cancelButtonText: this.$t('common.cancel'),
+        cancelButtonColor: '#383838'
+      }).then(() => {
+        let _ajax = this.tabActive == 1 ? storeCancelFollow(item ? [item.storeId] : this.checkResult) : cancelAttentionGood(item ? [item.productId] : this.checkResult);
+      
+        _ajax.then(res => {
+          this.$fetch();
+        })
+      }).catch(() => {
 
+      })
     },
     checkAll() {
       this.isAll = !this.isAll;
@@ -194,7 +217,16 @@ export default {
         name: 'home'
       })
     },
-    getList() {
+    getList() { // 切换tab时数据要初始化
+      this.$fetch();
+    },
+    onTop(item) { // 置顶
+
+    },
+    onEdit() { // 右上角编辑
+      this.edit = this.list.length > 0 ? !this.edit : false;
+    },
+    onRefresh() { // 下拉刷新
       this.$fetch();
     }
   },

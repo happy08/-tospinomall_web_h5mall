@@ -26,10 +26,6 @@ export const actions = {
   // 数据持久化
   async nuxtServerInit ({ commit, dispatch }, { $cookies, $store, $api }) {
     
-    // 获取当前语言货币汇率
-    const rateData = await $api.getCurrentRate();
-
-    commit('SET_RATE', rateData.data);
     // const rate = $cookies.get('rate'); // 单位
     // const lang = $cookies.get('lang'); // 语言
     const authToken = $cookies.get('authToken'); // 用户token
@@ -42,5 +38,9 @@ export const actions = {
     }
     const userInfo = $cookies.get('userInfo'); // 用户信息
     const searchList = $cookies.get('searchList');
+
+    // 获取当前语言货币汇率
+    const rateData = await $api.getCurrentRate();
+    commit('SET_RATE', rateData.data);
   },
 }

@@ -3,16 +3,15 @@
   <div class="flex w-100">
     <!-- 商品图片 -->
     <!-- 商品数量大于1，展示商品的缩略图 -->
-    <div class="border">
-      <BmImage 
-        :url="image"
-        :width="img_width" 
-        :height="img_height"
-        :isLazy="isLazy"
-        :loadUrl="loadUrl"
-        :errorUrl="errorUrl"
-      />
-    </div>
+    <BmImage 
+      :url="image"
+      :width="img_width" 
+      :height="img_height"
+      :isLazy="isLazy"
+      :loadUrl="loadUrl"
+      :errorUrl="errorUrl"
+      class="flex-shrink border round-4 hidden"
+    />
     <!-- 商品详情 -->
     <div class="tl product-detail" v-if="product_num === 1">
       <p class="fs-14 black lh-20 hidden-2">{{ product_desc }}</p>
