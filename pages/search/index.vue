@@ -243,7 +243,7 @@ export default {
     delete _params.val;
 
     // 如果带着搜索的参数跳转过来的需要先获取相对应的搜索数据
-    if (this.searchVal) {
+    if (this.searchVal != '') {
       this.$store.commit('user/SET_SEARCHLIST', this.searchVal); // 搜索历史存储
       // 获取搜索列表数据
       const listData = await this.$api.getProductSearch(_params);
@@ -291,11 +291,7 @@ export default {
     }, 300);
   },
   activated() {
-    // 如果上次请求超过一分钟了，就再次发起请求
-    if (this.$fetchState.timestamp <= Date.now() - 60000) {
-      this.$fetch();
-      console.log('+++++++++++++')
-    }
+    this.$fetch();
   },
   methods: {
     deleteFn() { // 删除历史记录
@@ -303,6 +299,7 @@ export default {
         message: '确认删除全部历史记录',
       }).then(() => { // 确认删除历史记录
         this.$store.commit('user/SET_SEARCHLIST', null);
+        this.searchHistoryList = [];
       })
     },
     changeArrange() { // 切换展示样式 1列 2列

@@ -32,20 +32,20 @@
     </div>
 
     <!-- 详情 -->
-    <van-cell-group class="mt-20" :border="false">
+    <!-- <van-cell-group class="mt-20" :border="false"> -->
       <!-- 店铺星级 -->
-      <van-cell title="Star Shop" title-class="black fs-14" class="p-20">
+      <!-- <van-cell title="Star Shop" title-class="black fs-14" class="p-20">
         <template #default>
-          <van-rate class="mt-10" v-model="rate" allow-half size="0.24rem" color="#F7B500" void-color="#DDDDDD" void-icon="star" />
+          <van-rate class="mt-10" v-model="rate" readonly allow-half size="0.24rem" color="#F7B500" void-color="#DDDDDD" void-icon="star" />
         </template>
-      </van-cell>
+      </van-cell> -->
       <!-- 用户评价 -->
-      <van-cell title="User Evaluation" title-class="black fs-14" class="p-20" value="8.62 low" value-class="light-grey" />
+      <!-- <van-cell title="User Evaluation" title-class="black fs-14" class="p-20" value="8.62 low" value-class="light-grey" /> -->
       <!-- 物流绩效 -->
-      <van-cell title="Logistics performance" title-class="black fs-14" class="p-20" value="9.04 middle" value-class="light-grey" />
+      <!-- <van-cell title="Logistics performance" title-class="black fs-14" class="p-20" value="9.04 middle" value-class="light-grey" /> -->
       <!-- 售后服务 -->
-      <van-cell title="After-sales service" title-class="black fs-14" class="p-20" value="9.32 high" value-class="light-grey" />
-    </van-cell-group>
+      <!-- <van-cell title="After-sales service" title-class="black fs-14" class="p-20" value="9.32 high" value-class="light-grey" /> -->
+    <!-- </van-cell-group> -->
 
     <van-cell-group class="mt-20" :border="false">
       <!-- 开店时间 -->
@@ -59,7 +59,7 @@
     </van-cell-group>
 
     <!-- 所有商品 -->
-    <nuxt-link class="ptb-20 flex center bg-white mt-20" v-slot="{ navigate }" :to="{ name: 'cart-store-product-id', params: { id: $route.params.id } }">
+    <nuxt-link class="ptb-20 flex center bg-white mt-20" v-slot="{ navigate }" :to="{ name: 'cart-store-id', params: { id: this.$route.params.id }, query: { tabbarActive: 1, sellerId: this.$route.query.sellerId } }">
       <div @click="navigate" role="link">
         <span class="fs-14 black mr-20">All Products</span>
         <van-icon name="arrow" color="rgba(0, 0, 0, 0.45)" />

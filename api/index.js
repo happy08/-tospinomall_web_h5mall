@@ -129,6 +129,16 @@ export default ({ app }, inject) => {
           'Content-Type': 'application/x-www-form-urlencoded'
         }
       })
+    },
+    getStoreIndex(params) { // 获取店铺首页数据
+      return app.$axios({
+        url: `${url}/basics/app/api/index/findShopIndex`,
+        method: 'get',
+        params: params,
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      })
     }
   };
 

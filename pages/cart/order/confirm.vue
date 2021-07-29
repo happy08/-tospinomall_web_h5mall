@@ -7,7 +7,7 @@
       <!-- 结果提示 -->
       <div class="tc flex center">
         <!-- 成功图标 -->
-        <i class="iconfont icon-wancheng1 white fs-20"></i>
+        <BmIcon :name="'wancheng1'" :width="'0.4rem'" :height="'0.4rem'" :color="'#fff'" />
         <!-- 失败图标 -->
         <!-- <i class="iconfont icon-guanbi2 white fs-24"></i> -->
         <span class="ml-4 white fs-18">Payment successful</span>
@@ -25,7 +25,7 @@
     <!-- 可能喜欢的推荐列表展示 -->
     <div>
       <van-divider class="plr-30 mt-24 fw fs-14 clr-black-85">
-        <i class="iconfont icon-xinaixin linear-color mr-8"></i>
+        <BmIcon :name="'xinaixin'" :width="'0.4rem'" :height="'0.4rem'" :color="'#000'" class="mr-8" />
         {{ $t('common.mayLike') }}
       </van-divider>
       <div class="mlr-12 flex between flex-wrap">

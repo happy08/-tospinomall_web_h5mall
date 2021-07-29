@@ -12,7 +12,7 @@
       />
     </div>
     <van-sticky offset-top="0">
-      <div class="flex between plr-12 bg-white pt-10">
+      <div class="flex between plr-12 bg-white ptb-10 vcenter">
         <div class="flex vcenter">
           <!-- 店铺详情 -->
           <nuxt-link :to="{ name: 'cart-store-detail-id', params: { id: $route.params.id }, query: { sellerId: this.$route.query.sellerId} }" v-slot="{ navigate }" class="flex vcenter">
@@ -26,7 +26,7 @@
                 :isShow="true"
                 class="round-8 hidden"
                 :errorUrl="require('@/assets/images/product-bgd-90.png')"
-              ></BmImage>
+              />
               <!-- 店铺名、关注数 -->
               <dl class="ml-12 fm-helvetica">
                 <dt class="fs-14 fw color-23">{{ detailData.storeName }}</dt>
@@ -46,6 +46,16 @@
         </van-button>
         
       </div>
+      <van-tabs v-if="tabbarActive == 1" sticky swipeable animated color="#42B7AE" class="customs-van-tabs bg-white plr-20" v-model="productTabActive" line-height="0" line-width="0" :before-change="beforeChange">
+        <van-tab v-for="tabItem, tabIndex in tabList" :key="tabIndex">
+          <template #title="props" :class="{'flex vcenter': true}">
+            <div :class="{'flex vcenter': true}">
+              {{ tabItem }} {{ props }}
+              <BmIcon v-if="tabIndex === 2" :name="priceSortType == 0 ? 'sort-default': priceSortType == 1 ? 'sort-up' : 'sort-down'" :width="'0.4rem'" :height="'0.4rem'" />
+            </div>
+          </template>
+        </van-tab>
+      </van-tabs>
     </van-sticky>
     
 
@@ -77,7 +87,7 @@
           :errorUrl="require('@/assets/images/product-bgd-375.png')"
           :height="'3.72rem'"
           :fit="'cover'"
-        ></BmImage>
+        />
       </swiper-slide>
     </swiper> -->
 
@@ -94,7 +104,7 @@
             :width="'2.06rem'"
             :fit="'cover'"
             class="border round-4"
-          ></BmImage>
+          />
           <h4 class="hidden-1 pic-title-price__title">Apple Iphone Max Pro 12，八核</h4>
           <div class="fw fs-16 pic-title-price__price">{{ $store.state.rate.currency }}49.92</div>
         </div>
@@ -102,50 +112,138 @@
     </div> -->
     <!-- 店铺首页热图 -->
     <template v-if="tabbarActive == 0">
-      <div class="fs-0 hot-container">
-        <!-- <BmImage
-          :url="moduleItem.imageUrl"
-          :loadUrl="require('@/assets/images/product-bgd-375.png')"
-          :errorUrl="require('@/assets/images/product-bgd-375.png')"
-        />
-        <div v-for="hotItem, hotIndex in moduleItem.componentDetails" :key="'hot-picture-' + hotIndex" class="bg-white hot-container__position" :ref="'hotPosition' + moduleIndex + hotIndex" :style="hotStyle(hotItem, 'hotPosition' + moduleIndex + hotIndex, 'hotContainer' + moduleIndex)" @click="onHotDetail(hotItem)"></div> -->
+      <div v-for="(moduleItem, moduleIndex) in moduleData" :key="'module-data-' + moduleIndex">
+        <h2 class="fs-18 mlr-12 fw black pt-20 lh-20 fm-din-alternate" v-if="moduleItem.moduleTitleDisplay">{{ moduleItem.moduleTitle }}</h2>
+        <!-- 整屏轮播图 -->
+        <template v-if="moduleItem.type === 1">
+          <swiper
+            ref="swiperFullScreenRef"
+            class="mt-12 swiper home-banner-swiper"
+            :options="swiperFullScreenOption"
+            v-if="moduleItem.componentDetails.length > 0"
+          >
+            <swiper-slide 
+              class="plr-12" 
+              v-for="(slideItem, slideIndex) in moduleItem.componentDetails"
+              :key="'swiper-slide-image-' + slideIndex"
+            >
+              <BmImage
+                :url="slideItem.imageUrl"
+                :loadUrl="require('@/assets/images/product-bgd-375.png')"
+                :errorUrl="require('@/assets/images/product-bgd-375.png')"
+                :fit="'cover'"
+                :height="'3.72rem'"
+                class="round-8 hidden"
+              />
+            </swiper-slide>
+            <div class="swiper-pagination swiper-full-pagination" slot="pagination"></div>
+          </swiper>
+        </template>
+
+        <!-- 热区图片 -->
+        <template v-if="moduleItem.type === 2">
+          <div class="fs-0 hot-container" :ref="'hotContainer' + moduleIndex">
+            <BmImage
+              :url="moduleItem.imageUrl"
+              :loadUrl="require('@/assets/images/product-bgd-375.png')"
+              :errorUrl="require('@/assets/images/product-bgd-375.png')"
+            />
+            <!-- 图片坐标 -->
+            <div v-for="hotItem, hotIndex in moduleItem.componentDetails" :key="'hot-picture-' + hotIndex" class="bg-white hot-container__position" :ref="'hotPosition' + moduleIndex + hotIndex" :style="hotStyle(hotItem, 'hotPosition' + moduleIndex + hotIndex, 'hotContainer' + moduleIndex)" @click="onHotDetail(hotItem)"></div>
+          </div>
+        </template>
+        
+        <!-- 一行三列 -->
+        <div class="mlr-12 home-page__global" v-if="moduleItem.type === 3">
+          <!-- 轮播展示 -->
+          <swiper
+            ref="swiperComponentRef"
+            :class="{ 'swiper home-page__global-swiper': true, 'swiper-no-swiping' : moduleItem.componentDetails.length <= 3 }"
+            :options="{
+              ...swiperComponentOption,
+              loop: moduleItem.componentDetails.length > 3,
+              loopFillGroupWithBlank: moduleItem.componentDetails.length > 3
+            }"
+          >
+            <swiper-slide v-for="(productItem, productIndex) in moduleItem.componentDetails" :key="productIndex">
+              <!-- 图片、标题、价格 id goodsId productItem.mainPictureUrl -->
+              <nuxt-link :to="{ name: 'cart-product-id', params: { id: productItem.goodsId } }" class="block">
+                <ProductTopBtmSingle
+                  class="m-auto"
+                  :img="{ url: productItem.mainPictureUrl, width: '2.24rem', height: '1.9rem', loadImage: require('@/assets/images/product-bgd-90.png') }" 
+                  :detail="{ desc: productItem.goodTitle, price: productItem.price, ellipsis: 2 }"
+                />
+              </nuxt-link>
+            </swiper-slide>
+            <div class="swiper-pagination swiper-group-pagination" v-if="moduleItem.effect" slot="pagination"></div>
+          </swiper>
+        </div>
+
+        <!-- 一行两列 -->
+        <template v-if="moduleItem.type === 4">
+          <div class="mlr-12 mt-20 flex between">
+            <nuxt-link 
+              :to="{ name: 'cart-product-id', params: { id: productType4Item.goodsId } }"
+              class="iblock" 
+              v-for="(productType4Item, productIndex) in moduleItem.componentDetails" 
+              :key="productIndex"
+            >
+              <ProductTopBtmSingle
+                :img="{ url: productType4Item.mainPictureUrl, width: '3.4rem', height: '3.4rem', loadImage: require('@/assets/images/product-bgd-170.png') }" 
+                :detail="{ desc: productType4Item.goodTitle, price: parseFloat(productType4Item.price), rate: parseFloat(productType4Item.starLevel), volumn: parseFloat(productType4Item.salesVolume), ellipsis: 2 }"
+              />
+            </nuxt-link>
+          </div>
+        </template>
       </div>
     </template>
 
     <!-- 店铺商品列表 -->
     <template v-if="tabbarActive == 1">
-      <van-tabs sticky swipeable animated color="#42B7AE"  @change="getSearchList" class="customs-van-tabs bg-white plr-20" v-model="productTabActive" line-height="0">
-        <van-tab :title="tabItem" v-for="tabItem, tabIndex in tabList" :key="tabIndex">
-          
-        </van-tab>
-      </van-tabs>
-      <div class="flex bg-white p-20">
-        <!-- 商品图片 -->
-        <div>
+      <!-- 空列表 -->
+      <empty-status v-if="productList.length === 0" :image="require('@/assets/images/empty/order.png')" class="mlr-12" />
+      <!-- 数据列表 -->
+      <van-list
+        v-model="loading"
+        :finished="finished"
+        finished-text="Not More…"
+        @load="onLoad"
+        v-else
+      >
+        <nuxt-link
+          class="flex bg-white p-20"
+          v-for="(productItem, productIndex) in productList"
+          :key="'product-item-' + productIndex"
+          :to="{ name: 'cart-product-id', params: { id: productItem.productId } }">
+          <!-- 商品图片 -->
           <BmImage 
-            :url="require('@/assets/images/product-bgd-90.png')"
+            :url="productItem.mainPictureUrl"
             :width="'1.8rem'" 
             :height="'1.8rem'"
             :fit="'cover'"
             class="border round-4 hidden"
-          ></BmImage>
-        </div>
-        <!-- 商品详情 -->
-        <div class="ml-14 w-230">
-          <h4 class="hidden-2 black fs-14 lh-20">Women’s Handbag High Quality Pure PU Leather For Together…</h4>
-          <van-rate class="mt-10" v-model="rate" allow-half size="0.24rem" color="#F1520D" void-color="#DDDDDD" void-icon="star" />
-          <div class="flex between mt-10">
-            <div>
-              <span class="red fs-18">{{ $store.state.rate.currency }}1192.00</span>
-              <span class="fs-10 line-through bg-grey ml-8">{{ $store.state.rate.currency }}450</span>
+            :errorUrl="require('@/assets/images/product-bgd-90.png')"
+          />
+          <!-- 商品详情 -->
+          <div class="ml-14 w-230">
+            <h4 class="hidden-2 black fs-14 lh-20 fm-helvetica">{{ productItem.productTitle }}</h4>
+            <van-rate disabled class="mt-10" v-model="productItem.starLevel" allow-half size="0.24rem" color="#F1520D" void-color="#DDDDDD" void-icon="star" />
+            <div class="flex between mt-10">
+              <div>
+                <span class="red fs-18 fw"><span class="fm-menlo">{{ $store.state.rate.currency }}</span><span>{{ productItem.minPrice }}</span></span>
+                <!-- <span class="fs-10 line-through bg-grey ml-8">{{ $store.state.rate.currency }}450</span> -->
+              </div>
+              <!-- 购买 -->
+              <nuxt-link :to="{ name: 'cart-product-id', params: { id: productItem.productId } }">
+                <van-button plain class="border round-8 h-25 black">Buy</van-button>
+              </nuxt-link>
             </div>
-            <!-- 购买 -->
-            <van-button plain class="border round-8 h-25 black">Buy</van-button>
+            <!-- 商品服务与承诺因后台没有地方设置，暂时不展示 -->
+            <!-- <p class="mt-10 fs-12 light-grey">Speed logistics .Speed refund</p> -->
           </div>
-          <!-- 提示语 -->
-          <p class="mt-10 fs-12 light-grey">Speed logistics .Speed refund</p>
-        </div>
-      </div>
+        </nuxt-link>
+      </van-list>
+      
     </template>
 
     <!-- 底部标签栏 -->
@@ -167,8 +265,10 @@
 </template>
 
 <script>
-import { Tab, Tabs, Tabbar, TabbarItem, Cell, Search, Sticky, Rate } from 'vant';
+import { Tab, Tabs, Tabbar, TabbarItem, Cell, Search, Sticky, Rate, List } from 'vant';
 import { storeFollow, storeCancelFollow } from '@/api/store';
+import ProductTopBtmSingle from '@/components/ProductTopBtmSingle';
+import EmptyStatus from '@/components/EmptyStatus';
 
 export default {
   components: {
@@ -179,37 +279,84 @@ export default {
     vanCell: Cell,
     vanSearch: Search,
     vanSticky: Sticky,
-    vanRate: Rate
+    vanRate: Rate,
+    vanList: List,
+    ProductTopBtmSingle,
+    EmptyStatus
   },
   data() {
     return {
       tabActive: 0,
       tabbarActive: 0,
-      swiperFullScreenOption: {},
-      bannerList: [
-        {
-          imageUrl: require('@/assets/images/product-bgd-375.png')
+      swiperFullScreenOption: {
+        pagination: {
+          el: '.swiper-full-pagination',
+          clickable: true
+        },
+        loop: true,
+        centeredSlides: true,
+        autoplay: {
+          delay: 2500,
+          disableOnInteraction: false,
         }
-      ],
+      },
+      // bannerList: [
+      //   {
+      //     imageUrl: require('@/assets/images/product-bgd-375.png')
+      //   }
+      // ],
       detailData: { // 店铺详情
         storeLogoUrl: ''
       },
       productTabActive: 0,
-      rate: 2.5,
+      // rate: 2.5,
       tabList: ['推荐', '销量', '价格', '有货'],
+      moduleData: [],
+      swiperComponentOption: { // 一排三列 滚动
+        slidesPerView: 3,
+        slidesPerGroup: 3,
+        spaceBetween: 0,
+        pagination: {
+          el: '.swiper-group-pagination',
+          clickable: true,
+        },
+      },
+      productList: [],
+      pageIndex: 1,
+      pageSize: 10,
+      loading: false,
+      finished: false,
+      total: 0,
+      priceSortType: 0, // 价格筛选类型 0 默认未选中，1选中升序，2选中降序
+      sort: {}
     }
   },
   async fetch() {
+    if (this.$route.query.tabbarActive) this.tabbarActive = this.$route.query.tabbarActive;
     // 获取店铺详情
     const detailData = await this.$api.getStoreInfo({ sellerId: this.$route.query.sellerId, storeId: this.$route.params.id, userId: this.$store.state.user.userInfo.id });
     if (detailData.code != 0) return false;
     this.detailData = detailData.data;
+    // 店铺组件数据
+    const moduleData = await this.$api.getStoreIndex({shopId: this.$route.params.id});
+    if (moduleData.code != 0) return false;
+    this.moduleData = moduleData.data.components;
+    this.sort = {
+      shopId: this.$route.params.id, pageIndex: this.pageIndex, pageSize: this.pageSize, recommend: 1
+    }
+    // 商品列表数据
+    const listData = await this.$api.getProductSearch(this.sort);
+    if (listData.code != 0) return false;
+    this.total = listData.data.total;
+    this.productList = listData.data.items.map(item => {
+      return {
+        ...item,
+        starLevel: parseFloat(item.starLevel)
+      }
+    });
   },
   activated() {
-    // 如果上次请求超过一分钟了，就再次发起请求
-    if (this.$fetchState.timestamp <= Date.now() - 60000) {
-      this.$fetch();
-    }
+    this.$fetch();
   },
   methods: {
     onSubscribe(flag) { // 订阅/取消订阅 flag: true 订阅 false 取消订阅
@@ -223,19 +370,6 @@ export default {
         this.$router.replace('/');
       }else{
         history.back();
-      }
-    },
-    changeTabbar() { // 切换店铺tab
-      // this.$router.replace({
-      //   name: 'cart-store-product-id',
-      //   params: {
-      //     id: this.$route.params.id
-      //   }
-      // })
-    },
-    changeTab(name) { // 切换展示项
-      if (name === 'tab-1') {
-        this.changeTabbar();
       }
     },
     hotStyle(hotItem, ele, container) { // 热区图位置计算 todo
@@ -306,9 +440,76 @@ export default {
         query: _query
       })
     },
-    getSearchList() { // 获取最新数据
+    onLoad() {
+      if (this.total == this.productList.length) { // 没有下一页了
+        this.finished = true;
+        this.loading = false;
+        return false;
+      }
+      this.pageIndex += 1;
+      this.$api.getProductSearch(this.sort).then(res => { // 搜索商品列表
+        
+        this.total = res.data.total;
+        let list = res.data.items.map(item => { // 搜索商品列表
+          return {
+            ...item,
+            starLevel: parseFloat(item.starLevel)
+          }
+        })
 
+        this.productList = this.productList.concat(list);
+        
+        // 加载状态结束
+        this.loading = false;
+      });
     },
+    beforeChange(index) { // 根据条件展示排序
+      this.productTabActive = index;
+      this.pageIndex = 1;
+      if (index == 0) { // 推荐列表
+        this.sort = {
+          shopId: this.$route.params.id, pageIndex: this.pageIndex, pageSize: this.pageSize, recommend: 1
+        }
+      }
+      if (index == 1) { // 销量列表
+        this.sort = {
+          shopId: this.$route.params.id, pageIndex: this.pageIndex, pageSize: this.pageSize,
+          sortMap: {
+            sale_count: 0
+          }
+        }
+      }
+      if (index == 3) { // 有货
+        this.sort = {
+          shopId: this.$route.params.id, pageIndex: this.pageIndex, pageSize: this.pageSize,
+          available: 1
+        }
+      }
+      if (index == 2) { // 价格升降序
+        this.priceSortType = this.priceSortType == 0 ? 1 : this.priceSortType == 1 ? 2 : this.priceSortType == 2 ? 1 : 0;
+        this.sort = {
+          shopId: this.$route.params.id, pageIndex: this.pageIndex, pageSize: this.pageSize,
+          sortMap: {
+            promotion_price: this.priceSortType == 1 ? 1 : 0
+          }
+        }
+      } else {
+        this.priceSortType = 0;
+      }
+      // 获取数据
+      this.$api.getProductSearch(this.sort).then(res => { // 搜索商品列表
+        
+        this.total = res.data.total;
+        let list = res.data.items.map(item => { // 搜索商品列表
+          return {
+            ...item,
+            starLevel: parseFloat(item.starLevel)
+          }
+        })
+
+        this.productList = list;
+      });
+    }
   },
 }
 </script>

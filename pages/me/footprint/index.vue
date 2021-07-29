@@ -24,11 +24,11 @@
               <template #icon="props">
                 <BmImage
                   :url="props.checked ? require('@/assets/images/icon/choose-icon.png') : require('@/assets/images/icon/choose-default-icon.png')"
-                  :width="'0.48rem'" 
-                  :height="'0.48rem'"
+                  :width="'0.32rem'" 
+                  :height="'0.32rem'"
                   :isLazy="false"
                   :isShow="false"
-                ></BmImage>
+                />
               </template>
             </van-checkbox>
           </template>
@@ -50,7 +50,7 @@
                       :height="'0.28rem'"
                       :isLazy="false"
                       :isShow="false"
-                    ></BmImage>
+                    />
                   </BmButton>
                 </div>
 
@@ -74,11 +74,11 @@
           <template #icon>
             <BmImage
               :url="isAll ? require('@/assets/images/icon/choose-icon.png') : require('@/assets/images/icon/choose-default-icon.png')"
-              :width="'0.48rem'" 
-              :height="'0.48rem'"
+              :width="'0.32rem'" 
+              :height="'0.32rem'"
               :isLazy="false"
               :isShow="false"
-            ></BmImage>
+            />
           </template>
           <span class="ml-14 fs-14 lh-20 black">{{ $t('common.all') }}</span>
         </van-checkbox>
@@ -109,32 +109,19 @@ export default {
     OrderSingle,
     ProductTopBtmSingle
   },
-  asyncData({isDev, route, store, env, params, query, req, res, redirect, error}) {
+  data() {
     return {
-      list: [
-        {
-          id: 1,
-          img: '',
-          title: 'Microsoft official flagship store',
-          followers: '260'
-        },
-        {
-          id: 2,
-          img: '',
-          title: 'Microsoft official flagship store',
-          followers: '260'
-        },
-        {
-          id: 3,
-          img: '',
-          title: 'Microsoft official flagship store',
-          followers: '260'
-        }
-      ],
+      list: [],
       edit: false,
       checkResult: [],
       isAll: false
     }
+  },
+  async fetch() {
+
+  },
+  activated() {
+    this.$fetch();
   },
   methods: {
     isTrue(val, list) { // 判断是否选中

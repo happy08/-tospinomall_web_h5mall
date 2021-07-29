@@ -43,7 +43,7 @@
                 <!-- 左滑单元格 -->
                 <van-swipe-cell :disabled="edit">
                   <!-- 店铺的样式 -->
-                  <div class="flex pl-30 ptb-20" v-if="tabActive === 1">
+                  <div class="flex pl-30 ptb-20" v-if="tabActive === 1" @click="goStore(item)">
                     <BmImage 
                       :url="item.storeLogoUrl"
                       :width="'1.12rem'" 
@@ -61,7 +61,7 @@
 
                   <!-- 商品的样式 -->
                   <div class="pt-26 pr-20" v-if="tabActive === 0">
-                    <OrderSingle class="pl-30 pt-20" :isShowRight="false" :product_desc="item.productName" :image="item.productImg" :price="item.productPrice" />
+                    <OrderSingle class="pl-30 pt-20" :isShowRight="false" :product_desc="item.productName" :image="item.productImg" :price="item.productPrice" @onClick="goProduct(item)" />
                     <div class="flex hend">
                       <!-- 看相似 -->
                       <BmButton type="default" plain class="plr-12 round-8 h-25 mt-0">{{ $t('me.likes.lookSimilar') }}</BmButton>
@@ -228,6 +228,25 @@ export default {
     },
     onRefresh() { // 下拉刷新
       this.$fetch();
+    },
+    goStore(item) {
+      this.$router.push({
+        name: 'cart-store-id',
+        params: {
+          id: item.storeId
+        },
+        query: {
+          sellerId: item.sellerId
+        }
+      })
+    },
+    goProduct(item) {
+      this.$router.push({
+        name: 'cart-product-id',
+        params:{
+          id: item.productId
+        }
+      })
     }
   },
 }

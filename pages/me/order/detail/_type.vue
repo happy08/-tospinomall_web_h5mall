@@ -31,7 +31,7 @@
     <van-cell class="ptb-20 plr-20" :title="'Fulfillment by Tospino'" is-link title-class="fw black ml-12" :to="{ name: 'me-order-detail-logistics' }">
       <!-- 左侧图标 -->
       <template #icon>
-        <i class="iconfont icon-huochewuliu fs-24 grey-97 trans-rotate"></i>
+        <BmIcon :name="'huochewuliu'" :width="'0.48rem'" :height="'0.48rem'" :color="'#000'" />
       </template>
     </van-cell>
     

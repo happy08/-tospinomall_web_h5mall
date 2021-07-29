@@ -1,6 +1,6 @@
 <template>
   <!-- 订单列表展示组件 -->
-  <div class="flex w-100">
+  <div class="flex w-100" @click="onClick">
     <!-- 商品图片 -->
     <!-- 商品数量大于1，展示商品的缩略图 -->
     <BmImage 
@@ -75,7 +75,12 @@ export default {
       type: Boolean,
       default: true
     }
-  }
+  },
+  methods: {
+    onClick() {
+      this.$emit('onClick');
+    }
+  },
 }
 </script>
 
