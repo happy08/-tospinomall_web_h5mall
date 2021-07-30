@@ -1,10 +1,10 @@
 <template>
   <!-- 我的-设置-安全认证-重新绑定电话/邮箱 -->
   <div class="bg-grey vh-100">
-    <BmHeaderNav :left="{ isShow: true }" :title="$t('me.authentication.associatedNumber')" />
+    <BmHeaderNav :left="{ isShow: true }" :title="title" />
 
     <div class="plr-20 bg-white">
-      <h3 class="fs-16 black rebind-title">{{ $t('me.authentication.rebindPhone') }}</h3>
+      <h3 class="fs-16 black rebind-title">{{ rebindTip }}</h3>
       <!-- 邮箱绑定 -->
       <van-field
         v-model="account"
@@ -95,6 +95,23 @@ export default {
       prefixCode: ''
     }
   },
+  computed: {
+    rebindTip() {
+      return this.$route.query.changeWay === 'email' ? this.$t('me.authentication.rebindEmail') : this.$t('me.authentication.rebindPhone')
+    },
+    title() {
+      return this.$route.query.changeWay === 'email' ? this.$t('me.authentication.associatedEmail') : this.$t('me.authentication.associatedNumber')
+    }
+  },
+  beforeRouteEnter(to, from, next) { // 从绑定或修改页面进入重置值为空
+    next(vm => {
+      if (from.name === 'me-account-bind' || from.name === 'me-account-verify-code') {
+        vm.account = '';
+        vm.code = '';
+        vm.countdown = 0;
+      }
+    });
+  },
   activated() {
     // 手机号注册或者忘记密码时 需要先获取手机号前缀
     if (this.$route.query.changeWay !== 'email' || !this.$route.query.changeWay) {
@@ -117,6 +134,12 @@ export default {
         return false;
       }
       this.isCodeFlag = true;
+      // 加载图标
+      this.$toast.loading({
+        forbidClick: true,
+        loadingType: 'spinner',
+        duration: 0
+      });
       
       let _axios;
       if (this.$route.query.changeWay === 'email') { // 获取邮箱验证码

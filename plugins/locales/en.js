@@ -103,6 +103,7 @@ const en = {
       tip: 'Must be 6-20 English letters, numbers or symbols (except spaces), and at least two types of letters, numbers and punctuation marks',
       confirmPwdTitle: 'Confirm the new password',
       smsTitle: 'mobile phone verification',
+      smsEmailTitle: 'Email verification',
       emailTitle: 'Certification',
       completeVerify: 'Complete certification',
       smsReceivedTip: 'Please enter the SMS verification code received by',
@@ -111,7 +112,9 @@ const en = {
       changeResultTip: 'Password set sccessfully, Need to log in, it will automatically jump after 5 seconds',
       phoneVerifyTips: ['To ensure the security of your account, changing important information requires identity verifica-tion.', 'If you have any questions during the verification process, please contact customer service.', 'Change the bound mobile phone. If the original mobile phone is disabled and the verification code cannot be obtained, please contact customer service.'],
       associatedNumber: 'Associated number',
+      associatedEmail: 'Associated mailbox',
       rebindPhone: 'Bind mobile phone number',
+      rebindEmail: 'Bind a new mailbox',
       bindPhoneTitle: 'Binding mobile phone',
       bindPhoneDesc: 'Mobile phone number bingding successfully',
       iknow: 'I Know'

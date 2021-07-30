@@ -64,6 +64,14 @@ export default {
       newPwdType: 'password'
     }
   },
+  beforeRouteEnter(to, from, next) { // 从认证页面进入重置值为空
+    next(vm => {
+      if (from.name === 'me-account-verifymethod') {
+        vm.pwd = '';
+        vm.newPwd = '';
+      }
+    });
+  },
   methods: {
     changeType(key, val) { // 修改密码输入框状态
       this[key] = val;

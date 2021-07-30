@@ -22,9 +22,17 @@
 
     <div class="plr-20 w-100">
       <!-- 下一步 -->
-      <BmButton class="w-100 round-8 sms-btn" @click="jump">{{ $t('common.next') }}</BmButton>
+      <BmButton class="w-100 round-8 sms-btn" @click="jump" :disabled="code.length === 0">{{ $t('common.next') }}</BmButton>
       <!-- 其他认证方式 -->
       <p class="fs-14 green tc mt-24" @click="goback">{{ $t('me.authentication.otherMethod') }}</p>
+
+      <!-- 温馨提示 -->
+      <div class="fs-14 light-grey tip-container lh-20" v-if="$route.query.type && $route.query.type == 'bind'">
+        <p>{{ $t('common.tips') }}:</p>
+        <ul>
+          <li v-for="(tipItem, tipIndex) in $t('me.authentication.phoneVerifyTips')" :key="tipIndex" v-html="tipItem"></li>
+        </ul>
+      </div>
     </div>
   </div>
 </template>
@@ -49,8 +57,16 @@ export default {
   },
   computed: {
     title() {
-      return this.$route.query.changeWay === 'email' ? this.$t('me.authentication.emailTitle') : this.$t('me.authentication.smsTitle')
+      return this.$route.query.changeType === 'phone' || !this.$route.query.type ? this.$route.query.changeWay === 'email' ? this.$t('me.authentication.smsEmailTitle') : this.$t('me.authentication.smsTitle') : this.$t('me.authentication.emailTitle');
     }
+  },
+  beforeRouteEnter(to, from, next) { // 从绑定或修改页面进入重置值为空
+    next(vm => {
+      if (from.name === 'me-account-bind' || from.name === 'me-account-verifymethod') {
+        vm.code = '';
+        vm.countdown = 0;
+      }
+    });
   },
   activated() {
     this.account = this.$route.query.changeWay === 'email' ? this.$store.state.user.userInfo.email : this.$store.state.user.userInfo.phone;
@@ -61,6 +77,13 @@ export default {
         return false;
       }
       this.isCodeFlag = true;
+      
+      // 加载图标
+      this.$toast.loading({
+        forbidClick: true,
+        loadingType: 'spinner',
+        duration: 0
+      });
       
       let _axios;
       _axios = this.$route.query.changeWay === 'email' ? getCurrentCode(2) : getCurrentCode(1);
@@ -96,13 +119,13 @@ export default {
       _axios = this.$route.query.changeWay === 'email' ? checkCurrentCode({ code: this.code, type: 2 }) : checkCurrentCode({ code: this.code, type: 1 });
       
       _axios.then(() => {
-        this.isCodeFlag = false;
+        this.isNextFlag = false;
 
         if (this.$route.query.type && this.$route.query.type === 'bind') { // 绑定手机号或邮箱
           this.$router.push({
             name: 'me-account-bind-rebind',
             query: {
-              changeWay: this.$route.query.changeWay
+              changeWay: this.$route.query.changeType ? this.$route.query.changeType : this.$route.query.changeWay // 是通过该种方式修改的手机号还是邮箱
             }
           })
           return false;
@@ -115,7 +138,7 @@ export default {
           }
         })
       }).catch(() => {
-        this.isCodeFlag = false;
+        this.isNextFlag = false;
       })
       
     }
@@ -145,5 +168,13 @@ export default {
   color: #BFBFBF;
   background-color: #eee;
   border: none;
+}
+.tip-container{
+  margin-top: 70px;
+  ul>li{
+    list-style: auto;
+    list-style-position: inside;
+    line-height: 17px;
+  }
 }
 </style>

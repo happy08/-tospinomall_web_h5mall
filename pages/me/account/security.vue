@@ -25,9 +25,9 @@
         </template>
       </van-cell>
       <!-- 修改绑定手机 -->
-      <van-cell class="ptb-20 plr-20" :title="$t('me.accountSetting.bindPhone')" :value="$store.state.user.userInfo.phone" value-class="light-grey" is-link title-class="black" :to="{ name: 'me-account-bind' }" />
+      <van-cell class="ptb-20 plr-20" :title="$t('me.accountSetting.bindPhone')" :value="$store.state.user.userInfo.phone" value-class="light-grey" is-link title-class="black" :to="{ name: 'me-account-bind', query: { changeType: 'phone' } }" />
       <!-- 修改绑定邮箱 -->
-      <van-cell class="ptb-20 plr-20" :title="$t('me.accountSetting.chnageEmail')" :value="$store.state.user.userInfo.email" value-class="light-grey" is-link title-class="black" :to="{ name: $store.state.user.userInfo.email == '' ? 'me-account-bind-rebind': 'me-account-bind', query: { changeWay: 'email' } }" />
+      <van-cell class="ptb-20 plr-20" :title="$t('me.accountSetting.chnageEmail')" :value="$store.state.user.userInfo.email" value-class="light-grey" is-link title-class="black" :to="{ name: $store.state.user.userInfo.email == '' ? 'me-account-bind-rebind': 'me-account-bind', query: { changeWay: 'email', changeType: 'email' } }" />
     </div>
   </div>
 </template>
