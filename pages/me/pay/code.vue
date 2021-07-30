@@ -27,10 +27,11 @@
       <!-- 没有得到 重新发送 -->
       <div class="mt-12 flex between vcenter">
         <span class="fs-14 black">{{ $t('common.dontGet') }}</span>
-        <span class="fs-14 resend-content">{{ $t('common.resend') }}</span>
+        <span class="fs-14 resend-content" v-show="countdown > 0">{{ countdownTip }}</span>
+        <span class="fs-14 green" v-show="countdown == 0" @click="getCode">{{ $t('common.reagain') }}</span>
       </div>
       <!-- 使用当前支付密码进行身份验证 -->
-      <p class="fs-14 green mt-20 tc">{{ $t('me.pay.useCurrentPayPwd') }}</p>
+      <!-- <p class="fs-14 green mt-20 tc">{{ $t('me.pay.useCurrentPayPwd') }}</p> -->
       <div class="fs-14 light-grey mt-16">
         <p>{{ $t('me.pay.warnTip') }}:</p>
         <ul>
@@ -43,6 +44,7 @@
 
 <script>
 import { PasswordInput, NumberKeyboard } from 'vant';
+import { getCurrentCode, checkCurrentCode } from '@/api/user';
 
 export default {
   middleware: 'authenticated',
@@ -53,12 +55,70 @@ export default {
   data() {
     return {
       value: '',
-      showKeyboard: false
+      showKeyboard: false,
+      countdown: 0
     }
+  },
+  computed: {
+    countdownTip() {
+      return this.$t('common.resend').split('100s')[0] + ' ' + this.countdown + 's';
+    }
+  },
+  beforeRouteEnter(to, from, next) { // 从绑定或修改页面进入重置值为空
+    next(vm => {
+      if (from.name === 'me-account-verifymethod') {
+        vm.value = '';
+        vm.countdown = 0;
+      }
+    });
+  },
+  activated() {
+    if (this.countdown > 0) return false;
+
+    this.getCode();
   },
   methods: {
     onInput() { // 监听数字输入
+      if (this.value.length >= 5) { // 校验验证码，正确跳转到设置支付密码页面
+        setTimeout(() => {
+          let _axios;
+          _axios = this.$route.query.changeWay === 'email' ? checkCurrentCode({ code: this.value, type: 2 }) : checkCurrentCode({ code: this.value, type: 1 });
+          _axios.then(res => {
+            if (res.code != 0) return false;
 
+            this.$router.push({
+              name: 'me-pay-changePwd',
+              query: {
+                code: this.value,
+                changeWay: this.$route.query.changeWay === 'email' ? 'email' : 'phone'
+              }
+            })
+          })
+        }, 100);
+      }
+    },
+    getCode() { // 获取验证码
+      // 加载图标
+      this.$toast.loading({
+        forbidClick: true,
+        loadingType: 'spinner',
+        duration: 0
+      });
+
+      let _axios;
+      _axios = this.$route.query.changeWay === 'email' ? getCurrentCode(2) : getCurrentCode(1);
+      // 接口返回操作
+      _axios.then(res => {
+        this.$toast(res.data); // 提示验证码
+        this.countdown = 120; // 设置倒计时120s
+        let timer = setInterval(() => {
+          if (this.countdown === 0) {
+            clearInterval(timer);
+            return false;
+          }
+          this.countdown --;
+        }, 1000);
+      })
     }
   },
 }

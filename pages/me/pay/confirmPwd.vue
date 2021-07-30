@@ -47,6 +47,7 @@
 
 <script>
 import { PasswordInput, NumberKeyboard } from 'vant';
+import { firstSetPayPwd, updatePayPwd } from '@/api/pay';
 
 export default {
   middleware: 'authenticated',
@@ -57,10 +58,21 @@ export default {
   data() {
     return {
       password: '',
-      showKeyboard: false,
+      showKeyboard: true,
       errorInfo: '',
       isFirstPwd: true // 是不是首次设置密码
     }
+  },
+  beforeRouteEnter(to, from, next) { // 从初始页面进入重置值为空
+    next(vm => {
+      if (from.name === 'me-pay-changePwd') {
+        vm.password = '';
+        vm.errorInfo = '';
+      }
+    });
+  },
+  activated() {
+    this.showKeyboard = true;
   },
   methods: {
     onInput() { // 点击按键时触发
@@ -70,9 +82,32 @@ export default {
             this.errorInfo = this.$t('me.pay.pwdError');
             return false;
           }
-          // 密码正确提交成功跳转到成功结果页面
-          this.$router.push({
-            name: 'me-pay-result'
+          
+          // this.$store.state.user.userInfo.payPassword == '' 首次设置密码
+          let _data;
+          if (this.$store.state.user.userInfo.payPassword == '') { // 首次设置密码
+            _data = {
+              payPassword: this.password, 
+              repeatPayPassword: this.password
+            }
+          } else {
+            _data = {
+              newPayPassword: this.password
+            }
+            if (this.$route.query.payPwd) _data.oldPayPassword = this.$route.query.payPwd; // 就支付密码
+            if (this.$route.query.changeWay) _data.type = this.$route.query.changeWay == 'email' ? 2 : 1; // 验证方式
+            if (this.$route.query.code) _data.code = this.$route.query.code; // 验证码
+          }
+
+          let _ajax = this.$store.state.user.userInfo.payPassword == '' ? firstSetPayPwd(_data) : updatePayPwd(_data);
+          
+          _ajax.then(res => {
+            if (res.code != 0) return false;
+
+            // 密码正确提交成功跳转到成功结果页面
+            this.$router.push({
+              name: 'me-pay-result'
+            })
           })
         }, 100);
       }

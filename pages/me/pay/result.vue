@@ -22,7 +22,9 @@ export default {
   middleware: 'authenticated',
   methods: {
     onConfirm() {
-
+      this.$router.push({
+        name: 'me-pay'
+      })
     }
   }
 }

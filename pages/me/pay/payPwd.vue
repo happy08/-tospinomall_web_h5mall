@@ -1,12 +1,12 @@
 <template>
-  <!-- 我的-设置-支付设置-设置/修改支付密码 -->
+  <!-- 支付密码验证 -->
   <div class="bg-grey vh-100">
-    <BmHeaderNav :left="{ isShow: true }" :title="$t('me.pay.paymentPwd')" />
+    <BmHeaderNav :left="{ isShow: true }" :title="'支付密码'" />
 
     <!-- 设置密码 -->
     <div class="mlr-12 payment-container">
       <!-- 首次设置输入密码提示 -->
-      <p class="fs-18 black tc">{{ $t('me.pay.firstSetPwd') }}</p>
+      <p class="fs-18 black tc">请输入支付密码</p>
       <!-- 密码输入框 -->
       <van-password-input
         :value="value"
@@ -36,6 +36,7 @@
 
 <script>
 import { PasswordInput, NumberKeyboard } from 'vant';
+import { checkPayPwd } from '@/api/pay';
 
 export default {
   middleware: 'authenticated',
@@ -61,23 +62,24 @@ export default {
   },
   methods: {
     onInput() { // 点击按键时触发
-      if (this.value.length >= 5) { // 输入密码长度等于6时说明该进行下一步确认密码
-        setTimeout(() => {
-          let _query = {
-            pwd: this.value
-          }
-          if (this.$route.query.payPwd) { // 旧的支付密码
-            _query.payPwd = this.$route.query.payPwd;
-          }
-          if (this.$route.query.code) { // 验证码
-            _query.code = this.$route.query.code;
-          }
-          if (this.$route.query.changeWay) { // 验证方式
-            _query.changeWay = this.$route.query.changeWay;
-          }
-          this.$router.push({
-            name: 'me-pay-confirmPwd',
-            query: _query
+      if (this.value.length >= 5) { // 输入密码长度等于6时说明该进行下一步校验支付密码
+        console.log(this.value)
+        
+        setTimeout(() => { // 得到数据有延迟
+          checkPayPwd(this.value).then(res => {
+            if (res.code != 0) return false;
+
+            if (!res.data) {
+              this.$toast.fail('支付密码错误');
+              return false;
+            }
+
+            this.$router.push({ // 校验之后跳转到设置密码页面
+              name: 'me-pay-changePwd',
+              query: {
+                payPwd: this.value
+              }
+            })
           })
         }, 100);
       }

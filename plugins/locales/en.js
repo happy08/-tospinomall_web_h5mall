@@ -27,6 +27,7 @@ const en = {
     no: 'No',
     dontGet: 'Don’t get',
     resend: 'Resend after 100s',
+    reagain: 'ReAgain',
     noRecord: 'No Record',
     mayLike: 'You May Also Like',
     product: 'Product',
