@@ -11,10 +11,10 @@
           :placeholder="$t('login.enterEmail')"
           class="field-container phone-code-field"
           type="email"
-          v-if="$route.query.changeWay === 'email'" 
+          v-if="isType === 'email'" 
         />
         <!-- 手机号 --> 
-        <template v-else>
+        <div v-else>
           <van-field
             v-model="account"
             :placeholder="$t('login.phoneNumber')"
@@ -38,7 +38,7 @@
               @confirm="onConfirm"
             />
           </van-popup>
-        </template>
+        </div>
         <!-- 验证码 -->
         <van-field
           v-model="code"
@@ -65,36 +65,35 @@
         <div class="flex login-page__btm--concat">
           <!-- facebook -->
           <a href="#">
-            <BmIcon :name="'facebook-icon'" :width="'0.64rem'" :height="'0.64rem'"></BmIcon>
+            <BmIcon :name="'facebook-icon'" :width="'0.64rem'" :height="'0.64rem'" />
           </a>
           <!-- 电话 -->
           <a href="#">
-            <BmIcon :name="'phone-icon'" :width="'0.64rem'" :height="'0.64rem'"></BmIcon>
+            <BmIcon :name="'phone-icon'" :width="'0.64rem'" :height="'0.64rem'" />
           </a>
           <!-- twitter -->
           <a href="#">
-            <BmIcon :name="'twitter-icon'" :width="'0.64rem'" :height="'0.64rem'"></BmIcon>
+            <BmIcon :name="'twitter-icon'" :width="'0.64rem'" :height="'0.64rem'" />
           </a>
           <!-- google -->
           <a href="#">
-            <BmIcon :name="'google-icon'" :width="'0.64rem'" :height="'0.64rem'"></BmIcon>
+            <BmIcon :name="'google-icon'" :width="'0.64rem'" :height="'0.64rem'" />
           </a>
           <!-- 微信 -->
           <a href="#">
-            <BmIcon :name="'wechat-icon'" :width="'0.64rem'" :height="'0.64rem'"></BmIcon>
+            <BmIcon :name="'wechat-icon'" :width="'0.64rem'" :height="'0.64rem'" />
           </a>
           <!-- email -->
           <nuxt-link
             v-if="$route.query.changeWay === 'phone' || !$route.query.changeWay" 
             :to="{ name: 'register', query: { type: $route.query.type === 'forgot' ? 'forgot': 'phone', changeWay: 'email' } }"
           >
-            <BmIcon :name="'email-icon'" :width="'0.64rem'" :height="'0.64rem'"></BmIcon>
+            <BmIcon :name="'email-icon'" :width="'0.64rem'" :height="'0.64rem'" />
           </nuxt-link>
           <!-- 手机 -->
-          <nuxt-link v-if="$route.query.changeWay === 'email'" :to="{ name: 'register', query: { type: $route.query.type === 'forgot' ? 'forgot': 'phone' } }">
-            <BmIcon :name="'cellphone'" :width="'0.64rem'" :height="'0.64rem'"></BmIcon>
+          <nuxt-link v-if="$route.query.changeWay === 'email'" :to="{ name: 'register', query: { type: $route.query.type === 'forgot' ? 'forgot': 'phone', changeWay: 'phone' } }">
+            <BmIcon :name="'cellphone'" :width="'0.64rem'" :height="'0.64rem'" />
           </nuxt-link>
-          
         </div>
         <p class="fs-14 tc mt-20 lh-20 login-page__btm--service">By loging in,you agree to <nuxt-link :to="{ name: 'services-register' }">Tospino's Terms of Service</nuxt-link> and <nuxt-link :to="{ name: 'services-privacy' }">Privacy Policy</nuxt-link></p>
       </div>
@@ -122,11 +121,13 @@ export default {
       prefixCode: '',
       countdown: 0, // 120
       isCodeFlag: false,
-      isNextFlag: false
+      isNextFlag: false,
+      isType: ''
     }
   },
   watch: {
     "$route"(e) {
+      this.isType = e.query.changeWay || '';
       if (e.query.changeWay !== 'email' || !e.query.changeWay) {
         this.getPhonePrefix()
       }
@@ -137,8 +138,9 @@ export default {
       return this.$route.query.type === 'forgot' ? this.$t('forgot.title') : this.$t('register.register');
     }
   },
-  created() {
+  activated() {
     // 手机号注册或者忘记密码时 需要先获取手机号前缀
+    this.isType = this.$route.query.changeWay || '';
     if (this.$route.query.changeWay !== 'email' || !this.$route.query.changeWay) {
       this.getPhonePrefix()
     }

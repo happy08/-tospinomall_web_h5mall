@@ -80,31 +80,31 @@
         <div class="flex login-page__btm--concat">
           <!-- facebook -->
           <a href="#">
-            <BmIcon :name="'facebook-icon'" :width="'0.64rem'" :height="'0.64rem'"></BmIcon>
+            <BmIcon :name="'facebook-icon'" :width="'0.64rem'" :height="'0.64rem'" />
           </a>
           <!-- 电话 -->
           <a href="#">
-            <BmIcon :name="'phone-icon'" :width="'0.64rem'" :height="'0.64rem'"></BmIcon>
+            <BmIcon :name="'phone-icon'" :width="'0.64rem'" :height="'0.64rem'" />
           </a>
           <!-- twitter -->
           <a href="#">
-            <BmIcon :name="'twitter-icon'" :width="'0.64rem'" :height="'0.64rem'"></BmIcon>
+            <BmIcon :name="'twitter-icon'" :width="'0.64rem'" :height="'0.64rem'" />
           </a>
           <!-- google -->
           <a href="#">
-            <BmIcon :name="'google-icon'" :width="'0.64rem'" :height="'0.64rem'"></BmIcon>
+            <BmIcon :name="'google-icon'" :width="'0.64rem'" :height="'0.64rem'" />
           </a>
           <!-- 微信 -->
           <a href="#">
-            <BmIcon :name="'wechat-icon'" :width="'0.64rem'" :height="'0.64rem'"></BmIcon>
+            <BmIcon :name="'wechat-icon'" :width="'0.64rem'" :height="'0.64rem'" />
           </a>
           <!-- email -->
           <nuxt-link :to="{ name: 'login-code', query: { changeWay: 'email' } }" replace v-if="this.$route.query.changeWay !== 'email'">
-            <BmIcon :name="'email-icon'" :width="'0.64rem'" :height="'0.64rem'"></BmIcon>
+            <BmIcon :name="'email-icon'" :width="'0.64rem'" :height="'0.64rem'" />
           </nuxt-link>
           <!-- 手机 -->
           <nuxt-link :to="{ name: 'login-code' }" replace v-if="this.$route.query.changeWay">
-            <BmIcon :name="'cellphone'" :width="'0.64rem'" :height="'0.64rem'"></BmIcon>
+            <BmIcon :name="'cellphone'" :width="'0.64rem'" :height="'0.64rem'" />
           </nuxt-link>
         </div>
         <p class="fs-14 tc mt-20 lh-20 login-page__btm--service">By loging in,you agree to <nuxt-link :to="{ name: 'services-register' }">Tospino's Terms of Service</nuxt-link> and <nuxt-link :to="{ name: 'services-privacy' }">Privacy Policy</nuxt-link></p>
@@ -206,8 +206,9 @@ export default {
       authCodeLogin({
         code: this.code, 
         mobile: this.$route.query.changeWay === 'email' ? this.account : this.prefixCode.split('+')[1] + this.account, 
-        userType: 'buyer'
+        // userType: 'buyer'
       }).then(res => {
+        if (res.code != 0) return false;
         this.$store.commit('user/SET_TOKEN', res.data.token_type + ' ' + res.data.access_token);
         // 获取用户信息
         this.$store.dispatch('user/GetUserInfo', res.data.token_type + ' ' + res.data.access_token);
@@ -217,7 +218,6 @@ export default {
             name: 'home'
           })
         }, 300);
-        
       })
     },
     // changeLang(lang) { // 切换语言

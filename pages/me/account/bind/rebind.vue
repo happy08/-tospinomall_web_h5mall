@@ -56,7 +56,7 @@
 
     <div class="plr-20 w-100">
       <!-- 下一步 -->
-      <BmButton class="w-100 round-8 sms-btn" @click="jump">{{ $t('common.next') }}</BmButton>
+      <BmButton class="w-100 round-8 sms-btn" @click="jump" :disabled="account.length === 0 || code.length === 0">{{ $t('common.next') }}</BmButton>
       <!-- 其他认证方式 -->
       <p class="fs-14 green tc mt-24" @click="goback">{{ $t('me.authentication.otherMethod') }}</p>
 
@@ -74,6 +74,7 @@
 <script>
 import { Field, Divider, Picker, Popup } from 'vant';
 import { getPhonePrefix, getPhoneCode, checkPhoneCode, getEmailCode, checkEmailCode } from '@/api/login';
+import { updateUserInfo } from '@/api/user';
 
 export default {
   middleware: 'authenticated',
@@ -94,7 +95,7 @@ export default {
       prefixCode: ''
     }
   },
-  created() {
+  activated() {
     // 手机号注册或者忘记密码时 需要先获取手机号前缀
     if (this.$route.query.changeWay !== 'email' || !this.$route.query.changeWay) {
       this.getPhonePrefix()
@@ -142,11 +143,36 @@ export default {
     goback() { // 返回上一级目录
       this.$router.replace('/me/account/bind');
     },
-    jump() { // 验证手机/邮箱号码，成功后跳转到重新绑定结果展示页面
-      this.$router.push({
-        name: 'me-account-bind-result'
+    jump() { // 验证手机/邮箱号码，去绑定成功后跳转到重新绑定结果展示页面
+      if (this.isNextFlag) {
+        return false;
+      }
+      this.isNextFlag = true;
+
+      let _axios;
+      if (this.$route.query.changeWay === 'email') { // 校验邮箱验证码
+        _axios = checkEmailCode({ code: this.code, email: this.account, userType: 'buyer' });
+      } else { // 校验手机验证码
+        _axios = checkPhoneCode({ code: this.code, phone: this.account, phonePrefix: this.prefixCode.split('+')[1], userType: 'buyer' });
+      }
+
+      _axios.then((res) => {
+        this.isNextFlag = false;
+        if (res.code != 0) return false;
+        // 校验成功之后提交修改
+        let _userinfoAjax = this.$route.query.changeWay === 'email' ? updateUserInfo({ email: this.account, code: this.code }) : updateUserInfo({ phone: this.account, phonePrefix: this.prefixCode.split('+')[1], code: this.code });
+        _userinfoAjax.then(res => {
+          this.$store.commit('user/SET_USERINFO', res.data); // 修改本地用户信息
+          this.$router.push({
+            name: 'me-account-bind-result'
+          })
+        })
+
+      }).catch(() => {
+        this.isNextFlag = false;
       })
-    }
+    },
+
   },
 }
 </script>

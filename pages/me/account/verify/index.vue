@@ -21,18 +21,18 @@
         </template>
       </van-field>
       <van-field
-        v-model="confirmPwd"
+        v-model="newPwd"
         center
         clearable
         :placeholder="$t('me.authentication.pwdPlaceholder')"
-        :type="confirmPwdType"
+        :type="newPwdType"
         class="field-container"
       >
         <template #button>
           <!-- 睁眼 -->
-          <van-icon v-if="confirmPwdType === 'text'" :name="require('@/assets/images/icon/eye-o.png')" size="24" color="#666" @click="changeType('confirmPwdType', 'password')" />
+          <van-icon v-if="newPwdType === 'text'" :name="require('@/assets/images/icon/eye-o.png')" size="24" color="#666" @click="changeType('newPwdType', 'password')" />
           <!-- 闭眼 -->
-          <van-icon v-else :name="require('@/assets/images/icon/eye-close.png')" size="24" color="#666" @click="changeType('confirmPwdType', 'text')" />
+          <van-icon v-else :name="require('@/assets/images/icon/eye-close.png')" size="24" color="#666" @click="changeType('newPwdType', 'text')" />
         </template>
       </van-field>
     </div>
@@ -40,7 +40,7 @@
     <div class="plr-20 w-100 mt-14">
       <p class="fs-14">{{ $t('me.authentication.tip') }}</p>
       <!-- 下一步 -->
-      <BmButton class="w-100 round-8 authentication-btn" @click="jump">{{ $t('common.next') }}</BmButton>
+      <BmButton class="w-100 round-8 authentication-btn" @click="jump" :disabled="pwd.length < 6 || pwd.length > 20 || newPwd.length < 6 || newPwd.length > 20">{{ $t('common.next') }}</BmButton>
       <!-- 其他认证方式 -->
       <p class="fs-14 green tc mt-20" @click="goback">{{ $t('me.authentication.otherMethod') }}</p>
     </div>
@@ -49,6 +49,7 @@
 
 <script>
 import { Field } from 'vant';
+import { checkPassword } from '@/api/user';
 
 export default {
   middleware: 'authenticated',
@@ -58,9 +59,9 @@ export default {
   data() {
     return {
       pwd: '',
-      confirmPwd: '',
+      newPwd: '',
       pwdType: 'password',
-      confirmPwdType: 'password'
+      newPwdType: 'password'
     }
   },
   methods: {
@@ -75,10 +76,26 @@ export default {
         history.back();
       }
     },
-    jump() { // 跳转到实用密码验证-请确认新密码页面
-      this.$router.push({
-        name: 'me-account-verify-verifypwd'
+    jump() { // 校验登录密码，成功之后跳转到确认新密码页面
+      checkPassword(this.pwd).then(res => {
+        if (res.code != 0) return false;
+
+        if (!res.data) {
+          this.$toast.fail('当前密码错误');
+          return false;
+        }
+
+        this.newPwd = '';
+        this.pwd = '';
+        this.$router.push({
+          name: 'me-account-verify-verifypwd',
+          query: {
+            newPassword: this.newPwd,
+            oldPassword: this.pwd
+          }
+        })
       })
+      
     }
   },
 }

@@ -1,7 +1,7 @@
 <template>
   <!-- 我的-设置-安全认证-修改密码-短信/邮箱验证 -->
   <div class="bg-grey vh-100">
-    <BmHeaderNav :left="{ isShow: true }" :title="$t('me.authentication.smsTitle')" />
+    <BmHeaderNav :left="{ isShow: true }" :title="title" />
 
     <div class="bg-white pt-20 plr-20">
       <p class="fs-16 black">{{ $t('me.authentication.completeVerify') }}</p>
@@ -31,6 +31,7 @@
 
 <script>
 import { Field } from 'vant';
+import { getCurrentCode, checkCurrentCode } from '@/api/user';
 
 export default {
   middleware: 'authenticated',
@@ -39,17 +40,44 @@ export default {
   },
   data() {
     return {
-      account: '139****6474',
+      account: '',
       code: '',
-      countdown: 0
+      countdown: 0,
+      isCodeFlag: false,
+      isNextFlag: false
     }
   },
-  created() {
+  computed: {
+    title() {
+      return this.$route.query.changeWay === 'email' ? this.$t('me.authentication.emailTitle') : this.$t('me.authentication.smsTitle')
+    }
+  },
+  activated() {
     this.account = this.$route.query.changeWay === 'email' ? this.$store.state.user.userInfo.email : this.$store.state.user.userInfo.phone;
   },
   methods: {
     sendCode() { // 发送验证码
-      // this.$route.query.changeWay === 'email' // 邮箱
+      if (this.isCodeFlag) {
+        return false;
+      }
+      this.isCodeFlag = true;
+      
+      let _axios;
+      _axios = this.$route.query.changeWay === 'email' ? getCurrentCode(2) : getCurrentCode(1);
+      _axios.then(res => {
+        this.isCodeFlag = false;
+        this.$toast(res.data); // 提示验证码
+        this.countdown = 120; // 设置倒计时120s
+        let timer = setInterval(() => {
+          if (this.countdown === 0) {
+            clearInterval(timer);
+            return false;
+          }
+          this.countdown --;
+        }, 1000);
+      }).catch(() => {
+        this.isCodeFlag = false;
+      })
     },
     goback() { // 返回上一级目录
       if(window.history.length < 2){ //解决部分机型拿不到history
@@ -58,10 +86,38 @@ export default {
         history.back();
       }
     },
-    jump() { // 跳转到实用密码验证-请确认新密码页面
-      this.$router.push({
-        name: 'me-account-verify-verifypwd'
+    jump() { // 校验验证码是否正确 跳转到确认新密码页面
+      if (this.isNextFlag) {
+        return false;
+      }
+      this.isNextFlag = true;
+
+      let _axios;
+      _axios = this.$route.query.changeWay === 'email' ? checkCurrentCode({ code: this.code, type: 2 }) : checkCurrentCode({ code: this.code, type: 1 });
+      
+      _axios.then(() => {
+        this.isCodeFlag = false;
+
+        if (this.$route.query.type && this.$route.query.type === 'bind') { // 绑定手机号或邮箱
+          this.$router.push({
+            name: 'me-account-bind-rebind',
+            query: {
+              changeWay: this.$route.query.changeWay
+            }
+          })
+          return false;
+        }
+        // 修改密码
+        this.$router.push({
+          name: 'me-account-verify-verifypwd',
+          query: {
+            code: this.code
+          }
+        })
+      }).catch(() => {
+        this.isCodeFlag = false;
       })
+      
     }
   },
 }

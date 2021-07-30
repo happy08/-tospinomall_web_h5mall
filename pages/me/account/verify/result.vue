@@ -7,7 +7,7 @@
       <van-icon name="checked" color="#52C41A" size="64" />
       <p class="fs-18 fw black result-page__container--title">{{ $t('me.authentication.changeResultTitle') }}</p>
       <!-- 修改成功提示语 -->
-      <p class="light-grey fs-14 mt-12 result-page__container--tip">{{ $t('me.authentication.changeResultTip') }}</p>
+      <p class="light-grey fs-14 mt-12 result-page__container--tip">{{ resultTip }}</p>
       <van-button
         class="mt-60 btn_h48 round-8 fw fs-16 w-100 result-page__btn"
         color="linear-gradient(270deg, #3EB5AE 0%, #70CEB6 100%)"
@@ -20,7 +20,28 @@
 
 <script>
 export default {
-  middleware: 'authenticated',
+  data() {
+    return {
+      countDown: 5
+    }
+  },
+  computed: {
+    resultTip() {
+      return this.$t('me.authentication.changeResultTip').split('5')[0] + ' ' + this.countDown + ' ' + this.$t('me.authentication.changeResultTip').split('5')[1];
+    } 
+  },
+  mounted() {
+    let timer = setInterval(() => {
+      if (this.countDown <= 0) {
+        clearInterval(timer);
+        this.$router.push({
+          name: 'login'
+        })
+        return false;
+      }
+      this.countDown --;
+    }, 1000);
+  },
   methods: {
     loginClick() { // 点击登录 
       this.$router.push({

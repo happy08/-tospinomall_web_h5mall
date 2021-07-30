@@ -24,7 +24,7 @@ export const mutations = {
 
 export const actions = {
   // 数据持久化
-  async nuxtServerInit ({ commit }, { $cookies, $store, $api }) {
+  async nuxtServerInit ({ commit }, { $cookies, $api }) {
     
     // const rate = $cookies.get('rate'); // 单位
     // const lang = $cookies.get('lang'); // 语言

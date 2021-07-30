@@ -1,7 +1,6 @@
 import request from './request';
-
 import qs from 'qs';
-// import { encrypt } from './cryptoAES'; // 加密解密
+import { encrypt } from './cryptoAES'; // 加密解密
 
 /**
  * 获取用户信息
@@ -38,5 +37,58 @@ export function getPicUrl(data) {
     headers: {
       'Content-Type': 'form-data'
     }
+  })
+}
+
+/**
+ * 修改密码
+ */
+export function updatePassword(data) {
+  return request({
+    url: '/api/admin/ums/buyer/updatePassword',
+    method: 'post',
+    data: qs.stringify({ ...data, newPassword: encrypt(data.newPassword), oldPassword: encrypt(data.oldPassword) })
+  })
+}
+
+/**
+ * 校验登录密码
+ */
+export function checkPassword(password) {
+  return request({
+    url: '/api/admin/ums/buyer/checkPassword',
+    method: 'post',
+    data: qs.stringify({ password: encrypt(password) })
+  })
+}
+
+/**
+ * 获取当前登录人的手机或邮箱验证码
+ */
+export function getCurrentCode(type) {
+  return request({
+    url: '/api/admin/ums/checkcode/getCurrentPhoneCode',
+    method: 'get',
+    params: {
+      type: type,
+      userType: 'buyer'
+    },
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
+  })
+}
+
+/**
+ * 校验当前登录人的手机或邮箱验证码
+ */
+export function checkCurrentCode(data) {
+  return request({
+    url: '/api/admin/ums/checkcode/checkCurrentPhoneOrEmail',
+    method: 'post',
+    data: qs.stringify({
+      ...data,
+      userType: 'buyer'
+    })
   })
 }

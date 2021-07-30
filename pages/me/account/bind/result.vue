@@ -29,7 +29,9 @@ export default {
       })
     },
     onConfirm() { // 点击i know的操作
-      
+      this.$router.push({
+        name: 'me-account-security'
+      })
     }
   }
 }

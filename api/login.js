@@ -2,6 +2,7 @@ import request from './request';
 import qs from 'qs';
 import { encrypt } from './cryptoAES'; // 加密解密
 import _i18n from '@/plugins/vue-i18n';
+import { getCookie } from './utils';
 
 // 前端做了api前缀处理代理，所以所有的接口都需要加上前缀/api才可以和设置匹配, post请求需要将参数转化为字符串
 
@@ -44,7 +45,10 @@ export function getPhoneCode(params) {
   return request({
     url: '/api/admin/ums/checkcode/getEmailCode',
     method: 'get',
-    params
+    params: params,
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
   })
 }
 
@@ -74,15 +78,15 @@ export function buyerRegister(params) { // 买家用户注册
  * 账号登录
  */
 export function authLogin(params) { // 账号登录
+  console.log(params)
   return request({
     url: '/api/auth/oauth/token',
     method: 'post',
     data: qs.stringify({ ...params, password: encrypt(params.password) }),
     headers: {
-      Authorization: 'Basic YnV5ZXI6YnV5ZXI=',
       clientType: 'web',
       version: '1.0.0',
-      language: VueI18n.locale
+      language: getCookie('lang')
     }
   })
 }
@@ -91,18 +95,14 @@ export function authLogin(params) { // 账号登录
  * 手机/邮箱 验证码登录
  */
 export function authCodeLogin(params) {
-  console.log(_i18n())
-  console.log(_i18n().locale)
-  return false
   return request({
     url: '/api/auth/mobile/token/sms',
     method: 'post',
     data: qs.stringify({ grant_type: 'mobile', ...params }),
     headers: {
-      Authorization: 'Basic YnV5ZXI6YnV5ZXI=',
       clientType: 'web',
       version: '1.0.0',
-      language: VueI18n.locale
+      language: getCookie('lang')
     }
   })
 }
@@ -122,13 +122,11 @@ export function forgetPwd(params) {
  * 退出
  */
 export function logout() {
-  // const _local = JSON.parse(localStorage.getItem('b2c-store'));
   return request({
     url: '/api/auth/token/logout',
     method: 'delete',
     headers: {
-      // Authorization: 'Basic ' + _local.user.token
-      Authorization: 'Basic ' + $cookies('authToken')
+      Authorization: getCookie('authToken')
     }
   })
 }

@@ -2,6 +2,7 @@ import * as axios from 'axios';
 import { Toast } from 'vant';
 import { url } from './config'; // 导入配置域名
 import { state, mutations } from '@/store/user';
+import { getCookie } from './utils';
 
 const service = axios.create({
   baseURL: url,
@@ -63,17 +64,6 @@ const tip = msg => {
   }
 };
 
-// 获取cookie中的数据
-const getCookie = (cname) => {
-  var name = cname + '=';
-  var ca = document.cookie.split(';');
-  for(var i=0; i<ca.length; i++) 
-  {
-    var c = ca[i].trim();
-    if (c.indexOf(name)==0) return c.substring(name.length,c.length);
-  }
-  return '';
-}
 // 设置cookie的值
 // const setCookie = (cname,cvalue,exdays) => {
 //   var d = new Date();
@@ -86,9 +76,9 @@ const getCookie = (cname) => {
 service.interceptors.request.use(config => {
   config.headers['Authorization'] = 'Basic YnV5ZXI6YnV5ZXI=';
   console.log('线下请求')
+  console.log(getCookie('authToken') != 'null')
   if (getCookie('authToken') != 'null') { // 已登录需要改变头部token
-    console.log('-----------')
-    config.headers['Authorization'] = decodeURIComponent(getCookie('authToken'));
+    config.headers['Authorization'] = getCookie('authToken');
   }
   
   if (config.method === 'post') {
@@ -109,6 +99,7 @@ service.interceptors.response.use(response => { // 成功
       //0 数据成功
       return response.data; //Promise.resolve(res.data);
     } else if (response.data.code === 10401) { // 用户凭证已过期,跳转到登录页面
+      tip(response.data.msg);
       mutations.SET_TOKEN(state, null);
       // location.replace('/login'); // 因为有些页面未登录的情况下可看，故不在此处跳转登录页面，而在页面中进行判断
       return response.data;

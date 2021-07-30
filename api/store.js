@@ -1,5 +1,5 @@
 import request from './request';
-import qs from 'qs';
+// import qs from 'qs';
 
 /**
  * 关注店铺

@@ -1,32 +1,33 @@
 <template>
   <!-- 我的-设置-账户安全 -->
   <div>
-    <BmHeaderNav :left="{ isShow: true }" :title="$t('me.accountSetting.securityTitle')" />
+    <BmHeaderNav :left="{ isShow: true, url: '/me/account' }" :title="$t('me.accountSetting.securityTitle')" />
     
     <!-- 欢迎用户语 -->
     <div class="bg-green-linear plr-20 ptb-16 flex vcenter">
       <BmImage 
-        :url="require('@/assets/images/icon/user-icon.png')"
+        :url="$store.state.user.userInfo.headPictureUrl"
         :width="'0.8rem'" 
         :height="'0.8rem'"
         :isLazy="false"
-        :isShow="false"
+        :isShow="true"
         class="mr-12"
+        :errorUrl="require('@/assets/images/icon/user-icon.png')"
       />
-      <p class="white">{{ $store.state.user.name }}{{ $t('me.accountSetting.securityWelcome') }}</p>
+      <p class="white">{{ $store.state.user.userInfo.nickname }}{{ $t('me.accountSetting.securityWelcome') }}</p>
     </div>
 
     <div class="mt-12">
       <!-- 修改密码 -->
       <van-cell class="ptb-10 plr-20" center :title="$t('me.accountSetting.changePwd')" value-class="light-grey" is-link title-class="black" :to="{ name: 'me-account-verifymethod' }">
-        <template #default>
-          {{ $t('common.lastEmit') }} <br/> {{ userInfo.pwd }}
+        <template #default v-if="$store.state.user.userInfo.pwdLastUpdateTime">
+          {{ $t('common.lastEmit') }} <br/> {{ $store.state.user.userInfo.pwdLastUpdateTime }}
         </template>
       </van-cell>
       <!-- 修改绑定手机 -->
-      <van-cell class="ptb-20 plr-20" :title="$t('me.accountSetting.bindPhone')" :value="userInfo.phone" value-class="light-grey" is-link title-class="black" :to="{ name: 'me-account-bind' }" />
+      <van-cell class="ptb-20 plr-20" :title="$t('me.accountSetting.bindPhone')" :value="$store.state.user.userInfo.phone" value-class="light-grey" is-link title-class="black" :to="{ name: 'me-account-bind' }" />
       <!-- 修改绑定邮箱 -->
-      <van-cell class="ptb-20 plr-20" :title="$t('me.accountSetting.chnageEmail')" :value="userInfo.email" value-class="light-grey" is-link title-class="black" :to="{ name: 'me-account-bind', query: { changeWay: 'email' } }" />
+      <van-cell class="ptb-20 plr-20" :title="$t('me.accountSetting.chnageEmail')" :value="$store.state.user.userInfo.email" value-class="light-grey" is-link title-class="black" :to="{ name: $store.state.user.userInfo.email == '' ? 'me-account-bind-rebind': 'me-account-bind', query: { changeWay: 'email' } }" />
     </div>
   </div>
 </template>
@@ -39,15 +40,6 @@ export default {
   components: {
     vanCell: Cell,
     vanCellGroup: CellGroup,
-  },
-  data() {
-    return {
-      userInfo: {
-        pwd: 'march-09-2020',
-        phone: '139****0647',
-        email: '7766****71@163.com'
-      }
-    }
   }
 }
 </script>

@@ -13,12 +13,11 @@ export const mutations = {
   },
   SET_TOKEN(state, token) { // 提交token
     state.authToken = token;
-    this.$cookies.set('authToken', token);
-    if (state.authToken == null) { // 退出登录 清除数据
+    if (token == null) { // 退出登录 清除数据
       state.userInfo = null;
-      this.$cookies.set('authToken', null);
       this.$cookies.set('userInfo', null);
     }
+    this.$cookies.set('authToken', token);
   },
   SET_SEARCHLIST(state, searchItem) {
     if (searchItem == null) {
@@ -42,8 +41,6 @@ export const actions = {
       else 
         getUserInfo(authToken).then(res => {
           if (res.code != 0) return false;
-          console.log(66666666666)
-          console.log(authToken)
 
           commit('SET_USERINFO', res.data);
 
