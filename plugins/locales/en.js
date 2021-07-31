@@ -202,7 +202,6 @@ const en = {
       enterAmount: 'Enter a custom amount',
       rechargeNow: 'Recharge Now',
       rechargeInstructions: 'Recharge instructions:',
-      rechargeInstructionsTip: 'Custom recharge amount.100 free for every 1000',
       searchBillPlaceholder: 'Enter Bill related information'
     },
     likes: {

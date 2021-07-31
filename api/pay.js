@@ -45,3 +45,40 @@ export function checkPayPwd(payPassword) {
     })
   })
 }
+
+/**
+ * 充值卡查询
+ */
+export function getRechargeCard() {
+  return request({
+    url: '/api/basics/baseRechargeCard/buyer/findMmsBaseRechargeCardList',
+    method: 'get',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
+  })
+}
+
+/**
+ * 买家充值
+ */
+export function buyerRecharge(data) {
+  return request({
+    url: '/api/finance/buyerExpensesDetail/buyer/rechargeBalance',
+    method: 'post',
+    data
+  })
+}
+
+/**
+ * 获取可用支付方式
+ */
+export function getAvailable() {
+  return request({
+    url: '/api/finance/uniwallet/get/available/networks',
+    method: 'get',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
+  })
+}

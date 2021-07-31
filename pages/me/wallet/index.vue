@@ -11,42 +11,41 @@
       <!-- 总金额展示 -->
       <div class="purse-total w-100 flex hcenter">
         <div class="flex column white fw purse-total__container tc">
-          <span class="fs-30">{{ $store.state.rate.currency }} 888.56</span>
+          <span class="fs-30" v-show="pwdType === 'text'"><span class="fm-menlo">{{ $store.state.rate.currency }}</span><span class="fm-din">{{ detail.balance }}</span></span>
+          <span class="fs-30" v-show="pwdType === 'password'">****</span>
           <span class="fs-18 mt-10">{{ $t('me.wallet.myBlance') }}</span>
         </div>
         <div class="purse-total__show">
           <!-- 睁眼 -->
-          <van-icon v-if="pwdType === 'text'" :name="require('@/assets/images/icon/eye-o.png')" size="30" color="#fff" @click="pwdType = 'password'" />
+          <van-icon v-if="pwdType === 'text'" :name="require('@/assets/images/icon/eye-o-white.png')" size="30" color="#fff" @click="pwdType = 'password'" />
           <!-- 闭眼 -->
-          <van-icon v-else :name="require('@/assets/images/icon/eye-close.png')" size="30" color="#fff" @click="pwdType = 'text'" />
+          <van-icon v-else :name="require('@/assets/images/icon/eye-close-white.png')" size="30" color="#fff" @click="pwdType = 'text'" />
         </div>
       </div>
 
       <!-- 可选择的充值额度选项 -->
-      <ul class="flex between flex-wrap">
-        <li class="bg-grey round-8 fw tc fs-18 mt-10 black perse-li">{{ $store.state.rate.currency }} 50</li>
-        <li class="bg-grey round-8 fw tc fs-18 mt-10 black perse-li">{{ $store.state.rate.currency }} 100</li>
-        <li class="bg-grey round-8 fw tc fs-18 mt-10 black perse-li">{{ $store.state.rate.currency }} 150</li>
-        <li class="bg-grey round-8 fw tc fs-18 mt-10 black perse-li">{{ $store.state.rate.currency }} 200</li>
-        <li class="bg-grey round-8 fw tc fs-18 mt-10 black perse-li">{{ $store.state.rate.currency }} 300 <span class="red fs-10 block lh-1">Give Ghs 10</span></li>
-        <li class="bg-grey round-8 fw tc fs-18 mt-10 black perse-li">{{ $store.state.rate.currency }} 500</li>
+      <ul class="flex between flex-wrap" v-if="detail.fixedRechargeCard && detail.fixedRechargeCard.cardItems">
+        <li class="bg-grey round-8 fw tc fs-18 mt-10 black perse-li" v-for="fixedCard in detail.fixedRechargeCard.cardItems" :key="'fixed-card-' + fixedCard.cardId">{{ $store.state.rate.currency }} {{ fixedCard.rechargeAmount }}
+          <div class="red fs-10 block lh-1" v-if="fixedCard.giftAmount > 0">Give Ghs {{ fixedCard.giftAmount }}</div>
+        </li>
       </ul>
       <!-- 自定义金额 -->
-      <van-field class="mt-24 border round-8" v-model="amount" :placeholder="$t('me.wallet.enterAmount')" />
+      <van-field class="mt-24 border round-8" v-model="amount" type="number" :placeholder="$t('me.wallet.enterAmount')" />
     </div>
     
     <!-- 充值按钮 -->
     <div class="mt-24 mlr-20">
-      <BmButton class="w-100 round-8">{{ $t('me.wallet.rechargeNow') }}</BmButton>
-
+      <BmButton class="w-100 round-8" @click.stop="onRecharge">{{ $t('me.wallet.rechargeNow') }}</BmButton>
+    
       <p class="mt-40 fs-14 black">{{ $t('me.wallet.rechargeInstructions') }}</p>
-      <p class="mt-8 fs-14 light-grey">{{ $t('me.wallet.rechargeInstructionsTip') }}</p>
+      <p class="mt-8 fs-14 light-grey" v-if="detail.freeRechargeCard">{{ detail.freeRechargeCard.rechargeExplain }}</p>
     </div>
   </div>
 </template>
 
 <script>
 import { Field } from 'vant';
+import { getRechargeCard, buyerRecharge } from '@/api/pay';
 
 export default {
   middleware: 'authenticated',
@@ -56,14 +55,42 @@ export default {
   data() {
     return {
       pwdType: 'password',
-      amount: ''
+      amount: '',
+      detail: {
+
+      }
     }
+  },
+  activated() {
+    this.getRechargeCard();
   },
   methods: {
     goBill() {
       this.$router.push({
         name: 'me-wallet-bill'
       })
+    },
+    async getRechargeCard() { // 充值卡查询
+      const rechargeData = await getRechargeCard();
+      if (rechargeData.code != 0) return false;
+      
+      this.detail = {
+        ...rechargeData.data,
+        balance: this.$utils.numberFormat(rechargeData.data.balance, 2)
+      };
+    },
+    onRecharge() { // 充值
+      this.$router.push({
+        name: 'me-pay-payment',
+        query: {
+          amount: this.amount
+        }
+      })
+      // buyerRecharge({ amount: this.amount, type: 2 }).then(res => {
+      //   if (res.code != 0) return false;
+
+        
+      // })
     }
   },
 }

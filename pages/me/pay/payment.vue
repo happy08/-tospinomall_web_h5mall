@@ -6,13 +6,13 @@
     <!-- 选择-单选 -->
     <van-radio-group v-model="payRadio">
       <van-cell-group v-for="(item, index) in list" :key="index" class="bg-white">
-        <van-cell title="Slydepay" title-class="ml-12" class="ptb-20" clickable @click="payRadio = index" :border="false">
+        <van-cell :title="item.label" title-class="ml-12" class="ptb-20" clickable @click="payRadio = index" :border="false">
           <!-- 左侧图标 -->
           <template #icon>
             <BmImage
-              :url="require('@/assets/images/icon/choose-icon.png')"
-              :width="'0.32rem'" 
-              :height="'0.32rem'"
+              :url="require('@/assets/images/icon/'+ item.label +'.png')"
+              :width="'0.48rem'" 
+              :height="'0.48rem'"
               :isLazy="false"
               :isShow="false"
             />
@@ -62,7 +62,7 @@
 
     <!-- 底部金额以及支付按钮 -->
     <div class="w-100 bg-white flex between pl-20 vcenter pay-content__btn">
-      <div class="red fs-18 fw">{{ $store.state.rate.currency }}1172.00</div>
+      <div class="red fs-18 fw">{{ $store.state.rate.currency }}{{ $route.query.amount }}</div>
       <BmButton class="fs-16 round-0 pay-content__btn--pay" @click="onPay">Pay</BmButton>
     </div>
      
@@ -72,6 +72,7 @@
 <script>
 import { RadioGroup, Radio, Cell, CellGroup, Field, Popup, Picker } from 'vant';
 import { getPhonePrefix } from '@/api/login';
+import { getAvailable } from '@/api/pay';
 
 export default {
   middleware: 'authenticated',
@@ -86,25 +87,26 @@ export default {
   },
   data() {
     return {
-      payRadio: 0,
-      list: [
-        {
-        },
-        {
-        },
-        {
-          isMobile: true
-        },
-        {}
-      ],
+      payRadio: 10,
+      list: [],
       showPicker: false,
       prefixCode: '',
       account: '',
       phonePrefixs: []
     }
   },
-  created() {
+  activated() {
     this.getPhonePrefix();
+    getAvailable().then(res => {
+      if (res.code != 0) return false;
+
+      this.list = res.data.map(item => {
+        return {
+          isMobile: false,
+          label: item
+        }
+      });
+    })
   },
   methods: {
     getPhonePrefix() {
