@@ -22,9 +22,6 @@ export default {
   components: {
     vanCell: Cell,
     vanCellGroup: CellGroup
-  },
-  activated() {
-    console.log(this.$store.state.user.userInfo.payPassword)
   }
 }
 </script>

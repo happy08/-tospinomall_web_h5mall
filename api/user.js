@@ -105,3 +105,30 @@ export function getLangList(type = 'sys_language_type') {
     }
   })
 }
+
+/**
+ * 获取反馈类型列表
+ */
+export function getFeedbackTypeList() {
+  return request({
+    url: '/api/basics/operateFeedbackCategory/findList',
+    method: 'get',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
+  })
+}
+
+/**
+ * 买家反馈消息
+ */
+export function operateFeedback(data) {
+  return request({
+    url: '/api/basics/operateFeedbackMsg/buyer/save',
+    method: 'post',
+    data: data,
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+}

@@ -94,7 +94,7 @@ const en = {
       title: 'Feedback',
       typeTitle: 'Type of problem feedback',
       feedbackPlaceholder: 'Please input your mobile phone number so that we can contact you',
-      picPlaceholder: 'Please input your mobile phone number so that we can contact you'
+      picPlaceholder: '请输入你的意见和建议'
     },
     authentication: {
       title: 'Authentication',
