@@ -7,7 +7,7 @@
       <!-- 支付密码方式 -->
       <van-cell class="plr-0 ptb-20" :title="$t('me.pay.paymentPwd')" :label="$t('me.pay.paymentVerfity')" center is-link :to="{ name: 'me-pay-password' }" />
       <!-- 管理银行卡 -->
-      <van-cell class="plr-0 ptb-20" :title="$t('me.pay.myBackCard')" :label="$t('me.pay.myBackManage')" center is-link :to="{ name: 'me-pay-bank' }" />
+      <!-- <van-cell class="plr-0 ptb-20" :title="$t('me.pay.myBackCard')" :label="$t('me.pay.myBackManage')" center is-link :to="{ name: 'me-pay-bank' }" /> -->
     </div>
   </div>
 </template>

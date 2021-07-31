@@ -92,3 +92,16 @@ export function checkCurrentCode(data) {
     })
   })
 }
+
+/**
+ * 获取语言列表
+ */
+export function getLangList(type = 'sys_language_type') {
+  return request({
+    url: `/api/admin/dict/type/${type}`,
+    method: 'get',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
+  })
+}

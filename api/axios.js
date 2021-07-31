@@ -26,6 +26,7 @@ export default function({ $axios, app, redirect, store, route }) {
     if (store.state.user.authToken) {
       config.headers['Authorization'] = `${store.state.user.authToken}`;
     }
+    config.headers.language = store.state.locale;
     // const _local = JSON.parse(localStorage.getItem('b2c-store'));
     // console.log(localStorage.getItem('b2c-store'))
     // if (_local.user.authToken) { // 已登录需要改变头部token

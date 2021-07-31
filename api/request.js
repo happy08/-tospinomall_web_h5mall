@@ -86,6 +86,9 @@ service.interceptors.request.use(config => {
   } else {
     config.headers['Content-Type'] = config.headers['Content-Type'] || 'application/json';
   }
+
+  config.headers.language = getCookie('lang');
+
   return config;
 }, error => {
   // Do something with request error

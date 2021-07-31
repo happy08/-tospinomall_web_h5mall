@@ -1,8 +1,7 @@
 import { vantLocales } from '@/plugins/vue-i18n';
-// import { getUserInfo } from '@/api/user';
 
 export const state = () => ({
-  locales: ['en', 'zh-CN'],
+  locales: ['en', 'zh-CN', 'zh-TW', 'fr', 'es', 'ms', 'vi'],
   locale: 'en',
   rate: null
 });
@@ -25,9 +24,8 @@ export const mutations = {
 export const actions = {
   // 数据持久化
   async nuxtServerInit ({ commit }, { $cookies, $api }) {
-    
-    // const rate = $cookies.get('rate'); // 单位
-    // const lang = $cookies.get('lang'); // 语言
+    const lang = $cookies.get('lang'); // 语言
+    commit('SET_LANG', lang);
     const authToken = $cookies.get('authToken'); // 用户token
     console.log('持久化')
     // 如果有token获取用户信息
@@ -36,7 +34,6 @@ export const actions = {
       const userInfoData = await $api.getUserInfo(authToken);
       commit('user/SET_USERINFO', userInfoData.data);
     }
-    // const userInfo = $cookies.get('userInfo'); // 用户信息
     const searchList = $cookies.get('searchList'); // 搜索历史
     console.log(searchList)
     commit('user/SET_SEARCHLIST', searchList);
