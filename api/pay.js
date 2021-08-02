@@ -82,3 +82,33 @@ export function getAvailable() {
     }
   })
 }
+
+/**
+ * 买家-收入支出列表
+ */
+export function getBillList(params) {
+  return request({
+    url: '/api/finance/buyerExpensesDetail/buyer/findIncomeExpenditurePage',
+    method: 'get',
+    params: params,
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
+  })
+}
+
+/**
+ * 收支明细
+ */
+export function getBillDetail(id) {
+  return request({
+    url: '/api/finance/buyerExpensesDetail/buyer/findById',
+    method: 'get',
+    params: {
+      id: id
+    },
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
+  })
+}
