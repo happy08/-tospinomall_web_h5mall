@@ -149,6 +149,16 @@ export default ({ app }, inject) => {
           'Content-Type': 'application/x-www-form-urlencoded'
         }
       })
+    },
+    getRecommendList(params) {
+      return app.$axios({
+        url: `${url}/search/productsearch/goodDetail/store/recommended`,
+        method: 'get',
+        params: params,
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      })
     }
   };
 

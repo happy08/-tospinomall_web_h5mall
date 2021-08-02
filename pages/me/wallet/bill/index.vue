@@ -58,7 +58,7 @@
       </van-list>
     </van-pull-refresh>
 
-    <EmptyStatus v-else :image="require('@/assets/images/empty/order.png')" />
+    <empty-status v-else :image="require('@/assets/images/empty/order.png')" />
   </div>
 </template>
 

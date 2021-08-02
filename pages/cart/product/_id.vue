@@ -377,7 +377,7 @@
       <van-tab title="Details" name="Details" class="fs-0">
         <!-- 产品说明信息 -->
         <div
-          class="mt-12 bg-white ptb-12 plr-20 fs-14 black fm-helvetica"
+          class="mt-12 bg-white ptb-12 plr-20 fs-14 black fm-helvetica word-break"
           v-if="goodSpuVo.description"
           v-html="goodSpuVo.description"
         ></div>
@@ -753,6 +753,10 @@ export default {
       ...arr[0],
       selectedNum: 1
     }
+
+    // 获取商品推荐列表
+    const recommendData = await this.$api.getRecommendList({ shopId: this.$route.params.id });
+    this.likeList = recommendData.data;
   },
   activated() {
     getCurrentDefaultAddress().then(res => { // 查看是否有默认地址
@@ -1078,6 +1082,9 @@ export default {
 .ptb-2{
   padding-top: 2px;
   padding-bottom: 2px;
+}
+.word-break{
+  word-break: break-all;
 }
 </style>
 

@@ -105,12 +105,12 @@ export default {
           name: 'me-order',
           type: 1
         },
-        {
-          icon: 'to-ship-icon',
-          text: 'To Ship', // 待发货
-          name: 'me-order',
-          type: 2
-        },
+        // {
+        //   icon: 'to-ship-icon',
+        //   text: 'To Ship', // 待发货
+        //   name: 'me-order',
+        //   type: 2
+        // },
         {
           icon: 'to-receive-icon',
           text: 'To Receive', // 待收货

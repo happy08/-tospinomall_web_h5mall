@@ -28,7 +28,7 @@ export default {
         name: 'login'
       })
     },
-    onConfirm() { // 点击i know的操作
+    onConfirm() { // 点击iknow的操作
       this.$router.push({
         name: 'me-account-security'
       })
