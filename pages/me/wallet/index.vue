@@ -1,7 +1,7 @@
 <template>
   <!-- 我的-钱包 -->
   <div>
-    <BmHeaderNav :left="{ isShow: true }" :title="$t('me.wallet.myPure')">
+    <BmHeaderNav :left="{ isShow: true, url: '/me' }" :title="$t('me.wallet.myPure')">
       <div slot="header-right" class="green fs-16" @click="goBill">
         {{ $t('me.wallet.bill') }}
       </div>
@@ -24,8 +24,8 @@
       </div>
 
       <!-- 可选择的充值额度选项 -->
-      <ul class="flex between flex-wrap" v-if="detail.fixedRechargeCard && detail.fixedRechargeCard.cardItems">
-        <li class="bg-grey round-8 fw tc fs-18 mt-10 black perse-li" v-for="fixedCard in detail.fixedRechargeCard.cardItems" :key="'fixed-card-' + fixedCard.cardId">{{ $store.state.rate.currency }} {{ fixedCard.rechargeAmount }}
+      <ul class="flex flex-wrap" v-if="detail.fixedRechargeCard && detail.fixedRechargeCard.cardItems">
+        <li class="bg-grey round-8 fw tc fs-18 mt-10 black perse-li flex column center" v-for="(fixedCard, fixedCardIndex) in detail.fixedRechargeCard.cardItems" :key="'fixed-card-' + fixedCardIndex" @click="onRecharge(1, fixedCard.rechargeAmount)">{{ $store.state.rate.currency }} {{ fixedCard.rechargeAmount }}
           <div class="red fs-10 block lh-1" v-if="fixedCard.giftAmount > 0">Give Ghs {{ fixedCard.giftAmount }}</div>
         </li>
       </ul>
@@ -35,7 +35,7 @@
     
     <!-- 充值按钮 -->
     <div class="mt-24 mlr-20">
-      <BmButton class="w-100 round-8" @click.stop="onRecharge">{{ $t('me.wallet.rechargeNow') }}</BmButton>
+      <BmButton class="w-100 round-8" @click.stop="onRecharge(2, amount)">{{ $t('me.wallet.rechargeNow') }}</BmButton>
     
       <p class="mt-40 fs-14 black">{{ $t('me.wallet.rechargeInstructions') }}</p>
       <p class="mt-8 fs-14 light-grey" v-if="detail.freeRechargeCard">{{ detail.freeRechargeCard.rechargeExplain }}</p>
@@ -45,7 +45,7 @@
 
 <script>
 import { Field } from 'vant';
-import { getRechargeCard, buyerRecharge } from '@/api/pay';
+import { getRechargeCard } from '@/api/pay';
 
 export default {
   middleware: 'authenticated',
@@ -60,6 +60,13 @@ export default {
 
       }
     }
+  },
+  beforeRouteEnter(to, from, next) { // 从初始页面进入重置值为空
+    next(vm => {
+      if (from.name === 'me') {
+        vm.amount = '';
+      }
+    });
   },
   activated() {
     this.getRechargeCard();
@@ -79,18 +86,14 @@ export default {
         balance: this.$utils.numberFormat(rechargeData.data.balance, 2)
       };
     },
-    onRecharge() { // 充值
+    onRecharge(type, amount) { // 充值
       this.$router.push({
         name: 'me-pay-payment',
         query: {
-          amount: this.amount
+          amount: amount,
+          type: type // 1固定卡 2自由充值卡 
         }
       })
-      // buyerRecharge({ amount: this.amount, type: 2 }).then(res => {
-      //   if (res.code != 0) return false;
-
-        
-      // })
     }
   },
 }
@@ -100,7 +103,7 @@ export default {
 .purse-total{
   height: 128px;
   background-image: url('../../../assets/images/purse-bgd.svg');
-  background-size: 100% 100%;
+  background-size: cover;
   background-position: center center;
   position: relative;
   .purse-total__container{
@@ -117,7 +120,10 @@ export default {
 .perse-li{
   width: 110px;
   height: 60px;
-  padding-top: 19px;
+  margin-left: 8px;
+  &:nth-child(3n+1) {
+    margin-left: 0;
+  }
 }
 .mt-40{
   margin-top: 40px;

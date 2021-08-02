@@ -337,21 +337,24 @@ export default {
     }
   },
   async fetch() {
-    const metaData = await this.$api.getHomeSeo(); // 获取SEO信息
-    const homeData = await this.$api.getHomeData(); // 组件数据
-    const categoryList = await this.$api.getCategoryList(); // 分类列表
-    const searchList = await this.$api.getProductSearch({ categoryName: '', pageSize: this.pageSize, pageIndex: this.pageIndex }); // 搜索商品列表
-
     this.refreshing = false;
+    const metaData = await this.$api.getHomeSeo(); // 获取SEO信息
     this.meta = metaData.data;
+
+    const homeData = await this.$api.getHomeData(); // 组件数据
     this.hotSearch = homeData.data.hotSearch; // 热门搜索
     this.moduleData = homeData.data.components; // 需要展示的模块数据
+
+    const categoryList = await this.$api.getCategoryList(); // 分类列表
     this.categoryList = [ // 分类列表
       {
         name: '全部'
       },
       ...categoryList.data
     ];
+
+    const searchList = await this.$api.getProductSearch({ categoryName: '', pageSize: this.pageSize, pageIndex: this.pageIndex }); // 搜索商品列表
+    
     this.searchList = searchList.data.items.map(item => { // 搜索商品列表
       return {
         ...item,
@@ -360,7 +363,6 @@ export default {
         productPrice: parseFloat(item.productPrice)
       }
     })
-
     this.tabTotal = searchList.data.total; // 搜索商品列表商品总数目
   },
   head() { // 头部设置，方便seo

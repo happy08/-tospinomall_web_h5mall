@@ -6,7 +6,7 @@
       <!-- 支付详情 -->
       <div class="mt-24 tc plr-20">
         <BmImage
-          :url="require('@/assets/images/icon/choose-icon.png')"
+          :url="require('@/assets/images/icon/'+ logo +'.png')"
           :width="'0.96rem'" 
           :height="'0.96rem'"
           :isLazy="false"
@@ -18,7 +18,7 @@
 
       <!-- 详情描述 -->
       <div class="bg-white mt-30 mlr-12 pt-14 pb-20 plr-14">
-        <p class="color-666 fs-14">You will receive a prompt on your mobile number <span class="fs-18 red lh-20">233208457440</span> to enter your pay-ment request of <span class="fs-18 red lh-20">GHS 86.30 </span></p>
+        <p class="color-666 fs-14">You will receive a prompt on your mobile number <span class="fs-18 red lh-20">{{ $route.query.phone }}</span> to enter your pay-ment request of <span class="fs-18 red lh-20">GHS {{ $route.query.amount }} </span></p>
         <p class="fs-14 black mt-10 lh-20">If you do not receive the prompt within 10s follow the Instructions below:
             1.Dia l*170# to see the main MTN USSD menu
             2.Choose 6) My Wallet
@@ -30,7 +30,7 @@
         <!-- 支付完成 -->
         <BmButton class="fs-16 round-8 w-100 mt-24" @click="onPayCompleted">Payment completed</BmButton>
         <!-- 修改支付方式 -->
-        <BmButton :type="'info'" class="fs-16 round-8 w-100 mt-10 change-btn" @click="onChangePayMethod">Payment completed</BmButton>
+        <BmButton :type="'info'" class="fs-16 round-8 w-100 mt-10 change-btn" @click="onChangePayMethod">change payment method</BmButton>
       </div>
     </div>
     
@@ -43,12 +43,19 @@
 <script>
 export default {
   middleware: 'authenticated',
+  computed: {
+    logo() {
+      return this.$route.query.network ? this.$route.query.network : 'ARTLTIGO';
+    }
+  },
   methods: {
     onPayCompleted() { // 支付完成
-
+      this.$router.replace({
+        name: 'me-wallet'
+      })
     },
-    onChangePayMethod() { // 修改支付方式
-
+    onChangePayMethod() { // 修改支付方式, 返回上一级
+      this.$router.go(-1);
     },
     onCancel() { // 取消支付
       this.$dialog({
@@ -62,7 +69,7 @@ export default {
       }).then(res => { // on confirm
 
       }).catch(() => { // on cancel
-
+        this.$router.go(-1);
       })
     }
   },

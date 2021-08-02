@@ -66,7 +66,7 @@ export function buyerRecharge(data) {
   return request({
     url: '/api/finance/buyerExpensesDetail/buyer/rechargeBalance',
     method: 'post',
-    data
+    data: qs.stringify(data)
   })
 }
 

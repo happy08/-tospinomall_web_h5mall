@@ -141,7 +141,8 @@ const en = {
       modifyPwd: 'Modify 6-digit payment password',
       forgotPwd: 'Forgot 6-digit payment password',
       useCurrentPayPwd: 'Authenticate with the current payment password',
-      payment: 'Payment'
+      payment: 'Payment',
+      prefPlaceholder: 'Insert Mobile Nunber without 0'
     },
     address: {
       areacodeTitle: 'Delivery to',

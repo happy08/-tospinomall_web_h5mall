@@ -1,16 +1,16 @@
 <template>
   <!-- 我的-订单-待付款-支付页面 -->
   <div class="bg-grey vh-100">
-    <BmHeaderNav :left="{ isShow: true }" :title="$t('me.order.checkoutCounter')" />
+    <BmHeaderNav :left="{ isShow: true }" :title="$t('me.pay.payment')" @leftClick="leftClick" />
 
     <!-- 选择-单选 -->
-    <van-radio-group v-model="payRadio">
+    <van-radio-group v-model="payRadio" v-if="list.length > 0">
       <van-cell-group v-for="(item, index) in list" :key="index" class="bg-white">
-        <van-cell :title="item.label" title-class="ml-12" class="ptb-20" clickable @click="payRadio = index" :border="false">
+        <van-cell :title="item" title-class="ml-12" class="ptb-20" clickable @click="payRadio = item" :border="false">
           <!-- 左侧图标 -->
           <template #icon>
             <BmImage
-              :url="require('@/assets/images/icon/'+ item.label +'.png')"
+              :url="require('@/assets/images/icon/'+ item +'.png')"
               :width="'0.48rem'" 
               :height="'0.48rem'"
               :isLazy="false"
@@ -19,7 +19,7 @@
           </template>
           <!-- 右侧图标-单选图标 -->
           <template #right-icon>
-            <van-radio :name="index" icon-size="0.48rem">
+            <van-radio :name="item" icon-size="0.48rem">
               <template #icon="props">
                 <BmImage
                   :url="props.checked ? require('@/assets/images/icon/choose-icon.png') : require('@/assets/images/icon/choose-default-icon.png')"
@@ -34,10 +34,9 @@
         </van-cell>
         <!-- 支持输入手机号 -->
         <van-field
-          v-if="item.isMobile"
           v-model="account"
-          :placeholder="$t('login.phoneNumber')"
-          class="phone-code-field pt-0 pb-20 plr-20"
+          :placeholder="$t('me.pay.prefPlaceholder')"
+          :class="{'field-container phone-code-field pt-0 pb-20': true, 'is-active': payRadio == item}"
           type="tel"
         >
           <template #label>
@@ -63,7 +62,7 @@
     <!-- 底部金额以及支付按钮 -->
     <div class="w-100 bg-white flex between pl-20 vcenter pay-content__btn">
       <div class="red fs-18 fw">{{ $store.state.rate.currency }}{{ $route.query.amount }}</div>
-      <BmButton class="fs-16 round-0 pay-content__btn--pay" @click="onPay">Pay</BmButton>
+      <BmButton class="fs-16 round-0 pay-content__btn--pay" :disabled="account.length === 0" @click="onPay">Pay</BmButton>
     </div>
      
   </div>
@@ -72,7 +71,7 @@
 <script>
 import { RadioGroup, Radio, Cell, CellGroup, Field, Popup, Picker } from 'vant';
 import { getPhonePrefix } from '@/api/login';
-import { getAvailable } from '@/api/pay';
+import { getAvailable, buyerRecharge } from '@/api/pay';
 
 export default {
   middleware: 'authenticated',
@@ -87,25 +86,32 @@ export default {
   },
   data() {
     return {
-      payRadio: 10,
+      payRadio: 100,
       list: [],
       showPicker: false,
       prefixCode: '',
       account: '',
-      phonePrefixs: []
+      phonePrefixs: [],
+      isBackDialog: false
     }
+  },
+  beforeRouteEnter(to, from, next) { // 从初始页面进入重置值为空
+    next(vm => {
+      if (from.name === 'me-wallet') {
+        vm.payRadio = 100;
+        vm.account = '';
+        vm.isBackDialog = false;
+      } else if (from.name === 'me-pay-wait') { // 从等待支付页面回来
+        vm.isBackDialog = true;
+      }
+    });
   },
   activated() {
     this.getPhonePrefix();
     getAvailable().then(res => {
       if (res.code != 0) return false;
 
-      this.list = res.data.map(item => {
-        return {
-          isMobile: false,
-          label: item
-        }
-      });
+      this.list = res.data;
     })
   },
   methods: {
@@ -116,14 +122,42 @@ export default {
       })
     },
     onPay() { // 提交支付,成功跳转到确认订单页面
-      this.$router.push({
-        name: 'me-pay-wait' // name: 'cart-order-confirm'
+      buyerRecharge({ amount: parseFloat(this.$route.query.amount), msisdn: this.account, network: this.payRadio, type: this.$route.query.type }).then(res => {
+        if (res.code != 0) return false;
+        this.$router.push({
+          name: 'me-pay-wait',
+          query: {
+            network: this.payRadio,
+            phone: this.account,
+            amount: this.$route.query.amount
+          }
+        })
       })
     },
     onConfirm(event) { // 选择手机号前缀
       this.prefixCode = event.phonePrefix;
       this.showPicker = false;
     },
+    leftClick() {
+      if (!this.isBackDialog) {
+        history.back();
+        return false;
+      }
+
+      this.$dialog({
+        title: 'Are you sure want to leave',
+        message: 'This order will automatically be can-celed if not paid within 30 mins.',
+        confirmButtonText: 'Reconsider',
+        confirmButtonColor: '#42B7AE',
+        showCancelButton: true,
+        cancelButtonText: 'Leave',
+        cancelButtonColor: '#383838'
+      }).then(res => { // on confirm
+
+      }).catch(() => { // on leave
+        this.$router.go(-1);
+      })
+    }
   },
 }
 </script>
@@ -144,5 +178,12 @@ export default {
   height: 20px;
   object-fit: cover;
   vertical-align: top;
+}
+.phone-code-field{
+  display: none;
+  padding: 20px!important;
+}
+.is-active{
+  display: flex;
 }
 </style>
