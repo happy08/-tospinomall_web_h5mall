@@ -5,50 +5,62 @@
     <div class="bg-green-linear">
       <BmHeaderNav :left="{ isShow: true }" :border="false" :title="$t(title)" :color="'white'" :bg_color="'bg-green-linear'" />
       <!-- 待付款倒计时 -->
-      <div class="mt-10 tc white fs-14 pb-40" v-if="$route.params.type == 1">
+      <div class="mt-10 tc white fs-14 pb-40" v-if="detail.status == 0">
         <p>{{ $t('me.order.remaining') }}: 29m 59s</p>
         <p>{{ $t('me.order.orderClosed') }}</p>
       </div>
+      <!-- 待发货 -->
+      <div class="fs-14 white mt-10 pb-40 plr-30 tc lh-20" v-else-if="detail.status == 1">
+        待发货
+      </div>
       <!-- 待收货 -->
-      <div class="fs-14 white mt-10 pb-40 plr-30 tc lh-20" v-else-if="$route.params.type == 2">
+      <div class="fs-14 white mt-10 pb-40 plr-30 tc lh-20" v-else-if="detail.status == 2">
         {{ $t('me.order.sending') }}
       </div>
-      <!-- 已收货 -->
-      <div class="fs-14 white mt-10 pb-40 plr-30 tc lh-20" v-else-if="$route.params.type == 3">
+      <!-- 待评价 -->
+      <div class="fs-14 white mt-10 pb-40 plr-30 tc lh-20" v-else-if="detail.status == 3">
+        待评价
+      </div>
+      <!-- 已完成 -->
+      <div class="fs-14 white mt-10 pb-40 plr-30 tc lh-20" v-else-if="detail.status == 4">
         {{ $t('me.order.doneTip') }}
       </div>
       <!-- 已取消 -->
-      <div class="fs-14 white mt-10 pb-40 plr-30 tc lh-20" v-else-if="$route.params.type == 4">
+      <div class="fs-14 white mt-10 pb-40 plr-30 tc lh-20" v-else-if="detail.status == 5">
         {{ $t('me.order.cancelTip') }}
       </div>
       <!-- 超时取消 -->
-      <div class="fs-14 white mt-10 pb-40 plr-30 tc lh-20" v-else-if="$route.params.type == 5">
+      <div class="fs-14 white mt-10 pb-40 plr-30 tc lh-20" v-else-if="detail.status == 6">
         {{ $t('me.order.timeoutClosure') }}
+      </div>
+      <!-- 已拒收 -->
+      <div class="fs-14 white mt-10 pb-40 plr-30 tc lh-20" v-else-if="detail.status == 7">
+        已拒收
       </div>
     </div>
 
     <!-- 运输方式 -->
-    <van-cell class="ptb-20 plr-20" :title="'Fulfillment by Tospino'" is-link title-class="fw black ml-12" :to="{ name: 'me-order-detail-logistics' }">
+    <van-cell class="p-20" :title="'Fulfillment by Tospino'" is-link title-class="fw black ml-12" :to="{ name: 'me-order-detail-logistics' }">
       <!-- 左侧图标 -->
       <template #icon>
-        <BmIcon :name="'huochewuliu'" :width="'0.48rem'" :height="'0.48rem'" :color="'#000'" />
+        <van-icon :name="require('@/assets/images/icon/car-icon.png')" size="0.48rem" />
       </template>
     </van-cell>
     
     <!-- 定位地址 -->
-    <van-cell class="ptb-20 plr-20" :title="'Fulfillment by Tospino'" title-class="black ml-12">
+    <van-cell class="p-20" :title="'Fulfillment by Tospino'" title-class="black ml-12">
       <!-- 左侧图标 -->
       <template #icon>
-        <i class="iconfont icon-dingwei fs-24 black trans-rotate"></i>
+        <van-icon :name="require('@/assets/images/icon/address-icon.png')" size="0.48rem" />
       </template>
       <!-- 左侧内容 -->
       <template #title>
         <div>
           <p class="fs-14 fw lh-20">
-            <span>Lucy</span>
-            <span class="ml-10">13165340019</span>
+            <span>{{ detail.receiverName }}</span>
+            <span class="ml-10">{{ detail.receiverPhone }}</span>
           </p>
-          <p class="mt-8 lh-20">5th floor, building 7, Tongfu xufa science and Technology Park</p>
+          <p class="mt-8 lh-20">{{ detail.receiverCompleteAddress }}</p>
         </div>
       </template>
     </van-cell>
@@ -74,10 +86,10 @@
     <!-- 订单信息 -->
     <div class="plr-20 pb-20 pt-10 bg-white mt-12 lh-36">
       <p class="fs-14 black flex vcenter">
-        <span>{{ $t('me.order.orderNo') }}: XSD2020071509472000002840</span>
+        <span>{{ $t('me.order.orderNo') }}: {{ detail.orderSn }}</span>
         <i class="iconfont icon-fuzhi fs-20 ml-24 copy-order" @click="copy"></i>
       </p>
-      <p class="fs-14 black flex vcenter">{{ $t('me.order.startFrom') }}: 2019-10-21 19:20:30</p>
+      <p class="fs-14 black flex vcenter">{{ $t('me.order.startFrom') }}: {{ detail.createTime }}</p>
       <p class="fs-14 black flex vcenter">{{ $t('me.orer.payBy') }}: Online</p>
       <p class="fs-14 black flex vcenter">{{ $t('me.order.time') }}: 2020-07-15 01:47:27</p>
       <p class="fs-14 black flex vcenter">{{ $t('me.order.delivery') }}: Express</p>
@@ -195,6 +207,7 @@ import OrderSingle from '@/components/OrderSingle';
 import OrderStoreSingle from '@/components/OrderStoreSingle';
 import ClipboardJS from 'clipboard';
 import ProductTopBtmSingle from '@/components/ProductTopBtmSingle';
+import { getOrderDetail } from '@/api/order';
 
 export default {
   middleware: 'authenticated',
@@ -209,19 +222,26 @@ export default {
     OrderStoreSingle,
     ProductTopBtmSingle
   },
-  asyncData({isDev, route, store, env, params, query, req, res, redirect, error}) {
-    let title = '';
-    if (route.params.type == 1) title = 'me.order.pendingDelivery'; // 1  待付款
-    if (route.params.type == 2) title = 'me.order.undelivered'; // 2  待收货
-    if (route.params.type == 3) title = 'me.order.done'; // 3  已收货
-    if (route.params.type == 4) title = 'me.order.cancelTitle'; // 4  已取消
-    if (route.params.type == 5) title = 'me.order.tradingClosed'; // 5  交易关闭,超时取消
-
+  data() {
     return {
-      title: title,
+      title: '',
       isCancelShow: false,
-      cancelRadio: 0
+      cancelRadio: 0,
+      detail: {}
     }
+  },
+  activated() {
+    getOrderDetail(this.$route.params.id).then(res => {
+      let title = '';
+      if (res.data.status == 0) title = 'me.order.pendingDelivery'; // 0  待付款
+      if (res.data.status == 2) title = 'me.order.undelivered'; // 2  待收货
+      if (res.data.status == 3) title = 'me.order.done'; // 3  已收货
+      if (res.data.status == 4) title = 'me.order.cancelTitle'; // 4  已取消
+      if (res.data.status == 5) title = 'me.order.tradingClosed'; // 5  交易关闭,超时取消
+      if (res.data.status == 6) title = 'me.order.tradingClosed'; // 6  交易关闭,超时取消
+      this.title = title;
+      this.detail = res.data
+    })
   },
   methods: {
     addCart() { // 添加购物车

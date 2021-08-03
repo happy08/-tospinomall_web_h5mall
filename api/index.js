@@ -150,11 +150,30 @@ export default ({ app }, inject) => {
         }
       })
     },
-    getRecommendList(params) {
+    getRecommendList(params) { // 商品详情-商品推荐列表
       return app.$axios({
         url: `${url}/search/productsearch/goodDetail/store/recommended`,
         method: 'get',
         params: params,
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      })
+    },
+    getOrderList(params) { // 订单列表
+      return app.$axios({
+        url: `${url}/order/omsorder/buyer/list/page`,
+        method: 'get',
+        params: params,
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      })
+    },
+    getHomeRecommendWord() { // 查询首页推荐词
+      return app.$axios({
+        url: `${url}/basics/base/operator/indexRecommendWords/findAll`,
+        method: 'get',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
         }

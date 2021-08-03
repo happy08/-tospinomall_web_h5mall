@@ -1,38 +1,47 @@
 <template>
   <!-- 我的-订单 -->
   <div>
-    <BmHeaderNav :left="{ isShow: true }" :title="$t('me.order.myOrderTitle')" :border="false" />
-    
-    <!-- 搜索 -->
-    <div class="flex vcenter ml-20 mr-12">
-      <van-search
-        v-model="searchVal"
-        shape="round"
-        placeholder="请输入搜索关键词"
-        class="bg-white w-100"
-        @click="goSearch"
-      > 
-        <!-- 右侧图标-点击拍照 -->
-        <template #right-icon>
-          <div>
-            <van-icon :name="require('@/assets/images/icon/camera-icon.png')" size="0.46rem" />
-            <!-- <input type="file" capture="camera" /> -->
-          </div>
-        </template>
-      </van-search>
-      <!-- 筛选 -->
-      <van-icon :name="require('@/assets/images/icon/filter-icon.png')" class="ml-12" @click="filterPopup = true" size="0.48rem" />
-    </div>
+    <van-sticky class="bg-white">
+      <BmHeaderNav :left="{ isShow: true }" :title="$t('me.order.myOrderTitle')" :border="false" />
+      <!-- 搜索 -->
+      <div class="flex vcenter ml-20 mr-12">
+        <van-search
+          v-model="searchVal"
+          shape="round"
+          placeholder="请输入搜索关键词"
+          class="bg-white w-100"
+          @click="goSearch"
+        > 
+          <!-- 右侧图标-点击拍照 -->
+          <template #right-icon>
+            <div>
+              <van-icon :name="require('@/assets/images/icon/camera-icon.png')" size="0.46rem" />
+              <!-- <input type="file" capture="camera" /> -->
+            </div>
+          </template>
+        </van-search>
+        <!-- 筛选 -->
+        <van-icon :name="require('@/assets/images/icon/filter-icon.png')" class="ml-12" @click="filterPopup = true" size="0.48rem" />
+      </div>
 
-    <!-- 分类 -->
-    <van-tabs sticky swipeable animated :offset-top="44" color="#42B7AE"  @change="getSearchList" class="mt-12" v-model="typeActive">
-      <van-tab v-for="(productItem, tabIndex) in tabs" :title="productItem.name" :key="'scroll-tab-' + tabIndex" title-class="pb-0 border-b" :name="productItem.type">
+      <!-- 分类 -->
+      <van-tabs sticky swipeable animated :offset-top="44" color="#42B7AE"  @change="getSearchList" class="pt-12" v-model="typeActive">
+        <van-tab v-for="(productItem, tabIndex) in tabs" :title="productItem.name" :key="'scroll-tab-' + tabIndex" title-class="pb-4 border-b" :name="productItem.type" />
+      </van-tabs>
+    </van-sticky>
+    
+    <van-pull-refresh v-model="refreshing" @refresh="onRefresh" class="vh-100">
+      <van-list
+        v-model="loading"
+        :finished="finished"
+        @load="onLoad"
+      >
         <div class="mlr-12 mt-20 flex between flex-wrap">
           <!-- 空状态  -->
           <empty-status v-if="lists.length === 0" :image="require('@/assets/images/empty/order.png')" :description="$t('common.noRecord')"/>
-          <div v-else>
+          <div v-else v-for="(item,index) in lists" :key="index" class="w-100">
             <!-- 订单店铺 -->
-            <OrderStoreSingle>
+            <OrderStoreSingle :name="item.storeName" :status="item.status | statusFormat" @goStoreDetail="goStoreDetail(item.storeId)">
               <!-- 如果是取消状态，则该订单可删除，添加操作展示  -->
               <div slot="other-deal" class="flex vcenter">
                 <span class="block line-style"></span>
@@ -46,12 +55,26 @@
               </div>
             </OrderStoreSingle>
             <!-- 订单列表详情 -->
-            <OrderSingle class="mt-20" />
+            <div v-for="(productItem,productIndex) in item.items" :key="productIndex">
+              <OrderSingle
+                class="mt-20"
+                :image="productItem.goodImg" 
+                :product_desc="productItem.goodName"
+                :product_size="productItem.goodAttr"
+                :price="productItem.goodPrice"
+                :product_num="productItem.goodQuantity"
+                @onClick="goOrderDetail(productItem.orderId)"
+              />
+              <div class="w-100 bg-white btn-content flex hend vcenter" v-if="productItem.status == 4 || productItem.status == 5 || productItem.status == 6">
+                <!-- Buy Again -->
+                <BmButton class="fs-16 ml-10 rount-0 plr-30 btn-content__buy" @click="goPay">{{ $t('me.order.buyAgain') }}</BmButton>
+              </div>
+            </div>
+            
           </div>
         </div>
-      </van-tab>
-    </van-tabs>
-
+      </van-list>
+    </van-pull-refresh>
 
     <!-- 弹窗筛选 -->
     <van-popup
@@ -80,7 +103,7 @@
 </template>
 
 <script>
-import { Search, Tab, Tabs, Popup } from 'vant';
+import { Search, Tab, Tabs, Popup, List, PullRefresh, Sticky } from 'vant';
 import OrderSingle from '@/components/OrderSingle';
 import OrderStoreSingle from '@/components/OrderStoreSingle';
 
@@ -91,20 +114,23 @@ export default {
     vanTab: Tab,
     vanTabs: Tabs,
     vanPopup: Popup,
+    vanList: List,
+    vanPullRefresh: PullRefresh,
+    vanSticky: Sticky,
     OrderSingle: OrderSingle,
     OrderStoreSingle: OrderStoreSingle
   },
-  asyncData({isDev, route, store, env, params, query, req, res, redirect, error}) {
+  data() {
     return {
       searchVal: '',
       tabs: [
         {
           name: 'All',
-          type: 0
+          type: 100
         },
         {
           name: 'Unpaid',
-          type: 1
+          type: 0
         },
         {
           name: 'unreceived',
@@ -112,21 +138,61 @@ export default {
         },
         {
           name: 'Done',
-          type: 3
+          type: 4
         },
         {
           name: 'Cancelled',
-          type: 4
+          type: 5
         }
       ],
       lists: [],
       filterPopup: false,
-      typeActive: route.query.type ? route.query.type : 0
+      typeActive: this.$route.query.type ? this.$route.query.type : 100,
+      loading: false,
+      finished: false,
+      refreshing: false,
+      params: {
+        pageNum: 1,
+        pageSize: 10
+      },
+      total: 0
     }
   },
-  methods: {
-    getSearchList() { // 获取分类列表
+  async fetch() {
+    if (this.$route.query.type) this.typeActive = this.tabs[this.$route.query.type].type;
 
+    if (this.typeActive == 100) { // 全部
+      this.params = {
+        pageNum: this.params.pageNum,
+        pageSize: this.params.pageSize
+      }
+    } else {
+      this.params = {
+        pageNum: this.params.pageNum,
+        pageSize: this.params.pageSize,
+        status: this.typeActive
+      }
+    }
+    const listData = await this.$api.getOrderList(this.params);
+    if (listData.code != 0) return false;
+
+    this.lists = listData.data.records;
+    this.total = listData.data.total;
+    this.loading = false;
+    this.refreshing = false;
+  },
+  filters: {
+    statusFormat(val) {
+      return val == 0 ? '待付款' : val == 1 ? '待发货' : val == 2 ? '待收货' : val == 3 ? '待评价' : val == 4 ? '已完成' : val == 5 ? '已取消' : val == 6 ? '交易关闭' : val == 7 ? '已拒收' : '其他';
+    }
+  },
+  activated() {
+    this.$fetch();
+  },
+  methods: {
+    async getSearchList() { // 获取分类列表
+      
+      this.$fetch();
     },
     onFilter() { // 过滤
       this.filterPopup = false; // 弹窗隐藏
@@ -137,6 +203,36 @@ export default {
       })
     },
     deleteFn() { // 删除订单
+
+    },
+    goStoreDetail(id) { // 跳转到店铺详情
+      this.$router.push({
+        name: 'cart-store-id',
+        params: {
+          id: id
+        }
+      })
+    },
+    goOrderDetail(orderId) { // 跳转到订单详情
+      this.$router.push({
+        name: 'me-order-detail-id',
+        params: {
+          id: orderId
+        }
+      })
+    },
+    onRefresh() { // 下拉刷新
+      this.pageNum = 1;
+      this.$fetch();
+    },
+    onLoad() {
+      if (this.total == this.lists.length) {
+        this.loading = false;
+        this.finished = true;
+        return false;
+      }
+    },
+    goPay() { // 再次购买
 
     }
   },
@@ -175,6 +271,19 @@ export default {
   }
   .order-search__btn--reset{
     background-color: rgba(255, 102, 102, 0.05);
+  }
+}
+.btn-content{
+  position: fixed;
+  bottom: 0;
+  height: 56px;
+  .btn-content__buy{
+    height: 100%;
+  }
+  .btn-content__evaluation{
+    height: 36px!important;
+    border-color: #eee!important;
+    background-color: transparent!important;
   }
 }
 </style>

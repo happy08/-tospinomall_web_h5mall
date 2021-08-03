@@ -341,8 +341,10 @@ export default {
     const metaData = await this.$api.getHomeSeo(); // 获取SEO信息
     this.meta = metaData.data;
 
+    const hotData = await this.$api.getHomeRecommendWord(); // 首页推荐词
+    this.hotSearch = hotData.data; // 热门搜索
+
     const homeData = await this.$api.getHomeData(); // 组件数据
-    this.hotSearch = homeData.data.hotSearch; // 热门搜索
     this.moduleData = homeData.data.components; // 需要展示的模块数据
 
     const categoryList = await this.$api.getCategoryList(); // 分类列表

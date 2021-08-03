@@ -77,7 +77,7 @@
       <!-- 总计 -->
       <van-cell >
         <template #default>
-          <div class="color-black-85">
+          <div class="color-black-85 tr">
             Total: <span class="red">{{ $store.state.rate.currency }} 1260.00</span>
           </div>
         </template>
