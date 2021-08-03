@@ -12,7 +12,7 @@
       />
       <BmIcon v-else :name="'store-icon1'" :width="'0.40rem'" :height="'0.40rem'"></BmIcon>
       <span class="ml-10 fs-14 fw black">{{ name }}</span>
-      <van-icon name="arrow" size="0.2rem" />
+      <van-icon name="arrow" size="0.2rem" v-if="showArrow" />
     </div>
     <div class="flex vcenter">
       <!-- 订单状态 -->
@@ -42,6 +42,10 @@ export default {
     logo: {
       type: String,
       default: ''
+    },
+    showArrow: {
+      type: Boolean,
+      default: true
     }
   },
   methods: {

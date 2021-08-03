@@ -129,3 +129,17 @@ export function updateCartNum(data) {
     data
   })
 }
+
+/**
+ * 获取销售信息
+ */
+export function getSaleInfo(data) {
+  return request({
+    url: '/api/product/goods/get/saleInfo',
+    method: 'post',
+    data: data,
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+}

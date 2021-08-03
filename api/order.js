@@ -8,7 +8,7 @@ export function submitOrder(data) {
   return request({
     url: '/api/order/omsorder/submitOrder',
     method: 'post',
-    data: qs.stringify(data),
+    data: data,
     headers: {
       'Content-Type': 'application/json'
     }

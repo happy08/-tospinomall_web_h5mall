@@ -20,119 +20,113 @@
     </div>
 
     <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
-      <van-list
-        v-model="loading"
-        :finished="finished"
-        @load="onLoad"
-      >
-        <!-- 空数据 -->
-        <empty-status v-if="list.length === 0 && $store.state.user.authToken" :image="require('@/assets/images/empty/cart.png')" :description="$t('cart.emptyTip')" :btn="{ btn: $t('me.likes.shopNow'), isEmit: true }" @emptyClick="goHome" />
-        <!-- 数据列表展示 -->
-        <template v-else>
-          <div class="pt-14 pb-12 bg-white" v-for="item in list" :key="item.id">
-            <van-checkbox-group v-model="item.result" :ref="'checkboxGroup-' + item.id" @change="storeChangeCheck($event, item)">
-              <div class="flex vcenter pl-12">
-                <BmImage
-                  :url="item.isAll ? require('@/assets/images/icon/choose-icon.png') : require('@/assets/images/icon/choose-default-icon.png')"
-                  :width="'0.32rem'" 
-                  :height="'0.32rem'"
-                  :isLazy="false"
-                  :isShow="false"
-                  @onClick="storeCheckAll(item)"
-                  class="flex-shrink"
-                />
-                <!-- 店铺 -->
-                <OrderStoreSingle class="pl-16 pr-30" @goStoreDetail="goStoreDetail(item.storeId)" :logo="item.storeLogo" :name="item.storeName" />
+      <!-- 空数据 -->
+      <empty-status v-if="list.length === 0 && $store.state.user.authToken" :image="require('@/assets/images/empty/cart.png')" :description="$t('cart.emptyTip')" :btn="{ btn: $t('me.likes.shopNow'), isEmit: true }" @emptyClick="goHome" />
+      <!-- 数据列表展示 -->
+      <template v-else>
+        <div class="pt-14 pb-12 bg-white" v-for="item in list" :key="item.id">
+          <van-checkbox-group v-model="item.result" :ref="'checkboxGroup-' + item.id" @change="storeChangeCheck($event, item)">
+            <div class="flex vcenter pl-12">
+              <BmImage
+                :url="item.isAll ? require('@/assets/images/icon/choose-icon.png') : require('@/assets/images/icon/choose-default-icon.png')"
+                :width="'0.32rem'" 
+                :height="'0.32rem'"
+                :isLazy="false"
+                :isShow="false"
+                @onClick="storeCheckAll(item)"
+                class="flex-shrink"
+              />
+              <!-- 店铺 -->
+              <OrderStoreSingle class="pl-16 pr-30" @goStoreDetail="goStoreDetail(item.storeId)" :logo="item.storeLogo" :name="item.storeName" />
+            </div>
+            <van-swipe-cell class="pl-12" v-for="singleItem in item.products" :key="'single-' + singleItem.id">
+              <div class="flex vcenter">
+                <!-- 选中与否 -->
+                <van-checkbox :name="singleItem.id" class="custom-checkbox" >
+                  <template #icon="props">
+                    <div>
+                      <BmImage
+                        :url="!singleItem.stock ? require('@/assets/images/icon/unchoose-icon.png') : props.checked ? require('@/assets/images/icon/choose-icon.png') : require('@/assets/images/icon/choose-default-icon.png')"
+                        :width="'0.32rem'" 
+                        :height="'0.32rem'"
+                        :isLazy="false"
+                        :isShow="false"
+                      />
+                    </div>
+                  </template>
+                </van-checkbox>
+                <van-card
+                  class="bg-white pt-24 ml-12 plr-0 pb-0 lh-20 width-313 fm-helvetica"
+                >
+                  <!-- 自定义图片 -->
+                  <template #thumb>
+                    <SoldOut :isShow="singleItem.stock ? false: true" @onClick="goProductDetail(singleItem.productId)">
+                      <BmImage
+                        :url="singleItem.mainPictureUrl"
+                        :width="'1.8rem'" 
+                        :height="'1.8rem'"
+                        :isLazy="false"
+                        :isShow="true"
+                        :fit="'cover'"
+                      />
+                    </SoldOut>
+                  </template>
+                  <!-- 自定义标题 -->
+                  <template #title>
+                    <span @click="goProductDetail(singleItem.productId)">{{ singleItem.productName }}</span>
+                  </template>
+                  <!-- 自定义描述区域，改为展示商品型号 -->
+                  <template #desc>
+                    <div class="bg-f8 pl-10 mt-8 round-4 flex vcenter pr-10 fit-width">
+                      <span class="grey pr-24">
+                        <span v-for="(attrItem, attrIndex) in singleItem.productAttr" :key="'attr-item-' + attrIndex">{{ attrItem.attrValue }} {{ attrIndex != singleItem.productAttr.length-1 ? '/' : '' }} </span>
+                      </span>
+                      <van-icon name="arrow-down" color="#B6B6B6" size="0.16rem" />
+                    </div>
+                  </template>
+                  <!-- 标签 -->
+                  <template #tags>
+                    <div class="flex mt-8 vcenter hidden round-8 product-tag" v-if="singleItem.stock" @click="goProductDetail(singleItem.productId)">
+                      <BmImage
+                        :url="require('@/assets/images/icon/plane-icon.png')"
+                        :width="'0.36rem'" 
+                        :height="'0.36rem'"
+                        :isLazy="false"
+                        :isShow="false"
+                        :fit="'cover'"
+                      />
+                      <span class="fs-10 plr-8">发货来自{{ singleItem.shipAddress }}</span>
+                    </div>
+                  </template>
+                  <!-- 自定义数量,有库存显示数量，没有去看相似物品 -->
+                  <template #num>
+                    <van-stepper v-if="singleItem.stock" v-model="singleItem.quantity" input-width="0.796rem" button-size="0.42rem" :integer="true" class="mt-6 custom-stepper" @change="onChangeNum(singleItem)" />
+                    <div v-else class="border fs-12 black round-8 ptb-4 plr-8 mt-6 lh-1">相似物品</div>
+                  </template>
+                  <!-- 自定义价格 -->
+                  <template #price>
+                    <div class="mt-8" @click="goProductDetail(singleItem.productId)">
+                      <span class="red fs-16 fw">{{ $store.state.rate.currency }}{{ singleItem.addCartPrice }}</span>
+                      <!-- <span class="grey fs-12 ml-10 line-through">{{ $store.state.rate.currency }}{{ item.cost }}</span> -->
+                    </div>
+                  </template>
+                </van-card>
               </div>
-              <van-swipe-cell class="pl-12" v-for="singleItem in item.products" :key="'single-' + singleItem.id">
-                <div class="flex vcenter">
-                  <!-- 选中与否 -->
-                  <van-checkbox :name="singleItem.id" class="custom-checkbox" >
-                    <template #icon="props">
-                      <div>
-                        <BmImage
-                          :url="!singleItem.stock ? require('@/assets/images/icon/unchoose-icon.png') : props.checked ? require('@/assets/images/icon/choose-icon.png') : require('@/assets/images/icon/choose-default-icon.png')"
-                          :width="'0.32rem'" 
-                          :height="'0.32rem'"
-                          :isLazy="false"
-                          :isShow="false"
-                        />
-                      </div>
-                    </template>
-                  </van-checkbox>
-                  <van-card
-                    class="bg-white pt-24 ml-12 plr-0 pb-0 lh-20 width-313 fm-helvetica"
-                  >
-                    <!-- 自定义图片 -->
-                    <template #thumb>
-                      <SoldOut :isShow="singleItem.stock ? false: true" @onClick="goProductDetail(singleItem.productId)">
-                        <BmImage
-                          :url="singleItem.mainPictureUrl"
-                          :width="'1.8rem'" 
-                          :height="'1.8rem'"
-                          :isLazy="false"
-                          :isShow="true"
-                          :fit="'cover'"
-                        />
-                      </SoldOut>
-                    </template>
-                    <!-- 自定义标题 -->
-                    <template #title>
-                      <span @click="goProductDetail(singleItem.productId)">{{ singleItem.productName }}</span>
-                    </template>
-                    <!-- 自定义描述区域，改为展示商品型号 -->
-                    <template #desc>
-                      <div class="bg-f8 pl-10 mt-8 round-4 flex vcenter pr-10 fit-width">
-                        <span class="grey pr-24">
-                          <span v-for="(attrItem, attrIndex) in singleItem.productAttr" :key="'attr-item-' + attrIndex">{{ attrItem.attrValue }} {{ attrIndex != singleItem.productAttr.length-1 ? '/' : '' }} </span>
-                        </span>
-                        <van-icon name="arrow-down" color="#B6B6B6" size="0.16rem" />
-                      </div>
-                    </template>
-                    <!-- 标签 -->
-                    <template #tags>
-                      <div class="flex mt-8 vcenter hidden round-8 product-tag" v-if="singleItem.stock" @click="goProductDetail(singleItem.productId)">
-                        <BmImage
-                          :url="require('@/assets/images/icon/plane-icon.png')"
-                          :width="'0.36rem'" 
-                          :height="'0.36rem'"
-                          :isLazy="false"
-                          :isShow="false"
-                          :fit="'cover'"
-                        />
-                        <span class="fs-10 plr-8">发货来自{{ singleItem.shipAddress }}</span>
-                      </div>
-                    </template>
-                    <!-- 自定义数量,有库存显示数量，没有去看相似物品 -->
-                    <template #num>
-                      <van-stepper v-if="singleItem.stock" v-model="singleItem.quantity" input-width="0.796rem" button-size="0.42rem" :integer="true" class="mt-6 custom-stepper" @change="onChangeNum(singleItem)" />
-                      <div v-else class="border fs-12 black round-8 ptb-4 plr-8 mt-6 lh-1">相似物品</div>
-                    </template>
-                    <!-- 自定义价格 -->
-                    <template #price>
-                      <div class="mt-8" @click="goProductDetail(singleItem.productId)">
-                        <span class="red fs-16 fw">{{ $store.state.rate.currency }}{{ singleItem.addCartPrice }}</span>
-                        <!-- <span class="grey fs-12 ml-10 line-through">{{ $store.state.rate.currency }}{{ item.cost }}</span> -->
-                      </div>
-                    </template>
-                  </van-card>
+              
+              <template #right>
+                <div class="v-100 flex">
+                  <!-- 设置经常购买 -->
+                  <van-button v-if="singleItem.stock" @click="onOftenBy(singleItem)" square :text="singleItem.isOftenBuy ? '取消经常': 'Often Buy'" class="v-100 w-70 bg-f0 black plr-12 fs-14 border-no" />
+                  <!-- 移入收藏夹 -->
+                  <van-button v-if="singleItem.stock" @click="moveToFavorite(singleItem.productSku)" square text="Collect" class="v-100 w-70 bg-yellow white plr-12 fs-14 border-no" />
+                  <!-- 删除订单 -->
+                  <van-button square text="Delete" @click="onDelete(singleItem.productSku)" class="v-100 w-70 bg-red white plr-12 fs-14 border-no" />
                 </div>
-                
-                <template #right>
-                  <div class="v-100 flex">
-                    <!-- 设置经常购买 -->
-                    <van-button v-if="singleItem.stock" @click="onOftenBy(singleItem)" square :text="singleItem.isOftenBuy ? '取消经常': 'Often Buy'" class="v-100 w-70 bg-f0 black plr-12 fs-14 border-no" />
-                    <!-- 移入收藏夹 -->
-                    <van-button v-if="singleItem.stock" @click="moveToFavorite(singleItem.productSku)" square text="Collect" class="v-100 w-70 bg-yellow white plr-12 fs-14 border-no" />
-                    <!-- 删除订单 -->
-                    <van-button square text="Delete" @click="onDelete(singleItem.productSku)" class="v-100 w-70 bg-red white plr-12 fs-14 border-no" />
-                  </div>
-                </template>
-              </van-swipe-cell>
-            </van-checkbox-group>
-          </div>
-        </template>
-      </van-list>
+              </template>
+            </van-swipe-cell>
+          </van-checkbox-group>
+        </div>
+      </template>
 
       <!-- 可能喜欢的推荐列表展示 -->
       <div>
@@ -231,34 +225,38 @@ export default {
       oftenBuyTotal: 0, // 经常购买总条数
       priceCutTotal: 0, // 降价总条数
       allTotal: 0, // 全部总条数
-      loading: false,
-      finished: false,
-      refreshing: false,
-      listTotal: 0, // 商品总数
+      // listTotal: 0, // 商品总数
       productResult: [], // 选中的商品id
+      refreshing: false,
+      result: [], // 已提交的已选择的商品skuid
     }
   },
   async fetch() {
     // 未登录情况下不获取数据
     if (!this.$store.state.user.authToken) return false;
     this.listTotal = 0;
-    const listData = await this.$api.getCartList({ pageNum: this.pageNum, pageSize: this.pageSize, queryType: this.queryType });
+    this.result = [];
+    const listData = await this.$api.getCartList({ queryType: this.queryType });
     this.list = listData.data.storeList.map(storeItem => {
-      this.listTotal += storeItem.products.length;
+      this.result = this.result.concat(storeItem.products.filter(selectItem => { // 是否选中
+        return selectItem.isSelect == 1;
+      }).map(resultItem => {
+        return resultItem.productSku;
+      }));
       return {
         ...storeItem,
-        result: [],
+        result: storeItem.products.filter(selectItem => { // 是否选中
+          return selectItem.isSelect == 1;
+        }).map(resultItem => {
+          return resultItem.id;
+        }),
         isAll: false, // 是否全选
       }
     }); // 购物车列表
-    this.total = listData.data.totalQuantity; // 总数量
-    this.totalAmount = listData.data.totalAmount; // 总金额
-    this.discountAmount = listData.data.discountAmount; // 优惠金额
+    // this.total = listData.data.totalQuantity; // 总数量
+    // this.totalAmount = listData.data.totalAmount; // 总金额
+    // this.discountAmount = listData.data.discountAmount; // 优惠金额
     this.refreshing = false;
-    if (this.listTotal == this.total) {
-      this.finished = true;
-    }
-    console.log('初始化')
   },
   activated() {
     this.getCartCount(); // 总数查询
@@ -305,7 +303,7 @@ export default {
       this.$router.push({
         name: 'cart-order-id',
         params: {
-          id: 1
+          id: JSON.stringify({skuItems: this.productResult})
         }
       })
     },
@@ -372,7 +370,7 @@ export default {
       setOftenBuy({ isOftenBuy: product.isOftenBuy == 1 ? 0 : 1, skuId: product.productSku }).then(res => {
         if (res.code != 0) return false;
 
-        this.$toast('设置经常购买成功')
+        this.$toast('设置经常购买成功');
         this.$fetch();
         this.getCartCount();
       })
@@ -403,34 +401,9 @@ export default {
       this.getCartCount(); // 总数查询
       this.$fetch();
     },
-    async onLoad() { // 加载更多
-      console.log('滚动加载')
-      console.log(this.finished)
-      if (this.listTotal >= this.total) { // 没有下一页了
-        this.finished = true;
-        this.loading = false;
-        return false;
-      }
-      this.pageNum += 1;
-      const listData = await this.$api.getCartList({ pageNum: this.pageNum, pageSize: this.pageSize, queryType: this.queryType });
-      if (listData.code != 0) return false;
-      let productTotal = 0
-      this.list = this.list.concat(listData.data.storeList.map(storeItem => {
-        productTotal += storeItem.products.length;
-        return {
-          ...storeItem,
-          result: [],
-          isAll: false, // 是否全选
-        }
-      })); // 购物车列表
-      // 加载状态结束
-      this.loading = false;
-      
-      this.total = listData.data.totalQuantity; // 总数量
-      this.listTotal += productTotal;
-    },
     onCountPrice() { // 计算购物车总价格
-      let productResult = [];
+      let productResult = []; // 选中的数据集合
+      let cancelResult = []; // 取消选中的数据集合
       this.list.map(item => {
         productResult = productResult.concat(item.result.map(resultItem => {
           return {
@@ -444,7 +417,16 @@ export default {
         }));
       })
       this.productResult = productResult; // 选中的商品
-      this.getCalculatePrice({selectedData: this.productResult});
+      // 判断是否有取消计算的商品
+      this.result.forEach(item => {
+        if (productResult.find(productItem => productItem.skuId == item) == undefined) {
+          cancelResult.push(item);
+        }
+      })
+
+      if (this.productResult.length > 0 || cancelResult.length > 0) {
+        this.getCalculatePrice({cancelData: cancelResult, selectedData: this.productResult});
+      }
     },
     onChangeNum(item) { // 修改商品数量
       updateCartNum({ quantity: item.quantity, skuId: item.productSku }).then(res => {
