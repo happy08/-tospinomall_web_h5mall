@@ -362,13 +362,14 @@
               :key="'like-index-' + productIndex"
             >
               <BmImage
-                :url="productItem.imgUrl"
+                :url="productItem.mainPictureUrl"
                 :width="'2rem'"
                 :height="'2rem'"
                 :isLazy="false"
                 :isShow="false"
                 :fit="'cover'"
-                class="border round-4"
+                class="border round-4 hidden"
+                @onClick="onClick(productItem.productId)"
               />
             </swiper-slide>
           </swiper>
@@ -497,7 +498,12 @@
         </template>
         <!-- 加入购物车 -->
         <template v-else>
-          <div class="mlr-12 mb-12 mt-10">
+          <!-- 缺货 -->
+          <!-- {{ props.selectedSkuComb }} -->
+          <div class="mlr-12 mb-30 mt-10" v-if="props.selectedSkuComb && props.selectedSkuComb.stock_num == 0">
+            <BmButton class="fs-16 round-8 w-100 h-48 bg-ddd" @click="onOutStock">out of stock</BmButton>
+          </div>
+          <div class="mlr-12 mb-12 mt-10" v-else>
             <BmButton class="fs-16 round-8 w-100 h-48" @click="onConfirm">确认</BmButton>
           </div>
         </template>
@@ -751,11 +757,16 @@ export default {
     }); // 商品选择的图片集合
     this.initialSku = this.selectSku = {
       ...arr[0],
-      selectedNum: 1
+      selectedNum: 1,
+      selectedSkuComb: {
+        stock_num: arr[0].stock_num
+      }
     }
 
     // 获取商品推荐列表
-    const recommendData = await this.$api.getRecommendList({ shopId: this.$route.params.id });
+    const recommendData = await this.$api.getRecommendList({ shopId: 465085110123757568, categoryId: 7 });
+    console.log('------------')
+    console.log(recommendData)
     this.likeList = recommendData.data;
   },
   activated() {
@@ -997,6 +1008,14 @@ export default {
     onBuySku() {
       this.skuType = 3;
       this.productShow = true;
+    },
+    onClick(id) { // 推荐商品点击跳转到商品详情
+      this.$router.push({
+        name: 'cart-product-id',
+        params: {
+          id: id
+        }
+      })
     }
   },
 }

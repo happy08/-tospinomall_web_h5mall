@@ -101,7 +101,7 @@ export function moveToFavorite(data) {
   return request({
     url: '/api/carts/shoppingCart/moveToFavorites',
     method: 'delete',
-    data: data,
+    data: qs.stringify(data),
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded'
     }
@@ -114,6 +114,17 @@ export function moveToFavorite(data) {
 export function getCalculatePrice(data) {
   return request({
     url: '/api/carts/shoppingCart/calculatePrice',
+    method: 'put',
+    data: data
+  })
+}
+
+/**
+ * 购物车修改商品数量
+ */
+export function updateCartNum(data) {
+  return request({
+    url: '/api/carts/shoppingCart/updateCartNumById',
     method: 'put',
     data
   })
