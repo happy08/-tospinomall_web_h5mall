@@ -104,9 +104,14 @@ export default {
           _ajax.then(res => {
             if (res.code != 0) return false;
 
+            let _query = {};
+            if (this.$route.query.from) { // 主要是为了订单页面的回退
+              _query.from = this.$route.query.from;
+            }
             // 密码正确提交成功跳转到成功结果页面
             this.$router.push({
-              name: 'me-pay-result'
+              name: 'me-pay-result',
+              query: _query
             })
           })
         }, 100);

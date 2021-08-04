@@ -73,11 +73,11 @@
                   </template>
                   <!-- 自定义标题 -->
                   <template #title>
-                    <span @click="goProductDetail(singleItem.productId)">{{ singleItem.productName }}</span>
+                    <span @click="goProductDetail(singleItem.productId)" class="hidden-2">{{ singleItem.productName }}</span>
                   </template>
                   <!-- 自定义描述区域，改为展示商品型号 -->
                   <template #desc>
-                    <div class="bg-f8 pl-10 mt-8 round-4 flex vcenter pr-10 fit-width">
+                    <div class="bg-f8 pl-10 mt-8 round-4 flex vcenter pr-10 fit-width" @click="onSku(singleItem)">
                       <span class="grey pr-24">
                         <span v-for="(attrItem, attrIndex) in singleItem.productAttr" :key="'attr-item-' + attrIndex">{{ attrItem.attrValue }} {{ attrIndex != singleItem.productAttr.length-1 ? '/' : '' }} </span>
                       </span>
@@ -177,6 +177,76 @@
       </div>
     </div>
 
+    <!-- 选择产品规格 -->
+    <van-sku
+      v-model="productShow"
+      :sku="sku"
+      :goods="goodSpuVo"
+      :goods-id="goodSpuVo.id"
+      :hide_stock="false"
+      @sku-selected="getSkuInfo"
+      :initial-sku="initialSku"
+      hide-selected-text
+      hide-stock
+      ref="productSku"
+      class="custom-sku-container"
+    >
+      <!-- 自定义头部价格/展示商品id -->
+      <template #sku-header-price="props">
+        <div class="fs-16 red fw flex vcenter">
+          <span class="fm-menlo">{{ $store.state.rate.currency }}</span>
+          <span class="fm-din">{{ props.price }}</span>
+        </div>
+        <div class="mt-14 fs-12 light-grey fm-pf-r" v-if="props.selectedSkuComb">ID: {{ props.selectedSkuComb.id }}</div>
+      </template>
+
+      <!-- 商品数量选择区域 -->
+      <template #sku-stepper="props">
+        <div class="tr plr-20 mt-24">
+          <van-stepper
+            v-model="props.selectedNum"
+            input-width="0.796rem"
+            button-size="0.42rem"
+            :integer="true"
+            class="custom-stepper"
+            :max="props.selectedSkuComb ? props.selectedSkuComb.stock_num : 100000"
+            @change="getSkuInfo(props, 'stepper')"
+          />
+          <div class="mt-20" v-if="props.selectedSkuComb">
+            in stock: {{ props.selectedSkuComb.stock_num }}
+          </div>
+        </div>
+      </template>
+
+      <!-- 操作按钮区域 -->
+      <template #sku-actions="props">
+        <!-- 产品规格的选择 -->
+        <template v-if="skuType === 1">
+          <!-- 缺货 -->
+          <div class="mlr-12 mb-30 mt-10" v-if="props.selectedSkuComb && props.selectedSkuComb.stock_num == 0">
+            <BmButton class="fs-16 round-8 w-100 h-48 bg-ddd" @click="onOutStock">out of stock</BmButton>
+          </div>
+          <div class="mlr-12 mb-12 mt-10 flex between" v-else>
+            <!-- 加入购物车 -->
+            <BmButton :type="'info'" class="fs-16 round-8 w-169 h-48 add-cart-btn" @click="onConfirm">Add to cart</BmButton>
+            <!-- 立即购买 -->
+            <BmButton class="fs-16 round-8 w-169 h-48" @click="onBuyNow">Buy Now</BmButton>
+          </div>
+        </template>
+        <!-- 加入购物车 -->
+        <template v-else>
+          <!-- 缺货 -->
+          <!-- {{ props.selectedSkuComb }} -->
+          <div class="mlr-12 mb-30 mt-10" v-if="props.selectedSkuComb && props.selectedSkuComb.stock_num == 0">
+            <BmButton class="fs-16 round-8 w-100 h-48 bg-ddd" @click="onOutStock">out of stock</BmButton>
+          </div>
+          <div class="mlr-12 mb-12 mt-10" v-else>
+            <BmButton class="fs-16 round-8 w-100 h-48" @click="onConfirm">确认</BmButton>
+          </div>
+        </template>
+      </template>
+    </van-sku>
+
     <!-- 底部 -->
     <BmTabbar />
   </div>
@@ -187,7 +257,7 @@ import EmptyStatus from '@/components/EmptyStatus';
 import ProductTopBtmSingle from '@/components/ProductTopBtmSingle';
 import OrderStoreSingle from '@/components/OrderStoreSingle';
 import SoldOut from '@/components/SoldOut';
-import { Divider, Tab, Tabs, SwipeCell, Card, Stepper, Checkbox, CheckboxGroup, Sticky, SubmitBar, PullRefresh, List } from 'vant';
+import { Divider, Tab, Tabs, SwipeCell, Card, Stepper, Checkbox, CheckboxGroup, Sticky, SubmitBar, PullRefresh, List, Sku } from 'vant';
 import { removeCart, setOftenBuy, getCartCount, moveToFavorite, getCalculatePrice, updateCartNum } from '@/api/cart';
 
 export default {
@@ -204,6 +274,7 @@ export default {
     vanSubmitBar: SubmitBar,
     vanPullRefresh: PullRefresh,
     vanList: List,
+    vanSku: Sku,
     SoldOut,
     EmptyStatus,
     OrderStoreSingle,
@@ -229,6 +300,10 @@ export default {
       productResult: [], // 选中的商品id
       refreshing: false,
       result: [], // 已提交的已选择的商品skuid
+      productShow: false,
+      goodSpuVo: {},
+      initialSku: {},
+      sku: {}
     }
   },
   async fetch() {
@@ -446,6 +521,12 @@ export default {
         return item.skuId;
       })
       this.moveToFavorite(skuIds.join('_'));
+    },
+    getSkuInfo(value, type) { // 获取选中的商品的规格
+      
+    },
+    onSku(item) { // 获取商品规格
+      console.log(item);
     }
   },
 }

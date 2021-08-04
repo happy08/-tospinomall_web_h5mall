@@ -2,7 +2,7 @@
   <!-- 我的-订单 -->
   <div class="vh-100 bg-grey">
     <van-sticky class="bg-white">
-      <BmHeaderNav :left="{ isShow: true }" :title="$t('me.order.myOrderTitle')" :border="false" />
+      <BmHeaderNav :left="{ isShow: true, url: '/me' }" :title="$t('me.order.myOrderTitle')" :border="false" />
       <!-- 搜索 -->
       <div class="flex vcenter pl-20 pr-12 bg-white">
         <van-search

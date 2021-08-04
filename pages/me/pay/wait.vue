@@ -2,7 +2,7 @@
   <!-- 订单-支付-等待支付页面 -->
   <div class="bg-grey vh-100 flex column between">
     <div>
-      <BmHeaderNav :left="{ isShow: true }" :title="$t('me.pay.payment')" />
+      <BmHeaderNav :left="{ isShow: true, isEmit: true }" :title="$t('me.pay.payment')" @leftClick="leftClick" />
       <!-- 支付详情 -->
       <div class="mt-24 tc plr-20">
         <BmImage
@@ -41,6 +41,8 @@
 </template>
 
 <script>
+import { cancelPayOrder, checkPayOrder } from '@/api/pay';
+
 export default {
   middleware: 'authenticated',
   computed: {
@@ -50,12 +52,34 @@ export default {
   },
   methods: {
     onPayCompleted() { // 支付完成
+      if (this.$route.query.refNo) { // 确认订单是否支付
+        checkPayOrder(this.$route.query.refNo).then(res => {
+          if (res.code != 0) {
+            this.$dialog.confirm({
+              title: '支付失败',
+              message: '您当前的订单未支付成功，请确认是否完成支付，如有疑问请联系客服',
+              confirmButtonText: '好的'
+            })
+            return false;
+          }
+
+          this.$router.push({ // 校验之后成功跳转到订单支付结果页面
+            name: 'cart-order-confirm',
+            query: {
+              orderId: this.$route.query.orderId
+            }
+          })
+        })
+
+        return false;
+      }
+      
       this.$router.replace({
         name: 'me-wallet'
       })
     },
-    onChangePayMethod() { // 修改支付方式, 返回上一级
-      this.$router.go(-1);
+    onChangePayMethod() { // 修改支付方式时, 要先取消该订单再返回上一级
+      this.cancelPayOrder();
     },
     onCancel() { // 取消支付
       this.$dialog({
@@ -67,10 +91,20 @@ export default {
         cancelButtonText: 'Leave',
         cancelButtonColor: '#383838'
       }).then(res => { // on confirm
-
+        
       }).catch(() => { // on cancel
+        if (this.$route.query.refNo) { // 取消订单支付
+          this.cancelPayOrder();
+        }
+      })
+    },
+    cancelPayOrder() { // 取消订单支付
+      cancelPayOrder(this.$route.query.refNo).then(() => {
         this.$router.go(-1);
       })
+    },
+    leftClick() { // 页面回退
+      this.onCancel();
     }
   },
 }

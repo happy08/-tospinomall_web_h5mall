@@ -112,3 +112,56 @@ export function getBillDetail(id) {
     }
   })
 }
+
+/**
+ * 支付订单
+ */
+export function payOrder(data) {
+  let _data = data;
+  if (_data.pwd) {
+    _data = {
+      ...data,
+      pwd: encrypt(data.pwd)
+    }
+  }
+  return request({
+    url: '/api/order/pay/order',
+    method: 'post',
+    data: _data,
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+}
+
+/**
+ * 取消支付
+ */
+export function cancelPayOrder(refNo) {
+  return request({
+    url: '/api/order/pay/cancelPay',
+    method: 'get',
+    params: {
+      refNo: refNo
+    },
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
+  })
+}
+
+/**
+ * 检查是否支付订单
+ */
+export function checkPayOrder(refNo) {
+  return request({
+    url: '/api/order/pay/checkIsPay',
+    method: 'get',
+    params: {
+      refNo: refNo
+    },
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
+  })
+}

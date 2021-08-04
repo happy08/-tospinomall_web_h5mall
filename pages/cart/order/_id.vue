@@ -232,7 +232,7 @@ export default {
           query: {
             type: 'order',
             amount: this.detail.totalPayAmount,
-            orderId: res.data.id
+            orderIds: JSON.stringify({orderIds: res.data.orderIds})
           }
         })
       })

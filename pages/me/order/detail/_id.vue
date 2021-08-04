@@ -3,7 +3,7 @@
   <div class="vh-100 bg-grey pb-56">
     <!-- 头部 -->
     <div class="bg-green-linear">
-      <BmHeaderNav :left="{ isShow: true }" :border="false" :title="$t(title)" :color="'white'" :bg_color="'bg-green-linear'" />
+      <BmHeaderNav :left="{ isShow: true, isEmit: true }" :border="false" :title="$t(title)" :color="'white'" :bg_color="'bg-green-linear'" @leftClick="leftClick" />
       <!-- 待付款倒计时 -->
       <div class="mt-10 tc white fs-14 pb-40 flex center plr-20" v-if="detail.status == 0">
         {{ $t('me.order.remaining') }}:
@@ -307,6 +307,20 @@ export default {
       }).catch(() => {
 
       })
+    },
+    leftClick() {
+      if (this.$route.query.back) {
+        this.$router.push({
+          name: 'me-order'
+        })
+        return false;
+      }
+
+      if(window.history.length < 2){ //解决部分机型拿不到history
+        this.$router.replace('/');
+      }else{
+        history.back();
+      }
     }
   },
 }

@@ -22,6 +22,10 @@ export default {
   middleware: 'authenticated',
   methods: {
     onConfirm() {
+      if (this.$route.query.from) { // 主要判断从订单页面回来要跳回去
+        this.$router.go(-5);
+        return false;
+      }
       this.$router.push({
         name: 'me-pay'
       })

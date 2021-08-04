@@ -4,7 +4,7 @@
     <BmHeaderNav :left="{ isShow: true }" :title="$t('me.pay.paymentPwd')" />
 
     <div class="mlr-20 code-container">
-      <p class="fs-18 black tc">{{ $t('me.pay.firstSetPwd') }}</p>
+      <p class="fs-18 black tc">请输入6位数字验证码</p>
 
       <!-- 密码输入框 -->
       <van-password-input
@@ -90,7 +90,8 @@ export default {
               name: 'me-pay-changePwd',
               query: {
                 code: this.value,
-                changeWay: this.$route.query.changeWay === 'email' ? 'email' : 'phone'
+                changeWay: this.$route.query.changeWay === 'email' ? 'email' : 'phone',
+                from: this.$route.query.from
               }
             })
           })

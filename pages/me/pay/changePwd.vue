@@ -75,6 +75,9 @@ export default {
           if (this.$route.query.changeWay) { // 验证方式
             _query.changeWay = this.$route.query.changeWay;
           }
+          if (this.$route.query.from) { // 主要是为了订单页面的回退
+            _query.from = this.$route.query.from;
+          }
           this.$router.push({
             name: 'me-pay-confirmPwd',
             query: _query

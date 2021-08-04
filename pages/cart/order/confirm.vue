@@ -57,9 +57,23 @@ export default {
       })
     },
     goViewOrder() { // 查看订单详情
-      this.$router.push({
-        name: 'me-order'
-      })
+      let orderId = JSON.parse(this.$route.query.orderId).orderId;
+      if (orderId.length == 1) { // 一个订单跳转到订单详情
+        this.$router.push({
+          name: 'me-order-detail-id',
+          params: {
+            id: this.$route.query.orderId
+          },
+          query: {
+            back: 'me-order'
+          }
+        })
+      } else { // 两个及以上订单跳转到订单列表
+        this.$router.push({
+          name: 'me-order'
+        })
+      }
+      
     }
   },
 }
