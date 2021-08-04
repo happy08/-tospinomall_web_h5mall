@@ -63,7 +63,7 @@ export default {
   },
   beforeRouteEnter(to, from, next) { // 从初始页面进入重置值为空
     next(vm => {
-      if (from.name === 'me') {
+      if (from.name === 'me' || from.name === 'me-pay-wait') {
         vm.amount = '';
       }
     });
