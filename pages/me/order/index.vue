@@ -1,32 +1,31 @@
 <template>
   <!-- 我的-订单 -->
-  <div>
+  <div class="vh-100 bg-grey">
     <van-sticky class="bg-white">
       <BmHeaderNav :left="{ isShow: true }" :title="$t('me.order.myOrderTitle')" :border="false" />
       <!-- 搜索 -->
-      <div class="flex vcenter ml-20 mr-12">
+      <div class="flex vcenter pl-20 pr-12 bg-white">
         <van-search
           v-model="searchVal"
           shape="round"
           placeholder="请输入搜索关键词"
-          class="bg-white w-100"
+          class="w-100"
           @click="goSearch"
         > 
           <!-- 右侧图标-点击拍照 -->
-          <template #right-icon>
+          <!-- <template #right-icon>
             <div>
               <van-icon :name="require('@/assets/images/icon/camera-icon.png')" size="0.46rem" />
-              <!-- <input type="file" capture="camera" /> -->
             </div>
-          </template>
+          </template> -->
         </van-search>
         <!-- 筛选 -->
         <van-icon :name="require('@/assets/images/icon/filter-icon.png')" class="ml-12" @click="filterPopup = true" size="0.48rem" />
       </div>
 
       <!-- 分类 -->
-      <van-tabs sticky swipeable animated :offset-top="44" color="#42B7AE"  @change="getSearchList" class="pt-12" v-model="typeActive">
-        <van-tab v-for="(productItem, tabIndex) in tabs" :title="productItem.name" :key="'scroll-tab-' + tabIndex" title-class="pb-4 border-b" :name="productItem.type" />
+      <van-tabs sticky swipeable animated color="#42B7AE"  @change="getSearchList" class="pt-12 bg-white customs-van-tabs" v-model="typeActive" :ellipsis="false" >
+        <van-tab v-for="(productItem, tabIndex) in tabs" :title="productItem.name" :key="'scroll-tab-' + tabIndex" title-class="border-b" :name="productItem.type" />
       </van-tabs>
     </van-sticky>
     
@@ -35,15 +34,16 @@
         v-model="loading"
         :finished="finished"
         @load="onLoad"
+        :finished-text="lists.length == 0 ? '' : '没有更多了'"
       >
-        <div class="mlr-12 mt-20 flex between flex-wrap">
+        <div class="flex between flex-wrap">
           <!-- 空状态  -->
           <empty-status v-if="lists.length === 0" :image="require('@/assets/images/empty/order.png')" :description="$t('common.noRecord')"/>
-          <div v-else v-for="(item,index) in lists" :key="index" class="w-100">
+          <div v-else v-for="(item,index) in lists" :key="index" class="w-100 plr-12 mb-12 bg-white pb-20 pt-24">
             <!-- 订单店铺 -->
             <OrderStoreSingle :name="item.storeName" :status="item.status | statusFormat" @goStoreDetail="goStoreDetail(item.storeId)">
               <!-- 如果是取消状态，则该订单可删除，添加操作展示  -->
-              <div slot="other-deal" class="flex vcenter">
+              <div slot="other-deal" class="flex vcenter" v-if="item.status == 5 || item.status == 6">
                 <span class="block line-style"></span>
                 <BmImage 
                   :url="require('@/assets/images/icon/delete-icon.svg')"
@@ -155,11 +155,12 @@ export default {
         pageNum: 1,
         pageSize: 10
       },
-      total: 0
+      total: 0,
+      isFirst: true // 是否是首次进入
     }
   },
   async fetch() {
-    if (this.$route.query.type) this.typeActive = this.tabs[this.$route.query.type].type;
+    if (this.$route.query.type && this.isFirst) this.typeActive = this.tabs[this.$route.query.type].type;
 
     if (this.typeActive == 100) { // 全部
       this.params = {
@@ -176,10 +177,11 @@ export default {
     const listData = await this.$api.getOrderList(this.params);
     if (listData.code != 0) return false;
 
-    this.lists = listData.data.records;
+    this.lists = this.params.pageNum == 1 ? listData.data.records : this.lists.concat(listData.data.records);
     this.total = listData.data.total;
     this.loading = false;
     this.refreshing = false;
+    this.isFirst = false;
   },
   filters: {
     statusFormat(val) {
@@ -187,11 +189,12 @@ export default {
     }
   },
   activated() {
+    this.isFirst = true;
     this.$fetch();
   },
   methods: {
     async getSearchList() { // 获取分类列表
-      
+      this.params.pageNum = 1;
       this.$fetch();
     },
     onFilter() { // 过滤
@@ -222,15 +225,18 @@ export default {
       })
     },
     onRefresh() { // 下拉刷新
-      this.pageNum = 1;
+      this.params.pageNum = 1;
       this.$fetch();
     },
     onLoad() {
+      console.log('--------')
       if (this.total == this.lists.length) {
         this.loading = false;
         this.finished = true;
         return false;
       }
+      this.params.pageNum += 1;
+      this.$fetch();
     },
     goPay() { // 再次购买
 

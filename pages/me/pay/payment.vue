@@ -38,6 +38,7 @@
           :placeholder="$t('me.pay.prefPlaceholder')"
           :class="{'field-container phone-code-field pt-0 pb-20': true, 'is-active': payRadio == item}"
           type="tel"
+          v-if="item != 'balance'"
         >
           <template #label>
             <span @click="showPicker = true" class="iblock fs-14 black lh-20 pl-4">
@@ -62,16 +63,35 @@
     <!-- 底部金额以及支付按钮 -->
     <div class="w-100 bg-white flex between pl-20 vcenter pay-content__btn">
       <div class="red fs-18 fw">{{ $store.state.rate.currency }}{{ $route.query.amount }}</div>
-      <BmButton class="fs-16 round-0 pay-content__btn--pay" :disabled="account.length === 0" @click="onPay">Pay</BmButton>
+      <BmButton class="fs-16 round-0 pay-content__btn--pay" :disabled="account.length === 0 && payRadio !== 'balance'" @click="onPay">Pay</BmButton>
     </div>
+
+    <!-- 余额支付点击支付按钮，需要输入支付密码 -->
+    <van-popup v-model="balanceShow" position="bottom" class="w-100 pb-244" closeable close-icon-position="top-left" close-icon="arrow-left">
+      <h3 class="black fs-16 tc mt-16">输入支付密码</h3>
+      <!-- 密码输入框 -->
+      <div class="plr-10 mt-20">
+        <van-password-input
+          :value="payPwd"
+        />
+      </div>
+      
+      <nuxt-link :to="{}" class="tc grey fs-12 block mtb-10">忘记密码</nuxt-link>
+      <!-- 数字键盘 -->
+      <van-number-keyboard
+        v-model="payPwd"
+        :show="true"
+        @input="onInput"
+      />
+    </van-popup>
      
   </div>
 </template>
 
 <script>
-import { RadioGroup, Radio, Cell, CellGroup, Field, Popup, Picker } from 'vant';
+import { RadioGroup, Radio, Cell, CellGroup, Field, Popup, Picker, NumberKeyboard, PasswordInput } from 'vant';
 import { getPhonePrefix } from '@/api/login';
-import { getAvailable, buyerRecharge } from '@/api/pay';
+import { getAvailable, buyerRecharge, checkPayPwd } from '@/api/pay';
 
 export default {
   middleware: 'authenticated',
@@ -82,7 +102,9 @@ export default {
     vanCellGroup: CellGroup,
     vanField: Field,
     vanPopup: Popup,
-    vanPicker: Picker
+    vanPicker: Picker,
+    vanNumberKeyboard: NumberKeyboard,
+    vanPasswordInput: PasswordInput
   },
   data() {
     return {
@@ -92,7 +114,9 @@ export default {
       prefixCode: '',
       account: '',
       phonePrefixs: [],
-      isBackDialog: false
+      isBackDialog: false,
+      balanceShow: false,
+      payPwd: ''
     }
   },
   beforeRouteEnter(to, from, next) { // 从初始页面进入重置值为空
@@ -112,6 +136,10 @@ export default {
       if (res.code != 0) return false;
 
       this.list = res.data;
+
+      if (this.$route.query.type == 'order') { // 说明是从订单结算页面跳转过来的，支付方式就有余额
+        this.list.push('balance');
+      }
     })
   },
   methods: {
@@ -122,6 +150,10 @@ export default {
       })
     },
     onPay() { // 提交支付,成功跳转到确认订单页面
+      if (this.payRadio == 'balance') { // 余额支付
+        this.balanceShow = true;
+        return false;
+      }
       buyerRecharge({ amount: parseFloat(this.$route.query.amount), msisdn: this.account, network: this.payRadio, type: this.$route.query.type }).then(res => {
         if (res.code != 0) return false;
         this.$router.push({
@@ -157,6 +189,33 @@ export default {
       }).catch(() => { // on leave
         this.$router.go(-1);
       })
+    },
+    onInput() { // 密码按键时触发
+      if (this.payPwd.length >= 5) {
+        setTimeout(() => {
+          // 加载图标
+          this.$toast.loading({
+            forbidClick: true,
+            loadingType: 'spinner',
+            duration: 0
+          });
+          checkPayPwd(this.payPwd).then(res => { // 余额支付判断支付密码是否正确
+            if (res.code != 0) return false;
+
+            if (!res.data) {
+              this.$toast.fail('支付密码错误');
+              return false;
+            }
+
+            // this.$router.push({ // 校验之后跳转到设置密码页面
+            //   name: 'me-pay-changePwd',
+            //   query: {
+            //     payPwd: this.payPwd
+            //   }
+            // })
+          })
+        }, 100);
+      }
     }
   },
 }
@@ -185,5 +244,8 @@ export default {
 }
 .is-active{
   display: flex;
+}
+.pb-244{
+  padding-bottom: 244px;
 }
 </style>

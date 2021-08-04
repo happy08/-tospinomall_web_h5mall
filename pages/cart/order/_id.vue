@@ -210,7 +210,7 @@ export default {
         item.deliveryTypeSkuItemMap.skuItemVoList.forEach(skuItem => {
           skuItems.push({
             count: skuItem.count,
-            skuId: skuItem.sellerId
+            skuId: skuItem.skuId
           })
 
           leaveMessages.push({
@@ -219,13 +219,20 @@ export default {
           })
         })
       })
-      console.log(skuItems)
+      // 运输方式
+      let confirmTransportModes = this.confirmTransportModes.map(item => {
+        return item.sendType;
+      })
 
-      submitOrder({ addressId: this.address.id, sourceType: 4, skuItems: skuItems, isCart: this.$route.params.isCart ? 1 : 0, leaveMessages: leaveMessages }).then(res => {
+      submitOrder({ addressId: this.address.id, sourceType: 4, skuItems: skuItems, isCart: this.$route.params.isCart ? 1 : 0, leaveMessages: leaveMessages, confirmTransportModes: confirmTransportModes }).then(res => {
         if (res.code != 0) return false;
 
         this.$router.push({
-          name: 'me-pay-payment'
+          name: 'me-pay-payment',
+          query: {
+            type: 'order',
+            amount: this.detail.totalPayAmount
+          }
         })
       })
     },
