@@ -71,6 +71,35 @@ export function buyerRecharge(data) {
 }
 
 /**
+ * 买家取消充值
+ */
+export function buyerCancelRecharge(refNo) {
+  return request({
+    url: '/api/finance/buyerExpensesDetail/buyer/cancelRecharge',
+    method: 'post',
+    data: qs.stringify({
+      refNo: refNo
+    })
+  })
+}
+
+/**
+ * 买家充值是否支付成功
+ */
+export function checkBuyerRecharge(refNo) {
+  return request({
+    url: '/api/finance/buyerExpensesDetail/buyer/isSuccess',
+    method: 'get',
+    params: {
+      refNo: refNo
+    },
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
+  })
+}
+
+/**
  * 获取可用支付方式
  */
 export function getAvailable() {

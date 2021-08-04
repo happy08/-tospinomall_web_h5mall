@@ -169,7 +169,8 @@ export default {
           query: {
             network: this.payRadio,
             phone: this.account,
-            amount: this.$route.query.amount
+            amount: this.$route.query.amount,
+            refNo: res.data.refNo
           }
         })
       })

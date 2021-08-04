@@ -5,7 +5,7 @@
 
     <!-- 金额 -->
     <div class="ptb-24 tc">
-      <p class="fs-24 black fw">{{ detail.collectPaymentType == 1 ? '+' : '-' }}{{ detail.realAmount }}</p>
+      <p class="fs-24 black fw">{{ detail.collectPaymentType == 1 ? '+' : '-' }}{{ $store.state.rate.currency }}{{ detail.realAmount }}</p>
       <p class="fs-14 black mt-12">{{ detail.title }}</p>
     </div>
 

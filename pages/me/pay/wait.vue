@@ -41,7 +41,7 @@
 </template>
 
 <script>
-import { cancelPayOrder, checkPayOrder } from '@/api/pay';
+import { cancelPayOrder, checkPayOrder, buyerCancelRecharge, checkBuyerRecharge } from '@/api/pay';
 
 export default {
   middleware: 'authenticated',
@@ -51,35 +51,41 @@ export default {
     }
   },
   methods: {
-    onPayCompleted() { // 支付完成
-      if (this.$route.query.refNo) { // 确认订单是否支付
-        checkPayOrder(this.$route.query.refNo).then(res => {
-          if (res.code != 0) {
-            this.$dialog.confirm({
-              title: '支付失败',
-              message: '您当前的订单未支付成功，请确认是否完成支付，如有疑问请联系客服',
-              confirmButtonText: '好的'
-            })
-            return false;
-          }
+    async onPayCompleted() { // 支付完成
+      let data;
+      if (this.$route.query.orderId) { // 确认订单是否支付
+        data = await checkPayOrder(this.$route.query.refNo);
+      } else {
+        data = await checkBuyerRecharge(this.$route.query.refNo); // 判断买家充值是否成功
+      }
 
-          this.$router.push({ // 校验之后成功跳转到订单支付结果页面
-            name: 'cart-order-confirm',
-            query: {
-              orderId: this.$route.query.orderId
-            }
-          })
+      if (data.code != 0) {
+        this.$dialog.confirm({
+          title: '支付失败',
+          message: '您当前的订单未支付成功，请确认是否完成支付，如有疑问请联系客服',
+          confirmButtonText: '好的'
         })
-
         return false;
       }
-      
-      this.$router.replace({
-        name: 'me-wallet'
-      })
+      if (this.$route.query.orderId) {
+        this.$router.push({ // 校验之后成功跳转到订单支付结果页面
+          name: 'cart-order-confirm',
+          query: {
+            orderId: this.$route.query.orderId
+          }
+        })
+      } else {
+        this.$router.replace({
+          name: 'me-wallet'
+        })
+      }
     },
     onChangePayMethod() { // 修改支付方式时, 要先取消该订单再返回上一级
-      this.cancelPayOrder();
+      if (this.$route.query.orderId) { // 取消订单支付
+        this.cancelPayOrder();
+        return false;
+      }
+      this.cancelBuyerRecharge(); // 取消买家余额充值
     },
     onCancel() { // 取消支付
       this.$dialog({
@@ -93,9 +99,11 @@ export default {
       }).then(res => { // on confirm
         
       }).catch(() => { // on cancel
-        if (this.$route.query.refNo) { // 取消订单支付
+        if (this.$route.query.orderId) { // 取消订单支付
           this.cancelPayOrder();
+          return false;
         }
+        this.cancelBuyerRecharge(); // 取消买家余额充值
       })
     },
     cancelPayOrder() { // 取消订单支付
@@ -105,6 +113,11 @@ export default {
     },
     leftClick() { // 页面回退
       this.onCancel();
+    },
+    cancelBuyerRecharge() { // 买家取消充值
+      buyerCancelRecharge(this.$route.query.refNo).then(() => {
+        this.$router.go(-1);
+      })
     }
   },
 }
