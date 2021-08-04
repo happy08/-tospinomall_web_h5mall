@@ -41,7 +41,7 @@
 </template>
 
 <script>
-import { cancelPayOrder, checkPayOrder, buyerCancelRecharge, checkBuyerRecharge } from '@/api/pay';
+import { cancelPayOrder, checkPayOrder, buyerCancelRecharge, checkBuyerRecharge, callBackRecharge } from '@/api/pay';
 
 export default {
   middleware: 'authenticated',
@@ -75,8 +75,12 @@ export default {
           }
         })
       } else {
-        this.$router.replace({
-          name: 'me-wallet'
+        callBackRecharge(this.$route.query.refNo).then(res => {
+          if (res.code != 0) return false;
+
+          this.$router.replace({
+            name: 'me-wallet'
+          })
         })
       }
     },

@@ -100,6 +100,19 @@ export function checkBuyerRecharge(refNo) {
 }
 
 /**
+ * 买家余额充值回调-仅限测试环境使用
+ */
+export function callBackRecharge(tradeNo) {
+  return request({
+    url: '/api/finance/buyerExpensesDetail/buyer/rechargeBalanceCallBack',
+    method: 'post',
+    data: qs.stringify({
+      tradeNo: tradeNo
+    })
+  })
+}
+
+/**
  * 获取可用支付方式
  */
 export function getAvailable() {
