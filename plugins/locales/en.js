@@ -159,6 +159,7 @@ const en = {
       cancelReasons: ['Incorrect address information', "I don't want it now.", 'Product wrong/multiple choice', 'Product out of stock', 'Commodity price reduction', 'Useless/less use/misuse discount'],
       checkoutCounter: 'Checkout counter',
       undelivered: 'Undelivered',
+      shipments: 'Shipments',
       sending: 'The order is being delivered, please pay attention to the logistics status',
       addShopCart: 'Add shopping cart',
       afterSales: 'Apply for after-sales',

@@ -28,7 +28,7 @@
           <van-checkbox-group v-model="item.result" :ref="'checkboxGroup-' + item.id" @change="storeChangeCheck($event, item)">
             <div class="flex vcenter pl-12">
               <BmImage
-                :url="item.isAll ? require('@/assets/images/icon/choose-icon.png') : require('@/assets/images/icon/choose-default-icon.png')"
+                :url="item.isEmpty.length == item.products.length ? require('@/assets/images/icon/unchoose-icon.png') : item.isAll ? require('@/assets/images/icon/choose-icon.png') : require('@/assets/images/icon/choose-default-icon.png')"
                 :width="'0.32rem'" 
                 :height="'0.32rem'"
                 :isLazy="false"
@@ -251,6 +251,9 @@ export default {
           return resultItem.id;
         }),
         isAll: false, // 是否全选
+        isEmpty: storeItem.products.filter(selectItem => { // 是否选中
+          return selectItem.stock == '' || selectItem.stock == 0;
+        })
       }
     }); // 购物车列表
     // this.total = listData.data.totalQuantity; // 总数量
@@ -274,6 +277,9 @@ export default {
       this.$fetch();
     },
     storeCheckAll(store, isAll) { // 店铺内部全选与否
+      if (store.isEmpty.length == store.products.length) { // 该店铺下商品全部为空时，不可点
+        return false;
+      }
       let isCheck = isAll ? !isAll : store.isAll;
 
       store.result = isCheck ? [] : store.products.map(item => {

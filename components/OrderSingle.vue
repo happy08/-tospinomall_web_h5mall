@@ -88,5 +88,6 @@ export default {
   // width: 135px;
   margin-left: 16px;
   margin-right: 16px;
+  width: 100%;
 }
 </style>

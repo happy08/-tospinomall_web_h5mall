@@ -231,7 +231,8 @@ export default {
           name: 'me-pay-payment',
           query: {
             type: 'order',
-            amount: this.detail.totalPayAmount
+            amount: this.detail.totalPayAmount,
+            orderId: res.data.id
           }
         })
       })

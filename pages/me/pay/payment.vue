@@ -207,12 +207,12 @@ export default {
               return false;
             }
 
-            // this.$router.push({ // 校验之后跳转到设置密码页面
-            //   name: 'me-pay-changePwd',
-            //   query: {
-            //     payPwd: this.payPwd
-            //   }
-            // })
+            this.$router.push({ // 校验之后成功跳转到订单支付结果页面
+              name: 'cart-order-confirm',
+              query: {
+                orderId: this.$route.query.orderId
+              }
+            })
           })
         }, 100);
       }
