@@ -41,7 +41,7 @@
           <empty-status v-if="lists.length === 0" :image="require('@/assets/images/empty/order.png')" :description="$t('common.noRecord')"/>
           <div v-else v-for="(item,index) in lists" :key="index" class="w-100 plr-12 mb-12 bg-white pb-20 pt-24">
             <!-- 订单店铺 -->
-            <OrderStoreSingle :name="item.storeName" :status="item.status | statusFormat" @goStoreDetail="goStoreDetail(item.storeId)">
+            <OrderStoreSingle :name="item.storeName" :status="item.status | statusFormat" @goStoreDetail="goOrderDetail(item.items[0].orderId)">
               <!-- 如果是取消状态，则该订单可删除，添加操作展示  -->
               <div slot="other-deal" class="flex vcenter" v-if="item.status == 5 || item.status == 6">
                 <span class="block line-style"></span>
@@ -65,9 +65,28 @@
                 :product_num="productItem.goodQuantity"
                 @onClick="goOrderDetail(productItem.orderId)"
               />
-              <div class="w-100 bg-white btn-content flex hend vcenter" v-if="productItem.status == 4 || productItem.status == 5 || productItem.status == 6">
+              <!-- 订单不同状态对应的按钮展示 -->
+              <div class="w-100 bg-white btn-content flex hend vcenter mt-22">
+                <!-- 待付款0：去支付/再次购买 -->
+                <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" @click="goPay" v-if="productItem.status == 0">修改订单</BmButton>
+                <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" @click="goPay" v-if="productItem.status == 0">取消订单</BmButton>
+                <BmButton class="fs-14 ml-10 round-8 plr-12 h-32" :type="'info'" @click="goPay" v-if="productItem.status == 0">去支付</BmButton>
+                <!-- 仓库处理中: 退款/再次购买 -->
+                <!-- <BmButton class="fs-16 ml-10 rount-0 plr-30 " @click="goPay" v-if="productItem.status == 1">退款/售后</BmButton> -->
+                <!-- 待发货1 -->
+                <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" @click="goPay" v-if="productItem.status == 1">取消订单</BmButton>
+                <!-- 待收货2 -->
+                <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" @click="goPay" v-if="productItem.status == 2">退款/售后</BmButton>
+                <!-- 待评价3 -->
+                <!-- 已完成4：退款/售后、评价、再次购买 -->
+                <!-- <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" @click="goPay" v-if="productItem.status == 4">退款/售后</BmButton>
+                <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" @click="goPay" v-if="productItem.status == 4">评价</BmButton> -->
+                <!-- 已取消5：再次购买 -->
+                <!-- <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" @click="goPay" v-if="productItem.status == 5"></BmButton> -->
+                <!-- 超时未付款6 -->
+                <!-- 已拒收7 -->
                 <!-- Buy Again -->
-                <BmButton class="fs-16 ml-10 rount-0 plr-30 btn-content__buy" @click="goPay">{{ $t('me.order.buyAgain') }}</BmButton>
+                <BmButton class="fs-14 ml-10 round-8 plr-12 h-32" v-if="productItem.status != 0" :type="'info'" @click="goPay">{{ $t('me.order.buyAgain') }}</BmButton>
               </div>
             </div>
             
@@ -208,14 +227,6 @@ export default {
     deleteFn() { // 删除订单
 
     },
-    goStoreDetail(id) { // 跳转到店铺详情
-      this.$router.push({
-        name: 'cart-store-id',
-        params: {
-          id: id
-        }
-      })
-    },
     goOrderDetail(orderId) { // 跳转到订单详情
       this.$router.push({
         name: 'me-order-detail-id',
@@ -229,7 +240,6 @@ export default {
       this.$fetch();
     },
     onLoad() {
-      console.log('--------')
       if (this.total == this.lists.length) {
         this.loading = false;
         this.finished = true;
@@ -279,17 +289,15 @@ export default {
     background-color: rgba(255, 102, 102, 0.05);
   }
 }
-.btn-content{
-  position: fixed;
-  bottom: 0;
-  height: 56px;
-  .btn-content__buy{
-    height: 100%;
-  }
-  .btn-content__evaluation{
-    height: 36px!important;
-    border-color: #eee!important;
-    background-color: transparent!important;
-  }
+.h-32{
+  height: 32px!important;
+}
+.gery-border{
+  border-color: #eee!important;
+  color: #383838!important;
+  background-color: transparent!important;
+}
+.mt-22{
+  margin-top: 22px;
 }
 </style>

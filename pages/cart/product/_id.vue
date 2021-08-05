@@ -219,7 +219,7 @@
               <div class="flex vcenter">
                 <span class="fw fs-12 block">{{ $t("cart.select") }}</span>
                 <span class="ml-12 fs-12 grey fm-helvetica"
-                  >Color:Red,Blue</span
+                  >{{ goodAttr | goodAttrFormat }}</span
                 >
               </div>
             </template>
@@ -448,9 +448,9 @@
       :goods-id="goodSpuVo.id"
       :hide_stock="false"
       @sku-selected="getSkuInfo"
-      :initial-sku="initialSku"
       hide-selected-text
       hide-stock
+      @sku-prop-selected="getSkuInfo"
       ref="productSku"
       class="custom-sku-container"
     >
@@ -643,7 +643,6 @@ export default {
         list: []
       },
       initialSku: { // 初始化商品格式/已选择的商品格式
-        selectedNum: 3
       },
       isScroll: false,
       addressShow: false,
@@ -664,6 +663,7 @@ export default {
       likeList: [], // 推荐商品列表
       selectCarousel: [], // 产品选择的图片展示列表
       skuType: 1, // 1 从select处进入产品规格选择 2 加入购物车 3 立即购买
+      goodAttr: [], // 商品选中的属性规格展示
     }
   },
   async fetch() {
@@ -790,12 +790,13 @@ export default {
       // 获取地址的时候默认是最后一级
       this.getNextArea(res.data.areaList[res.data.areaList.length - 2], false, true);
       // 获取运费模板
-      this.getDeliveryInfo();
+      // this.getDeliveryInfo(); // 每次进入不获取运费模板，因为默认不选中商品规格
     })
     // 如果上次请求超过一分钟了，就再次发起请求
     if (this.$fetchState.timestamp <= Date.now() - 60000) {
       this.$fetch();
     }
+    this.$refs.productSku.resetSelectedSku();
   },
   head() {
     return {
@@ -809,6 +810,11 @@ export default {
   filters: {
     reviewNumFormat(val) { // 评论数字格式化
       return val > 100 ? val + '+' : val;
+    },
+    goodAttrFormat(arr) {
+      return arr.map(item => {
+        return item.k + ':' + item.name;
+      }).join(',');
     }
   },
   computed: {
@@ -947,16 +953,38 @@ export default {
       })
     },
     getSkuInfo(value, type) { // 获取选中的商品的规格
+      console.log('=============')
       console.log(value)
-      // console.log(type)
+      
       if (this.$refs.productSku) {
-        this.selectSku = this.$refs.productSku.getSkuData();
+        this.selectSku = this.$refs.productSku.getSkuData(); // 得到已选择的商品属性
         if (type === 'stepper') {
           this.selectSku = {
             ...this.selectSku,
             selectedNum: value.selectedNum
           };
         }
+
+        // 页面展示已选择的商品属性
+        if (this.goodAttr.find(item => item.skuKeyStr == value.skuValue.skuKeyStr) == undefined) {
+          this.goodAttr.push(value.skuValue);
+        }
+        this.goodAttr = this.goodAttr.map(item => {
+          return {
+            skuKeyStr: item.skuKeyStr == value.skuValue.skuKeyStr ? value.skuValue.skuKeyStr : item.skuKeyStr,
+            name: item.skuKeyStr == value.skuValue.skuKeyStr ? value.skuValue.name : item.name,
+            id: item.skuKeyStr == value.skuValue.skuKeyStr ? value.skuValue.id : item.id,
+            k: ''
+          };
+        })
+
+        this.sku.tree.forEach(treeItem => {
+          this.goodAttr.forEach(attrItem => {
+            if (treeItem.k_s == attrItem.skuKeyStr) {
+              attrItem.k = treeItem.k;
+            }
+          })
+        })
       }
     },
     onSelect() { // 选择产品规格
