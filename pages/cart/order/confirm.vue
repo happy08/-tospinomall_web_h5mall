@@ -62,7 +62,7 @@ export default {
         this.$router.push({
           name: 'me-order-detail-id',
           params: {
-            id: this.$route.query.orderId
+            id: orderId[0]
           },
           query: {
             back: 'me-order'

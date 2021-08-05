@@ -254,7 +254,6 @@ export default {
           starLevel: parseFloat(item.starLevel)
         }
       });
-      this.$store.commit('user/SET_SEARCHLIST', this.searchVal); // 搜索历史存储
       // 更新页面展示
       this.searchHistoryList = this.$store.state.user.searchList.filter((item, index) => {
         return index < 6;
@@ -275,6 +274,9 @@ export default {
     }
   },
   mounted() {
+  },
+  activated() {
+    this.$fetch();
     if (this.searchVal == '') { // 没有带参数进来的时候，搜索输入框需要自动聚焦
       this.$nextTick(() => {
         this.$refs.searchContainer.querySelector('input').focus();
@@ -289,9 +291,6 @@ export default {
       this.isShowTip = e[0].length > 0 && this.list.length === 0 ? -1 : e[0].length === 0;
       this.getSearchPull();
     }, 300);
-  },
-  activated() {
-    this.$fetch();
   },
   methods: {
     deleteFn() { // 删除历史记录

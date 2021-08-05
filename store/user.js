@@ -24,7 +24,7 @@ export const mutations = {
       state.searchList = [];
     } else {
       if (Array.isArray(searchItem)) { // 主要是刷新页面时从cookie中获取数据
-        state.searchList.concat(searchItem);
+        state.searchList = state.searchList.concat(searchItem);
       } else {
         state.searchList.unshift(searchItem);
       }

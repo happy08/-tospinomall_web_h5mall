@@ -67,3 +67,16 @@ export function getRateDetail(id) {
     }
   })
 }
+
+/**
+ * 获取商品属性
+ */
+export function getGoodAttr(goodId) {
+  return request({
+    url: `/api/product/goods/get/attrGroup/${goodId}`,
+    method: 'get',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
+  })
+}

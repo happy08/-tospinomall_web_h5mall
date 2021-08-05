@@ -220,30 +220,12 @@
 
       <!-- 操作按钮区域 -->
       <template #sku-actions="props">
-        <!-- 产品规格的选择 -->
-        <template v-if="skuType === 1">
-          <!-- 缺货 -->
-          <div class="mlr-12 mb-30 mt-10" v-if="props.selectedSkuComb && props.selectedSkuComb.stock_num == 0">
-            <BmButton class="fs-16 round-8 w-100 h-48 bg-ddd" @click="onOutStock">out of stock</BmButton>
-          </div>
-          <div class="mlr-12 mb-12 mt-10 flex between" v-else>
-            <!-- 加入购物车 -->
-            <BmButton :type="'info'" class="fs-16 round-8 w-169 h-48 add-cart-btn" @click="onConfirm">Add to cart</BmButton>
-            <!-- 立即购买 -->
-            <BmButton class="fs-16 round-8 w-169 h-48" @click="onBuyNow">Buy Now</BmButton>
-          </div>
-        </template>
-        <!-- 加入购物车 -->
-        <template v-else>
-          <!-- 缺货 -->
-          <!-- {{ props.selectedSkuComb }} -->
-          <div class="mlr-12 mb-30 mt-10" v-if="props.selectedSkuComb && props.selectedSkuComb.stock_num == 0">
-            <BmButton class="fs-16 round-8 w-100 h-48 bg-ddd" @click="onOutStock">out of stock</BmButton>
-          </div>
-          <div class="mlr-12 mb-12 mt-10" v-else>
-            <BmButton class="fs-16 round-8 w-100 h-48" @click="onConfirm">确认</BmButton>
-          </div>
-        </template>
+        <div class="mlr-12 mb-30 mt-10" v-if="props.selectedSkuComb && props.selectedSkuComb.stock_num == 0">
+          <BmButton class="fs-16 round-8 w-100 h-48 bg-ddd" @click="onOutStock">out of stock</BmButton>
+        </div>
+        <div class="mlr-12 mb-12 mt-10" v-else>
+          <BmButton class="fs-16 round-8 w-100 h-48" @click="onConfirm">确认</BmButton>
+        </div>
       </template>
     </van-sku>
 
@@ -258,7 +240,8 @@ import ProductTopBtmSingle from '@/components/ProductTopBtmSingle';
 import OrderStoreSingle from '@/components/OrderStoreSingle';
 import SoldOut from '@/components/SoldOut';
 import { Divider, Tab, Tabs, SwipeCell, Card, Stepper, Checkbox, CheckboxGroup, Sticky, SubmitBar, PullRefresh, List, Sku } from 'vant';
-import { removeCart, setOftenBuy, getCartCount, moveToFavorite, getCalculatePrice, updateCartNum } from '@/api/cart';
+import { removeCart, setOftenBuy, getCartCount, moveToFavorite, getCalculatePrice, updateCartNum, getSkuStock } from '@/api/cart';
+import { getGoodAttr } from '@/api/product';
 
 export default {
   components: {
@@ -303,7 +286,8 @@ export default {
       productShow: false,
       goodSpuVo: {},
       initialSku: {},
-      sku: {}
+      sku: {},
+      selectSku: {}
     }
   },
   async fetch() {
@@ -339,6 +323,7 @@ export default {
   activated() {
     this.getCartCount(); // 总数查询
     this.$fetch();
+    this.watchCheckAll();
   },
   methods: {
     onEdit() { // 编辑购物车, 登录情况下才可以编辑购物车
@@ -369,13 +354,10 @@ export default {
       this.watchCheckAll();
     },
     checkAll(event, isHandle) { // 所有店铺内的订单全部选中
-      console.log(1111111)
       if (isHandle !== undefined) {
         this.checked = isHandle;
         return false;
       }
-      // this.checked = !this.checked;
-      
       this.list.forEach(item =>{
         this.storeCheckAll(item, this.checked);
       })
@@ -523,11 +505,117 @@ export default {
       this.moveToFavorite(skuIds.join('_'));
     },
     getSkuInfo(value, type) { // 获取选中的商品的规格
-      
+      if (this.$refs.productSku) {
+        console.log(value)
+        this.selectSku = this.$refs.productSku.getSkuData(); // 得到已选择的商品属性
+        if (type === 'stepper') {
+          this.selectSku = {
+            ...this.selectSku,
+            selectedNum: value.selectedNum
+          };
+        }
+        // 商品图片展示切换
+        this.goodSpuVo.picture = value.selectedSkuComb ? value.selectedSkuComb.picture : this.goodSpuVo.picture;
+      }
     },
-    onSku(item) { // 获取商品规格
-      console.log(item);
-    }
+    onSku(productItem) { // 获取商品规格
+      getGoodAttr(productItem.productId).then(res => {
+        if (res.code != 0) return false;
+
+        // 商品规格初始化
+        this.goodSpuVo = { // 商品基本信息
+          ...res.data.goodSpuVo,
+          picture: res.data.goodSpuVo.mainPictureUrl
+        };
+        this.sku = {
+          tree: [],
+          list: [],
+          price: res.data.goodSpuVo.minPrice,
+          hide_stock: true, //是否隐藏商品剩余库存
+        };
+        let _skuList = [];
+        res.data.saleAttr.forEach((item, itemInxdex) => { // 规格种类
+          this.sku.tree.push({
+            k: item.attrName, // 规格类目名称
+            k_id: item.attrId,
+            k_s: 's' + item.attrId, // sku 组合列表（下方 list）中当前类目对应的 key 值，value 值会是从属于当前类目的一个规格值 id
+            v: [],
+            largeImageMode: false
+          })
+          item.attrValues.forEach(attrItem => { // 种类属性
+            this.sku.tree[itemInxdex].v.push({
+              id: attrItem.attrValueId,
+              name: attrItem.attrValue
+            })
+
+            attrItem.skuList.forEach(skuItem => { // 商品组合列表
+              _skuList.push({ // sku 组合列表
+                id: skuItem.skuId,
+                [this.sku.tree[itemInxdex].k_s]: attrItem.attrValueId,
+                price: skuItem.skuPrice * 100, // list中的价格单位是分，所以需要乘以100
+                stock_num: skuItem.stockNum,
+                picture: skuItem.skuPicture,
+                name: attrItem.name
+              })
+            })
+          })
+        })
+
+        // 数组合并去重
+        let arr = [];
+        _skuList.forEach((item) => {
+          let flag = true;
+          let obj = item;
+          arr.forEach((newItem, index) => {
+            if (item.id === newItem.id) { // id一直合并对象属性
+              newItem.stock_num = newItem.stock_num < item.stock_num ? newItem.stock_num : item.stock_num; // 库存选择相比较小的那一个
+              obj = {
+                ...item,
+                ...newItem
+              }
+              arr[index] = obj;
+              flag = false;
+            }
+          })
+          if (flag) {
+            arr.push(obj);
+          }
+        })
+      
+        this.sku.list = arr;
+        // 初始化已获取的商品规格
+        let initSku = arr.filter(item => {
+          return item.id == productItem.productSku
+        })
+        this.initialSku = this.selectSku = {
+          ...initSku[0],
+          selectedNum: productItem.quantity,
+          selectedSkuComb: {
+            stock_num: productItem.stock
+          }
+        }
+        setTimeout(() => {
+          this.productShow = true;
+        }, 300);
+      })
+    },
+    async onConfirm() { // 确认修改商品属性
+      const num = await this.getSkuStock();
+      if (num > this.selectSku.selectedNum) { // 库存充足
+        
+      }
+    },
+    onOutStock() { // 商品售空
+
+    },
+    getSkuStock() { // 判断库存是否充足
+      this.selectSku = this.$refs.productSku.getSkuData();
+      return new Promise(resolve => {
+        getSkuStock(this.selectSku.selectedSkuComb.id).then(res => {
+          resolve(res.data);
+        })
+      })
+    },
   },
 }
 </script>

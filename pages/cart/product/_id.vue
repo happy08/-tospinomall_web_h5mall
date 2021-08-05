@@ -227,7 +227,7 @@
           <!-- 商品图片 -->
           <div class="flex between pr-10">
             <BmImage
-              :url="selectItem.skuPicture"
+              :url="selectItem.picture"
               :width="'2rem'"
               :height="'2rem'"
               :isLazy="false"
@@ -491,9 +491,9 @@
           </div>
           <div class="mlr-12 mb-12 mt-10 flex between" v-else>
             <!-- 加入购物车 -->
-            <BmButton :type="'info'" class="fs-16 round-8 w-169 h-48 add-cart-btn" @click="onConfirm">Add to cart</BmButton>
+            <BmButton :type="'info'" class="fs-16 round-8 w-169 h-48 add-cart-btn" @click="onConfirm(false)">Add to cart</BmButton>
             <!-- 立即购买 -->
-            <BmButton class="fs-16 round-8 w-169 h-48" @click="onBuyNow">Buy Now</BmButton>
+            <BmButton class="fs-16 round-8 w-169 h-48" @click="onConfirm(true)">Buy Now</BmButton>
           </div>
         </template>
         <!-- 加入购物车 -->
@@ -504,7 +504,7 @@
             <BmButton class="fs-16 round-8 w-100 h-48 bg-ddd" @click="onOutStock">out of stock</BmButton>
           </div>
           <div class="mlr-12 mb-12 mt-10" v-else>
-            <BmButton class="fs-16 round-8 w-100 h-48" @click="onConfirm">确认</BmButton>
+            <BmButton class="fs-16 round-8 w-100 h-48" @click="onConfirm(false)">确认</BmButton>
           </div>
         </template>
         
@@ -710,11 +710,10 @@ export default {
         v: [],
         largeImageMode: false
       })
-      item.attrValues.forEach((attrItem, attrIndex) => { // 种类属性
+      item.attrValues.forEach(attrItem => { // 种类属性
         this.sku.tree[itemInxdex].v.push({
           id: attrItem.attrValueId,
-          name: attrItem.attrValue,
-          // previewImgUrl: attrItem.attrPicture
+          name: attrItem.attrValue
         })
 
         attrItem.skuList.forEach(skuItem => { // 商品组合列表
@@ -723,7 +722,7 @@ export default {
             [this.sku.tree[itemInxdex].k_s]: attrItem.attrValueId,
             price: skuItem.skuPrice * 100, // list中的价格单位是分，所以需要乘以100
             stock_num: skuItem.stockNum,
-            skuPicture: skuItem.skuPicture,
+            picture: skuItem.skuPicture,
             name: attrItem.name
           })
         })
@@ -848,18 +847,13 @@ export default {
       }
     },
     async onBuyNow() { // 立即购买 num大于0才可以进行下一步操作
-      const num = await this.getSkuStock();
-      console.log(num);
+      // const num = await this.getSkuStock();
+      // this.skuType = 3;
+      // console.log(num);
     },
     async onAddCart() { // 加入购物车 num大于0才可以进行下一步操作
       this.productShow = true;
       this.skuType = 2;
-      // const num = await this.getSkuStock();
-      // if (num > 0) {
-      //   addCart({ quantity: this.selectSku.selectedNum, skuId: this.selectSku.selectedSkuComb.id }).then(res => {
-      //     console.log(res)
-      //   })
-      // }
     },
     onOutStock() { // 缺货
 
@@ -953,7 +947,6 @@ export default {
       })
     },
     getSkuInfo(value, type) { // 获取选中的商品的规格
-      console.log('=============')
       console.log(value)
       
       if (this.$refs.productSku) {
@@ -963,7 +956,10 @@ export default {
             ...this.selectSku,
             selectedNum: value.selectedNum
           };
+          return false;
         }
+        // 商品图片展示切换
+        this.goodSpuVo.picture = value.selectedSkuComb ? value.selectedSkuComb.picture : this.goodSpuVo.picture;
 
         // 页面展示已选择的商品属性
         if (this.goodAttr.find(item => item.skuKeyStr == value.skuValue.skuKeyStr) == undefined) {
@@ -1017,9 +1013,19 @@ export default {
         this.goodSpuVo.isAttention = 1;
       })
     },
-    async onConfirm() { // 确认加入
+    async onConfirm(flag) { // 确认加入
       const num = await this.getSkuStock();
       if (num > this.selectSku.selectedNum) {
+        if (this.skuType === 3 || flag) { // 立即购买
+          this.$router.push({
+            name: 'cart-order-id',
+            params: {
+              id: JSON.stringify({skuItems: [{ quantity: this.selectSku.selectedNum, skuId: this.selectSku.selectedSkuComb.id }]})
+            }
+          })
+          return false;
+        }
+
         if (this.skuType === 2 || this.skuType === 1) { // 加入购物车
           addCart({ quantity: this.selectSku.selectedNum, skuId: this.selectSku.selectedSkuComb.id }).then(res => {
             this.$toast.success('添加成功');
@@ -1027,10 +1033,6 @@ export default {
           })
           return false;
         }
-        if (this.skuType === 3) { // 立即购买
-          return false;
-        }
-        
       }
     },
     onBuySku() {

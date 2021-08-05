@@ -242,6 +242,7 @@ export default {
     }
   },
   activated() {
+    console.log(this.$route.params.id)
     getOrderDetail(this.$route.params.id).then(res => {
       let title = '';
       if (res.data.status == 0) title = 'me.order.pendingDelivery'; // 0  待付款

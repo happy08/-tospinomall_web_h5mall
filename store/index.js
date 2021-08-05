@@ -35,6 +35,7 @@ export const actions = {
       commit('user/SET_USERINFO', userInfoData.data);
     }
     const searchList = $cookies.get('searchList'); // 搜索历史
+    console.log('----------')
     console.log(searchList)
     commit('user/SET_SEARCHLIST', searchList);
 
