@@ -37,3 +37,28 @@ export function deleteOrder(id) {
     method: 'delete'
   })
 }
+
+/**
+ * 取消订单
+ */
+export function cancelOrder(data) {
+  return request({
+    url: '/api/order/omsorder/buyer/cancel',
+    method: 'post',
+    data
+  })
+}
+
+/**
+ * 按条件查询售后订单原因列表
+ */
+export function getOrderReasonList(params) {
+  return request({
+    url: '/api/basics/base/trade/orderReason/findByConditions',
+    method: 'get',
+    params: params,
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
+  })
+}

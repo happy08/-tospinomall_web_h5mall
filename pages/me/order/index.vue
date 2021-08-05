@@ -68,15 +68,15 @@
               <!-- 订单不同状态对应的按钮展示 -->
               <div class="w-100 bg-white btn-content flex hend vcenter mt-22">
                 <!-- 待付款0：去支付/再次购买 -->
-                <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" @click="goPay" v-if="productItem.status == 0">修改订单</BmButton>
-                <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" @click="goPay" v-if="productItem.status == 0">取消订单</BmButton>
+                <!-- <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" @click="goPay" v-if="productItem.status == 0">修改订单</BmButton> -->
+                <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" @click="goPay" v-if="productItem.status == 0 || productItem.status == 1">取消订单</BmButton>
                 <BmButton class="fs-14 ml-10 round-8 plr-12 h-32" :type="'info'" @click="goPay" v-if="productItem.status == 0">去支付</BmButton>
-                <!-- 仓库处理中: 退款/再次购买 -->
+                <!-- 待发货: 退款/再次购买 -->
                 <!-- <BmButton class="fs-16 ml-10 rount-0 plr-30 " @click="goPay" v-if="productItem.status == 1">退款/售后</BmButton> -->
                 <!-- 待发货1 -->
                 <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" @click="goPay" v-if="productItem.status == 1">取消订单</BmButton>
                 <!-- 待收货2 -->
-                <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" @click="goPay" v-if="productItem.status == 2">退款/售后</BmButton>
+                <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" @click="goPay" v-if="productItem.status == 1">退款/售后</BmButton>
                 <!-- 待评价3 -->
                 <!-- 已完成4：退款/售后、评价、再次购买 -->
                 <!-- <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" @click="goPay" v-if="productItem.status == 4">退款/售后</BmButton>

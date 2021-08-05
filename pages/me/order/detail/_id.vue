@@ -4,8 +4,8 @@
     <!-- 头部 -->
     <div class="bg-green-linear">
       <BmHeaderNav :left="{ isShow: true, isEmit: true }" :border="false" :title="$t(title)" :color="'white'" :bg_color="'bg-green-linear'" @leftClick="leftClick" />
-      <!-- 待付款倒计时 -->
-      <div class="mt-10 tc white fs-14 pb-40 flex center plr-20" v-if="detail.status == 0">
+      <!-- 待付款倒计时，在线支付 -->
+      <div class="mt-10 tc white fs-14 pb-40 flex center plr-20" v-if="detail.status == 0 && detail.paymentType == 1">
         {{ $t('me.order.remaining') }}:
         <van-count-down :time="detail.remainCloseMills" format=" mm : ss " class="white" /> 
         {{ $t('me.order.orderClosed') }}
@@ -68,21 +68,19 @@
 
     <!-- 订单详情 -->
     <div class="bg-white p-20 tr mt-12">
-      <OrderStoreSingle :name="detail.storeName" />
-      <OrderSingle class="mt-20 w-100"  v-for="(item, index) in detail.items" :key="'order-product-' + index" :product_num="item.goodQuantity" :product_desc="item.goodName" :product_size="item.goodAttr" :price="item.goodPrice" :image="item.goodImg" />
-      
+      <OrderStoreSingle :name="detail.storeName" @goStoreDetail="goStoreDetail" />
+      <div v-for="(item, index) in detail.items" :key="'order-product-' + index">
+        <OrderSingle class="mt-20 w-100" :product_num="item.goodQuantity" :product_desc="item.goodName" :product_size="item.goodAttr" :price="item.goodPrice" :image="item.goodImg" @onClick="onClick(item.goodId)" />
 
-      <!-- 待付款状态时-添加购物车 -->
-      <BmButton v-if="detail.status == 0" type="default" plain class="plr-12 round-8 h-30 mt-24" @click="addCart">{{ $t('me.order.addShopCart') }}</BmButton>
+        <!-- 待付款状态/待发货/已取消/超时关闭/已拒收 -->
+        <BmButton v-if="detail.status == 0 || detail.status == 1 || detail.status == 5 || detail.status == 6 || detail.status == 7" type="info" plain class="plr-12 round-8 h-30 mt-24" @click="addCart(item)">{{ $t('me.order.addShopCart') }}</BmButton>
 
-      <!-- 待收货状态 / 已收货状态 -->
-      <div v-else-if="detail.status == 2 || detail.status == 3">
-        <BmButton type="default" plain class="plr-12 round-8 h-30 mt-24" @click="addCart">{{ $t('me.order.afterSales') }}</BmButton>
-        <BmButton :type="'info'" class="h-30 ml-10" @click="addCart">{{ $t('me.order.addShopCart') }}</BmButton>
+        <!-- 待收货状态 / 已完成状态 -->
+        <div v-else-if="detail.status == 2 || detail.status == 4">
+          <BmButton type="default" plain class="plr-12 round-8 h-30 mt-24">{{ $t('me.order.afterSales') }}</BmButton>
+          <BmButton :type="'info'" class="h-30 ml-10" @click="addCart(item)">{{ $t('me.order.addShopCart') }}</BmButton>
+        </div>
       </div>
-
-      <!-- 已取消 / 超时取消 -->
-      <BmButton v-else-if="detail.status == 5 || detail.status == 6" :type="'info'" class="h-30 mt-24" @click="addCart">{{ $t('me.order.addShopCart') }}</BmButton>
     </div>
 
     <!-- 订单信息 -->
@@ -130,7 +128,7 @@
     <!-- 待付款 -->
     <div class="w-100 bg-white btn-content flex hend vcenter" v-if="detail.status == 0">
       <!-- 取消订单，点击出现弹窗 -->
-      <BmButton :type="'info'" class="black btn-content__evaluation" @click="isCancelShow = true">{{ $t('me.order.cancelOrder') }}</BmButton>
+      <BmButton :type="'info'" class="black btn-content__evaluation" @click="onCancel">{{ $t('me.order.cancelOrder') }}</BmButton>
       <!-- 去付款，跳转到付款页面 -->
       <BmButton class="fs-16 ml-10 rount-0 plr-30 btn-content__buy" @click="goPay">{{ $t('me.order.buyNow') }}</BmButton>
     </div>
@@ -167,7 +165,7 @@
 
 
     <!-- 待付款-取消订单弹窗 -->
-    <van-popup v-model="isCancelShow" position="bottom" closeable>
+    <van-popup v-model="isCancelShow" position="bottom" closeable style="height: 80%">
       <van-cell-group>
         <!-- 取消原因 -->
         <van-cell class="plr-20" title="Reason for Cancel Order">
@@ -179,32 +177,34 @@
           </template>
         </van-cell>
       </van-cell-group>
-      <!-- 取消原因单选 -->
-      <van-radio-group v-model="cancelRadio">
-        <van-cell-group>
-          <van-cell class="p-20" :title="reasonItem" clickable v-for="(reasonItem, index) in $t('me.order.cancelReasons')" :key="index" @click="cancelRadio = index">
-            <template #right-icon>
-              <van-radio :name="index" icon-size="0.48rem">
-                <template #icon="props">
-                  <BmImage
-                    :url="props.checked ? require('@/assets/images/icon/choose-icon.png') : require('@/assets/images/icon/choose-default-icon.png')"
-                    :width="'0.32rem'" 
-                    :height="'0.32rem'"
-                    :isLazy="false"
-                    :isShow="false"
-                  />
-                </template>
-              </van-radio>
-            </template>
-          </van-cell>
-        </van-cell-group>
-      </van-radio-group>
+      <div style="overflow-y: auto; height: 68%;">
+        <!-- 取消原因单选 -->
+        <van-radio-group v-model="cancelRadio">
+          <van-cell-group>
+            <van-cell class="plr-20 ptb-20 lh-12" :title="reasonItem.applyReason" clickable v-for="(reasonItem, index) in cancelReasonList" :key="index" @click="cancelRadio = reasonItem.id">
+              <template #right-icon>
+                <van-radio :name="reasonItem.id" icon-size="0.32rem">
+                  <template #icon="props">
+                    <BmImage
+                      :url="props.checked ? require('@/assets/images/icon/choose-icon.png') : require('@/assets/images/icon/choose-default-icon.png')"
+                      :width="'0.32rem'" 
+                      :height="'0.32rem'"
+                      :isLazy="false"
+                      :isShow="false"
+                    />
+                  </template>
+                </van-radio>
+              </template>
+            </van-cell>
+          </van-cell-group>
+        </van-radio-group>
 
-      <!-- 取消之后将订单放入购物车 -->
-      <van-cell class="p-20" title-class="light-grey" title="After submission, put this item back into the shopping cart" />
+        <!-- 取消之后将订单放入购物车 -->
+        <van-cell class="p-20" title-class="light-grey" title="After submission, put this item back into the shopping cart" />
+      </div>
       
       <div class="w-100 plr-12 flex between mt-12 pb-10">
-        <BmButton :type="'info'" class="black round-8 w-168 h-48 cancel-btn" @click="isCancelShow = false">Cancel</BmButton>
+        <BmButton :type="'info'" class="black round-8 w-168 h-48 cancel-btn" @click="onCancel">Cancel</BmButton>
         <BmButton class="fs-16 round-8 w-168 h-48" @click="cancelConfirm">Confirm</BmButton>
       </div>
     </van-popup>
@@ -217,7 +217,8 @@ import OrderSingle from '@/components/OrderSingle';
 import OrderStoreSingle from '@/components/OrderStoreSingle';
 import ClipboardJS from 'clipboard';
 import ProductTopBtmSingle from '@/components/ProductTopBtmSingle';
-import { getOrderDetail } from '@/api/order';
+import { getOrderDetail, cancelOrder, getOrderReasonList } from '@/api/order';
+import { addCart } from '@/api/cart';
 
 export default {
   middleware: 'authenticated',
@@ -238,23 +239,12 @@ export default {
       title: '',
       isCancelShow: false,
       cancelRadio: 0,
-      detail: {}
+      detail: {},
+      cancelReasonList: []
     }
   },
   activated() {
-    console.log(this.$route.params.id)
-    getOrderDetail(this.$route.params.id).then(res => {
-      let title = '';
-      if (res.data.status == 0) title = 'me.order.pendingDelivery'; // 0  待付款
-      if (res.data.status == 1) title = 'me.order.shipments'; // 2  待发货
-      if (res.data.status == 2) title = 'me.order.undelivered'; // 2  待收货
-      if (res.data.status == 3) title = 'me.order.done'; // 3  已收货
-      if (res.data.status == 4) title = 'me.order.cancelTitle'; // 4  已取消
-      if (res.data.status == 5) title = 'me.order.tradingClosed'; // 5  交易关闭,超时取消
-      if (res.data.status == 6) title = 'me.order.tradingClosed'; // 6  交易关闭,超时取消
-      this.title = title;
-      this.detail = res.data
-    })
+    this.getOrderDetail();
   },
   filters: {
     paymentTypeFormat(val) { // 支付方式
@@ -266,7 +256,14 @@ export default {
 
     },
     cancelConfirm() { // 提交取消订单
-      this.isCancelShow = false;
+      const reason = this.cancelReasonList.filter(item => {
+        return item.id === this.cancelRadio;
+      })[0].applyReason;
+      cancelOrder({ orderId: this.detail.id, reason: reason }).then(res => {
+        if (res.code != 0) return false;
+
+        this.isCancelShow = false;
+      })
     },
     goPay() { // 跳转去待付款-支付页面
       this.$router.push({
@@ -282,8 +279,7 @@ export default {
       clipboard.on('success', () => {
         let msg = this.$t('common.copySuccess');
         this.$toast({
-          message: msg,
-          type: 'success'
+          message: msg
         })
         clipboard.destroy()
       })
@@ -322,6 +318,59 @@ export default {
       }else{
         history.back();
       }
+    },
+    goStoreDetail() { // 跳转到店铺首页
+      this.$router.push({
+        name: 'cart-store-id',
+        params: {
+          id: this.detail.storeId
+        }
+      })
+    },
+    onClick(goodId) { // 跳转到商品详情页
+      this.$router.push({
+        name: 'cart-product-id',
+        params: {
+          id: goodId
+        }
+      })
+    },
+    addCart(item) {
+      addCart({ quantity: item.goodQuantity, skuId: item.skuId }).then(res => {
+        if (res.code != 0) return false;
+
+        this.$toast('success');
+      })
+    },
+    onCancel() { // 获取取消订单原因
+      getOrderReasonList({ orderType: 1, applyType: 0, goodsStatus: 0 }).then(res => {
+        if (res.code != 0) return false;
+
+        this.cancelReasonList = res.data;
+        this.isCancelShow = true;
+      })
+    },
+    getOrderDetail() { // 获取订单详情
+      // 加载图标
+      this.$toast.loading({
+        forbidClick: true,
+        loadingType: 'spinner',
+        duration: 0
+      });
+
+      getOrderDetail(this.$route.params.id).then(res => {
+        let title = '';
+        if (res.data.status == 0) title = 'me.order.pendingDelivery'; // 0  待付款
+        if (res.data.status == 1) title = 'me.order.shipments'; // 2  待发货
+        if (res.data.status == 2) title = 'me.order.undelivered'; // 2  待收货
+        if (res.data.status == 3) title = 'me.order.done'; // 3  已收货
+        if (res.data.status == 4) title = 'me.order.cancelTitle'; // 4  已取消
+        if (res.data.status == 5) title = 'me.order.tradingClosed'; // 5  交易关闭,超时取消
+        if (res.data.status == 6) title = 'me.order.tradingClosed'; // 6  交易关闭,超时取消
+        this.title = title;
+        this.detail = res.data;
+        this.$toast.clear();
+      })
     }
   },
 }
@@ -375,5 +424,10 @@ export default {
 }
 .w-168{
   width: 168px;
+}
+.gery-border{
+  border-color: #eee!important;
+  color: #383838!important;
+  background-color: transparent!important;
 }
 </style>
