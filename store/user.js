@@ -3,7 +3,8 @@ import { getUserInfo } from '@/api/user';
 export const state = () => ({
   authToken: null,
   userInfo: null,
-  searchList: []
+  searchList: [], // 商品搜索历史
+  orderSearchList: [], // 订单搜索历史
 });
 
 export const mutations = {
@@ -31,6 +32,19 @@ export const mutations = {
       state.searchList = [...new Set(state.searchList)]; // 去重
     }
     this.$cookies.set('searchList', state.searchList);
+  },
+  SET_ORDERSEARCHLIST(state, searchItem) {
+    if (searchItem == null) {
+      state.orderSearchList = [];
+    } else {
+      if (Array.isArray(searchItem)) { // 主要是刷新页面时从cookie中获取数据
+        state.orderSearchList = state.orderSearchList.concat(searchItem);
+      } else {
+        state.orderSearchList.unshift(searchItem);
+      }
+      state.orderSearchList = [...new Set(state.orderSearchList)]; // 去重
+    }
+    this.$cookies.set('orderSearchList', state.orderSearchList);
   }
 };
 

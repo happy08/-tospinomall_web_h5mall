@@ -34,10 +34,10 @@ export const actions = {
       const userInfoData = await $api.getUserInfo(authToken);
       commit('user/SET_USERINFO', userInfoData.data);
     }
-    const searchList = $cookies.get('searchList'); // 搜索历史
-    console.log('----------')
-    console.log(searchList)
+    const searchList = $cookies.get('searchList'); // 商品搜索历史
     commit('user/SET_SEARCHLIST', searchList);
+    const orderSearchList = $cookies.get('orderSearchList'); // 订单搜索历史
+    commit('user/SET_ORDERSEARCHLIST', orderSearchList);
 
     // 获取当前语言货币汇率
     const rateData = await $api.getCurrentRate();
