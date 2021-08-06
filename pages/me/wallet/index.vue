@@ -37,8 +37,8 @@
     <div class="mt-24 mlr-20">
       <BmButton class="w-100 round-8" @click.stop="onRecharge(2, amount)">{{ $t('me.wallet.rechargeNow') }}</BmButton>
     
-      <p class="mt-40 fs-14 black">{{ $t('me.wallet.rechargeInstructions') }}</p>
-      <p class="mt-8 fs-14 light-grey" v-if="detail.freeRechargeCard">{{ detail.freeRechargeCard.rechargeExplain }}</p>
+      <p class="mt-40 fs-14 black" v-if="detail.freeRechargeCard && detail.freeRechargeCard.rechargeExplain">{{ $t('me.wallet.rechargeInstructions') }}</p>
+      <p class="mt-8 fs-14 light-grey" v-if="detail.freeRechargeCard && detail.freeRechargeCard.rechargeExplain">{{ detail.freeRechargeCard.rechargeExplain }}</p>
     </div>
   </div>
 </template>

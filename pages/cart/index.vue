@@ -296,7 +296,7 @@ export default {
     this.listTotal = 0;
     this.result = [];
     const listData = await this.$api.getCartList({ queryType: this.queryType });
-    this.list = listData.data.storeList.map(storeItem => {
+    this.list = listData.data.storeList.map(storeItem => { // 购物车列表
       this.result = this.result.concat(storeItem.products.filter(selectItem => { // 是否选中
         return selectItem.isSelect == 1;
       }).map(resultItem => {
@@ -314,16 +314,13 @@ export default {
           return selectItem.stock == '' || selectItem.stock == 0;
         })
       }
-    }); // 购物车列表
-    // this.total = listData.data.totalQuantity; // 总数量
-    // this.totalAmount = listData.data.totalAmount; // 总金额
-    // this.discountAmount = listData.data.discountAmount; // 优惠金额
+    });
+    this.onCountPrice();
     this.refreshing = false;
   },
   activated() {
     this.getCartCount(); // 总数查询
     this.$fetch();
-    this.watchCheckAll();
   },
   methods: {
     onEdit() { // 编辑购物车, 登录情况下才可以编辑购物车

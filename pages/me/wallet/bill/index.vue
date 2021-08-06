@@ -1,7 +1,7 @@
 <template>
   <!-- 账单 -->
   <div class="bg-grey vh-100">
-    <van-sticky>
+    <van-sticky :class="{'is-animate': isHeader}">
       <BmHeaderNav :left="{ isShow: true }" :border="false" :title="$t('me.wallet.bill')" :class="{'is-show': isHeader}" />
 
       <!-- 搜索框 -->
@@ -175,6 +175,9 @@ export default {
 }
 .is-show{
   display: none;
+  animation: all 1s;
+}
+.is-animate{
   animation: all 1s;
 }
 </style>

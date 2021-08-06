@@ -130,18 +130,18 @@
       <div class="order-search-filter">
         <h3 class="fs-16 black fw order-search-filter__title">According to the time</h3>
         <div class="mt-10 black flex between flex-wrap order-search-filter__tags">
-          <span class="fs-14 round-8 tc">within a week</span>
-          <span class="fs-14 round-8 tc">within a mouth</span>
-          <span class="fs-14 round-8 tc">within 3 mouths</span>
-          <span class="fs-14 round-8 tc">This year</span>
-          <span class="fs-14 round-8 tc">In 2020</span>
-          <span class="fs-14 round-8 tc">In 2019</span>
+          <span :class="{'fs-14 round-8 tc': true, 'is-active': filterTimeType == 1}" @click="filterTimeType = 1">一周之内</span>
+          <span :class="{'fs-14 round-8 tc': true, 'is-active': filterTimeType == 2}" @click="filterTimeType = 2">一月之内</span>
+          <span :class="{'fs-14 round-8 tc': true, 'is-active': filterTimeType == 3}" @click="filterTimeType = 3">3个月内</span>
+          <span :class="{'fs-14 round-8 tc': true, 'is-active': filterTimeType == 4}" @click="filterTimeType = 4">今年</span>
+          <span :class="{'fs-14 round-8 tc': true, 'is-active': filterTimeType == 5}" @click="filterTimeType = 5">In {{ beforeOneYear }}</span>
+          <span :class="{'fs-14 round-8 tc': true, 'is-active': filterTimeType == 6}" @click="filterTimeType = 6">In {{ beforeTwoYear }}</span>
         </div>
       </div>
 
       <div class="order-search__btn flex">
-        <button class="red fw order-search__btn--reset">Reset</button>
-        <button class="white fw bg-green-linear" @click="onFilter">Determine</button>
+        <button class="red fw order-search__btn--reset" @click="filterTimeType = 0">Reset</button>
+        <button class="white fw bg-green-linear" @click="onConfirmFilter">Determine</button>
       </div>
     </van-popup>
 
@@ -197,6 +197,7 @@ import { Search, Tab, Tabs, Popup, List, PullRefresh, Sticky, Cell, CellGroup, R
 import OrderSingle from '@/components/OrderSingle';
 import OrderStoreSingle from '@/components/OrderStoreSingle';
 import { cancelOrder, getOrderReasonList, deleteOrder } from '@/api/order';
+import Moment from 'moment';
 
 export default {
   middleware: 'authenticated',
@@ -267,6 +268,9 @@ export default {
           clickable: true,
         },
       },
+      filterTimeType: 0,
+      beforeOneYear: '',
+      beforeTwoYear: ''
     }
   },
   async fetch() {
@@ -277,16 +281,22 @@ export default {
         pageNum: this.params.pageNum,
         pageSize: this.params.pageSize
       }
-    } else {
+    } else if (this.filterTimeType == 0) {
       this.params = {
         pageNum: this.params.pageNum,
         pageSize: this.params.pageSize,
         status: this.typeActive
       }
     }
+    // 加载图标
+    this.$toast.loading({
+      forbidClick: true,
+      loadingType: 'spinner',
+      duration: 0
+    });
     const listData = await this.$api.getOrderList(this.params);
     if (listData.code != 0) return false;
-
+    this.$toast.clear();
     this.lists = this.params.pageNum == 1 ? listData.data.records : this.lists.concat(listData.data.records);
     this.total = listData.data.total;
     this.loading = false;
@@ -301,6 +311,8 @@ export default {
   activated() {
     this.isFirst = true;
     this.$fetch();
+    this.beforeOneYear = Moment(parseInt(this.$store.state.nowTime)).subtract(1,'years').format('YYYY');
+    this.beforeTwoYear = Moment(parseInt(this.$store.state.nowTime)).subtract(2,'years').format('YYYY');
     // 取消订单原因，因为整个列表都是同一种类型，所以就只在全局引入一次就好了
     getOrderReasonList({ orderType: 1, applyType: 0, goodsStatus: 0 }).then(res => {
       if (res.code != 0) return false;
@@ -313,8 +325,46 @@ export default {
       this.params.pageNum = 1;
       this.$fetch();
     },
-    onFilter() { // 过滤
-      this.filterPopup = false; // 弹窗隐藏
+    onConfirmFilter() { // 过滤
+      let _params = {
+        pageNum: 1,
+        pageSize: 10
+      };
+      if (this.filterTimeType == 1) _params.beforeDay = 7; // 一周之内
+      let datetime = parseInt(this.$store.state.nowTime);
+      if (this.filterTimeType == 2) { // 一个月内
+        _params = {
+          beginTime: Moment(datetime).subtract(1,'months').format('YYYY-MM-DD HH:mm:ss'),
+          endTime: Moment(datetime).format('YYYY-MM-DD HH:mm:ss')
+        }
+      } else if (this.filterTimeType == 3) { // 3个月内
+        _params = {
+          beginTime: Moment(datetime).subtract(3,'months').format('YYYY-MM-DD HH:mm:ss'),
+          endTime: Moment(datetime).format('YYYY-MM-DD HH:mm:ss')
+        }
+      } else if (this.filterTimeType == 4) { // 今年
+        _params = {
+          beginTime: Moment(Moment(datetime).format('YYYY') + '-01-01').format('YYYY-MM-DD HH:mm:ss'),
+          endTime: Moment(datetime).format('YYYY-MM-DD HH:mm:ss')
+        }
+      } else if (this.filterTimeType == 5) { // 去年
+        _params = {
+          beginTime: Moment( Moment(datetime).subtract(1,'years').format('YYYY') + '-01-01' ).format('YYYY-MM-DD HH:mm:ss'),
+          endTime: Moment(Moment(datetime).format('YYYY') + '-01-01').format('YYYY-MM-DD HH:mm:ss')
+        }
+      } else if (this.filterTimeType == 6) { // 前年
+        _params = {
+          beginTime: Moment( Moment(datetime).subtract(2,'years').format('YYYY') + '-01-01' ).format('YYYY-MM-DD HH:mm:ss'),
+          endTime: Moment(Moment(datetime).subtract(1,'years').format('YYYY') + '-01-01').format('YYYY-MM-DD HH:mm:ss')
+        }
+      }
+      this.params = _params;
+      // 筛选列表
+      this.$api.getOrderList({ pageNum: 1, pageSize: 10, ..._params }).then(res => {
+        this.filterPopup = false; // 弹窗隐藏
+        this.lists = res.data.records;
+        this.total = res.data.total;
+      })
     },
     goSearch() { // 跳转到搜索页面
       this.$router.push({
@@ -416,6 +466,12 @@ export default {
     background-color: #F5F5F5;
     line-height: 20px;
     margin-top: 14px;
+    border: 1px solid transparent;
+    &.is-active{
+      color: #42B7AE;
+      background-color: rgba(66, 183, 174, 0.05);
+      border-color: #42B7AE;
+    }
   }
 }
 .order-search__btn{
