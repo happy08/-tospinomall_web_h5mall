@@ -288,15 +288,12 @@ export default {
         status: this.typeActive
       }
     }
-    // 加载图标
-    this.$toast.loading({
-      forbidClick: true,
-      loadingType: 'spinner',
-      duration: 0
-    });
+    
     const listData = await this.$api.getOrderList(this.params);
     if (listData.code != 0) return false;
-    this.$toast.clear();
+    if (this.isFirst) {
+      this.$toast.clear();
+    }
     this.lists = this.params.pageNum == 1 ? listData.data.records : this.lists.concat(listData.data.records);
     this.total = listData.data.total;
     this.loading = false;
@@ -309,6 +306,12 @@ export default {
     }
   },
   activated() {
+    // 加载图标
+    this.$toast.loading({
+      forbidClick: true,
+      loadingType: 'spinner',
+      duration: 0
+    });
     this.isFirst = true;
     this.$fetch();
     this.beforeOneYear = Moment(parseInt(this.$store.state.nowTime)).subtract(1,'years').format('YYYY');
@@ -359,6 +362,12 @@ export default {
         }
       }
       this.params = _params;
+      // 加载图标
+      this.$toast.loading({
+        forbidClick: true,
+        loadingType: 'spinner',
+        duration: 0
+      });
       // 筛选列表
       this.$api.getOrderList({ pageNum: 1, pageSize: 10, ..._params }).then(res => {
         this.filterPopup = false; // 弹窗隐藏
