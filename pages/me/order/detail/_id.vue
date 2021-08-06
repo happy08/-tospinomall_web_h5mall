@@ -204,7 +204,7 @@
       </div>
       
       <div class="w-100 plr-12 flex between mt-12 pb-10">
-        <BmButton :type="'info'" class="black round-8 w-168 h-48 cancel-btn" @click="onCancel">Cancel</BmButton>
+        <BmButton :type="'info'" class="black round-8 w-168 h-48 cancel-btn" @click="isCancelShow = false">Cancel</BmButton>
         <BmButton class="fs-16 round-8 w-168 h-48" @click="cancelConfirm">Confirm</BmButton>
       </div>
     </van-popup>
@@ -262,6 +262,7 @@ export default {
       cancelOrder({ orderId: this.detail.id, reason: reason }).then(res => {
         if (res.code != 0) return false;
 
+        this.getOrderDetail();
         this.isCancelShow = false;
       })
     },

@@ -45,7 +45,7 @@ export function cancelOrder(data) {
   return request({
     url: '/api/order/omsorder/buyer/cancel',
     method: 'post',
-    data
+    data: qs.stringify(data)
   })
 }
 

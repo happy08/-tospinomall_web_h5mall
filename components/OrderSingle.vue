@@ -13,7 +13,8 @@
       class="flex-shrink border round-4 hidden"
     />
     <!-- 商品详情 -->
-    <div class="tl product-detail" v-if="product_num === 1">
+    <!-- <div class="tl product-detail" v-if="product_num === 1"> -->
+    <div class="tl product-detail">
       <p class="fs-14 black lh-20 hidden-2 fm-helvetica">{{ product_desc }}</p>
       <p class="fs-14 lh-20 grey mt-8" v-if="product_size">{{ product_size }}</p>
       <div class="fs-16 red fw lh-20 mt-12" v-if="price >= 0 && isShowRight == false"><span class="fm-menlo">{{ $store.state.rate.currency }}</span><span class="fm-din">{{ price }}</span></div>

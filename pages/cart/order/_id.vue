@@ -193,7 +193,9 @@ export default {
       paymentRadio: '0',
       confirmTransportModes: [], // 配送方式
       currentChangeModeStoreId: '',
-      codeData: {}
+      codeData: {
+        code: 0
+      }
     }
   },
   async activated() {
@@ -272,6 +274,12 @@ export default {
       this.currentChangeModeStoreId = storeId;
     },
     getSaleInfo(confirmTransportModes) { // 获取销售信息
+      // 加载图标
+      this.$toast.loading({
+        forbidClick: true,
+        loadingType: 'spinner',
+        duration: 0
+      });
       let skuItems = JSON.parse(this.$route.params.id).skuItems.map(item => { // 数据格式化
         return {
           skuId: item.skuId,
@@ -284,6 +292,7 @@ export default {
           code: res.code,
           msg: res.msg
         }
+        this.$toast.clear();
         this.detail = {
           ...res.data,
           storeSaleInfoList: res.data.storeSaleInfoList.map(item => {

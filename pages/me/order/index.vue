@@ -39,6 +39,7 @@
         <div class="flex between flex-wrap">
           <!-- 空状态  -->
           <empty-status v-if="lists.length === 0" :image="require('@/assets/images/empty/order.png')" :description="$t('common.noRecord')"/>
+          <!-- 订单列表 -->
           <div v-else v-for="(item,index) in lists" :key="index" class="w-100 plr-12 mb-12 bg-white pb-20 pt-24">
             <!-- 订单店铺 -->
             <OrderStoreSingle :name="item.storeName" :status="item.status | statusFormat" @goStoreDetail="goOrderDetail(item.items[0].orderId)">
@@ -50,46 +51,71 @@
                   :width="'0.48rem'" 
                   :height="'0.48rem'"
                   :isLazy="false"
-                  @click="deleteFn"
+                  @onClick="deleteFn(item.id)"
                 />
               </div>
             </OrderStoreSingle>
             <!-- 订单列表详情 -->
-            <div v-for="(productItem,productIndex) in item.items" :key="productIndex">
+            <template v-if="item.items.length == 1">
               <OrderSingle
                 class="mt-20"
                 :image="productItem.goodImg" 
                 :product_desc="productItem.goodName"
                 :product_size="productItem.goodAttr"
                 :price="productItem.goodPrice"
-                :product_num="productItem.goodQuantity"
+                :product_num="item.totalQuantity"
                 @onClick="goOrderDetail(productItem.orderId)"
+                v-for="(productItem,productIndex) in item.items"
+                :key="productIndex"
               />
-              <!-- 订单不同状态对应的按钮展示 -->
-              <div class="w-100 bg-white btn-content flex hend vcenter mt-22">
-                <!-- 待付款0：去支付/再次购买 -->
-                <!-- <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" @click="goPay" v-if="productItem.status == 0">修改订单</BmButton> -->
-                <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" @click="goPay" v-if="productItem.status == 0 || productItem.status == 1">取消订单</BmButton>
-                <BmButton class="fs-14 ml-10 round-8 plr-12 h-32" :type="'info'" @click="goPay" v-if="productItem.status == 0">去支付</BmButton>
-                <!-- 待发货: 退款/再次购买 -->
-                <!-- <BmButton class="fs-16 ml-10 rount-0 plr-30 " @click="goPay" v-if="productItem.status == 1">退款/售后</BmButton> -->
-                <!-- 待发货1 -->
-                <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" @click="goPay" v-if="productItem.status == 1">取消订单</BmButton>
-                <!-- 待收货2 -->
-                <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" @click="goPay" v-if="productItem.status == 1">退款/售后</BmButton>
-                <!-- 待评价3 -->
-                <!-- 已完成4：退款/售后、评价、再次购买 -->
-                <!-- <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" @click="goPay" v-if="productItem.status == 4">退款/售后</BmButton>
-                <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" @click="goPay" v-if="productItem.status == 4">评价</BmButton> -->
-                <!-- 已取消5：再次购买 -->
-                <!-- <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" @click="goPay" v-if="productItem.status == 5"></BmButton> -->
-                <!-- 超时未付款6 -->
-                <!-- 已拒收7 -->
-                <!-- Buy Again -->
-                <BmButton class="fs-14 ml-10 round-8 plr-12 h-32" v-if="productItem.status != 0" :type="'info'" @click="goPay">{{ $t('me.order.buyAgain') }}</BmButton>
+            </template>
+            <!-- 多个商品 -->
+            <div v-else class="more-order-content">
+              <swiper
+                ref="swiperComponentRef"
+                :class="{ 'swiper mt-20 order-page__global-swiper': true, 'swiper-no-swiping' : item.totalQuantity <= 4 }"
+                :options="{
+                  ...swiperComponentOption,
+                  loop: item.totalQuantity > 4,
+                  loopFillGroupWithBlank: item.totalQuantity > 4
+                }"
+              >
+                <swiper-slide v-for="(productItem,productIndex) in item.items" :key="'swiper-' + productIndex">
+                  <BmImage 
+                    :url="productItem.goodImg"
+                    :width="'1.68rem'" 
+                    :height="'1.68rem'"
+                    :isLazy="false"
+                    class="flex-shrink border round-4 hidden"
+                  />
+                </swiper-slide>
+              </swiper>
+              <div class="tr more-order-content__info">
+                <p class="fs-18 fw black lh-20">{{ $store.state.rate.currency }}{{ item.productAmount }}</p>
+                <p class="light-grey fs-14 lh-20 mt-8">X{{ item.totalQuantity }}</p>
               </div>
             </div>
-            
+            <!-- 订单不同状态对应的按钮展示 -->
+            <div class="w-100 bg-white btn-content flex hend vcenter mt-22">
+              <!-- 订单状态status：0->待付款；1->待发货；2->待收货；3->待评价（可能废弃）；4->已完成 5->已取消；6->超时未付款（订单关闭）；7->已拒收；8->其他 -->
+              <!-- 支付状态payState：0->未支付 1已支付 -->
+              <!-- 付款方式paymentType：1->在线支付；2->货到付款 -->
+              <!-- 评论状态hasComment：0->未评论 1->已评论 -->
+              <!-- 售后状态showAfterSale：0->不可售后 1->可以售后 -->
+
+              <!-- 取消订单：在线支付[待付款0]；货到付款[待发货1且未支付0] -->
+              <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" v-if="(item.paymentType == 1 && item.status == 0) || (item.paymentType == 0 && item.status == 1 && item.payState == 0)" @btnClick="onCancel(item)">取消订单</BmButton>
+              <!-- 去支付：在线支付[待付款0] -->
+              <BmButton class="fs-14 ml-10 round-8 plr-12 h-32" :type="'info'" v-if="item.paymentType == 1 && item.status == 0" @btnClick="onPay(item)">去支付</BmButton>
+              <!-- 去评价：在线支付[已完成4且未评价0]；货到付款[已完成4且未评价0] -->
+              <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" v-if="item.hasComment == 0 && item.status == 4">去评价</BmButton>
+              <!-- 退款/售后：在线支付[待发货1且已支付1且可售后1,待收货2且已支付1且可售后1,已完成4且可售后1]；货到付款[待发货1且已支付1且可售后1,待收货2且可售后1,已完成4且可售后1] -->
+              <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" v-if="(item.paymentType == 1 && (((item.status == 1 || item.status == 2) && item.payState == 1) || item.status == 4)  && item.showAfterSale == 1) || (item.paymentType == 0 && ((item.status == 1 && item.payState == 1) || item.status == 2 || item.status == 4) && item.showAfterSale == 1)">退款/售后</BmButton>
+              <!-- 确认收货：在线支付[待收货2且已支付1]；货到付款[待收货2] -->
+              <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" v-if="(item.paymentType == 1 && item.status == 2 && item.payState == 1) || (item.paymentType == 0 && item.status == 2)">确认收货</BmButton>
+              <!-- 去购买：待发货1,待收货2,待评价3,已完成4,已取消5,超时未付款6,已拒收7,其他8 -->
+              <BmButton class="fs-14 ml-10 round-8 plr-12 h-32" :type="'info'" v-if="item.status != 0" @btnClick="onBuy(item)">{{ $t('me.order.buyAgain') }}</BmButton>
+            </div>
           </div>
         </div>
       </van-list>
@@ -118,13 +144,59 @@
         <button class="white fw bg-green-linear" @click="onFilter">Determine</button>
       </div>
     </van-popup>
+
+    <!-- 取消订单原因选择弹窗 -->
+    <van-popup v-model="isCancelShow" position="bottom" closeable style="height: 80%">
+      <van-cell-group>
+        <!-- 取消原因 -->
+        <van-cell class="plr-20" title="Reason for Cancel Order">
+          <template #label>
+            <ul class="fs-14 light-grey">
+              <li>1. Order offer may be cancelled altogether</li>
+              <li>2. Once the order is cancelled, it cannot be reco-vered</li>
+            </ul>
+          </template>
+        </van-cell>
+      </van-cell-group>
+      <div style="overflow-y: auto; height: 68%;">
+        <!-- 取消原因单选 -->
+        <van-radio-group v-model="cancelRadio">
+          <van-cell-group>
+            <van-cell class="plr-20 ptb-20 lh-12" :title="reasonItem.applyReason" clickable v-for="(reasonItem, index) in cancelReasonList" :key="index" @click="cancelRadio = reasonItem.id">
+              <template #right-icon>
+                <van-radio :name="reasonItem.id" icon-size="0.32rem">
+                  <template #icon="props">
+                    <BmImage
+                      :url="props.checked ? require('@/assets/images/icon/choose-icon.png') : require('@/assets/images/icon/choose-default-icon.png')"
+                      :width="'0.32rem'" 
+                      :height="'0.32rem'"
+                      :isLazy="false"
+                      :isShow="false"
+                    />
+                  </template>
+                </van-radio>
+              </template>
+            </van-cell>
+          </van-cell-group>
+        </van-radio-group>
+
+        <!-- 取消之后将订单放入购物车 -->
+        <van-cell class="p-20" title-class="light-grey" title="After submission, put this item back into the shopping cart" />
+      </div>
+      
+      <div class="w-100 plr-12 flex between mt-12 pb-10">
+        <BmButton :type="'info'" class="black round-8 w-168 h-48 cancel-btn" @click="isCancelShow = false">Cancel</BmButton>
+        <BmButton class="fs-16 round-8 w-168 h-48" @click="cancelConfirm">Confirm</BmButton>
+      </div>
+    </van-popup>
   </div>
 </template>
 
 <script>
-import { Search, Tab, Tabs, Popup, List, PullRefresh, Sticky } from 'vant';
+import { Search, Tab, Tabs, Popup, List, PullRefresh, Sticky, Cell, CellGroup, RadioGroup, Radio } from 'vant';
 import OrderSingle from '@/components/OrderSingle';
 import OrderStoreSingle from '@/components/OrderStoreSingle';
+import { cancelOrder, getOrderReasonList, deleteOrder } from '@/api/order';
 
 export default {
   middleware: 'authenticated',
@@ -136,6 +208,10 @@ export default {
     vanList: List,
     vanPullRefresh: PullRefresh,
     vanSticky: Sticky,
+    vanCell: Cell,
+    vanCellGroup: CellGroup,
+    vanRadioGroup: RadioGroup,
+    vanRadio: Radio,
     OrderSingle: OrderSingle,
     OrderStoreSingle: OrderStoreSingle
   },
@@ -175,7 +251,22 @@ export default {
         pageSize: 10
       },
       total: 0,
-      isFirst: true // 是否是首次进入
+      isFirst: true, // 是否是首次进入
+      cancelRadio: 0,
+      cancelReasonList: [],
+      currentOrder: {},
+      isCancelShow: false,
+      swiperComponentOption: { // 一排四列 滚动
+        slidesPerView: 4,
+        slidesPerGroup: 4,
+        spaceBetween: 0,
+        // loop: true,
+        // loopFillGroupWithBlank: true,
+        pagination: {
+          el: '.swiper-group-pagination',
+          clickable: true,
+        },
+      },
     }
   },
   async fetch() {
@@ -210,6 +301,12 @@ export default {
   activated() {
     this.isFirst = true;
     this.$fetch();
+    // 取消订单原因，因为整个列表都是同一种类型，所以就只在全局引入一次就好了
+    getOrderReasonList({ orderType: 1, applyType: 0, goodsStatus: 0 }).then(res => {
+      if (res.code != 0) return false;
+
+      this.cancelReasonList = res.data;
+    })
   },
   methods: {
     async getSearchList() { // 获取分类列表
@@ -224,8 +321,18 @@ export default {
         name: 'me-order-search'
       })
     },
-    deleteFn() { // 删除订单
+    deleteFn(orderId) { // 删除订单
+      // 加载图标
+      this.$toast.loading({
+        forbidClick: true,
+        loadingType: 'spinner',
+        duration: 0
+      });
 
+      deleteOrder(orderId).then(() => {
+        this.$toast.clear();
+        this.$fetch();
+      })
     },
     goOrderDetail(orderId) { // 跳转到订单详情
       this.$router.push({
@@ -248,8 +355,44 @@ export default {
       this.params.pageNum += 1;
       this.$fetch();
     },
-    goPay() { // 再次购买
+    onBuy(orderItem) { // 再次购买,跳转到确认订单页面
+      let skuItems = orderItem.items.map(item => {
+        return {
+          quantity: item.goodQuantity,
+          skuId: item.skuId
+        }
+      })
+      this.$router.push({
+        name: 'cart-order-id',
+        params: {
+          id: JSON.stringify({skuItems: skuItems})
+        }
+      })
+    },
+    onCancel(orderItem) { // 选择取消订单原因
+      this.isCancelShow = true;
+      this.currentOrder = orderItem;
+    },
+    cancelConfirm() { // 提交取消订单
+      const reason = this.cancelReasonList.filter(item => {
+        return item.id === this.cancelRadio;
+      })[0].applyReason;
+      cancelOrder({ orderId: this.currentOrder.id, reason: reason }).then(res => {
+        if (res.code != 0) return false;
 
+        this.isCancelShow = false;
+        this.$fetch();
+      })
+    },
+    onPay(orderItem) { // 去支付
+      this.$router.push({
+        name: 'me-pay-payment',
+        query: {
+          type: 'order',
+          amount: orderItem.productAmount,
+          orderIds: JSON.stringify({orderIds: [orderItem.id]})
+        }
+      })
     }
   },
 } 
@@ -299,5 +442,30 @@ export default {
 }
 .mt-22{
   margin-top: 22px;
+}
+.cancel-btn{
+  border-color: #eee!important;
+  background-color: transparent!important;
+}
+.h-48{
+  height: 48px!important;
+}
+.w-168{
+  width: 168px;
+}
+.order-page__global-swiper{
+  height: 84px;
+  .swiper-slide{
+    width: 100%;
+    position: relative;
+  }
+}
+.more-order-content{
+  position: relative;
+  .more-order-content__info{
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
 }
 </style>

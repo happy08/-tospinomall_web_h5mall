@@ -1,7 +1,7 @@
 <template>
   <!-- 订单店铺入口展示 -->
-  <div class="flex between vcenter w-100" @click="goStoreDetail">
-    <div class="flex vcenter">
+  <div class="flex between vcenter w-100">
+    <div class="flex vcenter" @click="goStoreDetail">
       <BmImage
         :url="logo"
         :width="'0.36rem'" 
