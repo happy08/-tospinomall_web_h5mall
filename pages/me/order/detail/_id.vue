@@ -2,43 +2,50 @@
   <!-- 我的-订单-订单详情  -->
   <div class="vh-100 bg-grey pb-56">
     <!-- 头部 -->
-    <div class="bg-green-linear">
-      <BmHeaderNav :left="{ isShow: true, isEmit: true }" :border="false" :title="$t(title)" :color="'white'" :bg_color="'bg-green-linear'" @leftClick="leftClick" />
-      <!-- 待付款倒计时，在线支付 -->
-      <div class="mt-10 tc white fs-14 pb-40 flex center plr-20" v-if="detail.status == 0 && detail.paymentType == 1">
-        {{ $t('me.order.remaining') }}:
-        <van-count-down :time="detail.remainCloseMills" format=" mm : ss " class="white" /> 
-        {{ $t('me.order.orderClosed') }}
+    <van-sticky @scroll="stickyScroll" ref="headerStickyContainer">
+      <div class="bg-green-linear">
+        <BmHeaderNav :left="{ isShow: true, isEmit: true }" :border="false" :title="$t(title)" :color="isScrollShow ? 'white' : 'black'" :bg_color="isScrollShow ? 'bg-green-linear' : 'white'" @leftClick="leftClick" />
+
+        <div class="min-h-95">
+          <!-- 待付款0倒计时，在线支付 -->
+          <div class="mt-14 tc white fs-14 pb-40 flex center plr-20" v-if="detail.status == 0 && detail.paymentType == 1 && detail.remainCloseMills > 0">
+            {{ $t('me.order.remaining') }}:
+            <van-count-down :time="detail.remainCloseMills" format="mm:ss" class="white" /> 
+            {{ $t('me.order.orderClosed') }}
+          </div>
+          <!-- 待发货 -->
+          <div class="fs-14 white mt-14 pb-40 plr-30 tc lh-20" v-else-if="detail.status == 1">
+            待发货
+          </div>
+          <!-- 待收货 -->
+          <div class="fs-14 white mt-14 pb-40 plr-30 tc lh-20" v-else-if="detail.status == 2">
+            {{ $t('me.order.sending') }}
+          </div>
+          <!-- 待评价 -->
+          <div class="fs-14 white mt-14 pb-40 plr-30 tc lh-20" v-else-if="detail.status == 3">
+            待评价
+          </div>
+          <!-- 已完成 -->
+          <div class="fs-14 white mt-14 pb-40 plr-30 tc lh-20" v-else-if="detail.status == 4">
+            {{ $t('me.order.doneTip') }}
+          </div>
+          <!-- 已取消 -->
+          <div class="fs-14 white mt-14 pb-40 plr-30 tc lh-20" v-else-if="detail.status == 5">
+            {{ $t('me.order.cancelTip') }}
+          </div>
+          <!-- 超时取消 -->
+          <div class="fs-14 white mt-14 pb-40 plr-30 tc lh-20" v-else-if="detail.status == 6">
+            {{ $t('me.order.timeoutClosure') }}
+          </div>
+          <!-- 已拒收 -->
+          <div class="fs-14 white mt-14 pb-40 plr-30 tc lh-20" v-else-if="detail.status == 7">
+            已拒收
+          </div>
+        </div>
+        
       </div>
-      <!-- 待发货 -->
-      <div class="fs-14 white mt-10 pb-40 plr-30 tc lh-20" v-else-if="detail.status == 1">
-        待发货
-      </div>
-      <!-- 待收货 -->
-      <div class="fs-14 white mt-10 pb-40 plr-30 tc lh-20" v-else-if="detail.status == 2">
-        {{ $t('me.order.sending') }}
-      </div>
-      <!-- 待评价 -->
-      <div class="fs-14 white mt-10 pb-40 plr-30 tc lh-20" v-else-if="detail.status == 3">
-        待评价
-      </div>
-      <!-- 已完成 -->
-      <div class="fs-14 white mt-10 pb-40 plr-30 tc lh-20" v-else-if="detail.status == 4">
-        {{ $t('me.order.doneTip') }}
-      </div>
-      <!-- 已取消 -->
-      <div class="fs-14 white mt-10 pb-40 plr-30 tc lh-20" v-else-if="detail.status == 5">
-        {{ $t('me.order.cancelTip') }}
-      </div>
-      <!-- 超时取消 -->
-      <div class="fs-14 white mt-10 pb-40 plr-30 tc lh-20" v-else-if="detail.status == 6">
-        {{ $t('me.order.timeoutClosure') }}
-      </div>
-      <!-- 已拒收 -->
-      <div class="fs-14 white mt-10 pb-40 plr-30 tc lh-20" v-else-if="detail.status == 7">
-        已拒收
-      </div>
-    </div>
+    </van-sticky>
+    
 
     <!-- 运输方式，待收货时展示 -->
     <van-cell class="p-20" :title="'Fulfillment by Tospino'" is-link title-class="fw black ml-12" :to="{ name: 'me-order-detail-logistics' }" v-if="detail.status == 2">
@@ -90,7 +97,7 @@
         <van-icon :name="require('@/assets/images/icon/copy-icon.png')" size="0.48rem" class="ml-24 copy-order" @click="copy" />
       </p>
       <p class="fs-14 black flex vcenter">{{ $t('me.order.startFrom') }}: {{ detail.createTime }}</p>
-      <p class="fs-14 black flex vcenter">{{ $t('me.orer.payBy') }}: {{ detail.paymentType | paymentTypeFormat}}</p>
+      <p class="fs-14 black flex vcenter">{{ $t('me.order.payBy') }}: {{ detail.paymentType | paymentTypeFormat}}</p>
       <p class="fs-14 black flex vcenter" v-if="detail.paymentTime">{{ $t('me.order.time') }}: {{ detail.paymentTime }}</p>
       <p class="fs-14 black flex vcenter" v-if="detail.deliveryCompany">{{ $t('me.order.delivery') }}: {{ detail.deliveryCompany }}</p>
     </div>
@@ -125,44 +132,26 @@
       ></ProductTopBtmSingle>
     </div>
 
-    <!-- 待付款 -->
-    <div class="w-100 bg-white btn-content flex hend vcenter" v-if="detail.status == 0">
-      <!-- 取消订单，点击出现弹窗 -->
-      <BmButton :type="'info'" class="black btn-content__evaluation" @click="onCancel">{{ $t('me.order.cancelOrder') }}</BmButton>
-      <!-- 去付款，跳转到付款页面 -->
-      <BmButton class="fs-16 ml-10 rount-0 plr-30 btn-content__buy" @click="goPay">{{ $t('me.order.buyNow') }}</BmButton>
-    </div>
+    <div class="w-100 bg-white btn-content flex hend vcenter">
+      <!-- 订单状态status：0->待付款；1->待发货；2->待收货；3->待评价（可能废弃）；4->已完成 5->已取消；6->超时未付款（订单关闭）；7->已拒收；8->其他 -->
+      <!-- 支付状态payState：0->未支付 1已支付 -->
+      <!-- 付款方式paymentType：1->在线支付；2->货到付款 -->
+      <!-- 评论状态hasComment：0->未评论 1->已评论 -->
+      <!-- 售后状态showAfterSale：0->不可售后 1->可以售后 -->
 
-    <!-- 待发货 -->
-    <div class="w-100 bg-white btn-content flex hend vcenter" v-if="detail.status == 1">
-      <!-- 取消订单，点击出现弹窗 -->
-      <BmButton :type="'info'" class="black btn-content__evaluation">申请退款</BmButton>
-      <!-- 去付款，跳转到付款页面 -->
-      <BmButton class="fs-16 ml-10 rount-0 plr-30 btn-content__buy" @click="goPay">{{ $t('me.order.buyNow') }}</BmButton>
+      <!-- 取消订单：在线支付[待付款0]；货到付款[待发货1且未支付0] -->
+      <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" v-if="(detail.paymentType == 1 && detail.status == 0) || (detail.paymentType == 0 && detail.status == 1 && detail.payState == 0)" @btnClick="onCancel(detail)">取消订单</BmButton>
+      <!-- 去支付：在线支付[待付款0] -->
+      <BmButton class="fs-14 ml-10 round-0 plr-30 v-100" v-if="detail.paymentType == 1 && detail.status == 0" @btnClick="onPay(detail)">去支付</BmButton>
+      <!-- 去评价：在线支付[已完成4且未评价0]；货到付款[已完成4且未评价0] -->
+      <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" v-if="detail.hasComment == 0 && detail.status == 4">去评价</BmButton>
+      <!-- 退款/售后：在线支付[待发货1且已支付1且可售后1,待收货2且已支付1且可售后1,已完成4且可售后1]；货到付款[待发货1且已支付1且可售后1,待收货2且可售后1,已完成4且可售后1] -->
+      <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" v-if="(detail.paymentType == 1 && (((detail.status == 1 || detail.status == 2) && detail.payState == 1) || detail.status == 4)  && detail.showAfterSale == 1) || (detail.paymentType == 0 && ((detail.status == 1 && detail.payState == 1) || detail.status == 2 || detail.status == 4) && detail.showAfterSale == 1)">退款/售后</BmButton>
+      <!-- 确认收货：在线支付[待收货2且已支付1]；货到付款[待收货2] -->
+      <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" v-if="(detail.paymentType == 1 && detail.status == 2 && detail.payState == 1) || (detail.paymentType == 0 && detail.status == 2)">确认收货</BmButton>
+      <!-- 去购买：待发货1,待收货2,待评价3,已完成4,已取消5,超时未付款6,已拒收7,其他8 -->
+      <BmButton class="fs-14 ml-10 round-0 plr-30 h-100" v-if="detail.status != 0" @btnClick="onBuy(detail)">{{ $t('me.order.buyAgain') }}</BmButton>
     </div>
-
-    <!-- 待收货 -->
-    <div class="w-100 bg-white btn-content flex hend vcenter" v-else-if="detail.status == 2">
-      <!-- 确认收货，点击出现确认弹窗 -->
-      <BmButton :type="'info'" class="black btn-content__evaluation" @click="onReceipt">{{ $t('me.order.confirmReceipt') }}</BmButton>
-      <!-- Buy Now -->
-      <BmButton class="fs-16 ml-10 rount-0 plr-30 btn-content__buy" @click="goPay">{{ $t('me.order.buyAgain') }}</BmButton>
-    </div>
-
-    <!-- 已收货 -->
-    <div class="w-100 bg-white btn-content flex hend vcenter" v-else-if="detail.status == 3">
-      <!-- 评价 -->
-      <BmButton :type="'info'" class="black btn-content__evaluation" @click="onReceipt">{{ $t('me.order.evaluation') }}</BmButton>
-      <!-- Buy Again -->
-      <BmButton class="fs-16 ml-10 rount-0 plr-30 btn-content__buy" @click="goPay">{{ $t('me.order.buyAgain') }}</BmButton>
-    </div>
-
-    <!-- 已取消 / 超时取消 -->
-    <div class="w-100 bg-white btn-content flex hend vcenter" v-else-if="detail.status == 5|| detail.status == 6">
-      <!-- Buy Again -->
-      <BmButton class="fs-16 ml-10 rount-0 plr-30 btn-content__buy" @click="goPay">{{ $t('me.order.buyAgain') }}</BmButton>
-    </div>
-
 
     <!-- 待付款-取消订单弹窗 -->
     <van-popup v-model="isCancelShow" position="bottom" closeable style="height: 80%">
@@ -212,7 +201,7 @@
 </template>
 
 <script>
-import { Cell, CellGroup, Divider, Popup, RadioGroup, Radio, CountDown } from 'vant';
+import { Cell, CellGroup, Divider, Popup, RadioGroup, Radio, CountDown, Sticky } from 'vant';
 import OrderSingle from '@/components/OrderSingle';
 import OrderStoreSingle from '@/components/OrderStoreSingle';
 import ClipboardJS from 'clipboard';
@@ -230,6 +219,7 @@ export default {
     vanRadioGroup: RadioGroup,
     vanRadio: Radio,
     vanCountDown: CountDown,
+    vanSticky: Sticky,
     OrderSingle,
     OrderStoreSingle,
     ProductTopBtmSingle
@@ -240,7 +230,8 @@ export default {
       isCancelShow: false,
       cancelRadio: 0,
       detail: {},
-      cancelReasonList: []
+      cancelReasonList: [],
+      isScrollShow: true
     }
   },
   activated() {
@@ -268,7 +259,10 @@ export default {
     },
     goPay() { // 跳转去待付款-支付页面
       this.$router.push({
-        name: 'me-pay-payment'
+        name: 'me-pay-payment',
+        query: {
+          type: 'order'
+        }
       })
     },
     copy() { // 复制
@@ -369,11 +363,54 @@ export default {
         if (res.data.status == 5) title = 'me.order.tradingClosed'; // 5  交易关闭,超时取消
         if (res.data.status == 6) title = 'me.order.tradingClosed'; // 6  交易关闭,超时取消
         this.title = title;
-        this.detail = res.data;
+        this.detail = {
+          ...res.data,
+          remainCloseMills: parseFloat(res.data.remainCloseMills)
+        };
         this.$toast.clear();
+      })
+    },
+    stickyScroll(scrollObj) { // 吸顶滚动事件
+      if (scrollObj.isFixed) {
+        // 滚动时格式化样式 head-sticky-scroll
+        if (scrollObj.scrollTop > 2) {
+          this.$refs.headerStickyContainer.$el.classList.add('head-sticky-scroll');
+          this.isScrollShow = false;
+        }
+        if (scrollObj.scrollTop < 170) {
+          this.$refs.headerStickyContainer.$el.classList.remove('head-sticky-scroll');
+          this.isScrollShow = true;
+        }
+      }
+    },
+    onBuy(orderItem) { // 再次购买,跳转到确认订单页面
+      let skuItems = orderItem.items.map(item => {
+        return {
+          quantity: item.goodQuantity,
+          skuId: item.skuId
+        }
+      })
+      this.$router.push({
+        name: 'cart-order-id',
+        params: {
+          id: JSON.stringify({skuItems: skuItems})
+        }
+      })
+    },
+    onPay(orderItem) { // 去支付
+      this.$router.push({
+        name: 'me-pay-payment',
+        query: {
+          type: 'order',
+          amount: orderItem.productAmount,
+          orderIds: JSON.stringify({orderIds: [orderItem.id]})
+        }
       })
     }
   },
+  beforeDestroy(){
+    window.removeEventListener('scroll', this.stickyScroll); // 离开页面清除滚动事件
+  }
 }
 </script>
 
@@ -407,7 +444,7 @@ export default {
   position: fixed;
   bottom: 0;
   height: 56px;
-  .btn-content__buy{
+  .v-100{
     height: 100%;
   }
   .btn-content__evaluation{
@@ -430,5 +467,20 @@ export default {
   border-color: #eee!important;
   color: #383838!important;
   background-color: transparent!important;
+}
+.min-h-95{
+  min-height: 95px;
+  display: block;
+}
+</style>
+
+<style lang="less">
+.head-sticky-scroll{
+  .min-h-95{
+    min-height: 0;
+    display: none;
+    animation: all 1s;
+  }
+  
 }
 </style>

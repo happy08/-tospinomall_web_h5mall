@@ -251,7 +251,7 @@
         </div>
 
         <!-- 商品评论 -->
-        <div class="mt-12 bg-white pt-16 pb-20">
+        <div class="mt-12 bg-white pt-16">
           <h3 class="black flex between vcenter plr-20 fn fm-helvetica">
             <span class="fs-16"
               >{{ $t("cart.topReviewer") }}
@@ -264,6 +264,7 @@
           <div
             v-for="(reviewItem, reviewIndex) in hotEvaluates.lists"
             :key="'reviewItem-' + reviewIndex"
+            class="pb-20 border-b"
           >
             <!-- 评论人信息 -->
             <div class="mt-14 flex between plr-20">

@@ -25,101 +25,103 @@
 
       <!-- 分类 -->
       <van-tabs sticky swipeable animated color="#42B7AE"  @change="getSearchList" class="pt-12 bg-white customs-van-tabs" v-model="typeActive" :ellipsis="false" >
-        <van-tab v-for="(productItem, tabIndex) in tabs" :title="productItem.name" :key="'scroll-tab-' + tabIndex" title-class="border-b" :name="productItem.type" />
+        <van-tab v-for="(productItem, tabIndex) in tabs" :title="productItem.name" :key="'scroll-tab-' + tabIndex" title-class="border-b" :name="productItem.type">
+          <van-pull-refresh v-model="refreshing" @refresh="onRefresh" class="vh-100">
+            <van-list
+              v-model="loading"
+              :finished="finished"
+              @load="onLoad"
+              :finished-text="lists.length == 0 ? '' : '没有更多了'"
+            >
+              <div class="flex between flex-wrap">
+                <!-- 空状态  -->
+                <empty-status v-if="lists.length === 0" :image="require('@/assets/images/empty/order.png')" :description="$t('common.noRecord')"/>
+                <!-- 订单列表 -->
+                <div v-else v-for="(item,index) in lists" :key="index" class="w-100 plr-12 mb-12 bg-white pb-20 pt-24">
+                  <!-- 订单店铺 -->
+                  <OrderStoreSingle :name="item.storeName" :status="item.status | statusFormat" @goStoreDetail="goOrderDetail(item.items[0].orderId)">
+                    <!-- 如果是取消状态，则该订单可删除，添加操作展示  -->
+                    <div slot="other-deal" class="flex vcenter" v-if="item.status == 5 || item.status == 6">
+                      <span class="block line-style"></span>
+                      <BmImage 
+                        :url="require('@/assets/images/icon/delete-icon.svg')"
+                        :width="'0.48rem'" 
+                        :height="'0.48rem'"
+                        :isLazy="false"
+                        @onClick="deleteFn(item.id)"
+                      />
+                    </div>
+                  </OrderStoreSingle>
+                  <!-- 订单列表详情 -->
+                  <template v-if="item.items.length == 1">
+                    <OrderSingle
+                      class="mt-20"
+                      :image="productItem.goodImg" 
+                      :product_desc="productItem.goodName"
+                      :product_size="productItem.goodAttr"
+                      :price="productItem.goodPrice"
+                      :product_num="item.totalQuantity"
+                      @onClick="goOrderDetail(productItem.orderId)"
+                      v-for="(productItem,productIndex) in item.items"
+                      :key="productIndex"
+                    />
+                  </template>
+                  <!-- 多个商品 -->
+                  <div v-else class="more-order-content">
+                    <swiper
+                      ref="swiperComponentRef"
+                      :class="{ 'swiper mt-20 order-page__global-swiper': true, 'swiper-no-swiping' : item.totalQuantity <= 4 }"
+                      :options="{
+                        ...swiperComponentOption,
+                        loop: item.totalQuantity > 4,
+                        loopFillGroupWithBlank: item.totalQuantity > 4
+                      }"
+                    >
+                      <swiper-slide v-for="(productItem,productIndex) in item.items" :key="'swiper-' + productIndex" @click="goOrderDetail(productItem.orderId)">
+                        <BmImage 
+                          :url="productItem.goodImg"
+                          :width="'1.68rem'" 
+                          :height="'1.68rem'"
+                          :isLazy="false"
+                          class="flex-shrink border round-4 hidden"
+                        />
+                      </swiper-slide>
+                    </swiper>
+                    <div class="tr more-order-content__info">
+                      <p class="fs-18 fw black lh-20">{{ $store.state.rate.currency }}{{ item.productAmount }}</p>
+                      <p class="light-grey fs-14 lh-20 mt-8">X{{ item.totalQuantity }}</p>
+                    </div>
+                  </div>
+                  <!-- 订单不同状态对应的按钮展示 -->
+                  <div class="w-100 bg-white btn-content flex hend vcenter mt-22">
+                    <!-- 订单状态status：0->待付款；1->待发货；2->待收货；3->待评价（可能废弃）；4->已完成 5->已取消；6->超时未付款（订单关闭）；7->已拒收；8->其他 -->
+                    <!-- 支付状态payState：0->未支付 1已支付 -->
+                    <!-- 付款方式paymentType：1->在线支付；2->货到付款 -->
+                    <!-- 评论状态hasComment：0->未评论 1->已评论 -->
+                    <!-- 售后状态showAfterSale：0->不可售后 1->可以售后 -->
+
+                    <!-- 取消订单：在线支付[待付款0]；货到付款[待发货1且未支付0] -->
+                    <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" v-if="(item.paymentType == 1 && item.status == 0) || (item.paymentType == 0 && item.status == 1 && item.payState == 0)" @btnClick="onCancel(item)">取消订单</BmButton>
+                    <!-- 去支付：在线支付[待付款0] -->
+                    <BmButton class="fs-14 ml-10 round-8 plr-12 h-32" :type="'info'" v-if="item.paymentType == 1 && item.status == 0" @btnClick="onPay(item)">去支付</BmButton>
+                    <!-- 去评价：在线支付[已完成4且未评价0]；货到付款[已完成4且未评价0] -->
+                    <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" v-if="item.hasComment == 0 && item.status == 4">去评价</BmButton>
+                    <!-- 退款/售后：在线支付[待发货1且已支付1且可售后1,待收货2且已支付1且可售后1,已完成4且可售后1]；货到付款[待发货1且已支付1且可售后1,待收货2且可售后1,已完成4且可售后1] -->
+                    <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" v-if="(item.paymentType == 1 && (((item.status == 1 || item.status == 2) && item.payState == 1) || item.status == 4)  && item.showAfterSale == 1) || (item.paymentType == 0 && ((item.status == 1 && item.payState == 1) || item.status == 2 || item.status == 4) && item.showAfterSale == 1)">退款/售后</BmButton>
+                    <!-- 确认收货：在线支付[待收货2且已支付1]；货到付款[待收货2] -->
+                    <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" v-if="(item.paymentType == 1 && item.status == 2 && item.payState == 1) || (item.paymentType == 0 && item.status == 2)">确认收货</BmButton>
+                    <!-- 去购买：待发货1,待收货2,待评价3,已完成4,已取消5,超时未付款6,已拒收7,其他8 -->
+                    <BmButton class="fs-14 ml-10 round-8 plr-12 h-32" :type="'info'" v-if="item.status != 0" @btnClick="onBuy(item)">{{ $t('me.order.buyAgain') }}</BmButton>
+                  </div>
+                </div>
+              </div>
+            </van-list>
+          </van-pull-refresh>
+        </van-tab>
       </van-tabs>
     </van-sticky>
     
-    <van-pull-refresh v-model="refreshing" @refresh="onRefresh" class="vh-100">
-      <van-list
-        v-model="loading"
-        :finished="finished"
-        @load="onLoad"
-        :finished-text="lists.length == 0 ? '' : '没有更多了'"
-      >
-        <div class="flex between flex-wrap">
-          <!-- 空状态  -->
-          <empty-status v-if="lists.length === 0" :image="require('@/assets/images/empty/order.png')" :description="$t('common.noRecord')"/>
-          <!-- 订单列表 -->
-          <div v-else v-for="(item,index) in lists" :key="index" class="w-100 plr-12 mb-12 bg-white pb-20 pt-24">
-            <!-- 订单店铺 -->
-            <OrderStoreSingle :name="item.storeName" :status="item.status | statusFormat" @goStoreDetail="goOrderDetail(item.items[0].orderId)">
-              <!-- 如果是取消状态，则该订单可删除，添加操作展示  -->
-              <div slot="other-deal" class="flex vcenter" v-if="item.status == 5 || item.status == 6">
-                <span class="block line-style"></span>
-                <BmImage 
-                  :url="require('@/assets/images/icon/delete-icon.svg')"
-                  :width="'0.48rem'" 
-                  :height="'0.48rem'"
-                  :isLazy="false"
-                  @onClick="deleteFn(item.id)"
-                />
-              </div>
-            </OrderStoreSingle>
-            <!-- 订单列表详情 -->
-            <template v-if="item.items.length == 1">
-              <OrderSingle
-                class="mt-20"
-                :image="productItem.goodImg" 
-                :product_desc="productItem.goodName"
-                :product_size="productItem.goodAttr"
-                :price="productItem.goodPrice"
-                :product_num="item.totalQuantity"
-                @onClick="goOrderDetail(productItem.orderId)"
-                v-for="(productItem,productIndex) in item.items"
-                :key="productIndex"
-              />
-            </template>
-            <!-- 多个商品 -->
-            <div v-else class="more-order-content">
-              <swiper
-                ref="swiperComponentRef"
-                :class="{ 'swiper mt-20 order-page__global-swiper': true, 'swiper-no-swiping' : item.totalQuantity <= 4 }"
-                :options="{
-                  ...swiperComponentOption,
-                  loop: item.totalQuantity > 4,
-                  loopFillGroupWithBlank: item.totalQuantity > 4
-                }"
-              >
-                <swiper-slide v-for="(productItem,productIndex) in item.items" :key="'swiper-' + productIndex">
-                  <BmImage 
-                    :url="productItem.goodImg"
-                    :width="'1.68rem'" 
-                    :height="'1.68rem'"
-                    :isLazy="false"
-                    class="flex-shrink border round-4 hidden"
-                  />
-                </swiper-slide>
-              </swiper>
-              <div class="tr more-order-content__info">
-                <p class="fs-18 fw black lh-20">{{ $store.state.rate.currency }}{{ item.productAmount }}</p>
-                <p class="light-grey fs-14 lh-20 mt-8">X{{ item.totalQuantity }}</p>
-              </div>
-            </div>
-            <!-- 订单不同状态对应的按钮展示 -->
-            <div class="w-100 bg-white btn-content flex hend vcenter mt-22">
-              <!-- 订单状态status：0->待付款；1->待发货；2->待收货；3->待评价（可能废弃）；4->已完成 5->已取消；6->超时未付款（订单关闭）；7->已拒收；8->其他 -->
-              <!-- 支付状态payState：0->未支付 1已支付 -->
-              <!-- 付款方式paymentType：1->在线支付；2->货到付款 -->
-              <!-- 评论状态hasComment：0->未评论 1->已评论 -->
-              <!-- 售后状态showAfterSale：0->不可售后 1->可以售后 -->
-
-              <!-- 取消订单：在线支付[待付款0]；货到付款[待发货1且未支付0] -->
-              <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" v-if="(item.paymentType == 1 && item.status == 0) || (item.paymentType == 0 && item.status == 1 && item.payState == 0)" @btnClick="onCancel(item)">取消订单</BmButton>
-              <!-- 去支付：在线支付[待付款0] -->
-              <BmButton class="fs-14 ml-10 round-8 plr-12 h-32" :type="'info'" v-if="item.paymentType == 1 && item.status == 0" @btnClick="onPay(item)">去支付</BmButton>
-              <!-- 去评价：在线支付[已完成4且未评价0]；货到付款[已完成4且未评价0] -->
-              <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" v-if="item.hasComment == 0 && item.status == 4">去评价</BmButton>
-              <!-- 退款/售后：在线支付[待发货1且已支付1且可售后1,待收货2且已支付1且可售后1,已完成4且可售后1]；货到付款[待发货1且已支付1且可售后1,待收货2且可售后1,已完成4且可售后1] -->
-              <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" v-if="(item.paymentType == 1 && (((item.status == 1 || item.status == 2) && item.payState == 1) || item.status == 4)  && item.showAfterSale == 1) || (item.paymentType == 0 && ((item.status == 1 && item.payState == 1) || item.status == 2 || item.status == 4) && item.showAfterSale == 1)">退款/售后</BmButton>
-              <!-- 确认收货：在线支付[待收货2且已支付1]；货到付款[待收货2] -->
-              <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" v-if="(item.paymentType == 1 && item.status == 2 && item.payState == 1) || (item.paymentType == 0 && item.status == 2)">确认收货</BmButton>
-              <!-- 去购买：待发货1,待收货2,待评价3,已完成4,已取消5,超时未付款6,已拒收7,其他8 -->
-              <BmButton class="fs-14 ml-10 round-8 plr-12 h-32" :type="'info'" v-if="item.status != 0" @btnClick="onBuy(item)">{{ $t('me.order.buyAgain') }}</BmButton>
-            </div>
-          </div>
-        </div>
-      </van-list>
-    </van-pull-refresh>
+    
 
     <!-- 弹窗筛选 -->
     <van-popup
@@ -288,12 +290,15 @@ export default {
         status: this.typeActive
       }
     }
-    
+    // 加载图标
+    this.$toast.loading({
+      forbidClick: true,
+      loadingType: 'spinner',
+      duration: 0
+    });
     const listData = await this.$api.getOrderList(this.params);
+    this.$toast.clear();
     if (listData.code != 0) return false;
-    if (this.isFirst) {
-      this.$toast.clear();
-    }
     this.lists = this.params.pageNum == 1 ? listData.data.records : this.lists.concat(listData.data.records);
     this.total = listData.data.total;
     this.loading = false;
@@ -306,12 +311,6 @@ export default {
     }
   },
   activated() {
-    // 加载图标
-    this.$toast.loading({
-      forbidClick: true,
-      loadingType: 'spinner',
-      duration: 0
-    });
     this.isFirst = true;
     this.$fetch();
     this.beforeOneYear = Moment(parseInt(this.$store.state.nowTime)).subtract(1,'years').format('YYYY');
@@ -373,6 +372,7 @@ export default {
         this.filterPopup = false; // 弹窗隐藏
         this.lists = res.data.records;
         this.total = res.data.total;
+        this.$toast.clear();
       })
     },
     goSearch() { // 跳转到搜索页面
