@@ -1,5 +1,5 @@
 <template>
-  <!-- 用户协议 -->
+  <!-- 协议 -->
   <div>
     <BmHeaderNav :left="{ isShow: true }" :title="title" />
     

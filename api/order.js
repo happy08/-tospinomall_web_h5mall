@@ -62,3 +62,16 @@ export function getOrderReasonList(params) {
     }
   })
 }
+
+/**
+ * 评价中心的统计
+ */
+export function getOrderRateCount() {
+  return request({
+    url: '/api/order/omsorder/buyer/orderItem/commentCount',
+    method: 'get',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
+  })
+}

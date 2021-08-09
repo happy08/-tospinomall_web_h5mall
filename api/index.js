@@ -178,6 +178,16 @@ export default ({ app }, inject) => {
           'Content-Type': 'application/x-www-form-urlencoded'
         }
       })
+    },
+    getRateList(params) { // 评价列表的查询
+      return app.$axios({
+        url: `${url}/order/omsorder/buyer/orderItem/commentCenter`,
+        method: 'get',
+        params: params,
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      })
     }
   };
 
