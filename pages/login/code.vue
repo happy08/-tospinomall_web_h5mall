@@ -107,7 +107,7 @@
             <BmIcon :name="'cellphone'" :width="'0.64rem'" :height="'0.64rem'" />
           </nuxt-link>
         </div>
-        <p class="fs-14 tc mt-20 lh-20 login-page__btm--service">By loging in,you agree to <nuxt-link :to="{ name: 'services-register' }">Tospino's Terms of Service</nuxt-link> and <nuxt-link :to="{ name: 'services-privacy' }">Privacy Policy</nuxt-link></p>
+        <p class="fs-14 tc mt-20 lh-20 login-page__btm--service">By loging in,you agree to <nuxt-link :to="{ name: 'services-type', params: { type: 'register' } }">Tospino's Terms of Service</nuxt-link> and <nuxt-link :to="{ name: 'services-type', params: { type: 'privacy' } }">Privacy Policy</nuxt-link></p>
       </div>
     </div>
   </div>
