@@ -43,20 +43,7 @@
     </van-sticky>
 
     <!-- 下拉刷新 -->
-    <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
-      <!-- 加载提示 -->
-      <template #loading>
-        <van-loading color="#42B7AE" />
-      </template>
-      <!-- 下拉提示 -->
-      <template #pulling>
-        <van-loading color="#42B7AE" />
-      </template>
-      <!-- 释放提示 -->
-      <template #loosing>
-        <van-loading color="#42B7AE" />
-      </template>
-
+    <PullRefresh :refreshing="refreshing" @refresh="onRefresh">
       <!-- 热门搜索种类列表 -->
       <div class="flex popular-search-list">
         <nuxt-link class="black round-10 fm-pf-r small-single-tag" v-for="(hotItem, index) in hotSearch" :key="'hot-search-' + index" :to="{ name: 'search', query: { val: hotItem.name, searchKeyword: hotItem.name } }" v-slot="{ navigate }">
@@ -269,7 +256,7 @@
         </van-tab>
       </van-tabs>
 
-    </van-pull-refresh>
+    </PullRefresh>
 
     
     <!-- 底部 -->
@@ -278,9 +265,10 @@
 </template>
 
 <script>
-import { Search, CountDown, Sticky, Tab, Tabs, PullRefresh, Loading, List } from 'vant';
+import { Search, CountDown, Sticky, Tab, Tabs, Loading, List } from 'vant';
 import ProductTopBtmSingle from '@/components/ProductTopBtmSingle';
 import EmptyStatus from '@/components/EmptyStatus';
+import PullRefresh from '@/components/PullRefresh';
 
 export default {
   components: {
@@ -289,11 +277,11 @@ export default {
     vanTab: Tab,
     vanTabs: Tabs,
     vanCountDown: CountDown,
-    vanPullRefresh: PullRefresh,
     vanLoading: Loading,
     vanList: List,
     ProductTopBtmSingle,
-    EmptyStatus
+    EmptyStatus,
+    PullRefresh
   },
   data() {
     return {
@@ -323,7 +311,9 @@ export default {
         },
       },
       tabCategoryActive: '全部',
-      refreshing: false,
+      refreshing: {
+        isFresh: false
+      },
       hotSearch: [],
       moduleData: [],
       categoryList: [],
@@ -337,7 +327,7 @@ export default {
     }
   },
   async fetch() {
-    this.refreshing = false;
+    this.refreshing.isFresh = false;
     const metaData = await this.$api.getHomeSeo(); // 获取SEO信息
     this.meta = metaData.data;
 

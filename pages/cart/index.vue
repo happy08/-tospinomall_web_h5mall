@@ -19,7 +19,7 @@
       </van-sticky>
     </div>
 
-    <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
+    <PullRefresh :refreshing="refreshing" @refresh="onRefresh">
       <!-- 空数据 -->
       <empty-status v-if="list.length === 0 && $store.state.user.authToken" :image="require('@/assets/images/empty/cart.png')" :description="$t('cart.emptyTip')" :btn="{ btn: $t('me.likes.shopNow'), isEmit: true }" @emptyClick="goHome" />
       <!-- 数据列表展示 -->
@@ -144,7 +144,7 @@
           />
         </div>
       </div>
-    </van-pull-refresh>
+    </PullRefresh>
 
     <!-- 购物车编辑 -->
     <div class="bg-white custom-submit-bar pl-16 pr-12 flex vcenter between">
@@ -239,9 +239,10 @@ import EmptyStatus from '@/components/EmptyStatus';
 import ProductTopBtmSingle from '@/components/ProductTopBtmSingle';
 import OrderStoreSingle from '@/components/OrderStoreSingle';
 import SoldOut from '@/components/SoldOut';
-import { Divider, Tab, Tabs, SwipeCell, Card, Stepper, Checkbox, CheckboxGroup, Sticky, SubmitBar, PullRefresh, List, Sku } from 'vant';
+import { Divider, Tab, Tabs, SwipeCell, Card, Stepper, Checkbox, CheckboxGroup, Sticky, SubmitBar, List, Sku } from 'vant';
 import { removeCart, setOftenBuy, getCartCount, moveToFavorite, getCalculatePrice, updateCartNum, getSkuStock } from '@/api/cart';
 import { getGoodAttr } from '@/api/product';
+import PullRefresh from '@/components/PullRefresh';
 
 export default {
   components: {
@@ -255,13 +256,13 @@ export default {
     vanCheckboxGroup: CheckboxGroup,
     vanSticky: Sticky,
     vanSubmitBar: SubmitBar,
-    vanPullRefresh: PullRefresh,
     vanList: List,
     vanSku: Sku,
     SoldOut,
     EmptyStatus,
     OrderStoreSingle,
-    ProductTopBtmSingle
+    ProductTopBtmSingle,
+    PullRefresh
   },
   data() {
     return {
@@ -281,7 +282,9 @@ export default {
       allTotal: 0, // 全部总条数
       // listTotal: 0, // 商品总数
       productResult: [], // 选中的商品id
-      refreshing: false,
+      refreshing: {
+        isFresh: false
+      },
       result: [], // 已提交的已选择的商品skuid
       productShow: false,
       goodSpuVo: {},
@@ -316,7 +319,7 @@ export default {
       }
     });
     this.onCountPrice();
-    this.refreshing = false;
+    this.refreshing.isFresh = false;
   },
   activated() {
     this.getCartCount(); // 总数查询

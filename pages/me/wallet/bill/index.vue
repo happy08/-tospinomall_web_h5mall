@@ -19,7 +19,7 @@
     </van-sticky>
 
     <!-- 账单列表 -->
-    <van-pull-refresh v-model="refreshing" @refresh="onRefresh" v-if="list.length> 0">
+    <PullRefresh :refreshing="refreshing" @refresh="onRefresh" v-if="list.length> 0">
       <van-list
         v-model="loading"
         :finished="finished"
@@ -56,17 +56,18 @@
           
         </div>
       </van-list>
-    </van-pull-refresh>
+    </PullRefresh>
 
     <empty-status v-else :image="require('@/assets/images/empty/order.png')" />
   </div>
 </template>
 
 <script>
-import { Search, Sticky, List, PullRefresh } from 'vant';
+import { Search, Sticky, List } from 'vant';
 import Moment from 'moment';
 import { getBillList } from '@/api/pay';
 import EmptyStatus from '@/components/EmptyStatus';
+import PullRefresh from '@/components/PullRefresh';
 
 export default {
   middleware: 'authenticated',
@@ -74,8 +75,8 @@ export default {
     vanSearch: Search,
     vanSticky: Sticky,
     vanList: List,
-    vanPullRefresh: PullRefresh,
-    EmptyStatus
+    EmptyStatus,
+    PullRefresh
   },
   data() {
     return {
@@ -85,7 +86,9 @@ export default {
       pageSize: 10,
       loading: false,
       finished: false,
-      refreshing: false,
+      refreshing: {
+        isFresh: false
+      },
       total: 0,
       isHeader: false,
       searchList: []
@@ -102,7 +105,7 @@ export default {
   methods: {
     getBillList(flag) {
       getBillList({ pageNum: this.pageNum, pageSize: this.pageSize, type: 0, title: this.searchVal }).then(res => {
-        this.refreshing = false;
+        this.refreshing.isFresh = false;
         // 加载状态结束
         this.loading = false;
         if (res.code != 0) return false;

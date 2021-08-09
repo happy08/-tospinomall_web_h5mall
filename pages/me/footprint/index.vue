@@ -12,7 +12,7 @@
     </BmHeaderNav>
 
     <!-- 下拉刷新 -->
-    <van-pull-refresh v-model="refreshing" :head-height="80" @refresh="onRefresh" class="vh-100">
+    <PullRefresh :refreshing="refreshing" @refresh="onRefresh">
       <van-list
         v-model="loading"
         :finished="finished"
@@ -93,17 +93,18 @@
           </div>
         </div>
       </van-list>
-    </van-pull-refresh>
+    </PullRefresh>
     
   </div>
 </template>
 
 <script>
-import { Tab, Tabs, SwipeCell, Cell, Checkbox, CheckboxGroup, CellGroup, Divider, PullRefresh, List } from 'vant';
+import { Tab, Tabs, SwipeCell, Cell, Checkbox, CheckboxGroup, CellGroup, Divider, List } from 'vant';
 import EmptyStatus from '@/components/EmptyStatus';
 import OrderSingle from '@/components/OrderSingle';
 import ProductTopBtmSingle from '@/components/ProductTopBtmSingle';
 import { deleteFootprintRecord } from '@/api/product';
+import PullRefresh from '@/components/PullRefresh';
 
 export default {
   middleware: 'authenticated',
@@ -116,11 +117,11 @@ export default {
     vanCheckboxGroup: CheckboxGroup,
     vanCellGroup: CellGroup,
     vanDivider: Divider,
-    vanPullRefresh: PullRefresh,
     vanList: List,
     EmptyStatus,
     OrderSingle,
-    ProductTopBtmSingle
+    ProductTopBtmSingle,
+    PullRefresh
   },
   data() {
     return {
@@ -133,13 +134,15 @@ export default {
       total: 0,
       loading: false,
       finished: false,
-      refreshing: false
+      refreshing: {
+        isFresh: false
+      }
     }
   },
   async fetch() {
     // 数据初始化
     this.edit = false;
-    this.refreshing = false;
+    this.refreshing.isFresh = false;
     
     // 获取列表数据
     const listData = await this.$api.getFootprintList({ pageSize: this.pageSize, pageNum: this.pageNum });

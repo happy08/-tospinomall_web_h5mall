@@ -16,7 +16,7 @@
       </div>
     </BmHeaderNav>
 
-    <van-pull-refresh v-model="isLoading" :head-height="80" @refresh="onRefresh" class="vh-100">
+    <PullRefresh :refreshing="isLoading" @refresh="onRefresh">
       <van-list
         v-model="loading"
         :finished="finished"
@@ -130,18 +130,19 @@
           </div>
         </template>
       </van-list>
-    </van-pull-refresh>
+    </PullRefresh>
     
   </div>
 </template>
 
 <script>
-import { Tab, Tabs, SwipeCell, Cell, Checkbox, CheckboxGroup, CellGroup, Divider, PullRefresh, List } from 'vant';
+import { Tab, Tabs, SwipeCell, Cell, Checkbox, CheckboxGroup, CellGroup, Divider, List } from 'vant';
 import EmptyStatus from '@/components/EmptyStatus';
 import OrderSingle from '@/components/OrderSingle';
 import ProductTopBtmSingle from '@/components/ProductTopBtmSingle';
 import { storeCancelFollow } from '@/api/store';
 import { cancelAttentionGood } from '@/api/product';
+import PullRefresh from '@/components/PullRefresh';
 
 export default {
   middleware: 'authenticated',
@@ -154,11 +155,11 @@ export default {
     vanCheckboxGroup: CheckboxGroup,
     vanCellGroup: CellGroup,
     vanDivider: Divider,
-    vanPullRefresh: PullRefresh,
     vanList: List,
     EmptyStatus,
     OrderSingle,
-    ProductTopBtmSingle
+    ProductTopBtmSingle,
+    PullRefresh
   },
   data() {
     return {
@@ -171,7 +172,9 @@ export default {
       pageSize: 10,
       total: 0,
       likeList: [],
-      isLoading: false,
+      isLoading: {
+        isFresh: false
+      },
       loading: false,
       finished: false
     }
@@ -183,7 +186,7 @@ export default {
 
     // 获取商品列表
     const listData = this.tabActive == 0 ? await this.$api.getLikeProduct({ pageNum: this.pageNum, pageSize: this.pageSize }) : await this.$api.getLikeStoreList({ pageNum: this.pageNum, pageSize: this.pageSize }); // 获取关注商品/店铺列表
-    this.isLoading = false;
+    this.isLoading.isFresh = false;
     if (listData.code != 0) return false;
     
     this.list = listData.data.records; // 关注商品/店铺列表
