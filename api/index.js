@@ -188,6 +188,26 @@ export default ({ app }, inject) => {
           'Content-Type': 'application/x-www-form-urlencoded'
         }
       })
+    },
+    getAfterSaleStatusList(params) { // 售后列表分页查询-处理中/售后记录
+      return app.$axios({
+        url: `${url}/order/orderReturn/buyer/findAfterSalesPage`,
+        method: 'get',
+        params: params,
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      })
+    },
+    getAfterSaleList(params) { // 售后申请列表
+      return app.$axios({
+        url: `${url}/order/omsorder/buyer/findAfterSalesPage`,
+        method: 'get',
+        params: params,
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      })
     }
   };
 

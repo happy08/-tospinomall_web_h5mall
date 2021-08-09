@@ -1,11 +1,12 @@
 <template>
   <!-- 我的-售后-售后申请-售后类型 type: 1仅退款 2退货退款 3换货 -->
-  <div class="bg-grey vh-100 pb-30">
-    <BmHeaderNav :left="{ isShow: true }" :title="$t(title)" />
+  <div class="bg-grey vh-100 pb-30 pt-46">
+    <BmHeaderNav :left="{ isShow: true }" :title="$t(title)" :fixed="true" />
 
     <!-- 订单详情 -->
     <div class="bg-white p-20">
-      <OrderSingle :product_num="1" :product_desc="'Hassen’s new fall 2019 suede pointe…'" :product_size="'Black / L'" :price="256.23" />
+      <OrderSingle class="bg-white" :image="detail.goodImg" :product_num="detail.goodQuantity" :product_desc="detail.goodName" :product_size="detail.goodAttr" :price="detail.goodPrice" />
+
       <!-- 换货的话可以选择换货数量 仅换货时展示 -->
       <van-cell v-if="$route.params.type == 3" class="mt-14 vcenter plr-0 ptb-0" :title="$t('me.afterSale.applicationNumber')" title-class="fs-14 light-grey">
         <template #default>
@@ -28,7 +29,7 @@
     <!-- 退款金额 -->
     <van-cell class="ptb-20 plr-20 mt-12" center :title="$t('me.afterSale.refundAmount')" title-class="fs-14 black" :label="$t('me.afterSale.modifyAmount')" value-class="black fw fs-18" >
       <template #default>
-        <van-field v-model="amount" type="number" class="tr"/>
+        <van-field v-model="detail.productAmount" type="number" input-align="right" @blur="onBlur" @focus="onFocus" />
       </template>
     </van-cell>
 
@@ -201,6 +202,7 @@
 <script>
 import OrderSingle from '@/components/OrderSingle';
 import { Cell, CellGroup, Uploader, Field, Checkbox, Switch, Stepper, Popup, RadioGroup, Radio, Sku } from 'vant';
+import { getOrderItem } from '@/api/order';
 
 export default {
   middleware: 'authenticated',
@@ -218,19 +220,10 @@ export default {
     vanSku: Sku,
     OrderSingle
   },
-  asyncData({isDev, route, store, env, params, query, req, res, redirect, error}) {
-    let title = '';
-    if (route.params.type == 1) title = 'me.afterSale.afterSaleService'; // 仅退款
-    if (route.params.type == 2) title = 'me.afterSale.returnRefund'; // 退货退款
-    if (route.params.type == 3) title = 'me.afterSale.exchange'; // 换货
-
+  data() {
     return {
-      fileList: [
-        { url: 'https://img01.yzcdn.cn/vant/leaf.jpg' }
-      ],
-      phone: '15088736541',
-      title: title,
-      amount: store.state.rate.currency + '255.00',
+      fileList: [],
+      phone: '',
       isGreenment: false,
       addressChecked: true,
       stepNumber: 1,
@@ -354,9 +347,21 @@ export default {
         selectedSkuComb: {
           stock_num: 12
         }
-        
-      }
+      },
+      title: '',
+      detail: {}
     }
+  },
+  activated() {
+    if (this.$route.params.type == 1) this.title = 'me.afterSale.afterSaleService'; // 仅退款
+    if (this.$route.params.type == 2) this.title = 'me.afterSale.returnRefund'; // 退货退款
+    if (this.$route.params.type == 3) this.title = 'me.afterSale.exchange'; // 换货
+
+    getOrderItem(this.$route.query.orderId).then(res => {
+      if (res.code != 0) return false;
+
+      this.detail = res.data
+    })
   },
   methods: {
     onConfirm() { // 提交 售后选项 根据currentSelect.type判断提交类别
@@ -369,6 +374,12 @@ export default {
         title: type === 'type' ? this.$t('me.afterSale.selecApplicationType') : type === 'status' ? this.$t('me.afterSale.stateOfTheGoods') : type === 'reason' ? this.$t('me.afterSale.applyReason') : '',
         list: type === 'type' ? this.$t('me.afterSale.selectReason') : type === 'status' ? this.$t('me.afterSale.stateGoodsList') : type === 'reason' ? this.$t('me.afterSale.reasonList') : ''
       }
+    },
+    onBlur(value) { // 输入金额格式化
+      return this.$store.state.rate.currency + value;
+    },
+    onFocus(value) {
+      return value;
     }
   },
 }

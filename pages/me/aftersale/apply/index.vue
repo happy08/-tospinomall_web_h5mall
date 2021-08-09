@@ -4,17 +4,17 @@
     <BmHeaderNav :left="{ isShow: true }" :title="$t('me.afterSale.afterSaleService')" />
 
     <!-- 订单详情 -->
-    <OrderSingle class="bg-white p-20" :product_num="1" :product_desc="'Hassen’s new fall 2019 suede pointe…'" :product_size="'Black / L'" :price="256.23" />
+    <OrderSingle class="bg-white p-20" :image="detail.goodImg" :product_num="detail.goodQuantity" :product_desc="detail.goodName" :product_size="detail.goodAttr" :price="detail.goodPrice" />
 
-    <van-cell-group class="mt-20">
+    <van-cell-group class="mt-12">
       <!-- 选择售后类型 type: 1仅退款 2退货退款 3换货 -->
-      <van-cell class="ptb-20 plr-20" :title="$t('me.afterSale.selectAfterSalesType')" title-class="fs-14 black"/>
+      <van-cell class="ptb-20 plr-20" :title="$t('me.afterSale.selectAfterSalesType')" title-class="fs-14 black fw"/>
       <!-- 退货退款 -->
-      <van-cell class="ptb-20 plr-20" :title="$t('me.afterSale.returnRefund')" title-class="fs-14 black" is-link :to="{ name: 'me-aftersale-apply-type', params: { type: 2 } }" />
-      <!-- 换货 -->
-      <van-cell class="ptb-20 plr-20" :title="$t('me.afterSale.exchange')" title-class="fs-14 black"  is-link :to="{ name: 'me-aftersale-apply-type', params: { type: 3 } }" />
+      <van-cell class="ptb-20 plr-20" :title="$t('me.afterSale.returnRefund')" :title-class="{'fs-14': true, 'black': detail.status != 1, 'grey': detail.status == 1 }" is-link @click="onApply(2)" />
+      <!-- 换货,暂时不做 -->
+      <!-- <van-cell class="ptb-20 plr-20" :title="$t('me.afterSale.exchange')" title-class="fs-14 black"  is-link @click="onApply(3)" /> -->
       <!-- 仅退款 -->
-      <van-cell class="ptb-20 plr-20" :title="$t('me.afterSale.refundNoReturn')" title-class="fs-14 black"  is-link :to="{ name: 'me-aftersale-apply-type', params: { type: 1 } }"  />
+      <van-cell class="ptb-20 plr-20" :title="$t('me.afterSale.refundNoReturn')" title-class="fs-14 black"  is-link @click="onApply(1)"  />
     </van-cell-group>
 
     <!-- 返回和交换指令? -->
@@ -27,13 +27,40 @@
 <script>
 import OrderSingle from '@/components/OrderSingle';
 import { Cell, CellGroup } from 'vant';
+import { getOrderItem } from '@/api/order';
 
 export default {
   middleware: 'authenticated',
+  data() {
+    return {
+      detail: {}
+    }
+  },
+  fetch() {
+    getOrderItem(this.$route.query.orderId).then(res => {
+      if (res.code != 0) return false;
+
+      this.detail = res.data
+    })
+  },
+  activated() {
+    this.$fetch();
+  },
   components: {
     vanCell: Cell,
     vanCellGroup: CellGroup,
     OrderSingle
-  }
+  },
+  methods: {
+    onApply(type) {
+      if (type == 2 && this.detail.status == 1) return false; // 待发货时不可选择退货退款
+
+      this.$router.push({ 
+        name: 'me-aftersale-apply-type', 
+        params: { type: type }, 
+        query: { orderId: this.$route.query.orderId } 
+      })
+    }
+  },
 }
 </script>

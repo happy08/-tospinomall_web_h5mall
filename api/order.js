@@ -75,3 +75,29 @@ export function getOrderRateCount() {
     }
   })
 }
+
+/**
+ * 售后列表的统计
+ */
+export function getOrderAfterSalesCount() {
+  return request({
+    url: '/api/order/orderReturn/buyer/findAfterSalesCount',
+    method: 'get',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
+  })
+}
+
+/**
+ * 获取订单项详情
+ */
+export function getOrderItem(itemId) {
+  return request({
+    url: `/api/order/omsorder/buyer/getItemById/${itemId}`,
+    method: 'get',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
+  })
+}
