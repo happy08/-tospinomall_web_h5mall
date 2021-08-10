@@ -21,53 +21,51 @@
       </div>
 
       <!-- 订单商品列表 -->
-      <div class="mt-12 bg-white plr-20 pb">
+      <div class="mt-12">
         <div v-for="(item, index) in detail.storeSaleInfoList" :key="'store-' + index">
-          <OrderStoreSingle class="pt-20" :name="item.storeName" :showArrow="false" />
-          <div v-for="(productItem, productIndex) in item.deliveryTypeSkuItemMap.skuItemVoList" :key="'product-item-' + productIndex">
-            <van-card
-              :title="productItem.goodTitle"
-              class="bg-white pt-24 plr-0 pb-0 custom-card lh-20 width-313"
-              :thumb="productItem.image"
-              @click="goProductDetail(singleItem.id)"
-              
-              :num="productItem.step"
-            >
-              <!-- 自定义描述区域，改为展示商品型号 -->
-              <template #desc>
-                <div class="bg-f8 pl-10 mt-8 round-4 flex vcenter pr-10 fit-width">
-                  <span class="grey pr-24">{{ productItem.skuAttr.join(' ') }}</span>
-                  <!-- <van-icon name="arrow-down" color="#B6B6B6" size="0.16rem" /> -->
-                </div>
-              </template>
-              <!-- 自定义数量 -->
-              <!-- <template #num>
-                <van-stepper v-model="productItem.step" input-width="0.796rem" button-size="0.42rem" :integer="true" class="mt-6 custom-stepper" />
-              </template> -->
-              <!-- 自定义价格 -->
-              <template #price>
-                <div>
-                  <span class="red fs-16 fw">{{ $store.state.rate.currency }}{{ productItem.price }}</span>
-                  <!-- <span class="grey fs-12 ml-10 line-through">{{ $store.state.rate.currency }}{{ productItem.cost }}</span> -->
-                </div>
-              </template>
-            </van-card>
-
-            <!-- 配送 -->
-            <van-cell-group>
-              <van-cell title="Distribution" class="plr-0" title-class="color-black-85" value-class="flex-2" is-link center @click="onChangeDelivery(item.deliveryTypeSkuItemMap.sendTypeEstimateVoList, item.deliveryTypeSkuItemMap.choiceSendType, item.storeId)">
-                <template #default>
-                  <div class="fs-14 light-grey lh-12" v-if="item.deliveryTypeSkuItemMap.sendTypeEstimateVoList.length">
-                    {{ item.deliveryTypeSkuItemMap.sendTypeEstimateVoList[item.deliveryTypeSkuItemMap.choiceSendType - 1].sendType | deliveryFormat }}<br />
-                    <p class="hidden-1">{{ item.deliveryTypeSkuItemMap.sendTypeEstimateVoList[item.deliveryTypeSkuItemMap.choiceSendType - 1].estimeate }}</p>
+          <div class="plr-20 bg-white">
+            <OrderStoreSingle class="pt-20" :name="item.storeName" :showArrow="false" />
+            <div v-for="(productItem, productIndex) in item.deliveryTypeSkuItemMap.skuItemVoList" :key="'product-item-' + productIndex">
+              <van-card
+                :title="productItem.goodTitle"
+                class="bg-white pt-24 plr-0 pb-0 custom-card lh-20 width-313"
+                :thumb="productItem.image"
+                @click="goProductDetail(singleItem.id)"
+                
+                :num="productItem.step"
+              >
+                <!-- 自定义描述区域，改为展示商品型号 -->
+                <template #desc>
+                  <div class="bg-f8 pl-10 mt-8 round-4 flex vcenter pr-10 fit-width">
+                    <span class="grey pr-24">{{ productItem.skuAttr.join(' ') }}</span>
+                    <!-- <van-icon name="arrow-down" color="#B6B6B6" size="0.16rem" /> -->
                   </div>
                 </template>
-              </van-cell>
-              <!-- 留言 -->
-              <van-field class="plr-0" v-model="productItem.message" label="Leave message" input-align="right" label-class="fs-14 color-black-85" label-width="2rem" />
-            </van-cell-group>
+                <!-- 自定义数量 -->
+                <!-- <template #num>
+                  <van-stepper v-model="productItem.step" input-width="0.796rem" button-size="0.42rem" :integer="true" class="mt-6 custom-stepper" />
+                </template> -->
+                <!-- 自定义价格 -->
+                <template #price>
+                  <div>
+                    <span class="red fs-16 fw">{{ $store.state.rate.currency }}{{ productItem.price }}</span>
+                    <!-- <span class="grey fs-12 ml-10 line-through">{{ $store.state.rate.currency }}{{ productItem.cost }}</span> -->
+                  </div>
+                </template>
+              </van-card>
+            </div>
+            <!-- 配送 -->
+            <van-cell title="Distribution" class="plr-0" title-class="color-black-85" value-class="flex-2" is-link center @click="onChangeDelivery(item.deliveryTypeSkuItemMap.sendTypeEstimateVoList, item.deliveryTypeSkuItemMap.choiceSendType, item.storeId)">
+              <template #default>
+                <div class="fs-14 light-grey lh-12" v-if="item.deliveryTypeSkuItemMap.sendTypeEstimateVoList.length">
+                  {{ item.deliveryTypeSkuItemMap.sendTypeEstimateVoList[item.deliveryTypeSkuItemMap.choiceSendType - 1].sendType | deliveryFormat }}<br />
+                  <p class="hidden-1">{{ item.deliveryTypeSkuItemMap.sendTypeEstimateVoList[item.deliveryTypeSkuItemMap.choiceSendType - 1].estimeate }}</p>
+                </div>
+              </template>
+            </van-cell>
           </div>
-          
+          <!-- 留言 -->
+          <van-field class="plr-20 mt-12 mb-12" v-model="item.message" label="Leave message" input-align="right" label-class="fs-14 color-black-85" label-width="2rem" />
         </div>
       </div>
 
@@ -77,9 +75,9 @@
         <!-- 小计 -->
         <van-cell title="Subtotal" :value="$store.state.rate.currency + detail.totalProductAmount" title-class="color-black-85" value-class="color-black-85" />
         <!-- 运费 -->
-        <van-cell title="Total Freight" :value="$store.state.rate.currency + detail.totalBuyerFreightAmount" title-class="color-black-85" value-class="color-black-85" />
+        <van-cell title="Total Freight" :value="$store.state.rate.currency + detail.totalBuyerFreightAmount" title-class="color-black-85" value-class="color-black-85" :border="false" />
         <!-- 总计 -->
-        <van-cell >
+        <van-cell :border="false">
           <template #default>
             <div class="color-black-85 tr">
               Total: <span class="red">{{ $store.state.rate.currency }}{{ detail.totalPayAmount }}</span>

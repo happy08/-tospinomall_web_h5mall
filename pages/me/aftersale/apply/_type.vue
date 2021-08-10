@@ -1,5 +1,8 @@
 <template>
-  <!-- 我的-售后-售后申请-售后类型 type: 1仅退款 2退货退款 3换货 -->
+  <!-- 
+    我的-售后-售后申请-售后类型 type: 1仅退款 2退货退款 3换货 
+    换货功能暂时不做，故暂时先把选择商品规格的弹窗删除了，之后可以从购物车页面copy一份 
+  -->
   <div class="bg-grey vh-100 pb-30 pt-46">
     <BmHeaderNav :left="{ isShow: true }" :title="$t(title)" :fixed="true" />
 
@@ -17,11 +20,11 @@
     
     <van-cell-group class="mt-12">
       <!-- 申请类型 -->
-      <van-cell class="ptb-20 plr-20" :title="$t('me.afterSale.applicationType')" title-class="fs-14 black" is-link @click="selectPopup('type')" />
+      <van-cell class="ptb-20 plr-20" :title="$t('me.afterSale.applicationType')" title-class="fs-14 black" is-link @click="selectPopup('type')" :value="applyTypeLabel" />
       <!-- 货物状态 -->
-      <van-cell class="ptb-20 plr-20" :title="$t('me.afterSale.stateOfTheGoods')" title-class="fs-14 black" is-link @click="selectPopup('status')" />
+      <van-cell class="ptb-20 plr-20" :title="$t('me.afterSale.stateOfTheGoods')" title-class="fs-14 black" is-link @click="selectPopup('status')" :value="goodsStatusLabel" />
       <!-- 申请原因 -->
-      <van-cell class="ptb-20 plr-20" :title="$t('me.afterSale.applyReason')" title-class="fs-14 black" is-link @click="selectPopup('reason')" />
+      <van-cell class="ptb-20 plr-20" :title="$t('me.afterSale.applyReason')" title-class="fs-14 black" is-link @click="selectPopup('reason')" :value="applyReasonLabel" />
       <!-- 换货商品 仅换货时展示 -->
       <van-cell class="ptb-20 plr-20" v-if="$route.params.type == 3" :title="$t('me.afterSale.replacementGoods')" title-class="fs-14 black" is-link @click="productShow = true" />
     </van-cell-group>
@@ -32,6 +35,7 @@
         <van-field v-model="detail.productAmount" type="number" input-align="right" @blur="onBlur" @focus="onFocus" />
       </template>
     </van-cell>
+    <div class="p-20 fs-14 black">On successful refund, you will be returned with {{ $store.state.rate.currency }}{{ detail.productAmount }} cash</div>
 
     <!-- 退货退款才展示 -->
     <p class="fs-14 black m-20" v-if="$route.params.type == 2">On successful refund, you will be returned with $ 90.09 cash</p>
@@ -40,7 +44,7 @@
     <div class="plr-20 pt-20 pb-24 bg-white">
       <h3 class="fs-14 black">{{ $t('me.afterSale.applyIntructions') }}</h3>
       <p class="mt-16 fs-14 light-grey">{{ $t('me.afterSale.applyIntructionsDesc') }}</p>
-      <van-uploader class="mt-10" v-model="fileList" multiple :max-count="6" preview-size="1.62rem">
+      <van-uploader class="mt-10" v-model="fileList" multiple :max-count="6" preview-size="1.62rem" :after-read="afterRead">
         <div class="custom-proof-upload tc">
           <van-icon name="plus" size="0.32rem" />
           <div class="mt-10 fs-12 lh-1">Up to 6 Pics</div>
@@ -97,9 +101,9 @@
 
     <!-- 提交 -->
     <div class="mlr-20 mt-30 tc">
-      <BmButton class="round-8 w-100 mb-20">{{ $t('common.submit') }}</BmButton>
+      <BmButton class="round-8 w-100 mb-20" @btnClick="applyAfterSale">{{ $t('common.submit') }}</BmButton>
       <!-- 返回和交换指令 仅退款展示 -->
-      <nuxt-link :to="{}" class="green" v-if="$route.params.type == 1">{{ $t('me.afterSale.returnAndChange') }}</nuxt-link>
+      <nuxt-link :to="{ name: 'service-type', params: { type: 'aftersale' } }" class="green" v-if="$route.params.type == 1">{{ $t('me.afterSale.returnAndChange') }}</nuxt-link>
     </div>
 
     <!-- 选择申请类型type 货物状态status 申请原因reason -->
@@ -130,79 +134,18 @@
       </div>
     </van-popup>
 
-    <!-- 换货商品规格 -->
-    <van-sku
-      v-model="productShow"
-      :sku="sku"
-      :goods="goods_info"
-      :goods-id="goods_id"
-      :hide-stock="sku.hide_stock"
-      :quota="quota"
-      :quota-used="quota_used"
-      :initial-sku="initialSku"
-      reset-stepper-on-hide
-      reset-selected-sku-on-hide
-    >
-      <!-- 自定义头部价格展示 -->
-      <template #sku-header="props">
-        <div class="mlr-20 mt-30 flex">
-          <BmImage
-            :url="goods_info.picture"
-            :width="'2.08rem'" 
-            :height="'2.08rem'"
-            :isLazy="false"
-            :isShow="false"
-            :fit="'cover'"
-            class="border"
-          />
-          <!-- 商品价格/id -->
-          <div class="ml-12 flex column hend">
-            <span class="fs-16 red fw">{{ $store.state.rate.currency }} {{ props.price }}</span>
-            <span class="mt-14 fs-10 light-grey">ID: {{goods_id}}</span>
-          </div>
-        </div>
-      </template>
-
-      <template #sku-body-top>
-        <div class="mlr-20 ptb-20 border-b">
-          <h3 class="fs-14 black fw">Distribution area</h3>
-          <van-cell class="mt-10 plr-0 ptb-0" center :title="'Fulfillment by Tospino'" title-class="black ml-12" is-link>
-            <!-- 左侧图标 -->
-            <template #icon>
-              <i class="iconfont icon-dingwei fs-24 black trans-rotate"></i>
-            </template>
-            <!-- 左侧内容 -->
-            <template #title>
-              <p class="lh-20 black">5th floor, building 7, Tongfu xufa science and Technology Park</p>
-            </template>
-          </van-cell>
-        </div>
-      </template>
-
-      <!-- 商品数量选择区域 -->
-      <template #sku-stepper="props">
-        <div class="tr plr-20 mt-24">
-          <van-stepper v-model="props.selectedNum" input-width="0.796rem" button-size="0.42rem" :integer="true" class="custom-stepper" />
-          <div class="mt-20" v-if="props.selectedSkuComb">in stock: {{ props.selectedSkuComb.stock_num }}</div>
-        </div>
-      </template>
-
-      <!-- 操作按钮区域 -->
-      <template slot="sku-actions">
-        <div class="mlr-20 mb-12 mt-30">
-          <BmButton class="fs-16 round-8 w-100" @click="onConfirm">Confirm</BmButton>
-        </div>
-      </template>
-      
-    </van-sku>
-    
+    <!--  -->
+    <div class="w-100 bg-white btn-content flex hend vcenter">
+      <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'">修改申请</BmButton>
+    </div>
   </div>
 </template>
 
 <script>
 import OrderSingle from '@/components/OrderSingle';
 import { Cell, CellGroup, Uploader, Field, Checkbox, Switch, Stepper, Popup, RadioGroup, Radio, Sku } from 'vant';
-import { getOrderItem } from '@/api/order';
+import { getOrderItem, getOrderReasonList, applyAfterSale } from '@/api/order';
+import { getPicUrl } from '@/api/user';
 
 export default {
   middleware: 'authenticated',
@@ -228,128 +171,23 @@ export default {
       addressChecked: true,
       stepNumber: 1,
       isSelectType: false,
-      typeRadio: 0,
+      typeRadio: 100,
       currentSelect: {
         type: 'type', // type 售后类型 status 获取状态
         title: '', // 标题
         list: '' // 选项
       },
       productShow: false,
-      sku: {
-        // 所有sku规格类目与其值的从属关系，比如商品有颜色和尺码两大类规格，颜色下面又有红色和蓝色两个规格值。
-        // 可以理解为一个商品可以有多个规格类目，一个规格类目下可以有多个规格值。
-        tree: [
-          {
-            k: 'Color',
-            k_id: '1',
-            v: [
-              {
-                id: '30349',
-                name: '天蓝色'
-              },
-              {
-                id: '1215',
-                name: '白色'
-              }
-            ],
-            k_s: 's1',
-            count: 2
-          },
-          {
-            k: 'Size',
-            k_id: '2',
-            v: [
-              {
-                id: '1193',
-                name: 'S'
-              },
-              {
-                id: '1194',
-                name: 'M'
-              },
-              {
-                id: '1195',
-                name: 'L'
-              },
-              {
-                id: '1196',
-                name: 'XL'
-              }
-            ],
-            k_s: 's2',
-            count: 2
-          }
-        ],
-        // 所有 sku 的组合列表，如下是：白色1、白色2、天蓝色1、天蓝色2
-        list: [
-          {
-            id: 2259,
-            price: 120, //价格
-            s1: '1215',
-            s2: '1193',
-            s3: '0',
-            s4: '0',
-            s5: '0',  
-            stock_num: 20, //库存 
-            goods_id: 946755
-          },
-          {
-            id: 2260,
-            price: 110,
-            s1: '1215',
-            s2: '1194',
-            s3: '0',
-            s4: '0',
-            s5: '0',  
-            stock_num: 2, //库存 
-            goods_id: 946755
-          },
-          {
-            id: 2257,
-            price: 130,
-            s1: '30349',
-            s2: '1193',
-            s3: '0',
-            s4: '0',
-            s5: '0',  
-            stock_num: 40, //库存 
-            goods_id: 946755
-          },
-          {
-            id: 2258,
-            price: 100,
-            s1: '30349',
-            s2: '1194',
-            s3: '0',
-            s4: '0',
-            s5: '0',  
-            stock_num: 50, //库存 
-            goods_id: 946755
-          }
-        ],
-        price: '5.00',
-        stock_num: 227, // 商品总库存
-        none_sku: false,  // 是否隐藏无规格商品 
-        hide_stock: false,  // 是否隐藏剩余库存
-        messages: []
-      },
-      goods_id: '946755', 
-      quota: 0, //限购数量 
-      quota_used: 0,  //已经购买过的数量
-      goods_info: {
-        picture:
-          'https://img.yzcdn.cn/upload_files/2017/03/16/Fs_OMbSFPa183sBwvG_94llUYiLa.jpeg?imageView2/2/w/100/h/100/q/75/format/jpg' 
-      },
-      initialSku:{
-        s1: "0001",
-        s2: "1001",
-        selectedNum: 2,
-        selectedSkuComb: {
-          stock_num: 12
-        }
-      },
       title: '',
-      detail: {}
+      detail: {},
+      applyReason: -1, // 售后原因
+      applyReasonLabel: '',
+      applyType: -1, // 申请类型状态
+      applyTypeLabel: '',
+      goodsStatus: -1, // 货物状态
+      goodsStatusLabel: '',
+      cancelReasonList: [],
+      imgList: []
     }
   },
   activated() {
@@ -357,29 +195,103 @@ export default {
     if (this.$route.params.type == 2) this.title = 'me.afterSale.returnRefund'; // 退货退款
     if (this.$route.params.type == 3) this.title = 'me.afterSale.exchange'; // 换货
 
-    getOrderItem(this.$route.query.orderId).then(res => {
+    getOrderItem(this.$route.query.itemId).then(res => {
       if (res.code != 0) return false;
 
-      this.detail = res.data
+      this.detail = res.data;
     })
   },
   methods: {
     onConfirm() { // 提交 售后选项 根据currentSelect.type判断提交类别
-
+      if (this.typeRadio == 100) { // 100表示未选择状态，不可提交
+        return false;
+      }
+      if (this.currentSelect.type == 'type') { // 申请类型
+        this.applyType = this.typeRadio;
+        this.applyTypeLabel = this.$t('me.afterSale.selectReason')[this.typeRadio]
+      }
+      if (this.currentSelect.type == 'status') { // 货物状态
+        this.goodsStatus = this.typeRadio;
+        this.goodsStatusLabel = this.$t('me.afterSale.stateGoodsList')[this.typeRadio]
+      }
+      if (this.currentSelect.type == 'reason') { // 申请原因
+        this.applyReason = this.typeRadio;
+        this.applyReasonLabel = this.cancelReasonList[this.typeRadio].applyReason; 
+      }
+      this.isSelectType = false;
     },
     selectPopup(type) { // 打开售后选项
-      this.isSelectType = true;
+      if (type == 'reason') { // 申请类型和货物状态选择之后才可以选择申请原因
+        if (this.applyType == -1 || this.goodsStatus == -1) return false;
+      }
+      
+      this.typeRadio = 100;
+      if (type == 'reason') { // 申请原因需要从接口中获取数据
+        // 取消订单原因，因为整个列表都是同一种类型，所以就只在全局引入一次就好了
+        getOrderReasonList({ orderType: 1, applyType: this.applyType, goodsStatus: this.goodsStatus }).then(res => {
+          if (res.code != 0) return false;
+
+          this.cancelReasonList = res.data;
+          this.currentSelect = {
+            type: type,
+            title: this.$t('me.afterSale.applyReason'),
+            list: res.data.map(item => {
+              return item.applyReason;
+            })
+          }
+          this.isSelectType = true;
+        })
+        return false;
+      }
+
       this.currentSelect = {
         type: type,
         title: type === 'type' ? this.$t('me.afterSale.selecApplicationType') : type === 'status' ? this.$t('me.afterSale.stateOfTheGoods') : type === 'reason' ? this.$t('me.afterSale.applyReason') : '',
-        list: type === 'type' ? this.$t('me.afterSale.selectReason') : type === 'status' ? this.$t('me.afterSale.stateGoodsList') : type === 'reason' ? this.$t('me.afterSale.reasonList') : ''
+        list: type === 'type' ? this.detail.status == 1 ? [this.$t('me.afterSale.selectReason')[0]] : this.$t('me.afterSale.selectReason') : type === 'status' ? this.$t('me.afterSale.stateGoodsList') : type === 'reason' ? this.$t('me.afterSale.reasonList') : ''
       }
+      this.isSelectType = true;
     },
     onBlur(value) { // 输入金额格式化
       return this.$store.state.rate.currency + value;
     },
     onFocus(value) {
       return value;
+    },
+    async afterRead(file) { // 上传图片
+      if (Array.isArray(file)) { // 多张图片
+        for (let i = 0; i < file.length; i++) {
+          let formData = new FormData();
+          formData.append('object', file[i].file);
+          const data = await getPicUrl(formData);
+          if (data.code != 0) return false;
+          this.imgList.push(data.data);
+        }
+        return false;
+      }
+      // 单张图片上传
+      let formData = new FormData();
+      formData.append('object', file.file);
+      getPicUrl(formData).then(res => {
+        if (res.code != 0) return false;
+        
+        this.imgList.push(res.data);
+      })
+    },
+    applyAfterSale() { // 申请售后
+      if (this.applyReasonLabel == '') {
+        this.$toast('请选择申请原因');
+        return false;
+      }
+      applyAfterSale({ applyReason: this.applyReasonLabel, goodState: this.goodsStatus, orderId: this.detail.orderId, orderItemId: this.detail.id, proofPics: this.imgList.join('_'), returnType: this.applyType, productQuantity: this.detail.goodQuantity }).then(res => {
+        if (res.code != 0) return false;
+
+        this.$router.push({
+          name: 'me-aftersale-detail-id',
+          params: {
+            id: res.data.orderReturnId
+          }
+        })
+      })
     }
   },
 }

@@ -11,39 +11,56 @@
           <!-- 列表展示 -->
           <div v-else v-for="(orderitem, index) in lists" :key="index" :class="{'w-100 plr-20 pb-20 pt-24 bg-white': true, 'mt-12': index != 0}">
             <OrderStoreSingle :name="orderitem.storeName" />
-            <div v-for="(productItem, productIndex) in orderitem.items" :key="'product-' + productIndex">
-              <OrderSingle class="mt-20" 
-                :product_num="productItem.goodQuantity" 
-                :product_desc="productItem.goodName" 
-                :product_size="productItem.goodAttr" 
-                :price="productItem.goodPrice"
-                :image="productItem.goodImg" 
+            <!-- 售后订单列表1 -->
+            <template v-if="tabActive == 0">
+              <div v-for="(productItem, productIndex) in (orderitem.items)" :key="'product-' + productIndex">
+                <OrderSingle class="mt-20" 
+                  :product_num="productItem.goodQuantity" 
+                  :product_desc="productItem.goodName" 
+                  :product_size="productItem.goodAttr" 
+                  :price="productItem.goodPrice"
+                  :image="productItem.goodImg"
+                  @onClick="goProduct(productItem.goodId)" />
                 
-                @onClick="goProduct(productItem)" />
-              
-              <!-- 售后申请 -->
-              <div class="mt-24 flex hend" v-show="tabActive === 0">
-                <BmButton :type="'info'" class="h-32" @click="afterSales(productItem)">{{ $t('me.afterSale.applySales') }}</BmButton>
-              </div>
+                <!-- 售后申请 -->
+                <div :class="{'mt-24 flex vcenter': true, 'hend': productItem.showAfterSale != 0, 'between': productItem.showAfterSale == 0}" v-if="tabActive === 0">
+                  <!-- 订单售后状态showAfterSale：-1->数量达到不可售后 0->时间达到不可售后 1->可以售后 -->
+                  <div v-if="productItem.showAfterSale == 0" class="tl">The goods have timed out</div>
+                  <BmButton :type="'info'" class="h-32" v-if="productItem.showAfterSale == 1" @click="afterSales(productItem)">{{ $t('me.afterSale.applySales') }}</BmButton>
+                  <BmButton :type="'info'" class="h-32 time-out" v-else>{{ $t('me.afterSale.applySales') }}</BmButton>
+                </div>
 
-              <!-- 处理中 -->
-              <div class="mt-24 flex hend" v-show="tabActive === 1">
-                <!-- 未超时 -->
-                <BmButton :type="'info'" class="h-32">{{ $t('me.afterSale.cancelApplication') }}</BmButton>
-                <!-- 已超时 -->
-                <BmButton :type="'info'" class="h-32 time-out">{{ $t('me.afterSale.details') }}</BmButton>
-              </div>
+                <!-- 处理中 -->
+                <div class="mt-24 flex hend" v-show="tabActive === 1">
+                  <!-- 未超时 -->
+                  <BmButton :type="'info'" class="h-32">{{ $t('me.afterSale.cancelApplication') }}</BmButton>
+                  <!-- 已超时 -->
+                  <BmButton :type="'info'" class="h-32 time-out">{{ $t('me.afterSale.details') }}</BmButton>
+                </div>
 
-              <!-- 申请记录 -->
-              <div class="mt-24 flex hend" v-show="tabActive === 2">
-                <!-- 未超时 -->
-                <BmButton :type="'info'" class="h-32">{{ $t('me.afterSale.details') }}</BmButton>
-                <!-- 已超时 -->
-                <BmButton :type="'info'" class="h-32 time-out">{{ $t('common.delete') }}</BmButton>
-                <!-- 没有批准 -->
-                <BmButton :type="'info'" class="h-32">{{ $t('me.afterSale.customerService') }}</BmButton>
+                <!-- 申请记录 -->
+                <div class="mt-24 flex hend" v-show="tabActive === 2">
+                  <!-- 未超时 -->
+                  <BmButton :type="'info'" class="h-32">{{ $t('me.afterSale.details') }}</BmButton>
+                  <!-- 已超时 -->
+                  <BmButton :type="'info'" class="h-32 time-out">{{ $t('common.delete') }}</BmButton>
+                  <!-- 没有批准 -->
+                  <BmButton :type="'info'" class="h-32">{{ $t('me.afterSale.customerService') }}</BmButton>
+                </div>
               </div>
-            </div>
+            </template>
+
+            <!-- 售后申请列表2/3 -->
+            <template v-else>
+              <OrderSingle class="mt-20" 
+                :product_num="orderitem.returnQuantity" 
+                :product_desc="orderitem.productName" 
+                :product_size="orderitem.productAttr" 
+                :price="orderitem.productPrice"
+                :image="orderitem.productImage" 
+                
+                @onClick="goProduct(orderitem.productId)" />
+            </template>
             
             <!-- <div class="driver-line fr"></div> -->
           </div>
@@ -110,11 +127,11 @@ export default {
       this.pageNum = 1;
       this.$fetch();
     },
-    goProduct(productItem) { // 跳转到商品详情页
+    goProduct(productId) { // 跳转到商品详情页
       this.$router.push({
         name: 'cart-product-id',
         params:{
-          id: productItem.goodId
+          id: productId
         }
       })
     },
@@ -122,7 +139,7 @@ export default {
       this.$router.push({
         name: 'me-aftersale-apply',
         query: {
-          orderId: orderItem.id,
+          itemId: orderItem.id,
           status: this.tabActive + 1
         }
       })

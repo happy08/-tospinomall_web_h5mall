@@ -3,13 +3,17 @@
   <div class="vh-100 bg-grey">
     <BmHeaderNav :left="{ isShow: true }" :title="$t('me.afterSale.detailRefund')" />
     
-    <!-- 仅退款 v-if="$route.params.type == 1" -->
-    <div>
+    <!-- 仅退款,退款中 -->
+    <!-- 退款类型returnType：0->退款 1退款退货 -->
+    <div v-if="detail.returnType == 0 && detail.surplusTime > 0">
       <!-- 退款/退货退款/换货 进度 -->
       <div class="bg-green-linear ptb-12 plr-8">
         <div class="bg-white pb-14 pt-20 plr-8 round-13">
           <h4 class="fs-14">{{ $t('me.afterSale.waitProcess') }}</h4>
-          <p class="light-grey fs-14 mt-8">{{ $t('me.afterSale.countdown') }} 23:59:00</p>
+          <div class="light-grey fs-14 mt-8 flex flex-wrap vcenter">
+            <span>{{ $t('me.afterSale.countdown') }}</span>
+            <van-count-down :time="detail.surplusTime" format="DD 天 HH 时 mm 分 ss 秒" class="ml-4" />
+          </div>
           <!-- 步骤条 -->
           <van-steps :active="stepActive" active-color="#42B7AE" inactive-color="#BFBFBF" class="mt-24 pt-0">
             <van-step v-for="(stepItem, stepIndex) in $t('me.afterSale.processStep')" :key="stepIndex">
@@ -50,7 +54,7 @@
     </div>
 
     <!-- 退款成功 -->
-    <div v-if="$route.params.type == 1">
+    <div v-if="detail.returnType == 0 && detail.status == 5">
       <!-- 退款成功提示 -->
       <div class="mt-12 bg-green-linear ptb-12 plr-8">
         <div class="bg-white pb-14 pt-20 plr-8 round-13">
@@ -80,40 +84,46 @@
       </div>
     </div>
 
-    <!-- 退货退款/换货 成功 -->
-    <div v-if="$route.params.type == 2 || $route.params.type == 3" class="bg-green-linear p-20 white tc">
+    <!-- 退货退款/换货 成功, 换货暂时不做 -->
+    <div v-if="detail.returnType == 1" class="bg-green-linear p-20 white tc">
       <p class="fw fs-18">{{ $t('me.afterSale.refundSuccess2') }}</p>
       <p class="mt-20 fs-14">March -5-2020</p>
     </div>
 
     <!-- 协商历史 -->
-    <van-cell class="mt-12 ptb-20 plr-12" :title="$t('me.afterSale.negotiationHistory')" title-class="fs-14 black" is-link :to="{ name: 'me-aftersale-negotiation-type', params: { type: $route.params.type } }" />
+    <van-cell class="mt-12 ptb-20 plr-12" :title="$t('me.afterSale.negotiationHistory')" title-class="fs-14 black" is-link :to="{ name: 'me-aftersale-negotiation-type', params: { type: detail.returnType == 0 } }" />
 
     <!-- 订单展示 -->
     <div class="mt-12 bg-white pt-24 plr-20 pb-20">
-      <OrderStoreSingle />
-      <OrderSingle class="mt-20" :product_num="1" :product_desc="'Hassen’s new fall 2019 suede pointe…'" :product_size="'Black / L'" :price="256.23" />
+      <OrderStoreSingle :name="detail.storeName" />
+      <OrderSingle class="mt-20" :product_num="detail.returnQuantity" :product_desc="detail.productName" :product_size="detail.productAttr" :price="detail.productPrice" :image="detail.productImage" />
     </div>
 
     <!-- 具体明细 -->
     <van-cell-group class="mt-12">
+      <!-- 售后类型 -->
+      <van-cell class="ptb-20 plr-20" :title="'售后类型'" title-class="fs-14 black flex-2" value-class="tl flex-3 light-grey" :value="detail.returnType | returnTypeFormat"/>
+      <!-- 货品状态 -->
+      <van-cell class="ptb-20 plr-20" :title="'货品状态'" title-class="fs-14 black flex-2" value-class="tl flex-3 light-grey" :value="detail.goodState | goodStateFormat"/>
       <!-- 申请原因 -->
-      <van-cell class="ptb-20 plr-20" :title="$t('me.afterSale.applyReason')" title-class="fs-14 black flex-2" value-class="tl flex-3 light-grey" value="Commodity quality problem"/>
+      <van-cell class="ptb-20 plr-20" :title="$t('me.afterSale.applyReason')" title-class="fs-14 black flex-2" value-class="tl flex-3 light-grey" :value="detail.applyReason"/>
       <!-- 退款金额 -->
-      <van-cell class="ptb-20 plr-20" :title="$t('me.afterSale.refundAmount')" title-class="fs-14 black flex-2" value-class="tl flex-3 light-grey" :value="$store.state.rate.currency + '70.09'" />
+      <van-cell class="ptb-20 plr-20" :title="$t('me.afterSale.refundAmount')" title-class="fs-14 black flex-2" value-class="tl flex-3 light-grey" :value="$store.state.rate.currency + detail.returnAmount" />
       <!-- 申请时间 -->
-      <van-cell class="ptb-20 plr-20" :title="$t('me.afterSale.applyTime')" title-class="fs-14 black flex-2" value-class="tl flex-3 light-grey" value="March-07-2020 01:47:27"/>
+      <van-cell class="ptb-20 plr-20" :title="$t('me.afterSale.applyTime')" title-class="fs-14 black flex-2" value-class="tl flex-3 light-grey" :value="detail.createTime"/>
       <!-- 退款单号 -->
       <van-cell class="ptb-20 plr-20" :title="$t('me.afterSale.refundNumber')" title-class="fs-14 black flex-2" value-class="tl flex-3 light-grey">
         <template #default>
-          <span class="copy-order">48487 7987 7666</span>
-          <i class="iconfont icon-fuzhi fs-20 ml-10" @click="copy"></i>
+          <div class="flex vcenter">
+            <span class="copy-order">{{ detail.returnSn }}</span>
+            <van-icon :name="require('@/assets/images/icon/copy-icon.png')" size="0.48rem" class="ml-10 copy-member" @click="copy" />
+          </div>
         </template>
       </van-cell>
       <!-- 返回方式 -->
-      <van-cell class="ptb-20 plr-20" :title="$t('me.afterSale.returnWay')" title-class="fs-14 black flex-2" value-class="tl flex-3 light-grey" value="Door to take"/>
+      <!-- <van-cell class="ptb-20 plr-20" :title="$t('me.afterSale.returnWay')" title-class="fs-14 black flex-2" value-class="tl flex-3 light-grey" value="Door to take"/> -->
       <!-- 姓名、电话、地址 -->
-      <van-cell class="ptb-20 plr-20">
+      <!-- <van-cell class="ptb-20 plr-20">
         <template #default>
           <div class="flex between">
             <p class="fs-14 black">Wu 139***9875698</p>
@@ -121,16 +131,19 @@
           </div>
           <p class="black fs-14 mt-12">Address: Room 302, Geya Building, Guangming District, Shenzhen</p>
         </template>
-      </van-cell>
+      </van-cell> -->
     </van-cell-group>
+
+    
   </div>
 </template>
 
 <script>
-import { Step, Steps, Cell, CellGroup } from 'vant';
+import { Step, Steps, Cell, CellGroup, CountDown } from 'vant';
 import OrderSingle from '@/components/OrderSingle';
 import OrderStoreSingle from '@/components/OrderStoreSingle';
 import ClipboardJS from 'clipboard';
+import { getReturnDetail } from '@/api/order';
 
 export default {
   middleware: 'authenticated',
@@ -139,12 +152,38 @@ export default {
     vanSteps: Steps,
     vanCell: Cell,
     vanCellGroup: CellGroup,
+    vanCountDown: CountDown,
     OrderSingle,
     OrderStoreSingle
   },
-  asyncData({isDev, route, store, env, params, query, req, res, redirect, error}) {
+  data() {
     return {
-      stepActive: 1
+      stepActive: 1,
+      detail: {}
+    }
+  },
+  activated() {
+    getReturnDetail(this.$route.params.id).then(res => {
+      if (res.code != 0) return false;
+
+      this.detail = { // 订单详情
+        ...res.data,
+        surplusTime: res.data.surplusTime * 1000
+      };
+      // 状态: 1->商家/运营待处理 2->待自行寄回/待上门取件 3商家/运营待收货 4->待退款 5->退款成功 6->关闭售后单 7->商家/运营驳回申请 8->商家/运营拒收退货商品
+      if (res.data.status == 5) {
+        this.stepActive = 2;
+      } else {
+        this.stepActive = 1;
+      }
+    })
+  },
+  filters: {
+    returnTypeFormat(val) {
+      return val == 0 ? '退款' : val == 1 ? '退货退款' : '';
+    },
+    goodStateFormat(val) {
+      return val == 0 ? '未收到货' : val == 1 ? '已收到货' : '';
     }
   },
   methods: {

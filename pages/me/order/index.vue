@@ -25,9 +25,9 @@
     </van-sticky>
 
     <!-- 分类 -->
-    <van-tabs sticky swipeable animated color="#42B7AE" offset-top="1.84rem"  @change="getSearchList" class="bg-white customs-van-tabs" v-model="typeActive" :ellipsis="false" >
+    <van-tabs sticky swipeable animated color="#42B7AE" offset-top="1.84rem"  @change="getSearchList" class="customs-van-tabs" v-model="typeActive" :ellipsis="false" >
       <van-tab v-for="(productItem, tabIndex) in tabs" :title="productItem.name" :key="'scroll-tab-' + tabIndex" title-class="border-b" :name="productItem.type">
-        <PullRefresh :refreshing="refreshing" @refresh="onRefresh">
+        <PullRefresh :refreshing="refreshing" @refresh="onRefresh" :class="{ 'bg-white': lists.length === 0 }">
           <van-list
             v-model="loading"
             :finished="finished"
@@ -41,7 +41,7 @@
               <!-- 空状态  -->
               <empty-status v-if="lists.length === 0" :image="require('@/assets/images/empty/order.png')" :description="$t('common.noRecord')"/>
               <!-- 订单列表 -->
-              <div v-else v-for="(item,index) in lists" :key="index" class="w-100 plr-12 mb-12 bg-white pb-20 pt-24">
+              <div v-else v-for="(item,index) in lists" :key="index" class="w-100 plr-12 mb-12  pb-20 pt-24 bg-white">
                 <!-- 订单店铺 -->
                 <OrderStoreSingle :name="item.storeName" :status="item.status | statusFormat" @goStoreDetail="goOrderDetail(item.items[0].orderId)">
                   <!-- 如果是取消状态，则该订单可删除，添加操作展示  -->

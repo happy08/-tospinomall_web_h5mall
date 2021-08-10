@@ -17,9 +17,9 @@
       <van-cell class="ptb-20 plr-20" :title="$t('me.afterSale.refundNoReturn')" title-class="fs-14 black"  is-link @click="onApply(1)"  />
     </van-cell-group>
 
-    <!-- 返回和交换指令? -->
+    <!-- 退货退款说明 -->
     <div class="mt-60 tc">
-      <nuxt-link :to="{}" class="green">{{ $t('me.afterSale.returnAndChange') }}</nuxt-link>
+      <nuxt-link :to="{ name: 'service-type', params: { type: 'aftersale' } }" class="green">{{ $t('me.afterSale.returnAndChange') }}</nuxt-link>
     </div>
   </div>
 </template>
@@ -37,7 +37,7 @@ export default {
     }
   },
   fetch() {
-    getOrderItem(this.$route.query.orderId).then(res => {
+    getOrderItem(this.$route.query.itemId).then(res => {
       if (res.code != 0) return false;
 
       this.detail = res.data
@@ -58,7 +58,7 @@ export default {
       this.$router.push({ 
         name: 'me-aftersale-apply-type', 
         params: { type: type }, 
-        query: { orderId: this.$route.query.orderId } 
+        query: { itemId: this.$route.query.itemId } 
       })
     }
   },

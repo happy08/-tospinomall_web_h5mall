@@ -101,3 +101,30 @@ export function getOrderItem(itemId) {
     }
   })
 }
+
+/**
+ * 申请售后
+ */
+export function applyAfterSale(data) {
+  return request({
+    url: '/api/order/orderReturn/buyer/applyAfterSale',
+    method: 'post',
+    data: data,
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+}
+
+/**
+ * 获取退款详情
+ */
+export function getReturnDetail(returnId) {
+  return request({
+    url: `/api/order/orderReturn/buyer/returnDetail/${returnId}`,
+    method: 'get',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
+  })
+}
