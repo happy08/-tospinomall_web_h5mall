@@ -264,7 +264,7 @@ export default {
     },
     leftClick() { // 回退，解决由申请页面提交跳转到详情页面，回退时需要回退到列表页面
       if (this.$route.query.back && this.$route.query.back == 'me-aftersale') {
-        this.$router.go(-2);
+        this.$router.go(-3);
         return false;
       }
 
