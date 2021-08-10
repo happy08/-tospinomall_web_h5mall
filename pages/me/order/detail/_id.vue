@@ -150,7 +150,7 @@
       <!-- 确认收货：在线支付[待收货2且已支付1]；货到付款[待收货2] -->
       <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" v-if="(detail.paymentType == 1 && detail.status == 2 && detail.payState == 1) || (detail.paymentType == 0 && detail.status == 2)">确认收货</BmButton>
       <!-- 去购买：待发货1,待收货2,待评价3,已完成4,已取消5,超时未付款6,已拒收7,其他8 -->
-      <BmButton class="fs-14 ml-10 round-0 plr-30 h-100" v-if="detail.status != 0" @btnClick="onBuy(detail)">{{ $t('me.order.buyAgain') }}</BmButton>
+      <BmButton class="fs-14 ml-10 round-0 plr-30 v-100" v-if="detail.status != 0" @btnClick="onBuy(detail)">{{ $t('me.order.buyAgain') }}</BmButton>
     </div>
 
     <!-- 待付款-取消订单弹窗 -->

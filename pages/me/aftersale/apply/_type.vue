@@ -32,10 +32,10 @@
     <!-- 退款金额 -->
     <van-cell class="ptb-20 plr-20 mt-12" center :title="$t('me.afterSale.refundAmount')" title-class="fs-14 black" :label="$t('me.afterSale.modifyAmount')" value-class="black fw fs-18" >
       <template #default>
-        <van-field v-model="detail.productAmount" type="number" input-align="right" @blur="onBlur" @focus="onFocus" />
+        <van-field v-model="detail.returnAmount" type="number" input-align="right" @blur="onBlur" @focus="onFocus" />
       </template>
     </van-cell>
-    <div class="p-20 fs-14 black">On successful refund, you will be returned with {{ $store.state.rate.currency }}{{ detail.productAmount }} cash</div>
+    <div class="p-20 fs-14 black">On successful refund, you will be returned with {{ $store.state.rate.currency }}{{ detail.returnAmount }} cash</div>
 
     <!-- 退货退款才展示 -->
     <p class="fs-14 black m-20" v-if="$route.params.type == 2">On successful refund, you will be returned with $ 90.09 cash</p>
@@ -44,7 +44,7 @@
     <div class="plr-20 pt-20 pb-24 bg-white">
       <h3 class="fs-14 black">{{ $t('me.afterSale.applyIntructions') }}</h3>
       <p class="mt-16 fs-14 light-grey">{{ $t('me.afterSale.applyIntructionsDesc') }}</p>
-      <van-uploader class="mt-10" v-model="fileList" multiple :max-count="6" preview-size="1.62rem" :after-read="afterRead">
+      <van-uploader class="mt-10" v-model="fileList" multiple :max-count="6" preview-size="1.62rem" :after-read="afterRead" @delete="onDeleteFile">
         <div class="custom-proof-upload tc">
           <van-icon name="plus" size="0.32rem" />
           <div class="mt-10 fs-12 lh-1">Up to 6 Pics</div>
@@ -133,18 +133,13 @@
         <BmButton class="fs-16 round-8 w-100" @click="onConfirm">Confirm</BmButton>
       </div>
     </van-popup>
-
-    <!--  -->
-    <div class="w-100 bg-white btn-content flex hend vcenter">
-      <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'">修改申请</BmButton>
-    </div>
   </div>
 </template>
 
 <script>
 import OrderSingle from '@/components/OrderSingle';
 import { Cell, CellGroup, Uploader, Field, Checkbox, Switch, Stepper, Popup, RadioGroup, Radio, Sku } from 'vant';
-import { getOrderItem, getOrderReasonList, applyAfterSale } from '@/api/order';
+import { getOrderItem, getOrderReasonList, applyAfterSale, getUpdateReturnDetail, updateApply } from '@/api/order';
 import { getPicUrl } from '@/api/user';
 
 export default {
@@ -195,9 +190,39 @@ export default {
     if (this.$route.params.type == 2) this.title = 'me.afterSale.returnRefund'; // 退货退款
     if (this.$route.params.type == 3) this.title = 'me.afterSale.exchange'; // 换货
 
-    getOrderItem(this.$route.query.itemId).then(res => {
+    let _ajax = this.$route.query.edit ? getUpdateReturnDetail(this.$route.query.itemId) : getOrderItem(this.$route.query.itemId);
+    
+    _ajax.then(res => {
       if (res.code != 0) return false;
-
+      
+      if (this.$route.query.edit) {
+        this.detail = {
+          ...res.data,
+          goodImg: res.data.productImage,
+          goodQuantity: res.data.returnQuantity,
+          goodName: res.data.productName,
+          goodAttr: res.data.productAttr,
+          goodPrice: res.data.productPrice
+        };
+        // 申请原因
+        this.applyReasonLabel = res.data.applyReason;
+        // 申请类型
+        this.applyType = res.data.returnType;
+        this.applyTypeLabel = this.$t('me.afterSale.selectReason')[res.data.returnType];
+        // 获取状态
+        this.goodsStatus = res.data.goodState;
+        this.goodsStatusLabel = this.$t('me.afterSale.stateGoodsList')[res.data.goodState];
+        // 凭证图片
+        let pics = res.data.proofPics != '' ? res.data.proofPics.split(',') : [];
+        this.fileList = pics.map(item => {
+          return {
+            url: item,
+            isImage: true
+          }
+        })
+        this.imgList = pics;
+        return false;
+      }
       this.detail = res.data;
     })
   },
@@ -225,12 +250,18 @@ export default {
         if (this.applyType == -1 || this.goodsStatus == -1) return false;
       }
       
-      this.typeRadio = 100;
+      this.typeRadio = type === 'type' ? this.applyType != -1 ? this.applyType : 100 : type == 'status' ? this.goodsStatus != -1 ? this.goodsStatus : 100 : 100;
       if (type == 'reason') { // 申请原因需要从接口中获取数据
         // 取消订单原因，因为整个列表都是同一种类型，所以就只在全局引入一次就好了
         getOrderReasonList({ orderType: 1, applyType: this.applyType, goodsStatus: this.goodsStatus }).then(res => {
           if (res.code != 0) return false;
-
+          // 修改申请的时候判断当前的选中的原因
+          res.data.forEach((item, index) => {
+            if (item.applyReason == this.applyReasonLabel) {
+              this.applyReason = index;
+              this.typeRadio = index;
+            }
+          })
           this.cancelReasonList = res.data;
           this.currentSelect = {
             type: type,
@@ -264,33 +295,51 @@ export default {
           formData.append('object', file[i].file);
           const data = await getPicUrl(formData);
           if (data.code != 0) return false;
+
           this.imgList.push(data.data);
         }
-        return false;
+      } else {
+        // 单张图片上传
+        let formData = new FormData();
+        formData.append('object', file.file);
+        const data = await getPicUrl(formData);
+        if (data.code != 0) return false;
+
+        this.imgList.push(data.data);
       }
-      // 单张图片上传
-      let formData = new FormData();
-      formData.append('object', file.file);
-      getPicUrl(formData).then(res => {
-        if (res.code != 0) return false;
-        
-        this.imgList.push(res.data);
+      
+      this.fileList = this.imgList.map(item => {
+        return {
+          url: item,
+          isImage: true
+        }
       })
     },
-    applyAfterSale() { // 申请售后
+    applyAfterSale() { // 申请售后/修改售后申请
       if (this.applyReasonLabel == '') {
         this.$toast('请选择申请原因');
         return false;
       }
-      applyAfterSale({ applyReason: this.applyReasonLabel, goodState: this.goodsStatus, orderId: this.detail.orderId, orderItemId: this.detail.id, proofPics: this.imgList.join('_'), returnType: this.applyType, productQuantity: this.detail.goodQuantity }).then(res => {
+      // edit 存在表示修改申请
+      let _ajax = this.$route.query.edit ? updateApply({ applyReason: this.applyReasonLabel, goodState: this.goodsStatus, id: this.detail.id, proofPics: this.imgList.join(','), returnType: this.applyType, productQuantity: this.detail.goodQuantity }) : applyAfterSale({ applyReason: this.applyReasonLabel, goodState: this.goodsStatus, orderId: this.detail.orderId, orderItemId: this.detail.id, proofPics: this.imgList.join(','), returnType: this.applyType, productQuantity: this.detail.goodQuantity });
+
+      _ajax.then(res => {
         if (res.code != 0) return false;
 
         this.$router.push({
           name: 'me-aftersale-detail-id',
           params: {
             id: res.data.orderReturnId
+          },
+          query: {
+            back: this.$route.query.edit ? 'me-aftersale': ''
           }
         })
+      })
+    },
+    onDeleteFile() {
+      this.imgList = this.fileList.map(item => {
+        return item.url;
       })
     }
   },

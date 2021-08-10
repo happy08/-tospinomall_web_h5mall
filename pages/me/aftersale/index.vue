@@ -3,86 +3,103 @@
   <div class="vh-100 bg-grey pt-46">
     <BmHeaderNav :left="{ isShow: true }" :title="$t('me.afterSale.title')" :fixed="true" />
     <!-- 售后列表 -->
-    <van-tabs sticky swipeable animated :offset-top="46" color="#42B7AE" class="bg-white customs-van-tabs" :ellipsis="false" @change="getSearchList" v-model="tabActive">
+    <van-tabs sticky swipeable animated :offset-top="46" color="#42B7AE" class="customs-van-tabs" :ellipsis="false" @change="getSearchList" v-model="tabActive">
       <van-tab v-for="(categoryItem, tabIndex) in categoryList" :title="titleFormat(categoryItem, tabIndex)" :key="'scroll-tab-' + tabIndex" title-class="border-b pb-0" :name="tabIndex">
-        <div class="pb-20 flex between flex-wrap bg-grey">
-          <!-- 空列表 -->
-          <empty-status v-if="lists.length === 0" :image="require('@/assets/images/empty/order.png')" />
-          <!-- 列表展示 -->
-          <div v-else v-for="(orderitem, index) in lists" :key="index" :class="{'w-100 plr-20 pb-20 pt-24 bg-white': true, 'mt-12': index != 0}">
-            <OrderStoreSingle :name="orderitem.storeName" />
-            <!-- 售后订单列表1 -->
-            <template v-if="tabActive == 0">
-              <div v-for="(productItem, productIndex) in (orderitem.items)" :key="'product-' + productIndex">
-                <OrderSingle class="mt-20" 
-                  :product_num="productItem.goodQuantity" 
-                  :product_desc="productItem.goodName" 
-                  :product_size="productItem.goodAttr" 
-                  :price="productItem.goodPrice"
-                  :image="productItem.goodImg"
-                  @onClick="goProduct(productItem.goodId)" />
-                
-                <!-- 售后申请 -->
-                <div :class="{'mt-24 flex vcenter': true, 'hend': productItem.showAfterSale != 0, 'between': productItem.showAfterSale == 0}" v-if="tabActive === 0">
-                  <!-- 订单售后状态showAfterSale：-1->数量达到不可售后 0->时间达到不可售后 1->可以售后 -->
-                  <div v-if="productItem.showAfterSale == 0" class="tl">The goods have timed out</div>
-                  <BmButton :type="'info'" class="h-32" v-if="productItem.showAfterSale == 1" @click="afterSales(productItem)">{{ $t('me.afterSale.applySales') }}</BmButton>
-                  <BmButton :type="'info'" class="h-32 time-out" v-else>{{ $t('me.afterSale.applySales') }}</BmButton>
-                </div>
+        <PullRefresh :refreshing="refreshing" @refresh="onRefresh">
+          <div class="pb-20 bg-grey">
+            <!-- 空列表 -->
+            <empty-status v-if="lists.length === 0" :image="require('@/assets/images/empty/order.png')" />
+            <van-list
+              v-else
+              v-model="loading"
+              :finished="finished"
+              finished-text=""
+              @load="onLoad"
+              class="bg-grey"
+            >
+              <!-- 列表展示 -->
+              <div v-for="(orderitem, index) in lists" :key="index" :class="{'w-100 plr-20 pb-20 pt-24 bg-white': true, 'mt-12': index != 0}">
+                <!-- 售后订单列表1 -->
+                <template v-if="tabActive == 0">
+                  <OrderStoreSingle :name="orderitem.storeName" />
+                  <div v-for="(productItem, productIndex) in (orderitem.items)" :key="'product-' + productIndex">
+                    <OrderSingle class="mt-20" 
+                      :product_num="productItem.goodQuantity" 
+                      :product_desc="productItem.goodName" 
+                      :product_size="productItem.goodAttr" 
+                      :price="productItem.goodPrice"
+                      :image="productItem.goodImg"
+                      @onClick="goProduct(productItem.goodId)" />
+                    
+                    <!-- 售后申请 -->
+                    <div :class="{'mt-24 flex vcenter': true, 'hend': productItem.showAfterSale != 0, 'between': productItem.showAfterSale == 0}" v-if="tabActive === 0">
+                      <!-- 订单售后状态showAfterSale：-1->数量达到不可售后 0->时间达到不可售后 1->可以售后 -->
+                      <div v-if="productItem.showAfterSale == 0" class="tl">The goods have timed out</div>
+                      <BmButton :type="'info'" class="h-32" v-if="productItem.showAfterSale == 1" @click="afterSales(productItem)">{{ $t('me.afterSale.applySales') }}</BmButton>
+                      <BmButton :type="'info'" class="h-32 time-out" v-else>{{ $t('me.afterSale.applySales') }}</BmButton>
+                    </div>
+                  </div>
+                </template>
 
-                <!-- 处理中 -->
-                <div class="mt-24 flex hend" v-show="tabActive === 1">
-                  <!-- 未超时 -->
-                  <BmButton :type="'info'" class="h-32">{{ $t('me.afterSale.cancelApplication') }}</BmButton>
-                  <!-- 已超时 -->
-                  <BmButton :type="'info'" class="h-32 time-out">{{ $t('me.afterSale.details') }}</BmButton>
-                </div>
-
-                <!-- 申请记录 -->
-                <div class="mt-24 flex hend" v-show="tabActive === 2">
-                  <!-- 未超时 -->
-                  <BmButton :type="'info'" class="h-32">{{ $t('me.afterSale.details') }}</BmButton>
-                  <!-- 已超时 -->
-                  <BmButton :type="'info'" class="h-32 time-out">{{ $t('common.delete') }}</BmButton>
-                  <!-- 没有批准 -->
-                  <BmButton :type="'info'" class="h-32">{{ $t('me.afterSale.customerService') }}</BmButton>
+                <!-- 售后申请列表2/3 -->
+                <div v-else class="w-100">
+                  <OrderStoreSingle :name="orderitem.storeName" :status="orderitem.returnType | returnTypeFormat" />
+                  <OrderSingle class="mt-20" 
+                    :product_num="orderitem.returnQuantity" 
+                    :product_desc="orderitem.productName" 
+                    :product_size="orderitem.productAttr" 
+                    :price="orderitem.productPrice"
+                    :image="orderitem.productImage"
+                    @onClick="goReturnDetail(orderitem.id)" 
+                  />
+                  <p class="fs-14 light-grey mt-18 w-50">{{ orderitem.status | statusFormat }}</p>
+                  <!-- 处理中 -->
+                  <!-- 工单状态involvedStatus： 0未开始 1->待举证 2->平台处理中 3->工单关闭 4->工单已完结 -->
+                  <!-- status: 1->商家/运营待处理 2->待自行寄回/待上门取件 3商家/运营待收货 4->待退款 5->退款成功 6->关闭售后单 7->商家/运营驳回申请 8->商家/运营拒收退货商品 -->
+                  <!-- 订单类型orderType：1->FBM订单 2->FBT订单 -->
+                  <div class="mt-8 flex hend">
+                    <!-- 撤销申请 -->
+                    <BmButton :type="'info'" class="h-32" v-if="orderitem.status == 1 || orderitem.status == 2 || (orderitem.status == 7 && orderitem.involvedStatus == 0) || (orderitem == 8 && orderitem.involvedStatus == 0)">撤销申请</BmButton>
+                    <!-- 撤销工单 -->
+                    <!-- <BmButton :type="'info'" class="h-32 time-out" v-if="(orderitem.status == 7 || orderitem.status == 8) && (orderitem.involvedStatus == 1 || orderitem.involvedStatus == 2)">撤销工单</BmButton> -->
+                    <!-- 修改申请 -->
+                    <!-- <BmButton :type="'info'" class="h-32 time-out" v-if="orderitem.status == 1 || orderitem.status == 7">修改申请</BmButton> -->
+                    <!-- 填写运单号 -->
+                    <!-- <BmButton :type="'info'" class="h-32 time-out" v-if="orderitem.status == 2">填写运单号</BmButton> -->
+                    <!-- 修改物流单号 -->
+                    <!-- <BmButton :type="'info'" class="h-32 time-out" v-if="orderitem.status == 3">修改物流单号</BmButton> -->
+                    <!-- 客服介入 -->
+                    <!-- <BmButton :type="'info'" class="h-32 time-out" v-if="(orderitem.status == 7 || orderitem.status == 8) && orderitem.involvedStatus == 0 && orderitem.orderType == 1 && orderitem.surplusTime > 0">客服介入</BmButton> -->
+                    <!-- 追加举证 -->
+                    <!-- <BmButton :type="'info'" class="h-32 time-out" v-if="(orderitem.status == 7 || orderitem.status == 8) && orderitem.involvedStatus == 1 && orderitem.orderType == 1 && orderitem.surplusTime > 0">追加举证</BmButton> -->
+                  </div>
                 </div>
               </div>
-            </template>
-
-            <!-- 售后申请列表2/3 -->
-            <template v-else>
-              <OrderSingle class="mt-20" 
-                :product_num="orderitem.returnQuantity" 
-                :product_desc="orderitem.productName" 
-                :product_size="orderitem.productAttr" 
-                :price="orderitem.productPrice"
-                :image="orderitem.productImage" 
-                
-                @onClick="goProduct(orderitem.productId)" />
-            </template>
+            </van-list>
             
-            <!-- <div class="driver-line fr"></div> -->
           </div>
-        </div>
+        </PullRefresh>
       </van-tab>
     </van-tabs>
   </div>
 </template>
 
 <script>
-import { Tab, Tabs } from 'vant';
+import { Tab, Tabs, List } from 'vant';
 import OrderSingle from '@/components/OrderSingle';
 import OrderStoreSingle from '@/components/OrderStoreSingle';
 import { getOrderAfterSalesCount } from '@/api/order';
+import PullRefresh from '@/components/PullRefresh';
 
 export default {
   middleware: 'authenticated',
   components: {
     vanTab: Tab,
     vanTabs: Tabs,
+    vanList: List,
     OrderStoreSingle,
-    OrderSingle
+    OrderSingle,
+    PullRefresh
   },
   data() {
     return {
@@ -93,7 +110,13 @@ export default {
       recordCount: 0,
       untreatedCount: 0,
       pageNum: 1,
-      pageSize: 10
+      pageSize: 10,
+      refreshing: {
+        isFresh: false
+      },
+      loading: false,
+      finished: false,
+      total: 0
     }
   },
   async fetch() {
@@ -108,6 +131,9 @@ export default {
 
     if (listData.code != 0) return false;
     this.lists = listData.data.records;
+    this.loading = false;
+    this.refreshing.isFresh = false;
+    this.total = listData.data.total;
   },
   activated() {
     getOrderAfterSalesCount().then(res => {
@@ -118,6 +144,14 @@ export default {
       this.untreatedCount = res.data.untreatedCount; // 未处理总数
     })
     this.$fetch();
+  },
+  filters: {
+    statusFormat(val) {
+      return val == 1 ? '商家待处理' : val == 2 ? '待自行寄回/待上门取件' : val == 3 ? '商家待收货' : val == 4 ? '待退款' : val == 5 ? '退款成功' : val == 6 ? '关闭售后单' : val == 7 ? '商家驳回申请' : val == 8 ? '商家拒收退货商品' : '';
+    },
+    returnTypeFormat(val) {
+      return val == 0 ? '退款' : val == 1 ? '退款退货' : '';
+    }
   },
   methods: {
     titleFormat(val, titleIndex) {
@@ -143,21 +177,42 @@ export default {
           status: this.tabActive + 1
         }
       })
-    }
+    },
+    goReturnDetail(returnId) { // 跳转到退款详情页面
+      this.$router.push({
+        name: 'me-aftersale-detail-id',
+        params: {
+          id: returnId
+        }
+      })
+    },
+    onRefresh() { // 下拉刷新
+      this.pageNum = 1;
+      this.$fetch();
+    },
+    onLoad() {
+      if (this.total == this.lists.length) {
+        this.loading = false;
+        this.finished = true;
+        return false;
+      }
+      this.pageNum += 1;
+      this.$fetch();
+    },
   },
 }
 </script>
 
 <style lang="less" scoped>
-.driver-line{
-  width: 209px;
-  height: 1px;
-  background-color: #eee;
-  margin-top: 25px;
-}
 .time-out{
   border-color: #eee!important;
   color: #BFBFBF!important;
   background-color: transparent!important;
+}
+.mt-18{
+  margin-top: 18px;
+}
+.w-50{
+  width: 50%;
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
   <!-- 我的-售后-售后详情 type: 1仅退款 2退货退款 3换货  -->
-  <div class="vh-100 bg-grey">
-    <BmHeaderNav :left="{ isShow: true }" :title="$t('me.afterSale.detailRefund')" />
+  <div class="vh-100 bg-grey pt-46">
+    <BmHeaderNav :left="{ isShow: true, isEmit: true }" :title="$t('me.afterSale.detailRefund')" :fixed="true" @leftClick="leftClick" />
     
     <!-- 仅退款,退款中 -->
     <!-- 退款类型returnType：0->退款 1退款退货 -->
@@ -91,7 +91,7 @@
     </div>
 
     <!-- 协商历史 -->
-    <van-cell class="mt-12 ptb-20 plr-12" :title="$t('me.afterSale.negotiationHistory')" title-class="fs-14 black" is-link :to="{ name: 'me-aftersale-negotiation-type', params: { type: detail.returnType == 0 } }" />
+    <van-cell class="mt-12 ptb-20 plr-12" :title="$t('me.afterSale.negotiationHistory')" title-class="fs-14 black" is-link :to="{ name: 'me-aftersale-negotiation-id', params: { id: detail.id } }" />
 
     <!-- 订单展示 -->
     <div class="mt-12 bg-white pt-24 plr-20 pb-20">
@@ -134,7 +134,27 @@
       </van-cell> -->
     </van-cell-group>
 
-    
+    <div class="w-100 bg-white btn-content flex hend vcenter">
+      <!-- 工单状态involvedStatus： 0未开始 1->待举证 2->平台处理中 3->工单关闭 4->工单已完结 -->
+      <!-- status: 1->商家/运营待处理 2->待自行寄回/待上门取件 3商家/运营待收货 4->待退款 5->退款成功 6->关闭售后单 7->商家/运营驳回申请 8->商家/运营拒收退货商品 -->
+      <!-- 订单类型orderType：1->FBM订单 2->FBT订单 -->
+      <!-- <div class="mt-8 flex hend"> -->
+        <!-- 修改申请 -->
+        <BmButton :type="'info'" class="h-32 time-out" v-if="detail.status == 1 || detail.status == 7" @btnClick="onEditApply">修改申请</BmButton>
+        <!-- 撤销申请 -->
+        <BmButton class="round-0 v-100 ml-10" v-if="detail.status == 1 || detail.status == 2 || (detail.status == 7 && detail.involvedStatus == 0) || (detail == 8 && detail.involvedStatus == 0)" @btnClick="onRevokeApply">撤销申请</BmButton>
+        <!-- 撤销工单 -->
+        <BmButton :type="'info'" class="h-32 time-out" v-if="(detail.status == 7 || detail.status == 8) && (detail.involvedStatus == 1 || detail.involvedStatus == 2)">撤销工单</BmButton>
+        <!-- 填写运单号 -->
+        <BmButton :type="'info'" class="h-32 time-out" v-if="detail.status == 2">填写运单号</BmButton>
+        <!-- 修改物流单号 -->
+        <BmButton :type="'info'" class="h-32 time-out" v-if="detail.status == 3">修改物流单号</BmButton>
+        <!-- 客服介入 -->
+        <BmButton :type="'info'" class="h-32 time-out" v-if="(detail.status == 7 || detail.status == 8) && detail.involvedStatus == 0 && detail.orderType == 1 && detail.surplusTime > 0">客服介入</BmButton>
+        <!-- 追加举证 -->
+        <BmButton :type="'info'" class="h-32 time-out" v-if="(detail.status == 7 || detail.status == 8) && detail.involvedStatus == 1 && detail.orderType == 1 && detail.surplusTime > 0">追加举证</BmButton>
+      <!-- </div> -->
+    </div>
   </div>
 </template>
 
@@ -143,7 +163,7 @@ import { Step, Steps, Cell, CellGroup, CountDown } from 'vant';
 import OrderSingle from '@/components/OrderSingle';
 import OrderStoreSingle from '@/components/OrderStoreSingle';
 import ClipboardJS from 'clipboard';
-import { getReturnDetail } from '@/api/order';
+import { getReturnDetail, revokeApply } from '@/api/order';
 
 export default {
   middleware: 'authenticated',
@@ -163,20 +183,7 @@ export default {
     }
   },
   activated() {
-    getReturnDetail(this.$route.params.id).then(res => {
-      if (res.code != 0) return false;
-
-      this.detail = { // 订单详情
-        ...res.data,
-        surplusTime: res.data.surplusTime * 1000
-      };
-      // 状态: 1->商家/运营待处理 2->待自行寄回/待上门取件 3商家/运营待收货 4->待退款 5->退款成功 6->关闭售后单 7->商家/运营驳回申请 8->商家/运营拒收退货商品
-      if (res.data.status == 5) {
-        this.stepActive = 2;
-      } else {
-        this.stepActive = 1;
-      }
-    })
+    this.getReturnDetail();
   },
   filters: {
     returnTypeFormat(val) {
@@ -199,7 +206,7 @@ export default {
           message: msg,
           type: 'success'
         })
-        clipboard.destroy()
+        clipboard.destroy();
       })
       clipboard.on('error', () => {
         let msg = this.$t('common.copyError');
@@ -207,9 +214,68 @@ export default {
           message: msg,
           type: 'fail'
         })
-        clipboard.destroy()
+        clipboard.destroy();
       })
     },
+    onRevokeApply() { // 撤销申请
+      this.$dialog.confirm({
+        message: `您将撤销本次申请，如果问题未解决，您还可以再次发起，确定继续吗`,
+        onfirmButtonText: this.$t('common.confirm'),
+        confirmButtonColor: '#42B7AE',
+        cancelButtonText: this.$t('common.cancel'),
+        cancelButtonColor: '#383838'
+      }).then(() => {
+        revokeApply({ orderReturnId: this.$route.params.id }).then(res => {
+          if (res.code != 0) return false;
+
+          this.getReturnDetail();
+        })
+      }).catch(() => {
+
+      })
+    },
+    getReturnDetail() { // 获取订单详情
+      getReturnDetail(this.$route.params.id).then(res => {
+        if (res.code != 0) return false;
+
+        this.detail = { // 订单详情
+          ...res.data,
+          surplusTime: res.data.surplusTime * 1000
+        };
+        // 状态: 1->商家/运营待处理 2->待自行寄回/待上门取件 3商家/运营待收货 4->待退款 5->退款成功 6->关闭售后单 7->商家/运营驳回申请 8->商家/运营拒收退货商品
+        if (res.data.status == 5) {
+          this.stepActive = 2;
+        } else {
+          this.stepActive = 1;
+        }
+      })
+    },
+    onEditApply() { // 修改申请
+      this.$router.push({
+        name: 'me-aftersale-apply-type',
+        params: {
+          type: this.detail.returnType + 1
+        },
+        query: {
+          itemId: this.detail.id,
+          edit: 1
+        }
+      })
+    },
+    leftClick() { // 回退，解决由申请页面提交跳转到详情页面，回退时需要回退到列表页面
+      if (this.$route.query.back && this.$route.query.back == 'me-aftersale') {
+        this.$router.go(-2);
+        return false;
+      }
+
+      if(window.history.length < 2){ //解决部分机型拿不到history
+        console.log('go home');
+        this.$router.replace('/');
+      }else{
+        console.log('back');
+        history.back();
+      }
+    }
   },
 }
 </script>
@@ -226,5 +292,23 @@ export default {
 }
 .flex-2{
   flex: 2;
+}
+.btn-content{
+  position: fixed;
+  bottom: 0;
+  height: 56px;
+  .v-100{
+    height: 100%;
+  }
+  .btn-content__evaluation{
+    height: 36px!important;
+    border-color: #eee!important;
+    background-color: transparent!important;
+  }
+}
+.time-out{
+  border-color: #eee!important;
+  color: #383838!important;
+  background-color: transparent!important;
 }
 </style>

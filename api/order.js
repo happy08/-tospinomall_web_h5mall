@@ -117,6 +117,20 @@ export function applyAfterSale(data) {
 }
 
 /**
+ * 申请售后-修改申请
+ */
+export function updateApply(data) {
+  return request({
+    url: '/api/order/orderReturn/buyer/updateApply',
+    method: 'post',
+    data: data,
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+}
+
+/**
  * 获取退款详情
  */
 export function getReturnDetail(returnId) {
@@ -126,5 +140,42 @@ export function getReturnDetail(returnId) {
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded'
     }
+  })
+}
+
+/**
+ * 修改申请-获取退款详情
+ */
+export function getUpdateReturnDetail(returnId) {
+  return request({
+    url: `/api/order/orderReturn/buyer/returnDetail/update/${returnId}`,
+    method: 'get',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
+  })
+}
+
+/**
+ * 获取协商历史
+ */
+export function getNegotiationHistory(orderReturnId) {
+  return request({
+    url: `/api/order/orderReturn/buyer/findNegotiationHistory/${orderReturnId}`,
+    method: 'get',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
+  })
+}
+
+/**
+ * 买家撤销申请
+ */
+export function revokeApply(data) {
+  return request({
+    url: '/api/order/orderReturn/buyer/revokeApply',
+    method: 'post',
+    data: qs.stringify(data)
   })
 }
