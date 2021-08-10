@@ -12,7 +12,10 @@ import { getCookie } from './utils';
 export function getPhonePrefix() {
   return request({
     url: '/api/basics/base/phonePrefix/find/0',
-    method: 'get'
+    method: 'get',
+    headers: {
+      'Content-Type': 'application/json'
+    }
   })
 }
 
@@ -23,7 +26,10 @@ export function getPhoneCode(params) {
   return request({
     url: '/api/admin/ums/checkcode/getPhoneCode',
     method: 'get',
-    params
+    params,
+    headers: {
+      'Content-Type': 'application/json'
+    }
   })
 }
 
@@ -45,10 +51,7 @@ export function getPhoneCode(params) {
   return request({
     url: '/api/admin/ums/checkcode/getEmailCode',
     method: 'get',
-    params: params,
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
-    }
+    params
   })
 }
 

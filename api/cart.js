@@ -21,10 +21,7 @@ export function getDeliveryInfo(data) {
  export function getSkuStock(skuId) {
   return request({
     url: `/api/product/goods/get/stock/${skuId}`,
-    method: 'get',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
-    }
+    method: 'get'
   })
 }
 
@@ -35,10 +32,7 @@ export function attentionProduct(params) {
   return request({
     url: `/api/admin/buyerAttention/attention/good`,
     method: 'get',
-    params: params,
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
-    }
+    params
   })
 }
 
@@ -87,10 +81,7 @@ export function setOftenBuy(data) {
 export function getCartCount() {
   return request({
     url: '/api/carts/shoppingCart/findCount',
-    method: 'get',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
-    }
+    method: 'get'
   })
 }
 
@@ -115,7 +106,10 @@ export function getCalculatePrice(data) {
   return request({
     url: '/api/carts/shoppingCart/calculatePrice',
     method: 'put',
-    data: data
+    data: data,
+    headers: {
+      'Content-Type': 'application/json'
+    }
   })
 }
 

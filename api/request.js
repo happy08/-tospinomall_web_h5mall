@@ -82,7 +82,7 @@ service.interceptors.request.use(config => {
     config.headers['Authorization'] = getCookie('authToken');
   }
   
-  if (config.method === 'post') {
+  if (config.method === 'post' || config.method === 'get') {
     config.headers['Content-Type'] = config.headers['Content-Type'] || 'application/x-www-form-urlencoded';
   } else {
     config.headers['Content-Type'] = config.headers['Content-Type'] || 'application/json';

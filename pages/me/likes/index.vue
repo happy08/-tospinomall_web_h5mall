@@ -176,14 +176,15 @@ export default {
         isFresh: false
       },
       loading: false,
-      finished: false
+      finished: false,
+      isFirst: true
     }
   },
   async fetch() {
-    this.tabActive = this.$route.query.active ? this.$route.query.active : 0;
+    if (this.$route.query.active && this.isFirst) this.tabActive =  this.$route.query.active;
+
     this.edit = false;
     this.checkResult = [];
-
     // 获取商品列表
     const listData = this.tabActive == 0 ? await this.$api.getLikeProduct({ pageNum: this.pageNum, pageSize: this.pageSize }) : await this.$api.getLikeStoreList({ pageNum: this.pageNum, pageSize: this.pageSize }); // 获取关注商品/店铺列表
     this.isLoading.isFresh = false;
@@ -191,8 +192,10 @@ export default {
     
     this.list = listData.data.records; // 关注商品/店铺列表
     this.total = listData.data.total; // 商品/店铺总数
+    this.isFirst = false;
   },
   activated() {
+    this.isFirst = true;
     this.$fetch();
   },
   methods: {
@@ -230,7 +233,8 @@ export default {
         name: 'home'
       })
     },
-    getList() { // 切换tab时数据要初始化
+    getList(index) { // 切换tab时数据要初始化
+      this.tabActive = index;
       this.$fetch();
     },
     onTop(item) { // 置顶

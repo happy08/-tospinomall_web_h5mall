@@ -8,10 +8,7 @@ export function storeFollow(params) {
   return request({
     url: '/api/admin/attention/store/follow',
     method: 'get',
-    params: params,
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
-    }
+    params
   })
 }
 

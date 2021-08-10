@@ -7,6 +7,9 @@ export function getSearchPull(data) {
   return request({
     url: '/api/search/productsearch/getSuggestionResult',
     method: 'post',
-    data
+    data,
+    headers: {
+      'Content-Type': 'application/json'
+    }
   })
 }

@@ -10,7 +10,8 @@ export function getUserInfo(token) {
     url: '/api/admin/ums/buyer/findCurrentUserinfo',
     method: 'get',
     headers: {
-      Authorization: token
+      Authorization: token,
+      'Content-Type': 'application/json'
     }
   })
 }
@@ -72,9 +73,6 @@ export function getCurrentCode(type) {
     params: {
       type: type,
       userType: 'buyer'
-    },
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
     }
   })
 }
@@ -99,10 +97,7 @@ export function checkCurrentCode(data) {
 export function getLangList(type = 'sys_language_type') {
   return request({
     url: `/api/admin/dict/type/${type}`,
-    method: 'get',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
-    }
+    method: 'get'
   })
 }
 
@@ -112,10 +107,7 @@ export function getLangList(type = 'sys_language_type') {
 export function getFeedbackTypeList() {
   return request({
     url: '/api/basics/operateFeedbackCategory/findList',
-    method: 'get',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
-    }
+    method: 'get'
   })
 }
 

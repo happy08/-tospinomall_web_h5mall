@@ -35,10 +35,7 @@ export function getRateList(params) {
   return request({
     url: '/api/product/evaluate/goods/list',
     method: 'get',
-    params: params,
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
-    }
+    params
   })
 }
 
@@ -48,10 +45,7 @@ export function getRateList(params) {
 export function addGive(id) {
   return request({
     url: `/api/product/evaluate/give/${id}`,
-    method: 'get',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
-    }
+    method: 'get'
   })
 }
 
@@ -61,10 +55,7 @@ export function addGive(id) {
 export function getRateDetail(id) {
   return request({
     url: `/api/product/evaluate/info/${id}`,
-    method: 'get',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
-    }
+    method: 'get'
   })
 }
 
@@ -74,9 +65,6 @@ export function getRateDetail(id) {
 export function getGoodAttr(goodId) {
   return request({
     url: `/api/product/goods/get/attrGroup/${goodId}`,
-    method: 'get',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
-    }
+    method: 'get'
   })
 }

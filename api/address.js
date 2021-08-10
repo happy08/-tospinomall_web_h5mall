@@ -28,10 +28,7 @@ export function addAddress(data) {
 export function getAreasTree() {
   return request({
     url: '/api/basics/base/area/findAreasTree',
-    method: 'get',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
-    }
+    method: 'get'
   })
 }
 
@@ -52,7 +49,10 @@ export function getNextArea(params) {
   return request({
     url: '/api/basics/base/area/findByParentId',
     method: 'get',
-    params
+    params: params,
+    headers: {
+      'Content-Type': 'application/json'
+    }
   })
 }
 

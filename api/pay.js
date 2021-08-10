@@ -52,10 +52,7 @@ export function checkPayPwd(payPassword) {
 export function getRechargeCard() {
   return request({
     url: '/api/basics/baseRechargeCard/buyer/findMmsBaseRechargeCardList',
-    method: 'get',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
-    }
+    method: 'get'
   })
 }
 
@@ -92,9 +89,6 @@ export function checkBuyerRecharge(refNo) {
     method: 'get',
     params: {
       refNo: refNo
-    },
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
     }
   })
 }
@@ -118,10 +112,7 @@ export function callBackRecharge(tradeNo) {
 export function getAvailable() {
   return request({
     url: '/api/finance/uniwallet/get/available/networks',
-    method: 'get',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
-    }
+    method: 'get'
   })
 }
 
@@ -132,10 +123,7 @@ export function getBillList(params) {
   return request({
     url: '/api/finance/buyerExpensesDetail/buyer/findIncomeExpenditurePage',
     method: 'get',
-    params: params,
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
-    }
+    params
   })
 }
 
@@ -148,9 +136,6 @@ export function getBillDetail(id) {
     method: 'get',
     params: {
       id: id
-    },
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
     }
   })
 }
@@ -185,9 +170,6 @@ export function cancelPayOrder(refNo) {
     method: 'get',
     params: {
       refNo: refNo
-    },
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
     }
   })
 }
@@ -201,9 +183,6 @@ export function checkPayOrder(refNo) {
     method: 'get',
     params: {
       refNo: refNo
-    },
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
     }
   })
 }

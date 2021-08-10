@@ -16,7 +16,7 @@
       <van-list
         v-model="loading"
         :finished="finished"
-        finished-text="没有更多了"
+        finished-text=""
         @load="onLoad"
       >
         <!-- 商品/店铺展示 -->

@@ -21,10 +21,7 @@ export function submitOrder(data) {
 export function getOrderDetail(orderId) {
   return request({
     url: `/api/order/omsorder/buyer/detail/${orderId}`,
-    method: 'get',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
-    }
+    method: 'get'
   })
 }
 
@@ -56,10 +53,7 @@ export function getOrderReasonList(params) {
   return request({
     url: '/api/basics/base/trade/orderReason/findByConditions',
     method: 'get',
-    params: params,
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
-    }
+    params
   })
 }
 
@@ -69,10 +63,7 @@ export function getOrderReasonList(params) {
 export function getOrderRateCount() {
   return request({
     url: '/api/order/omsorder/buyer/orderItem/commentCount',
-    method: 'get',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
-    }
+    method: 'get'
   })
 }
 
@@ -82,10 +73,7 @@ export function getOrderRateCount() {
 export function getOrderAfterSalesCount() {
   return request({
     url: '/api/order/orderReturn/buyer/findAfterSalesCount',
-    method: 'get',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
-    }
+    method: 'get'
   })
 }
 
@@ -95,10 +83,7 @@ export function getOrderAfterSalesCount() {
 export function getOrderItem(itemId) {
   return request({
     url: `/api/order/omsorder/buyer/getItemById/${itemId}`,
-    method: 'get',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
-    }
+    method: 'get'
   })
 }
 
@@ -136,10 +121,7 @@ export function updateApply(data) {
 export function getReturnDetail(returnId) {
   return request({
     url: `/api/order/orderReturn/buyer/returnDetail/${returnId}`,
-    method: 'get',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
-    }
+    method: 'get'
   })
 }
 
@@ -149,10 +131,7 @@ export function getReturnDetail(returnId) {
 export function getUpdateReturnDetail(returnId) {
   return request({
     url: `/api/order/orderReturn/buyer/returnDetail/update/${returnId}`,
-    method: 'get',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
-    }
+    method: 'get'
   })
 }
 
@@ -162,10 +141,7 @@ export function getUpdateReturnDetail(returnId) {
 export function getNegotiationHistory(orderReturnId) {
   return request({
     url: `/api/order/orderReturn/buyer/findNegotiationHistory/${orderReturnId}`,
-    method: 'get',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
-    }
+    method: 'get'
   })
 }
 
