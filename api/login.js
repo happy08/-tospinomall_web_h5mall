@@ -130,3 +130,12 @@ export function logout() {
     }
   })
 }
+
+/**
+ * 刷新token
+ */
+export function refreshToken() {
+  return request({
+    url: '/api/auth/oauth/token?grant_type=refresh_token',
+  })
+}

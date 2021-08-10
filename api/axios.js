@@ -15,6 +15,7 @@ export default function({ $axios, app, redirect, store, route }) {
 
   $axios.onRequest(config => {
     // 调用登录接口的时候需要固定值 Basic YnV5ZXI6YnV5ZXI= , 登录之后需要在headers中传用户token
+    console.log(config.url)
     config.headers['Authorization'] = 'Basic YnV5ZXI6YnV5ZXI=';
     if (config.method === 'post') {
       config.headers['Content-Type'] = config.headers['Content-Type'] || 'application/x-www-form-urlencoded';
@@ -23,7 +24,7 @@ export default function({ $axios, app, redirect, store, route }) {
     }
     console.log(22222222222222222)
     // 登录之后要重新复值token
-    if (store.state.user.authToken) {
+    if (store.state.user.authToken && config.url != '/api/auth/oauth/token?grant_type=refresh_token') {
       config.headers['Authorization'] = `${store.state.user.authToken}`;
     }
     config.headers.language = store.state.locale;

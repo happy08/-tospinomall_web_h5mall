@@ -25,13 +25,13 @@
         <div v-for="(item, index) in detail.storeSaleInfoList" :key="'store-' + index">
           <div class="plr-20 bg-white">
             <OrderStoreSingle class="pt-20" :name="item.storeName" :showArrow="false" />
-            <div v-for="(productItem, productIndex) in item.deliveryTypeSkuItemMap.skuItemVoList" :key="'product-item-' + productIndex">
+            <div v-for="(productMapItem, productMapIndex) in item.deliveryTypeSkuItemMap" :key="'product-map-item-' + productMapIndex">
               <van-card
                 :title="productItem.goodTitle"
                 class="bg-white pt-24 plr-0 pb-0 custom-card lh-20 width-313"
                 :thumb="productItem.image"
                 @click="goProductDetail(singleItem.id)"
-                
+                v-for="(productItem, productIndex) in productMapItem.skuItemVoList" :key="'product-item-' + productIndex"
                 :num="productItem.step"
               >
                 <!-- 自定义描述区域，改为展示商品型号 -->
@@ -53,16 +53,19 @@
                   </div>
                 </template>
               </van-card>
+
+              <div class="border-b mt-20 w-80 fr"></div>
+              <!-- 配送 -->
+              <van-cell title="Distribution" class="plr-0 ptb-12" title-class="color-black-85" value-class="flex-2" is-link center @click="onChangeDelivery(productMapItem.sendTypeEstimateVoList, productMapItem.choiceSendType, item.storeId)">
+                <template #default>
+                  <div class="fs-14 light-grey lh-12" v-if="productMapItem.sendTypeEstimateVoList.length">
+                    {{ productMapItem.sendTypeEstimateVoList[productMapItem.choiceSendType - 1].sendType | deliveryFormat }}<br />
+                    <p class="hidden-1">{{ productMapItem.sendTypeEstimateVoList[productMapItem.choiceSendType - 1].estimeate }}</p>
+                  </div>
+                </template>
+              </van-cell>
             </div>
-            <!-- 配送 -->
-            <van-cell title="Distribution" class="plr-0" title-class="color-black-85" value-class="flex-2" is-link center @click="onChangeDelivery(item.deliveryTypeSkuItemMap.sendTypeEstimateVoList, item.deliveryTypeSkuItemMap.choiceSendType, item.storeId)">
-              <template #default>
-                <div class="fs-14 light-grey lh-12" v-if="item.deliveryTypeSkuItemMap.sendTypeEstimateVoList.length">
-                  {{ item.deliveryTypeSkuItemMap.sendTypeEstimateVoList[item.deliveryTypeSkuItemMap.choiceSendType - 1].sendType | deliveryFormat }}<br />
-                  <p class="hidden-1">{{ item.deliveryTypeSkuItemMap.sendTypeEstimateVoList[item.deliveryTypeSkuItemMap.choiceSendType - 1].estimeate }}</p>
-                </div>
-              </template>
-            </van-cell>
+            
           </div>
           <!-- 留言 -->
           <van-field class="plr-20 mt-12 mb-12" v-model="item.message" label="Leave message" input-align="right" label-class="fs-14 color-black-85" label-width="2rem" />
@@ -218,18 +221,20 @@ export default {
       let skuItems = []; // 商品信息
       let leaveMessages = []; // 留言信息
       this.detail.storeSaleInfoList.forEach(item => {
-        item.deliveryTypeSkuItemMap.skuItemVoList.forEach(skuItem => {
-          skuItems.push({
-            count: skuItem.count,
-            skuId: skuItem.skuId
-          })
-
-          leaveMessages.push({
-            leaveMessage: skuItem.message,
-            storeId: item.storeId
+        leaveMessages.push({
+          leaveMessage: item.message,
+          storeId: item.storeId
+        })
+        item.deliveryTypeSkuItemMap.forEach(productMap => {
+          productMap.skuItemVoList.forEach(skuItem => {
+            skuItems.push({
+              count: skuItem.count,
+              skuId: skuItem.skuId
+            })
           })
         })
       })
+
       // 运输方式
       let confirmTransportModes = this.confirmTransportModes.map(item => {
         return item.sendType;
@@ -296,25 +301,27 @@ export default {
           storeSaleInfoList: res.data.storeSaleInfoList.map(item => {
             return {
               ...item,
-              deliveryTypeSkuItemMap: {
-                ...Object.values(item.deliveryTypeSkuItemMap)[0],
-                skuItemVoList: Object.values(item.deliveryTypeSkuItemMap)[0].skuItemVoList.map(skuItem => {
-                  return {
-                    ...skuItem,
-                    message: ''
-                  }
-                })
-              }
+              deliveryTypeSkuItemMap: Object.values(item.deliveryTypeSkuItemMap),
+              message: ''
+              // deliveryTypeSkuItemMap: {
+              //   ...Object.values(item.deliveryTypeSkuItemMap)[0],
+              //   skuItemVoList: Object.values(item.deliveryTypeSkuItemMap)[0].skuItemVoList.map(skuItem => {
+              //     return {
+              //       ...skuItem,
+              //       message: ''
+              //     }
+              //   })
+              // }
             }
           })
         };
 
-        this.confirmTransportModes = res.data.storeSaleInfoList.map(item => {
-          return {
-            storeId: item.storeId,
-            sendType: Object.values(item.deliveryTypeSkuItemMap)[0].sendTypeEstimateVoList.length > 0 ? Object.values(item.deliveryTypeSkuItemMap)[0].sendTypeEstimateVoList[Object.values(item.deliveryTypeSkuItemMap)[0].choiceSendType - 1].sendType : ''
-          }
-        })
+        // this.confirmTransportModes = res.data.storeSaleInfoList.map(item => {
+        //   return {
+        //     storeId: item.storeId,
+        //     sendType: Object.values(item.deliveryTypeSkuItemMap)[0].sendTypeEstimateVoList.length > 0 ? Object.values(item.deliveryTypeSkuItemMap)[0].sendTypeEstimateVoList[Object.values(item.deliveryTypeSkuItemMap)[0].choiceSendType - 1].sendType : ''
+        //   }
+        // })
       }).catch(error => {
         console.log(error)
         this.codeData = {
@@ -378,6 +385,9 @@ export default {
 }
 .mt-40{
   margin-top: 40px;
+}
+.w-80{
+  width: 80%;
 }
 </style>
 

@@ -1,4 +1,13 @@
 import { getUserInfo } from '@/api/user';
+import { refreshToken } from '/api/login';
+
+// 设置cookie的值
+const setCookie = (cname,cvalue,exdays) => {
+  var d = new Date();
+  d.setTime(d.getTime()+(exdays*24*60*60*1000));
+  var expires = 'expires='+d.toGMTString();
+  document.cookie = cname + '=' + cvalue + '; ' + expires;
+}
 
 export const state = () => ({
   authToken: null,
@@ -11,13 +20,15 @@ export const mutations = {
   SET_USERINFO(state, userInfo) { // 提交用户信息
     state.userInfo = userInfo;
     this.$cookies.set('userInfo', userInfo);
+    // setCookie('userInfo', null)
   },
   SET_TOKEN(state, token) { // 提交token
     state.authToken = token;
     if (token == null) { // 退出登录 清除数据
       state.userInfo = null;
-      this.$cookies.set('userInfo', null);
+      this.SET_USERINFO(state, null);
     }
+    // setCookie('authToken', null)
     this.$cookies.set('authToken', token);
   },
   SET_SEARCHLIST(state, searchItem) {
@@ -53,6 +64,8 @@ export const actions = {
     return new Promise((resolve, reject) => {
       if (state.userInfo) resolve();
       else 
+        console.log('用户信息')
+        console.log(authToken)
         getUserInfo(authToken).then(res => {
           if (res.code != 0) return false;
 
@@ -62,6 +75,18 @@ export const actions = {
         }).catch(error => {
           reject(error);
         })
+    })
+  },
+  GetRefreshToken({ commit }) {
+    return new Promise((resolve, reject) => {
+      refreshToken().then(res => {
+        if (res.code != 0) return false;
+
+        commit('SET_TOKEN', res.data.token_type + ' ' + res.data.access_token);
+        resolve(res)
+      }).catch(error => {
+        reject(error);
+      })
     })
   }
 }

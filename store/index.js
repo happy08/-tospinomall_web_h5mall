@@ -34,6 +34,7 @@ export const actions = {
     
     const authToken = $cookies.get('authToken'); // 用户token
     console.log('持久化')
+    console.log(authToken)
     // 如果有token获取用户信息
     if (authToken) {
       commit('user/SET_TOKEN', authToken);

@@ -77,12 +77,12 @@
                   </template>
                   <!-- 自定义描述区域，改为展示商品型号 -->
                   <template #desc>
-                    <div class="bg-f8 pl-10 mt-8 round-4 flex vcenter pr-10 fit-width" @click="onSku(singleItem)">
-                      <span class="grey pr-24">
+                    <span class="bg-f8 pl-10 mt-8 round-4 flex vcenter pr-10 fit-width" @click="onSku(singleItem)">
+                      <span class="grey pr-24 hidden-1">
                         <span v-for="(attrItem, attrIndex) in singleItem.productAttr" :key="'attr-item-' + attrIndex">{{ attrItem.attrValue }} {{ attrIndex != singleItem.productAttr.length-1 ? '/' : '' }} </span>
                       </span>
                       <van-icon name="arrow-down" color="#B6B6B6" size="0.16rem" />
-                    </div>
+                    </span>
                   </template>
                   <!-- 标签 -->
                   <template #tags>
@@ -322,8 +322,10 @@ export default {
     this.refreshing.isFresh = false;
   },
   activated() {
-    this.getCartCount(); // 总数查询
-    this.$fetch();
+    if (this.$store.state.user.authToken) { // 登录的情况下才请求数据
+      this.getCartCount(); // 总数查询
+      this.$fetch();
+    }
   },
   methods: {
     onEdit() { // 编辑购物车, 登录情况下才可以编辑购物车
@@ -650,6 +652,7 @@ export default {
 }
 .fit-width{
   width: fit-content;
+  max-width: 217px;
 }
 .width-313{
   width: 313px;

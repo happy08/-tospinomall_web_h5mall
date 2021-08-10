@@ -74,9 +74,10 @@ const tip = msg => {
 
 // request拦截器
 service.interceptors.request.use(config => {
-  config.headers['Authorization'] = 'Basic YnV5ZXI6YnV5ZXI=';
+  console.log(config.headers)
+  config.headers['Authorization'] = config.headers.Authorization ? config.headers.Authorization: 'Basic YnV5ZXI6YnV5ZXI=';
   console.log('线下请求')
-  console.log(getCookie('authToken') != 'null')
+  // console.log(getCookie('authToken') != 'null')
   if (getCookie('authToken') != 'null') { // 已登录需要改变头部token
     config.headers['Authorization'] = getCookie('authToken');
   }
