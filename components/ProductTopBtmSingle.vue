@@ -1,6 +1,6 @@
 <template>
   <!-- 商品列表，上面部分展示图片，下面部分展示信息 -->
-  <div class="flex column top-bottom-songle" :style="'width: ' + img.width + ';'">
+  <div class="flex column pb-20 bg-white" :style="'width: ' + img.width + ';'">
     <!-- 商品的图片 -->
     <BmImage 
       :url="img.url"
@@ -13,7 +13,7 @@
       :isShow="true"
     />
     <!-- 商品的信息 -->
-    <div class="pt-12 plr-4 bg-white" v-if="detail">
+    <div class="pt-12 plr-4" v-if="detail">
       <div class="flex vcenter pb-12" v-if="detail.country">
         <BmImage 
           :url="detail.country_url"
@@ -35,7 +35,7 @@
         <span class="red fs-16 fw">
           <span class="fm-menlo">{{ $store.state.rate.currency }}</span><span class="fm-din">{{ detail.price }}</span>
         </span>
-        <span v-if="detail.volumn" class="fs-10 clr-black-25">{{ detail.volumn }}+Sold</span>
+        <span v-if="detail.volumn >= 0" class="fs-10 clr-black-25">{{ detail.volumn }}+Sold</span>
       </div>
     </div>
   </div>

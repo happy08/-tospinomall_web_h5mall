@@ -770,32 +770,35 @@ export default {
     this.likeList = recommendData.data;
   },
   activated() {
-    getCurrentDefaultAddress().then(res => { // 查看是否有默认地址
-      if (res.code != 0) return false;
-      if (res.data.length === 0) { // 没有默认地址的情况下获取国家列表
-        this.getNextArea({ id: 0 });
-        return false;
-      };
-      this.stepArr = res.data.areaList;
-      this.stepActive = res.data.areaList.length - 1;
-      this.isShowChooseTitle = false;
-      this.form = {
-        // address: res.data.address, // 详细地址
-        countryCode: res.data.countryCode, //国家编码
-        provinceCode: res.data.provinceCode, // 省份编码
-        cityCode: res.data.cityCode, // 市编码
-        districtCode: res.data.districtCode //区编码
-      }
-      this.completeAddress = res.data.completeAddress; // 完整地址
-      // 获取地址的时候默认是最后一级
-      this.getNextArea(res.data.areaList[res.data.areaList.length - 2], false, true);
-      // 获取运费模板
-      // this.getDeliveryInfo(); // 每次进入不获取运费模板，因为默认不选中商品规格
-    })
-    // 如果上次请求超过一分钟了，就再次发起请求
-    if (this.$fetchState.timestamp <= Date.now() - 60000) {
-      this.$fetch();
+    if (this.$store.state.user.authToken) {
+      getCurrentDefaultAddress().then(res => { // 查看是否有默认地址
+        if (res.code != 0) return false;
+        
+        if (res.data.length === 0) { // 没有默认地址的情况下获取国家列表
+          this.getNextArea({ id: 0 });
+          return false;
+        };
+        this.stepArr = res.data.areaList;
+        this.stepActive = res.data.areaList.length - 1;
+        this.isShowChooseTitle = false;
+        this.form = {
+          // address: res.data.address, // 详细地址
+          countryCode: res.data.countryCode, //国家编码
+          provinceCode: res.data.provinceCode, // 省份编码
+          cityCode: res.data.cityCode, // 市编码
+          districtCode: res.data.districtCode //区编码
+        }
+        this.completeAddress = res.data.completeAddress; // 完整地址
+        // 获取地址的时候默认是最后一级
+        this.getNextArea(res.data.areaList[res.data.areaList.length - 2], false, true);
+        // 获取运费模板
+        // this.getDeliveryInfo(); // 每次进入不获取运费模板，因为默认不选中商品规格
+      })
+    } else {
+      this.getNextArea({ id: 0 });
     }
+    // 如果上次请求超过一分钟了，就再次发起请求
+    this.$fetch();
     this.$refs.productSku.resetSelectedSku();
   },
   head() {

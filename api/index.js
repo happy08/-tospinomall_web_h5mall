@@ -154,6 +154,13 @@ export default ({ app }, inject) => {
         method: 'get',
         params
       })
+    },
+    getSimilarGood(params) { // 查找相似商品
+      return app.$axios({
+        url: `${url}/search/productsearch/similar/good`,
+        method: 'get',
+        params
+      })
     }
   };
 

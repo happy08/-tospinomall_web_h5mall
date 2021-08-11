@@ -56,7 +56,7 @@
           <van-icon :name="require('@/assets/images/icon/arrange-'+arrangeType+'.svg')" size="0.38rem" @click="changeArrange" />
         </div>
 
-        <div :class="{'w-100': true, 'plr-20 bg-white': arrangeType == 1, 'plr-12': arrangeType == 2} ">
+        <div :class="{'w-100': true, 'plr-20 bg-white': arrangeType == 1 && list.length > 0, 'plr-12': arrangeType == 2} ">
           <!-- 空状态  -->
           <empty-status v-if="list.length === 0" :image="require('@/assets/images/empty/order.png')" :description="$t('common.noRecord')"/>
           <div 
@@ -172,15 +172,7 @@ import { Search, Tab, Tabs, DropdownItem, DropdownMenu, Popup, Field, Cell } fro
 import ProductTopBtmSingle from '@/components/ProductTopBtmSingle';
 import EmptyStatus from '@/components/EmptyStatus';
 import { getSearchPull } from '@/api/search';
-function debounce (fn,wait) {
-  var timer = null;
-  return function(){
-      if(timer !== null){
-          clearTimeout(timer);
-      }
-      timer = setTimeout(fn,wait);
-  }
-}
+
 export default {
   components: {
     vanSearch: Search,

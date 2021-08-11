@@ -16,7 +16,7 @@
       </div>
     </BmHeaderNav>
 
-    <PullRefresh :refreshing="isLoading" @refresh="onRefresh">
+    <PullRefresh :refreshing="refreshing" @refresh="onRefresh">
       <van-list
         v-model="loading"
         :finished="finished"
@@ -171,7 +171,7 @@ export default {
       pageSize: 10,
       total: 0,
       likeList: [],
-      isLoading: {
+      refreshing: {
         isFresh: false
       },
       loading: false,
@@ -185,7 +185,7 @@ export default {
     this.checkResult = [];
     // 获取商品列表
     const listData = this.active == 0 ? await this.$api.getLikeProduct({ pageNum: this.pageNum, pageSize: this.pageSize }) : await this.$api.getLikeStoreList({ pageNum: this.pageNum, pageSize: this.pageSize }); // 获取关注商品/店铺列表
-    this.isLoading.isFresh = false;
+    this.refreshing.isFresh = false;
     if (listData.code != 0) return false;
     
     this.list = listData.data.records; // 关注商品/店铺列表

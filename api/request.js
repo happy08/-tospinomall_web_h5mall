@@ -64,21 +64,11 @@ const tip = msg => {
   }
 };
 
-// 设置cookie的值
-// const setCookie = (cname,cvalue,exdays) => {
-//   var d = new Date();
-//   d.setTime(d.getTime()+(exdays*24*60*60*1000));
-//   var expires = 'expires='+d.toGMTString();
-//   document.cookie = cname + '=' + cvalue + '; ' + expires;
-// }
-
 // request拦截器
 service.interceptors.request.use(config => {
-  console.log(config.headers)
   config.headers['Authorization'] = config.headers.Authorization ? config.headers.Authorization: 'Basic YnV5ZXI6YnV5ZXI=';
   console.log('线下请求')
-  // console.log(getCookie('authToken') != 'null')
-  if (getCookie('authToken') != 'null') { // 已登录需要改变头部token
+  if (getCookie('authToken')) { // 已登录需要改变头部token
     config.headers['Authorization'] = getCookie('authToken');
   }
   

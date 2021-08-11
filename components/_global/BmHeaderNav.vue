@@ -1,6 +1,6 @@
 <template>
 <!-- 导航栏 -->
-  <van-nav-bar :border="border" :class="bg_color" :fixed="fixed">
+  <van-nav-bar :border="border" :class="bg_color" :fixed="fixed" class="z-1000">
     <!-- 左侧内容 -->
     <template #left>
       <van-icon v-if="left.isShow" name="arrow-left" :color="color" size="18px" @click="leftBack"></van-icon>
@@ -84,3 +84,9 @@ export default {
   },
 }
 </script>
+
+<style lang="less" scoped>
+.z-1000{
+  z-index: 1000;
+}
+</style>

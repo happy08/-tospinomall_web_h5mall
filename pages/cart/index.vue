@@ -1,12 +1,10 @@
 <template>
-  <div class="vh-100 bg-grey pb-120">
-    <van-sticky>
-      <BmHeaderNav :title="$t('cart.title')" :border="false">
-        <div slot="header-right" class="green fs-16" @click="onEdit">
-          {{ isEdit ? $t('common.done') : $t('common.edit') }}
-        </div>
-      </BmHeaderNav>
-    </van-sticky>
+  <div class="vh-100 bg-grey pb-120 pt-46">
+    <BmHeaderNav :title="$t('cart.title')" :border="false" :fixed="true">
+      <div slot="header-right" class="green fs-16" @click="onEdit">
+        {{ isEdit ? $t('common.done') : $t('common.edit') }}
+      </div>
+    </BmHeaderNav>
 
     <div class="bg-white">
       <!-- 购物车为空时展示 -->
@@ -101,7 +99,7 @@
                   <!-- 自定义数量,有库存显示数量，没有去看相似物品 -->
                   <template #num>
                     <van-stepper v-if="singleItem.stock" v-model="singleItem.quantity" input-width="0.796rem" button-size="0.42rem" :integer="true" class="mt-6 custom-stepper" @change="onChangeNum(singleItem)" />
-                    <div v-else class="border fs-12 black round-8 ptb-4 plr-8 mt-6 lh-1">相似物品</div>
+                    <div v-else class="border fs-12 black round-8 ptb-4 plr-8 mt-6 lh-1" @click="goSimilar(singleItem.productId)">相似商品</div>
                   </template>
                   <!-- 自定义价格 -->
                   <template #price>
@@ -618,6 +616,14 @@ export default {
         })
       })
     },
+    goSimilar(productId) {
+      this.$router.push({
+        name: 'search-similar-id',
+        params: {
+          id: productId
+        }
+      })
+    }
   },
 }
 </script>

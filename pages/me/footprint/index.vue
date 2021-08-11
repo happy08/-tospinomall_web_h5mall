@@ -28,7 +28,7 @@
             <van-cell :border="false" :class="{'ptb-0 plr-0': true }" v-for="(item, index) in list" :key="index">
               <!-- 选择 -->
               <template #icon>
-                <van-checkbox v-show="edit" class="pl-16" :name="item.id" ref="checkboxes">
+                <van-checkbox v-show="edit" class="pl-16" :name="item.goodId" ref="checkboxes">
                   <template #icon="props">
                     <BmImage
                       :url="props.checked ? require('@/assets/images/icon/choose-icon.png') : require('@/assets/images/icon/choose-default-icon.png')"
@@ -45,10 +45,10 @@
                 <!-- <van-swipe-cell :disabled="edit"> -->
                   <!-- 商品的样式 -->
                   <div class="pt-26 pr-20">
-                    <OrderSingle class="pl-30 pt-20" :isShowRight="false" :product_desc="item.goodTitle" :image="item.img" :price="item.price" @onClick="goProduct(item)" />
+                    <OrderSingle class="pl-30 pt-20" :isShowRight="false" :product_desc="item.goodTitle" :image="item.img" :price="item.price" @onClick="goProduct(item)" :stock="item.isValid" />
                     <div class="flex hend">
                       <!-- 看相似 -->
-                      <BmButton type="default" plain class="plr-12 round-8 h-25 mt-0">{{ $t('me.likes.lookSimilar') }}</BmButton>
+                      <BmButton type="default" plain class="plr-12 round-8 h-25 mt-0" @btnClick="goSimilar(item.goodId)">{{ $t('me.likes.lookSimilar') }}</BmButton>
                       <!-- 购物车 -->
                       <BmImage
                         :url="require('@/assets/images/icon/add-cart-btn.png')"
@@ -57,7 +57,8 @@
                         :isLazy="false"
                         :isShow="false"
                         class="ml-12"
-                        @onClick="goProduct(item)"
+                        v-if="item.isValid == 1"
+                        @btnClick="goProduct(item)"
                       />
                     </div>
 
@@ -89,7 +90,7 @@
               </template>
               <span class="ml-14 fs-14 lh-20 black">{{ $t('common.all') }}</span>
             </van-checkbox>
-            <BmButton class="fs-16 round-0 v-100" @click="onDelete">{{ $t('common.delete') }}</BmButton>
+            <BmButton class="fs-16 round-0 v-100 plr-30" @click="onDelete">{{ $t('common.delete') }}</BmButton>
           </div>
         </div>
       </van-list>
@@ -150,10 +151,16 @@ export default {
 
     this.total = listData.data.total;
     this.list = listData.data.records;
-    console.log(listData);
+  },
+  beforeRouteEnter (to, from, next) {
+    next(vm => {
+      if (from.name === 'me') {
+        vm.pageNum = 1;
+        vm.$fetch();
+      }
+    });
   },
   activated() {
-    this.$fetch();
   },
   methods: {
     isTrue(val, list) { // 判断是否选中
@@ -172,9 +179,28 @@ export default {
         cancelButtonText: this.$t('common.cancel'),
         cancelButtonColor: '#383838'
       }).then(() => {
-        deleteFootprintRecord(this.checkResult).then(() => {
+        // 格式化参数
+        let _params = [];
+        this.checkResult.forEach(item => {
+          if (this.list.find(productItem => productItem.goodId == item)) {
+            let currentItem = this.list.find(productItem => productItem.goodId == item);
+            _params.push({
+              goodId: currentItem.goodId,
+              second: currentItem.second
+            })
+          }
+        })
+
+        deleteFootprintRecord(_params).then(res => {
+          if (res.code != 0) return false;
+          // 删除成功之后将数组中的数组要删除，不调用接口是考虑多页的情况
+          this.checkResult.forEach(item => {
+            if (this.list.find(productItem => productItem.goodId == item)) {
+              let index = this.list.findIndex(productItem => productItem.goodId == item);
+              this.list.splice(index, 1)
+            }
+          })
           this.checkResult = [];
-          this.$fetch();
         })
       }).catch(() => {
 
@@ -218,6 +244,14 @@ export default {
         // 加载状态结束
         this.loading = false;
       });
+    },
+    goSimilar(productId) { // 跳转到相似列表
+      this.$router.push({
+        name: 'search-similar-id',
+        params: {
+          id: productId
+        }
+      })
     }
   },
 }
