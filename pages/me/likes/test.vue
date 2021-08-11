@@ -17,12 +17,12 @@
     </BmHeaderNav>
 
     <PullRefresh :refreshing="isLoading" @refresh="onRefresh">
-      <van-list
+      <!-- <van-list
         v-model="loading"
         :finished="finished"
-        finished-text=""
+        finished-text="没有更多了"
         @load="onLoad"
-      >
+      > -->
         <!-- 商品/店铺展示 -->
         <div class="bg-white">
           <!-- 无数据时展示 -->
@@ -129,7 +129,7 @@
             ></ProductTopBtmSingle>
           </div>
         </template>
-      </van-list>
+      <!-- </van-list> -->
     </PullRefresh>
   </div>
 </template>
@@ -140,7 +140,7 @@ import EmptyStatus from '@/components/EmptyStatus';
 import OrderSingle from '@/components/OrderSingle';
 import ProductTopBtmSingle from '@/components/ProductTopBtmSingle';
 import { storeCancelFollow, attentionStoreTop } from '@/api/store';
-import { cancelAttentionGood, attentionGoodTop } from '@/api/product';
+import { cancelAttentionGood } from '@/api/product';
 import PullRefresh from '@/components/PullRefresh';
 
 export default {
@@ -180,7 +180,11 @@ export default {
     }
   },
   async fetch() {
-    if (this.$route.query.active == 1 && this.isFirst) this.active =  parseFloat(this.$route.query.active);
+    if (this.$route.query.active == 1 && this.isFirst) this.active =  this.$route.query.active;
+    console.log(this.$route.query.active)
+    console.log(this.isFirst)
+    console.log('-------------------')
+    console.log(this.active)
     this.edit = false;
     this.checkResult = [];
     // 获取商品列表
@@ -194,8 +198,8 @@ export default {
   },
   activated() {
     this.isFirst = true;
-    this.active = 0;
     this.$fetch();
+    console.log('active' + this.active)
   },
   methods: {
     isTrue(val, list) { // 判断是否选中
@@ -270,21 +274,22 @@ export default {
       })
     },
     async onLoad() {
+      console.log('=========' + this.active)
       if (this.total == this.list.length) { // 没有下一页了
         this.finished = true;
         this.loading = false;
         return false;
       }
-      this.pageNum += 1;
-      const listData = this.active == 0 ? await this.$api.getLikeProduct({ pageNum: this.pageNum, pageSize: this.pageSize }) : await this.$api.getLikeStoreList({ pageNum: this.pageNum, pageSize: this.pageSize }); // 获取关注商品/店铺列表
-      if (listData.code != 0) return false;
+      // this.pageNum += 1;
+      // const listData = this.active == 0 ? await this.$api.getLikeProduct({ pageNum: this.pageNum, pageSize: this.pageSize }) : await this.$api.getLikeStoreList({ pageNum: this.pageNum, pageSize: this.pageSize }); // 获取关注商品/店铺列表
+      // if (listData.code != 0) return false;
 
-      this.total = res.data.total;
-      let list = res.data.records;
+      // this.total = res.data.total;
+      // let list = res.data.records;
 
-      this.list = this.list.concat(list);
-      // 加载状态结束
-      this.loading = false;
+      // this.list = this.list.concat(list);
+      // // 加载状态结束
+      // this.loading = false;
     }
   },
 }

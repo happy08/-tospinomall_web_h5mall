@@ -68,3 +68,14 @@ export function getGoodAttr(goodId) {
     method: 'get'
   })
 }
+
+/**
+ * 置顶关注商品
+ */
+export function attentionGoodTop(params) {
+  return request({
+    url: '/api/admin/buyerAttention/top/good',
+    method: 'get',
+    params
+  })
+}

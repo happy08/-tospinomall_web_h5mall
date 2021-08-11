@@ -388,7 +388,6 @@ export default {
         this.isShowTip = false;
         this.loading = false;
         this.refreshing = false;
-        this.isFirst = false;
       })
     }
   },

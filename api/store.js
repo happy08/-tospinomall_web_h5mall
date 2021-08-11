@@ -25,3 +25,14 @@ export function storeCancelFollow(data) {
     }
   })
 }
+
+/**
+ * 置顶关注店铺
+ */
+export function attentionStoreTop(params) {
+  return request({
+    url: '/api/admin/attention/store/top',
+    method: 'get',
+    params
+  })
+}
