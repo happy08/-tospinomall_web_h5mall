@@ -52,13 +52,13 @@
                       <!-- 购物车 -->
                       <BmImage
                         :url="require('@/assets/images/icon/add-cart-btn.png')"
-                        :width="'0.92rem'" 
-                        :height="'0.52rem'"
+                        :width="'0.9rem'" 
+                        :height="'0.5rem'"
                         :isLazy="false"
                         :isShow="false"
                         class="ml-12"
                         v-if="item.isValid == 1"
-                        @btnClick="goProduct(item)"
+                        @onClick="onSKu(item)"
                       />
                     </div>
 
@@ -95,7 +95,8 @@
         </div>
       </van-list>
     </PullRefresh>
-    
+    <!-- 产品规格 -->
+    <ProductSku :productShow="productShow" :goodSpuVo="goodSpuVo" :initialSku="initialSku" :sku="sku" />
   </div>
 </template>
 
@@ -104,8 +105,9 @@ import { Tab, Tabs, SwipeCell, Cell, Checkbox, CheckboxGroup, CellGroup, Divider
 import EmptyStatus from '@/components/EmptyStatus';
 import OrderSingle from '@/components/OrderSingle';
 import ProductTopBtmSingle from '@/components/ProductTopBtmSingle';
-import { deleteFootprintRecord } from '@/api/product';
+import { deleteFootprintRecord, getGoodAttr } from '@/api/product';
 import PullRefresh from '@/components/PullRefresh';
+import ProductSku from '@/components/ProductSku';
 
 export default {
   middleware: 'authenticated',
@@ -122,7 +124,8 @@ export default {
     EmptyStatus,
     OrderSingle,
     ProductTopBtmSingle,
-    PullRefresh
+    PullRefresh,
+    ProductSku
   },
   data() {
     return {
@@ -137,6 +140,12 @@ export default {
       finished: false,
       refreshing: {
         isFresh: false
+      },
+      goodSpuVo: {},
+      initialSku: {},
+      sku: {},
+      productShow: {
+        show: false
       }
     }
   },
@@ -216,6 +225,7 @@ export default {
       })
     },
     goProduct(item) {
+      console.log(item)
       this.$router.push({
         name: 'cart-product-id',
         params:{
@@ -251,6 +261,76 @@ export default {
         params: {
           id: productId
         }
+      })
+    },
+    onSKu(productItem) { // 获取产品规格
+      getGoodAttr(productItem.goodId).then(res => {
+        if (res.code != 0) return false;
+
+        // 商品规格初始化
+        this.goodSpuVo = { // 商品基本信息
+          ...res.data.goodSpuVo,
+          picture: res.data.goodSpuVo.mainPictureUrl
+        };
+        this.sku = {
+          tree: [],
+          list: [],
+          price: res.data.goodSpuVo.minPrice,
+          hide_stock: true, //是否隐藏商品剩余库存
+        };
+        let _skuList = [];
+        res.data.saleAttr.forEach((item, itemInxdex) => { // 规格种类
+          this.sku.tree.push({
+            k: item.attrName, // 规格类目名称
+            k_id: item.attrId,
+            k_s: 's' + item.attrId, // sku 组合列表（下方 list）中当前类目对应的 key 值，value 值会是从属于当前类目的一个规格值 id
+            v: [],
+            largeImageMode: false
+          })
+          item.attrValues.forEach(attrItem => { // 种类属性
+            this.sku.tree[itemInxdex].v.push({
+              id: attrItem.attrValueId,
+              name: attrItem.attrValue
+            })
+
+            attrItem.skuList.forEach(skuItem => { // 商品组合列表
+              _skuList.push({ // sku 组合列表
+                id: skuItem.skuId,
+                [this.sku.tree[itemInxdex].k_s]: attrItem.attrValueId,
+                price: skuItem.skuPrice * 100, // list中的价格单位是分，所以需要乘以100
+                stock_num: skuItem.stockNum,
+                picture: skuItem.skuPicture,
+                name: attrItem.name
+              })
+            })
+          })
+        })
+
+        // 数组合并去重
+        let arr = [];
+        _skuList.forEach((item) => {
+          let flag = true;
+          let obj = item;
+          arr.forEach((newItem, index) => {
+            if (item.id === newItem.id) { // id一直合并对象属性
+              newItem.stock_num = newItem.stock_num < item.stock_num ? newItem.stock_num : item.stock_num; // 库存选择相比较小的那一个
+              obj = {
+                ...item,
+                ...newItem
+              }
+              arr[index] = obj;
+              flag = false;
+            }
+          })
+          if (flag) {
+            arr.push(obj);
+          }
+        })
+      
+        this.sku.list = arr;
+        setTimeout(() => {
+          this.productShow.show = true;
+        }, 100);
       })
     }
   },

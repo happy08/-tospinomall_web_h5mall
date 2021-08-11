@@ -16,8 +16,12 @@ export function getCookie(cname) {
  * 设置cookie值
  */
 export function setCookie(cname, cvalue, exdays){
-  var d = new Date();
-  d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
-  var expires = 'expires=' + d.toGMTString();
-  document.cookie = cname + '=' + cvalue + '; ' + expires;
+  // var d = new Date();
+  // d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+  // var expires = 'expires=' + d.toGMTString();
+  // document.cookie = cname + '=' + cvalue + '; ' + expires;
+  if (process.client) {
+    document.cookie = cname + '=' + cvalue + '; ';
+  }
+  
 }

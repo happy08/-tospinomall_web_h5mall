@@ -88,13 +88,6 @@ export default {
       checkPassword(this.pwd).then(res => {
         if (res.code != 0) return false;
 
-        if (!res.data) {
-          this.$toast.fail('当前密码错误');
-          return false;
-        }
-
-        this.newPwd = '';
-        this.pwd = '';
         this.$router.push({
           name: 'me-account-verify-verifypwd',
           query: {
@@ -102,6 +95,9 @@ export default {
             oldPassword: this.pwd
           }
         })
+
+        // this.newPwd = '';
+        // this.pwd = '';
       })
       
     }

@@ -1,8 +1,8 @@
 import * as axios from 'axios';
 import { Toast } from 'vant';
 import { url } from './config'; // 导入配置域名
-import { state, mutations } from '@/store/user';
-import { getCookie } from './utils';
+// import { state, mutations } from '@/store/user';
+import { getCookie, setCookie } from './utils';
 
 const service = axios.create({
   baseURL: url,
@@ -68,7 +68,8 @@ const tip = msg => {
 service.interceptors.request.use(config => {
   config.headers['Authorization'] = config.headers.Authorization ? config.headers.Authorization: 'Basic YnV5ZXI6YnV5ZXI=';
   console.log('线下请求')
-  if (getCookie('authToken')) { // 已登录需要改变头部token
+  console.log(getCookie('authToken') != 'null')
+  if (getCookie('authToken') && getCookie('authToken') != 'null' && getCookie('authToken').length > 10) { // 已登录需要改变头部token
     config.headers['Authorization'] = getCookie('authToken');
   }
   
@@ -94,7 +95,7 @@ service.interceptors.response.use(response => { // 成功
       return response.data; //Promise.resolve(res.data);
     } else if (response.data.code === 10401) { // 用户凭证已过期,跳转到登录页面
       tip(response.data.msg);
-      mutations.SET_TOKEN(state, null);
+      setCookie('authToken', null);
       // location.replace('/login'); // 因为有些页面未登录的情况下可看，故不在此处跳转登录页面，而在页面中进行判断
       return response.data;
     } else {

@@ -1,13 +1,6 @@
 import { getUserInfo } from '@/api/user';
 import { refreshToken } from '/api/login';
-
-// 设置cookie的值
-const setCookie = (cname,cvalue,exdays) => {
-  var d = new Date();
-  d.setTime(d.getTime()+(exdays*24*60*60*1000));
-  var expires = 'expires='+d.toGMTString();
-  document.cookie = cname + '=' + cvalue + '; ' + expires;
-}
+import { setCookie } from '/api/utils';
 
 export const state = () => ({
   authToken: null,
@@ -19,17 +12,16 @@ export const state = () => ({
 export const mutations = {
   SET_USERINFO(state, userInfo) { // 提交用户信息
     state.userInfo = userInfo;
-    this.$cookies.set('userInfo', userInfo);
-    // setCookie('userInfo', null)
+    // this.$cookies.set('userInfo', userInfo);
+    setCookie('userInfo', userInfo);
   },
   SET_TOKEN(state, token) { // 提交token
     state.authToken = token;
     if (token == null) { // 退出登录 清除数据
       state.userInfo = null;
-      this.SET_USERINFO(state, null);
+      setCookie('userInfo', null);
     }
-    // setCookie('authToken', null)
-    this.$cookies.set('authToken', token);
+    setCookie('authToken', token);
   },
   SET_SEARCHLIST(state, searchItem) {
     if (searchItem == null) {
@@ -42,7 +34,8 @@ export const mutations = {
       }
       state.searchList = [...new Set(state.searchList)]; // 去重
     }
-    this.$cookies.set('searchList', state.searchList);
+    setCookie('searchList', state.searchList);
+    // this.$cookies.set('searchList', state.searchList);
   },
   SET_ORDERSEARCHLIST(state, searchItem) {
     if (searchItem == null) {
@@ -55,7 +48,8 @@ export const mutations = {
       }
       state.orderSearchList = [...new Set(state.orderSearchList)]; // 去重
     }
-    this.$cookies.set('orderSearchList', state.orderSearchList);
+    setCookie('orderSearchList', state.orderSearchList);
+    // this.$cookies.set('orderSearchList', state.orderSearchList);
   }
 };
 
@@ -63,9 +57,7 @@ export const actions = {
   GetUserInfo({ commit, state }, authToken) {
     return new Promise((resolve, reject) => {
       if (state.userInfo) resolve();
-      else 
-        console.log('用户信息')
-        console.log(authToken)
+      else
         getUserInfo(authToken).then(res => {
           if (res.code != 0) return false;
 

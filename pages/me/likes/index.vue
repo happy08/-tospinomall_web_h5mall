@@ -70,15 +70,17 @@
                       <OrderSingle class="pl-30 pt-20" :isShowRight="false" :product_desc="item.productName" :image="item.productImg" :price="item.productPrice" @onClick="goProduct(item)" />
                       <div class="flex hend">
                         <!-- 看相似 -->
-                        <BmButton type="default" plain class="plr-12 round-8 h-25 mt-0">{{ $t('me.likes.lookSimilar') }}</BmButton>
+                        <BmButton type="default" plain class="plr-12 round-8 h-25 mt-0" @btnClick="goSimilar(item.productId)">{{ $t('me.likes.lookSimilar') }}</BmButton>
                         <!-- 购物车 -->
                         <BmImage
                           :url="require('@/assets/images/icon/add-cart-btn.png')"
-                          :width="'0.92rem'" 
-                          :height="'0.52rem'"
+                          :width="'0.9rem'" 
+                          :height="'0.5rem'"
                           :isLazy="false"
                           :isShow="false"
                           class="ml-12"
+                          v-if="item.isValid == 1"
+                          @onClick="onSKu(item)"
                         />
                       </div>
                       <div class="driver-line fr"></div>
@@ -131,6 +133,8 @@
         </template>
       </van-list>
     </PullRefresh>
+
+    <ProductSku :productShow="productShow" :goodSpuVo="goodSpuVo" :initialSku="initialSku" :sku="sku" />
   </div>
 </template>
 
@@ -140,8 +144,9 @@ import EmptyStatus from '@/components/EmptyStatus';
 import OrderSingle from '@/components/OrderSingle';
 import ProductTopBtmSingle from '@/components/ProductTopBtmSingle';
 import { storeCancelFollow, attentionStoreTop } from '@/api/store';
-import { cancelAttentionGood, attentionGoodTop } from '@/api/product';
+import { cancelAttentionGood, attentionGoodTop, getGoodAttr } from '@/api/product';
 import PullRefresh from '@/components/PullRefresh';
+import ProductSku from '@/components/ProductSku';
 
 export default {
   middleware: 'authenticated',
@@ -158,11 +163,12 @@ export default {
     EmptyStatus,
     OrderSingle,
     ProductTopBtmSingle,
-    PullRefresh
+    PullRefresh,
+    ProductSku
   },
   data() {
     return {
-      active: 2,
+      active: 0,
       list: [],
       edit: false,
       checkResult: [],
@@ -176,14 +182,21 @@ export default {
       },
       loading: false,
       finished: false,
-      isFirst: true
+      isFirst: true,
+      goodSpuVo: {},
+      initialSku: {},
+      sku: {},
+      productShow: {
+        show: false
+      }
     }
   },
   async fetch() {
-    if (this.$route.query.active == 1 && this.isFirst) this.active =  parseFloat(this.$route.query.active);
+    if (this.$route.query.active == 1 && this.isFirst) this.active = parseFloat(this.$route.query.active);
     this.edit = false;
     this.checkResult = [];
     // 获取商品列表
+    console.log(this.active)
     const listData = this.active == 0 ? await this.$api.getLikeProduct({ pageNum: this.pageNum, pageSize: this.pageSize }) : await this.$api.getLikeStoreList({ pageNum: this.pageNum, pageSize: this.pageSize }); // 获取关注商品/店铺列表
     this.refreshing.isFresh = false;
     if (listData.code != 0) return false;
@@ -285,6 +298,84 @@ export default {
       this.list = this.list.concat(list);
       // 加载状态结束
       this.loading = false;
+    },
+    goSimilar(productId) { // 跳转到相似列表
+      this.$router.push({
+        name: 'search-similar-id',
+        params: {
+          id: productId
+        }
+      })
+    },
+    onSKu(productItem) { // 获取产品规格
+      getGoodAttr(productItem.productId).then(res => {
+        if (res.code != 0) return false;
+
+        // 商品规格初始化
+        this.goodSpuVo = { // 商品基本信息
+          ...res.data.goodSpuVo,
+          picture: res.data.goodSpuVo.mainPictureUrl
+        };
+        this.sku = {
+          tree: [],
+          list: [],
+          price: res.data.goodSpuVo.minPrice,
+          hide_stock: true, //是否隐藏商品剩余库存
+        };
+        let _skuList = [];
+        res.data.saleAttr.forEach((item, itemInxdex) => { // 规格种类
+          this.sku.tree.push({
+            k: item.attrName, // 规格类目名称
+            k_id: item.attrId,
+            k_s: 's' + item.attrId, // sku 组合列表（下方 list）中当前类目对应的 key 值，value 值会是从属于当前类目的一个规格值 id
+            v: [],
+            largeImageMode: false
+          })
+          item.attrValues.forEach(attrItem => { // 种类属性
+            this.sku.tree[itemInxdex].v.push({
+              id: attrItem.attrValueId,
+              name: attrItem.attrValue
+            })
+
+            attrItem.skuList.forEach(skuItem => { // 商品组合列表
+              _skuList.push({ // sku 组合列表
+                id: skuItem.skuId,
+                [this.sku.tree[itemInxdex].k_s]: attrItem.attrValueId,
+                price: skuItem.skuPrice * 100, // list中的价格单位是分，所以需要乘以100
+                stock_num: skuItem.stockNum,
+                picture: skuItem.skuPicture,
+                name: attrItem.name
+              })
+            })
+          })
+        })
+
+        // 数组合并去重
+        let arr = [];
+        _skuList.forEach((item) => {
+          let flag = true;
+          let obj = item;
+          arr.forEach((newItem, index) => {
+            if (item.id === newItem.id) { // id一直合并对象属性
+              newItem.stock_num = newItem.stock_num < item.stock_num ? newItem.stock_num : item.stock_num; // 库存选择相比较小的那一个
+              obj = {
+                ...item,
+                ...newItem
+              }
+              arr[index] = obj;
+              flag = false;
+            }
+          })
+          if (flag) {
+            arr.push(obj);
+          }
+        })
+      
+        this.sku.list = arr;
+        setTimeout(() => {
+          this.productShow.show = true;
+        }, 100);
+      })
     }
   },
 }
@@ -332,5 +423,9 @@ export default {
 <style lang="less">
 .likes-tabs{
   width: 180px;
+  .van-tabs__wrap{
+    height: 46px!important;
+    line-height: 46px!important;
+  }
 }
 </style>
