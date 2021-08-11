@@ -441,77 +441,6 @@
       </div>
     </van-popup>
 
-    <!-- 选择产品规格 -->
-    <van-sku
-      v-model="productShow"
-      :sku="sku"
-      :goods="goodSpuVo"
-      :goods-id="goodSpuVo.id"
-      :hide_stock="false"
-      @sku-selected="getSkuInfo"
-      hide-selected-text
-      hide-stock
-      @sku-prop-selected="getSkuInfo"
-      ref="productSku"
-      class="custom-sku-container"
-    >
-      <!-- 自定义头部价格/展示商品id -->
-      <template #sku-header-price="props">
-        <div class="fs-16 red fw flex vcenter">
-          <span class="fm-menlo">{{ $store.state.rate.currency }}</span>
-          <span class="fm-din">{{ props.price }}</span>
-        </div>
-        <div class="mt-14 fs-12 light-grey fm-pf-r" v-if="props.selectedSkuComb">ID: {{ props.selectedSkuComb.id }}</div>
-      </template>
-
-      <!-- 商品数量选择区域 -->
-      <template #sku-stepper="props">
-        <div class="tr plr-20 mt-24">
-          <van-stepper
-            v-model="props.selectedNum"
-            input-width="0.796rem"
-            button-size="0.42rem"
-            :integer="true"
-            class="custom-stepper"
-            :max="props.selectedSkuComb ? props.selectedSkuComb.stock_num : 100000"
-            @change="getSkuInfo(props, 'stepper')"
-          />
-          <div class="mt-20" v-if="props.selectedSkuComb">
-            in stock: {{ props.selectedSkuComb.stock_num }}
-          </div>
-        </div>
-      </template>
-
-      <!-- 操作按钮区域 -->
-      <template #sku-actions="props">
-        <!-- 产品规格的选择 -->
-        <template v-if="skuType === 1">
-          <!-- 缺货 -->
-          <div class="mlr-12 mb-30 mt-10" v-if="props.selectedSkuComb && props.selectedSkuComb.stock_num == 0">
-            <BmButton class="fs-16 round-8 w-100 h-48 bg-ddd" @click="onOutStock">out of stock</BmButton>
-          </div>
-          <div class="mlr-12 mb-12 mt-10 flex between" v-else>
-            <!-- 加入购物车 -->
-            <BmButton :type="'info'" class="fs-16 round-8 w-169 h-48 add-cart-btn" @click="onConfirm(false)">Add to cart</BmButton>
-            <!-- 立即购买 -->
-            <BmButton class="fs-16 round-8 w-169 h-48" @click="onConfirm(true)">Buy Now</BmButton>
-          </div>
-        </template>
-        <!-- 加入购物车 -->
-        <template v-else>
-          <!-- 缺货 -->
-          <!-- {{ props.selectedSkuComb }} -->
-          <div class="mlr-12 mb-30 mt-10" v-if="props.selectedSkuComb && props.selectedSkuComb.stock_num == 0">
-            <BmButton class="fs-16 round-8 w-100 h-48 bg-ddd" @click="onOutStock">out of stock</BmButton>
-          </div>
-          <div class="mlr-12 mb-12 mt-10" v-else>
-            <BmButton class="fs-16 round-8 w-100 h-48" @click="onConfirm(false)">确认</BmButton>
-          </div>
-        </template>
-        
-      </template>
-    </van-sku>
-
     <!-- 地址选择 -->
     <van-popup v-model="addressShow" position="bottom" closeable class="ptb-20" style="min-height: 80%;" @close="closePopup">
       <h4 class="fs-18 black lh-20 tc plr-20">Choose a country or region</h4>
@@ -581,13 +510,17 @@
         >
       </div>
     </div>
+
+    <!-- 产品规格 -->
+    <ProductSku :productShow="productShow" :goodSpuVo="goodSpuVo" :initialSku="initialSku" :sku="sku" :type="skuType" @onSkuInfo="onSkuInfo" />
   </div>
 </template>
 
 <script>
-import { ImagePreview, Cell, Step, Steps, Rate, Sticky, Search, Tab, Tabs, Popup, Sku, Stepper } from 'vant';
-import { getDeliveryInfo, getSkuStock, attentionProduct, addCart } from '@/api/cart';
+import { ImagePreview, Cell, Step, Steps, Rate, Sticky, Search, Tab, Tabs, Popup, Stepper } from 'vant';
+import { getDeliveryInfo, attentionProduct } from '@/api/cart';
 import { getCurrentDefaultAddress, getNextArea } from '@/api/address';
+import ProductSku from '@/components/ProductSku';
 
 export default {
   components: {
@@ -600,8 +533,8 @@ export default {
     vanTab: Tab,
     vanTabs: Tabs,
     vanPopup: Popup,
-    vanSku: Sku,
-    vanStepper: Stepper
+    vanStepper: Stepper,
+    ProductSku
   },
   data() {
     return {
@@ -638,7 +571,9 @@ export default {
       searchVal: '',
       tabActive: 'Short',
       deliveryShow: false,
-      productShow: false, // 是否展示商品规格
+      productShow: {
+        show: false
+      }, // 是否展示商品规格
       sku: {
         tree: [],
         list: []
@@ -663,7 +598,7 @@ export default {
       selectSku: null,
       likeList: [], // 推荐商品列表
       selectCarousel: [], // 产品选择的图片展示列表
-      skuType: 1, // 1 从select处进入产品规格选择 2 加入购物车 3 立即购买
+      skuType: '', // cart 操作区按钮为确认，''操作区按钮为加入购物车/立即购买
       goodAttr: [], // 商品选中的属性规格展示
     }
   },
@@ -765,8 +700,6 @@ export default {
 
     // 获取商品推荐列表
     const recommendData = await this.$api.getRecommendList({ shopId: 465085110123757568, categoryId: 7 });
-    console.log('------------')
-    console.log(recommendData)
     this.likeList = recommendData.data;
   },
   activated() {
@@ -797,9 +730,8 @@ export default {
     } else {
       this.getNextArea({ id: 0 });
     }
-    // 如果上次请求超过一分钟了，就再次发起请求
     this.$fetch();
-    this.$refs.productSku.resetSelectedSku();
+    // this.$refs.productSku.resetSelectedSku();
   },
   head() {
     return {
@@ -856,11 +788,8 @@ export default {
       // console.log(num);
     },
     async onAddCart() { // 加入购物车 num大于0才可以进行下一步操作
-      this.productShow = true;
-      this.skuType = 2;
-    },
-    onOutStock() { // 缺货
-
+      this.productShow.show = true;
+      this.skuType = 'product';
     },
     stepClick(step) { // step点击事件
       if (step == this.stepArr.length && this.isShowChooseTitle) return false;
@@ -950,60 +879,36 @@ export default {
         }
       })
     },
-    getSkuInfo(value, type) { // 获取选中的商品的规格
-      console.log(value)
+    onSkuInfo(selectValue) { // 获取选中的商品的规格
+      // 页面展示已选择的商品属性
+      this.goodAttr = selectValue.map(item => {
+        return {
+          skuId: item,
+          name: '',
+          k: ''
+        }
+      })
       
-      if (this.$refs.productSku) {
-        this.selectSku = this.$refs.productSku.getSkuData(); // 得到已选择的商品属性
-        if (type === 'stepper') {
-          this.selectSku = {
-            ...this.selectSku,
-            selectedNum: value.selectedNum
-          };
-          return false;
-        }
-        // 商品图片展示切换
-        this.goodSpuVo.picture = value.selectedSkuComb ? value.selectedSkuComb.picture : this.goodSpuVo.picture;
-
-        // 页面展示已选择的商品属性
-        if (this.goodAttr.find(item => item.skuKeyStr == value.skuValue.skuKeyStr) == undefined) {
-          this.goodAttr.push(value.skuValue);
-        }
-        this.goodAttr = this.goodAttr.map(item => {
-          return {
-            skuKeyStr: item.skuKeyStr == value.skuValue.skuKeyStr ? value.skuValue.skuKeyStr : item.skuKeyStr,
-            name: item.skuKeyStr == value.skuValue.skuKeyStr ? value.skuValue.name : item.name,
-            id: item.skuKeyStr == value.skuValue.skuKeyStr ? value.skuValue.id : item.id,
-            k: ''
-          };
-        })
-
-        this.sku.tree.forEach(treeItem => {
+      this.sku.tree.forEach(treeItem => {
+        treeItem.v.forEach(vItem => {
           this.goodAttr.forEach(attrItem => {
-            if (treeItem.k_s == attrItem.skuKeyStr) {
+            if (vItem.id == attrItem.skuId) {
               attrItem.k = treeItem.k;
+              attrItem.name = vItem.name;
             }
           })
         })
-      }
+      })
     },
     onSelect() { // 选择产品规格
       if (this.$store.state.user.authToken) {
-        this.skuType = 1;
-        this.productShow = true;
+        this.skuType = '';
+        this.productShow.show = true;
         return false;
       }
       // 未登录情况下跳转到登录页面
       this.$router.push({
         name: 'login'
-      })
-    },
-    getSkuStock() { // 判断库存是否充足
-      this.selectSku = this.$refs.productSku.getSkuData();
-      return new Promise(resolve => {
-        getSkuStock(this.selectSku.selectedSkuComb.id).then(res => {
-          resolve(res.data);
-        })
       })
     },
     attentionProduct() { // 关注商品
@@ -1017,31 +922,9 @@ export default {
         this.goodSpuVo.isAttention = 1;
       })
     },
-    async onConfirm(flag) { // 确认加入
-      const num = await this.getSkuStock();
-      if (num > this.selectSku.selectedNum) {
-        if (this.skuType === 3 || flag) { // 立即购买
-          this.$router.push({
-            name: 'cart-order-id',
-            params: {
-              id: JSON.stringify({skuItems: [{ quantity: this.selectSku.selectedNum, skuId: this.selectSku.selectedSkuComb.id }]})
-            }
-          })
-          return false;
-        }
-
-        if (this.skuType === 2 || this.skuType === 1) { // 加入购物车
-          addCart({ quantity: this.selectSku.selectedNum, skuId: this.selectSku.selectedSkuComb.id }).then(res => {
-            this.$toast.success('添加成功');
-            this.productShow = false;
-          })
-          return false;
-        }
-      }
-    },
     onBuySku() {
-      this.skuType = 3;
-      this.productShow = true;
+      this.skuType = 'buy';
+      this.productShow.show = true;
     },
     onClick(id) { // 推荐商品点击跳转到商品详情
       this.$router.push({
@@ -1095,9 +978,6 @@ export default {
 }
 .border-no {
   border: none !important;
-}
-.bg-ddd {
-  background: #dddddd !important;
 }
 .col-transparent {
   background-color: transparent !important;

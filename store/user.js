@@ -12,7 +12,6 @@ export const state = () => ({
 export const mutations = {
   SET_USERINFO(state, userInfo) { // 提交用户信息
     state.userInfo = userInfo;
-    // this.$cookies.set('userInfo', userInfo);
     setCookie('userInfo', userInfo);
   },
   SET_TOKEN(state, token) { // 提交token
@@ -35,7 +34,6 @@ export const mutations = {
       state.searchList = [...new Set(state.searchList)]; // 去重
     }
     setCookie('searchList', state.searchList);
-    // this.$cookies.set('searchList', state.searchList);
   },
   SET_ORDERSEARCHLIST(state, searchItem) {
     if (searchItem == null) {
@@ -49,7 +47,6 @@ export const mutations = {
       state.orderSearchList = [...new Set(state.orderSearchList)]; // 去重
     }
     setCookie('orderSearchList', state.orderSearchList);
-    // this.$cookies.set('orderSearchList', state.orderSearchList);
   }
 };
 
@@ -62,7 +59,7 @@ export const actions = {
           if (res.code != 0) return false;
 
           commit('SET_USERINFO', res.data);
-
+ 
           resolve(res);
         }).catch(error => {
           reject(error);

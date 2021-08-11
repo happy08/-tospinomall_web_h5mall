@@ -42,12 +42,12 @@
     <!-- 操作按钮区域 -->
     <template #sku-actions="props">
       <!-- 购物车-是修改商品sku -->
-      <template v-if="type == 'cart'">
+      <template v-if="type == 'cart' || type == 'product' || type == 'buy'">
         <div class="mlr-12 mb-30 mt-10" v-if="props.selectedSkuComb && props.selectedSkuComb.stock_num == 0">
           <BmButton class="fs-16 round-8 w-100 h-48 bg-ddd" @click="onOutStock">out of stock</BmButton>
         </div>
         <div class="mlr-12 mb-12 mt-10" v-else>
-          <BmButton class="fs-16 round-8 w-100 h-48" @click="onModifyConfirm">确认</BmButton>
+          <BmButton class="fs-16 round-8 w-100 h-48" @click="onChange">确认</BmButton>
         </div>
       </template>
       <template v-else>
@@ -103,9 +103,6 @@ export default {
   },
   data() {
     return {
-      // sku: {},
-      // initialSku: {},
-      // goodSpuVo: {}
       selectSku: {}
     }
   },
@@ -150,6 +147,12 @@ export default {
         }
         // 商品图片展示切换
         this.goodSpuVo.picture = value.selectedSkuComb ? value.selectedSkuComb.picture : this.goodSpuVo.picture;
+        // 针对商品详情需要展示选中的规格属性
+        let selectedSku = Object.values(value.selectedSku);
+        selectedSku = selectedSku.filter(item => {
+          return item != '';
+        })
+        this.$emit('onSkuInfo', selectedSku);
       }
     },
     getSkuStock() { // 判断库存是否充足
@@ -169,6 +172,9 @@ export default {
           this.$emit('onRefresh');
         })
       }
+    },
+    onChange() {
+      return this.type == 'product' ? this.onConfirm(false) : this.type == 'buy' ? this.onConfirm(true) : this.onModifyConfirm();
     }
   },
 }
@@ -185,5 +191,8 @@ export default {
   border-color: #e5e5e5 !important;
   background-color: rgba(255, 118, 18, 0.05) !important;
   color: #ec500d !important;
+}
+.bg-ddd {
+  background: #dddddd !important;
 }
 </style>
