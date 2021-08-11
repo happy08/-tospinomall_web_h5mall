@@ -6,7 +6,7 @@
     <!-- 欢迎用户语 -->
     <div class="bg-green-linear plr-20 ptb-16 flex vcenter">
       <BmImage 
-        :url="$store.state.user.userInfo.headPictureUrl"
+        :url="$store.state.user.userInfo ? $store.state.user.userInfo.headPictureUrl : require('@/assets/images/icon/user-icon.png')"
         :width="'0.8rem'" 
         :height="'0.8rem'"
         :isLazy="false"

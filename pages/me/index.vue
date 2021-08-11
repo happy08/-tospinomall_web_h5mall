@@ -19,7 +19,7 @@
           </div>
           <!-- 姓名、id -->
           <dl class="ml-10" v-if="$store.state.user.authToken" @click="goAccount">
-            <dt class="fs-18 green fw">{{ $store.state.user.userInfo ? $store.state.user.userInfo.nickname: '--' }}</dt>
+            <dt class="fs-18 green fw" v-if="$store.state.user.userInfo">{{ $store.state.user.userInfo.nickname == '' ? '--': $store.state.user.userInfo.nickname }}</dt>
             <dd class="fs-12 grey mt-8" v-if="$store.state.user.userInfo">{{ $store.state.user.userInfo.id }}</dd>
           </dl>
           <div v-else class="ml-10 fs-16" @click="goLogin">请先登录</div>

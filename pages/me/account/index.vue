@@ -10,7 +10,7 @@
           <div class="flex vcenter">
             <!-- 头像 -->
             <BmImage 
-              :url="$store.state.user.userInfo ? $store.state.user.userInfo.headPictureUrl : require('@/assets/images/icon/user-icon.png')"
+              :url="$store.state.user.userInfo && $store.state.user.userInfo.headPictureUrl.length > 0 ? $store.state.user.userInfo.headPictureUrl : require('@/assets/images/icon/user-icon.png')"
               :width="'1rem'" 
               :height="'1rem'"
               :isLazy="false"
@@ -19,7 +19,7 @@
             />
             <!-- 姓名、id -->
             <dl class="ml-10">
-              <dt class="fs-18 black fw">{{ $store.state.user.userInfo ? $store.state.user.userInfo.nickname: '--' }}</dt>
+              <dt class="fs-18 black fw" v-if="$store.state.user.userInfo">{{ $store.state.user.userInfo.nickname == '' ? '--': $store.state.user.userInfo.nickname }}</dt>
               <dd class="fs-12 grey mt-8 lh-1">{{ $store.state.user.userInfo.id }}</dd>
             </dl>
           </div>
