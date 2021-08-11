@@ -68,9 +68,11 @@ export default {
     logout() { // 退出登录
       logout().then(res => {
         this.$store.commit('user/SET_TOKEN', null);
-        this.$router.push({
-          name: 'login'
-        })
+        setTimeout(() => {
+          this.$router.push({
+            name: 'login'
+          })
+        }, 100);
       })
     },
   },

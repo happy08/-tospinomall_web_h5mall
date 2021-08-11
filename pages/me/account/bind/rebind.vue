@@ -174,9 +174,9 @@ export default {
 
       let _axios;
       if (this.$route.query.changeWay === 'email') { // 校验邮箱验证码
-        _axios = checkEmailCode({ code: this.code, email: this.account, userType: 'buyer' });
+        _axios = checkEmailCode({ code: this.code, email: this.account, userType: 'buyer', isDelCode: 0 });
       } else { // 校验手机验证码
-        _axios = checkPhoneCode({ code: this.code, phone: this.account, phonePrefix: this.prefixCode.split('+')[1], userType: 'buyer' });
+        _axios = checkPhoneCode({ code: this.code, phone: this.account, phonePrefix: this.prefixCode.split('+')[1], userType: 'buyer', isDelCode: 0 });
       }
 
       _axios.then((res) => {

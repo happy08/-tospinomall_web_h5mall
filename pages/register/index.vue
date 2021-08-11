@@ -138,6 +138,15 @@ export default {
       return this.$route.query.type === 'forgot' ? this.$t('forgot.title') : this.$t('register.register');
     }
   },
+  beforeRouteEnter(to, from, next) { // 从绑定或修改页面进入重置值为空
+    next(vm => {
+      if (from.name === 'login') {
+        vm.account = '';
+        vm.code = '';
+        vm.countdown = 0;
+      }
+    });
+  },
   activated() {
     // 手机号注册或者忘记密码时 需要先获取手机号前缀
     this.isType = this.$route.query.changeWay || '';
@@ -192,9 +201,9 @@ export default {
 
       let _axios;
       if (this.$route.query.changeWay === 'email') { // 校验邮箱验证码
-        _axios = checkEmailCode({ code: this.code, email: this.account, userType: 'buyer' });
+        _axios = checkEmailCode({ code: this.code, email: this.account, userType: 'buyer', isDelCode: 0 });
       } else { // 校验手机验证码
-        _axios = checkPhoneCode({ code: this.code, phone: this.account, phonePrefix: this.prefixCode.split('+')[1], userType: 'buyer' });
+        _axios = checkPhoneCode({ code: this.code, phone: this.account, phonePrefix: this.prefixCode.split('+')[1], userType: 'buyer', isDelCode: 0 });
       }
       // 接口返回的操作处理
       _axios.then(res => {

@@ -82,7 +82,7 @@ export default {
       if (this.value.length >= 5) { // 校验验证码，正确跳转到设置支付密码页面
         setTimeout(() => {
           let _axios;
-          _axios = this.$route.query.changeWay === 'email' ? checkCurrentCode({ code: this.value, type: 2 }) : checkCurrentCode({ code: this.value, type: 1 });
+          _axios = this.$route.query.changeWay === 'email' ? checkCurrentCode({ code: this.value, type: 2, isDelCode: 0 }) : checkCurrentCode({ code: this.value, type: 1, isDelCode: 0 });
           _axios.then(res => {
             if (res.code != 0) return false;
 

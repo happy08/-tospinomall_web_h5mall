@@ -20,17 +20,23 @@
 </template>
 
 <script>
+import { logout } from '@/api/login';
+
 export default {
   middleware: 'authenticated',
   methods: {
-    loginClick() { // 点击登录 
-      this.$router.push({
-        name: 'login'
-      })
-    },
     onConfirm() { // 点击iknow的操作
-      this.$router.push({
-        name: 'me-account-security'
+      // this.$router.push({
+      //   name: 'me-account-security'
+      // })
+      // 修改手机号/邮箱需要退出
+      logout().then(res => {
+        this.$store.commit('user/SET_TOKEN', null);
+        setTimeout(() => {
+          this.$router.push({
+            name: 'login'
+          })
+        }, 100);
       })
     }
   }
