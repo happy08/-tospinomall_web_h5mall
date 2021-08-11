@@ -41,23 +41,34 @@
 
     <!-- 操作按钮区域 -->
     <template #sku-actions="props">
-      <!-- 缺货 -->
-      <div class="mlr-12 mb-30 mt-10" v-if="props.selectedSkuComb && props.selectedSkuComb.stock_num == 0">
-        <BmButton class="fs-16 round-8 w-100 h-48 bg-ddd" @click="onOutStock">out of stock</BmButton>
-      </div>
-      <div class="mlr-12 mb-12 mt-10 flex between" v-else>
-        <!-- 加入购物车 -->
-        <BmButton :type="'info'" class="fs-16 round-8 w-169 h-48 add-cart-btn" @click="onConfirm(false)">Add to cart</BmButton>
-        <!-- 立即购买 -->
-        <BmButton class="fs-16 round-8 w-169 h-48" @click="onConfirm(true)">Buy Now</BmButton>
-      </div>
+      <!-- 购物车-是修改商品sku -->
+      <template v-if="type == 'cart'">
+        <div class="mlr-12 mb-30 mt-10" v-if="props.selectedSkuComb && props.selectedSkuComb.stock_num == 0">
+          <BmButton class="fs-16 round-8 w-100 h-48 bg-ddd" @click="onOutStock">out of stock</BmButton>
+        </div>
+        <div class="mlr-12 mb-12 mt-10" v-else>
+          <BmButton class="fs-16 round-8 w-100 h-48" @click="onModifyConfirm">确认</BmButton>
+        </div>
+      </template>
+      <template v-else>
+        <!-- 缺货 -->
+        <div class="mlr-12 mb-30 mt-10" v-if="props.selectedSkuComb && props.selectedSkuComb.stock_num == 0">
+          <BmButton class="fs-16 round-8 w-100 h-48 bg-ddd" @click="onOutStock">out of stock</BmButton>
+        </div>
+        <div class="mlr-12 mb-12 mt-10 flex between" v-else>
+          <!-- 加入购物车 -->
+          <BmButton :type="'info'" class="fs-16 round-8 w-169 h-48 add-cart-btn" @click="onConfirm(false)">Add to cart</BmButton>
+          <!-- 立即购买 -->
+          <BmButton class="fs-16 round-8 w-169 h-48" @click="onConfirm(true)">Buy Now</BmButton>
+        </div>
+      </template>
     </template>
   </van-sku>
 </template>
 
 <script>
 import { Sku, Stepper } from 'vant';
-import { addCart, getSkuStock } from '@/api/cart';
+import { addCart, getSkuStock, modifySku } from '@/api/cart';
 
 export default {
   components: {
@@ -82,6 +93,10 @@ export default {
       default: false
     },
     id: {
+      type: String,
+      default: ''
+    },
+    type: {
       type: String,
       default: ''
     }
@@ -144,6 +159,16 @@ export default {
           resolve(res.data);
         })
       })
+    },
+    async onModifyConfirm() { // 修改商品属性
+      const num = await this.getSkuStock();
+      if (num > this.selectSku.selectedNum) { // 库存充足
+        modifySku({ newSkuId: this.selectSku.selectedSkuComb.id, oldSkuId: this.initialSku.id }).then(res => {
+          if (res.code != 0) return false;
+          this.productShow.show = false;
+          this.$emit('onRefresh');
+        })
+      }
     }
   },
 }
