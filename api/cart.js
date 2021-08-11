@@ -137,3 +137,17 @@ export function getSaleInfo(data) {
     }
   })
 }
+
+/**
+ * 修改商品sku
+ */
+export function modifySku(data) {
+  return request({
+    url: '/api/carts/shoppingCart/modifySku',
+    method: 'put',
+    data: qs.stringify(data),
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
+  })
+}

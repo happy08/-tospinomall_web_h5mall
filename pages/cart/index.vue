@@ -238,7 +238,7 @@ import ProductTopBtmSingle from '@/components/ProductTopBtmSingle';
 import OrderStoreSingle from '@/components/OrderStoreSingle';
 import SoldOut from '@/components/SoldOut';
 import { Divider, Tab, Tabs, SwipeCell, Card, Stepper, Checkbox, CheckboxGroup, Sticky, SubmitBar, List, Sku } from 'vant';
-import { removeCart, setOftenBuy, getCartCount, moveToFavorite, getCalculatePrice, updateCartNum, getSkuStock } from '@/api/cart';
+import { removeCart, setOftenBuy, getCartCount, moveToFavorite, getCalculatePrice, updateCartNum, getSkuStock, modifySku } from '@/api/cart';
 import { getGoodAttr } from '@/api/product';
 import PullRefresh from '@/components/PullRefresh';
 
@@ -602,7 +602,11 @@ export default {
     async onConfirm() { // 确认修改商品属性
       const num = await this.getSkuStock();
       if (num > this.selectSku.selectedNum) { // 库存充足
-        
+        modifySku({ newSkuId: this.selectSku.selectedSkuComb.id, oldSkuId: this.initialSku.id }).then(res => {
+          if (res.code != 0) return false;
+          this.productShow = false;
+          this.$fetch();
+        })
       }
     },
     onOutStock() { // 商品售空
