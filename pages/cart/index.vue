@@ -129,18 +129,26 @@
       <!-- 可能喜欢的推荐列表展示 -->
       <div>
         <van-divider class="plr-30 mt-24 fw fs-14 clr-black-85">
-          <BmIcon :name="'xinaixin'" :width="'0.26rem'" :height="'0.22rem'" :color="'#FA2022'" class="mr-8"></BmIcon>
+          <BmIcon :name="'xinaixin'" :width="'0.26rem'" :height="'0.22rem'" :color="'#FA2022'" class="mr-8" />
           {{ $t('common.mayLike') }}
         </van-divider>
-        <div class="mlr-12 flex between flex-wrap">
-          <ProductTopBtmSingle
-            :img="{ url: '', width: '3.4rem', height: '3.4rem', loadImage: require('@/assets/images/product-bgd-170.png') }" 
-            :detail="{ desc: 'categoryItem.name', price: 49.92, rate: 2.5, volumn: 50, ellipsis: 2, country: 'Ghana' }"
-            v-for="(searchItem, searchIndex) in 6"
-            :key="'search-list-' + searchIndex"
-            class="mb-12"
-          />
-        </div>
+        <van-list
+          v-model="loading"
+          :finished="finished"
+          finished-text=""
+          @load="onLoad"
+          :offset="500"
+        >
+          <div class="mlr-12 flex between flex-wrap">
+            <ProductTopBtmSingle
+              :img="{ url: searchItem.mainPictureUrl, width: '3.4rem', height: '3.4rem', loadImage: require('@/assets/images/product-bgd-170.png') }" 
+              :detail="{ desc: searchItem.productTitle, price: searchItem.productPrice, rate: parseFloat(searchItem.starLevel), volumn: searchItem.saleCount, ellipsis: 2, country: searchItem.supplyCountryName, country_url: searchItem.supplyCountryIcon }"
+              v-for="(searchItem, searchIndex) in recommendList"
+              :key="'search-list-' + searchIndex"
+              class="mb-12"
+            />
+          </div>
+        </van-list>
       </div>
     </PullRefresh>
 
@@ -224,7 +232,6 @@ export default {
       pageNum: 1,
       pageSize: 10,
       queryType: 1, // 查询类型（ 1 查询全部 2降价查询 3经常购买 4 关注商品列表）
-      likeList: [],
       totalAmount: 0, // 总金额
       discountAmount: 0, // 优惠金额
       oftenBuyTotal: 0, // 经常购买总条数
@@ -242,7 +249,10 @@ export default {
       goodSpuVo: {},
       initialSku: {},
       sku: {},
-      selectSku: {}
+      selectSku: {},
+      recommendList: [],
+      loading: false,
+      finished: false
     }
   },
   async fetch() {
@@ -272,6 +282,11 @@ export default {
     });
     this.onCountPrice();
     this.refreshing.isFresh = false;
+    // 获取商品推荐列表
+    const recommendData = await this.$api.getRecommend({type: 0, pageNum: this.pageNum, pageSize: this.pageSize});
+    if (recommendData.code != 0) return false;
+    this.recommendList = recommendData.data.items;
+    this.total = recommendData.data.total;
   },
   activated() {
     if (this.$store.state.user.authToken) { // 登录的情况下才请求数据
@@ -539,13 +554,29 @@ export default {
         }, 300);
       })
     },
-    goSimilar(productId) {
+    goSimilar(productId) { // 跳转到相似列表
       this.$router.push({
         name: 'search-similar-id',
         params: {
           id: productId
         }
       })
+    },
+    onLoad() { // 加载更多推荐商品
+      if (this.total == this.recommendList.length) { // 没有下一页了
+        this.finished = true;
+        this.loading = false;
+        return false;
+      }
+      this.pageNum += 1;
+      this.$api.getRecommend({ type: 0, pageNum: this.pageNum, pageSize: this.pageSize}).then(res => { // 搜索商品列表
+        
+        this.recommendList = this.recommendList.concat(res.data.items);
+        this.total = res.data.total;
+        
+        // 加载状态结束
+        this.loading = false;
+      });
     }
   },
 }

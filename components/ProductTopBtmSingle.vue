@@ -9,7 +9,7 @@
       :isLazy="true"
       :loadUrl="img.loadImage"
       :errorUrl="img.loadImage"
-      class="hidden round-8"
+      class="hidden round-top-lr-8"
       :isShow="true"
     />
     <!-- 商品的信息 -->
@@ -88,5 +88,9 @@ export default {
 }
 .h-40{
   height: 40px;
+}
+.round-top-lr-8{
+  border-top-right-radius: 8px;
+  border-top-left-radius: 8px;
 }
 </style>

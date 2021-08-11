@@ -54,10 +54,7 @@ export default function({ $axios, app, redirect, store, route }) {
         return res.data; //Promise.resolve(res.data);
       }
       else if (res.data.code === 10401) {
-        //token失效
-        store.commit('user/SET_TOKEN', null); //清除token 因为有些页面未登录的情况下可看，故不在此处跳转登录页面，而在页面中进行判断
-        // console.log(store.state.user)
-        console.log('token失效');
+        store.dispatch('user/GetRefreshToken'); // 用户凭证已过期，先刷新token
       }
       else {
         if (res.data.msg) {
@@ -68,26 +65,17 @@ export default function({ $axios, app, redirect, store, route }) {
       return Promise.reject(res.data);
     } else {
       //无响应
-      console.log('----')
-      console.log(res.data.data)
       return Promise.reject(res);
     }
   });
 
   $axios.onError(error => {
     if (error.code > 0) {
-      console.log(error)
-      if (error.code === 10401) { // 用户凭证已过期，跳转到登录页面，清空存储的数据类型
-        // store.commit('user/SET_TOKEN', null);
-        console.log(store.state.user.authToken)
-        // setTimeout(() => {
-          // redirect({
-          //   name: 'login'
-          // })
-        // }, 300)
+      if (error.code === 10401) { // 用户凭证已过期，先刷新token
+        store.dispatch('user/GetRefreshToken');
       }
       tip(error.msg);
-      return Promise.reject(response);
+      return Promise.reject(error);
     }
     const { response } = error;
     if (response) {

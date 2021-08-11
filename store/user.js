@@ -12,7 +12,7 @@ export const state = () => ({
 export const mutations = {
   SET_USERINFO(state, userInfo) { // 提交用户信息
     state.userInfo = userInfo;
-    setCookie('userInfo', userInfo);
+    // setCookie('userInfo', userInfo);
   },
   SET_TOKEN(state, token) { // 提交token
     state.authToken = token;
@@ -66,14 +66,23 @@ export const actions = {
         })
     })
   },
-  GetRefreshToken({ commit }) {
+  GetRefreshToken({ commit }) { // 刷新token
     return new Promise((resolve, reject) => {
       refreshToken().then(res => {
-        if (res.code != 0) return false;
-
         commit('SET_TOKEN', res.data.token_type + ' ' + res.data.access_token);
-        resolve(res)
+        resolve(res);
       }).catch(error => {
+        console.log(error)
+        console.log('=============www')
+
+        if (error && error.code === 10401) {
+          commit('SET_TOKEN', null);
+          setTimeout(() => {
+            this.$router.replace({
+              name: 'login'
+            })
+          }, 100)
+        }
         reject(error);
       })
     })

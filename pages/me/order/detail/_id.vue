@@ -2,51 +2,49 @@
   <!-- 我的-订单-订单详情  -->
   <div class="vh-100 bg-grey pb-56">
     <!-- 头部 -->
-    <van-sticky @scroll="stickyScroll" ref="headerStickyContainer">
-      <div class="bg-green-linear">
+    <div class="bg-green-linear">
+      <van-sticky @scroll="stickyScroll" ref="headerStickyContainer">
         <BmHeaderNav :left="{ isShow: true, isEmit: true }" :border="false" :title="$t(title)" :color="isScrollShow ? 'white' : 'black'" :bg_color="isScrollShow ? 'bg-green-linear' : 'white'" @leftClick="leftClick" />
+      </van-sticky>
 
-        <div class="min-h-95">
-          <!-- 待付款0倒计时，在线支付 -->
-          <div class="mt-14 tc white fs-14 pb-40 flex center plr-20" v-if="detail.status == 0 && detail.paymentType == 1 && detail.remainCloseMills > 0">
-            {{ $t('me.order.remaining') }}:
-            <van-count-down :time="detail.remainCloseMills" format="mm:ss" class="white" /> 
-            {{ $t('me.order.orderClosed') }}
-          </div>
-          <!-- 待发货 -->
-          <div class="fs-14 white mt-14 pb-40 plr-30 tc lh-20" v-else-if="detail.status == 1">
-            待发货
-          </div>
-          <!-- 待收货 -->
-          <div class="fs-14 white mt-14 pb-40 plr-30 tc lh-20" v-else-if="detail.status == 2">
-            {{ $t('me.order.sending') }}
-          </div>
-          <!-- 待评价 -->
-          <div class="fs-14 white mt-14 pb-40 plr-30 tc lh-20" v-else-if="detail.status == 3">
-            待评价
-          </div>
-          <!-- 已完成 -->
-          <div class="fs-14 white mt-14 pb-40 plr-30 tc lh-20" v-else-if="detail.status == 4">
-            {{ $t('me.order.doneTip') }}
-          </div>
-          <!-- 已取消 -->
-          <div class="fs-14 white mt-14 pb-40 plr-30 tc lh-20" v-else-if="detail.status == 5">
-            {{ $t('me.order.cancelTip') }}
-          </div>
-          <!-- 超时取消 -->
-          <div class="fs-14 white mt-14 pb-40 plr-30 tc lh-20" v-else-if="detail.status == 6">
-            {{ $t('me.order.timeoutClosure') }}
-          </div>
-          <!-- 已拒收 -->
-          <div class="fs-14 white mt-14 pb-40 plr-30 tc lh-20" v-else-if="detail.status == 7">
-            已拒收
-          </div>
+      <div class="min-h-95">
+        <!-- 待付款0倒计时，在线支付 -->
+        <div class="mt-14 tc white fs-14 pb-40 flex center plr-20" v-if="detail.status == 0 && detail.paymentType == 1 && detail.remainCloseMills > 0">
+          {{ $t('me.order.remaining') }}:
+          <van-count-down :time="detail.remainCloseMills" format="mm:ss" class="white" /> 
+          {{ $t('me.order.orderClosed') }}
         </div>
-        
+        <!-- 待发货 -->
+        <div class="fs-14 white mt-14 pb-40 plr-30 tc lh-20" v-else-if="detail.status == 1">
+          待发货
+        </div>
+        <!-- 待收货 -->
+        <div class="fs-14 white mt-14 pb-40 plr-30 tc lh-20" v-else-if="detail.status == 2">
+          {{ $t('me.order.sending') }}
+        </div>
+        <!-- 待评价 -->
+        <div class="fs-14 white mt-14 pb-40 plr-30 tc lh-20" v-else-if="detail.status == 3">
+          待评价
+        </div>
+        <!-- 已完成 -->
+        <div class="fs-14 white mt-14 pb-40 plr-30 tc lh-20" v-else-if="detail.status == 4">
+          {{ $t('me.order.doneTip') }}
+        </div>
+        <!-- 已取消 -->
+        <div class="fs-14 white mt-14 pb-40 plr-30 tc lh-20" v-else-if="detail.status == 5">
+          {{ $t('me.order.cancelTip') }}
+        </div>
+        <!-- 超时取消 -->
+        <div class="fs-14 white mt-14 pb-40 plr-30 tc lh-20" v-else-if="detail.status == 6">
+          {{ $t('me.order.timeoutClosure') }}
+        </div>
+        <!-- 已拒收 -->
+        <div class="fs-14 white mt-14 pb-40 plr-30 tc lh-20" v-else-if="detail.status == 7">
+          已拒收
+        </div>
       </div>
-    </van-sticky>
+    </div>
     
-
     <!-- 运输方式，待收货时展示 -->
     <van-cell class="p-20" :title="'Fulfillment by Tospino'" is-link title-class="fw black ml-12" :to="{ name: 'me-order-detail-logistics' }" v-if="detail.status == 2">
       <!-- 左侧图标 -->
@@ -377,7 +375,7 @@ export default {
           this.$refs.headerStickyContainer.$el.classList.add('head-sticky-scroll');
           this.isScrollShow = false;
         }
-        if (scrollObj.scrollTop < 170) {
+        if (scrollObj.scrollTop < 90) {
           this.$refs.headerStickyContainer.$el.classList.remove('head-sticky-scroll');
           this.isScrollShow = true;
         }
@@ -481,6 +479,5 @@ export default {
     display: none;
     animation: all 1s;
   }
-  
 }
 </style>

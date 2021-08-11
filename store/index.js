@@ -18,7 +18,7 @@ export const mutations = {
   },
   SET_RATE(state, rate) { // 修改当前货币信息
     state.rate = rate;
-    this.$cookies.set('rate', rate);
+    // this.$cookies.set('rate', rate);
   },
   SET_NOWTIME(state, nowTime) {
     state.nowTime = nowTime;
@@ -52,5 +52,5 @@ export const actions = {
     // 获取当前语言货币汇率
     const rateData = await $api.getCurrentRate();
     commit('SET_RATE', rateData.data);
-  },
+  }
 }

@@ -1,7 +1,7 @@
 import * as axios from 'axios';
 import { Toast } from 'vant';
 import { url } from './config'; // 导入配置域名
-// import { state, mutations } from '@/store/user';
+import { actions } from '@/store/user';
 import { getCookie, setCookie } from './utils';
 
 const service = axios.create({
@@ -83,8 +83,6 @@ service.interceptors.request.use(config => {
 
   return config;
 }, error => {
-  // Do something with request error
-  console.log(error) // for debug
   return Promise.reject(error)
 })
 
@@ -95,8 +93,8 @@ service.interceptors.response.use(response => { // 成功
       return response.data; //Promise.resolve(res.data);
     } else if (response.data.code === 10401) { // 用户凭证已过期,跳转到登录页面
       tip(response.data.msg);
-      setCookie('authToken', null);
-      // location.replace('/login'); // 因为有些页面未登录的情况下可看，故不在此处跳转登录页面，而在页面中进行判断
+      actions.dispatch('user/GetRefreshToken'); // 用户凭证已过期，先刷新token
+      
       return response.data;
     } else {
       if (response.data.msg) {
@@ -106,7 +104,6 @@ service.interceptors.response.use(response => { // 成功
     return Promise.reject(response.data);
   } else {
     //无响应
-    console.log('----')
     return Promise.reject(response);
   }
 }, error => { // 失败

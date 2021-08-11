@@ -161,6 +161,16 @@ export default ({ app }, inject) => {
         method: 'get',
         params
       })
+    },
+    getRecommend(data) {
+      return app.$axios({
+        url: `${url}/search/productsearch/recommend`,
+        method: 'post',
+        data: data,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
     }
   };
 

@@ -1,6 +1,6 @@
 <template>
   <!-- 我的-关注 -->
-  <div class="bg-grey vh-100 pt-46">
+  <div class="bg-grey vh-100 pt-46 pb-56">
     <BmHeaderNav :left="{ isShow: true }" :fixed="true">
       <!-- tab切换 -->
       <van-tabs v-model="active" slot="header-title" class="customs-van-tabs likes-tabs" @click="getList">
@@ -117,18 +117,19 @@
         </div>
 
         <!-- 可能喜欢的推荐列表展示 -->
-        <template v-if="likeList.length">
+        <template v-if="recommendList.length > 0 && active == 0 && !edit">
           <van-divider class="plr-30 mt-24 fw fs-14 clr-black-85">
-            <i class="iconfont icon-xinaixin linear-color mr-8"></i>
+            <BmIcon :name="'xinaixin'" :width="'0.26rem'" :height="'0.22rem'" :color="'#FA2022'" class="mr-8" />
             {{ $t('common.mayLike') }}
           </van-divider>
           <div class="mlr-12 flex between flex-wrap">
             <ProductTopBtmSingle
-              :img="{ url: '', width: '3.4rem', height: '3.4rem', loadImage: require('@/assets/images/product-bgd-170.png') }" 
-              :detail="{ desc: 'categoryItem.name', price: 49.92, rate: 2.5, volumn: 50, ellipsis: 2, country: 'Ghana' }"
-              v-for="(searchItem, searchIndex) in likeList" 
+              :img="{ url: searchItem.mainPictureUrl, width: '3.4rem', height: '3.4rem', loadImage: require('@/assets/images/product-bgd-170.png') }" 
+              :detail="{ desc: searchItem.productTitle, price: searchItem.productPrice, rate: parseFloat(searchItem.starLevel), volumn: searchItem.saleCount, ellipsis: 2, country: searchItem.supplyCountryName, country_url: searchItem.supplyCountryIcon }"
+              v-for="(searchItem, searchIndex) in recommendList"
               :key="'search-list-' + searchIndex"
-            ></ProductTopBtmSingle>
+              class="mb-12"
+            />
           </div>
         </template>
       </van-list>
@@ -176,7 +177,6 @@ export default {
       pageNum: 1,
       pageSize: 10,
       total: 0,
-      likeList: [],
       refreshing: {
         isFresh: false
       },
@@ -188,7 +188,9 @@ export default {
       sku: {},
       productShow: {
         show: false
-      }
+      },
+      recommendList: [],
+      recommendTotal: 0
     }
   },
   async fetch() {
@@ -196,7 +198,6 @@ export default {
     this.edit = false;
     this.checkResult = [];
     // 获取商品列表
-    console.log(this.active)
     const listData = this.active == 0 ? await this.$api.getLikeProduct({ pageNum: this.pageNum, pageSize: this.pageSize }) : await this.$api.getLikeStoreList({ pageNum: this.pageNum, pageSize: this.pageSize }); // 获取关注商品/店铺列表
     this.refreshing.isFresh = false;
     if (listData.code != 0) return false;
@@ -246,6 +247,7 @@ export default {
       })
     },
     getList() { // 切换tab时数据要初始化
+      this.pageNum = 1;
       this.$fetch();
     },
     onTop(item) { // 置顶
@@ -282,22 +284,44 @@ export default {
         }
       })
     },
-    async onLoad() {
+    async onLoad() { // 收藏商品加载下一页，加载最后一页时开始加载推荐商品列表，店铺没有推荐
       if (this.total == this.list.length) { // 没有下一页了
-        this.finished = true;
-        this.loading = false;
+        if (this.active == 0 && !this.edit) {
+          this.pageNum = this.recommendList.length > 0 && this.pageNum >= 1 ? this.pageNum : 0;
+          this.onRecommendLoad();
+        } else {
+          this.finished = true;
+          this.loading = false;
+        }
+        
         return false;
       }
       this.pageNum += 1;
       const listData = this.active == 0 ? await this.$api.getLikeProduct({ pageNum: this.pageNum, pageSize: this.pageSize }) : await this.$api.getLikeStoreList({ pageNum: this.pageNum, pageSize: this.pageSize }); // 获取关注商品/店铺列表
       if (listData.code != 0) return false;
 
-      this.total = res.data.total;
-      let list = res.data.records;
+      this.total = listData.data.total;
+      let list = listData.data.records;
 
       this.list = this.list.concat(list);
       // 加载状态结束
       this.loading = false;
+    },
+    async onRecommendLoad() { // 加载推荐商品列表
+      if (this.recommendTotal == this.recommendList.length && this.pageNum > 0) { // 没有下一页了
+        this.finished = true;
+        this.loading = false;
+        return false;
+      }
+      this.pageNum += 1;
+      this.$api.getRecommend({ type: 1, pageNum: this.pageNum, pageSize: this.pageSize}).then(res => { // 搜索商品列表
+        
+        this.recommendList = this.pageNum == 1 ? res.data.items : this.recommendList.concat(res.data.items);
+        this.recommendTotal = res.data.total;
+        
+        // 加载状态结束
+        this.loading = false;
+      });
     },
     goSimilar(productId) { // 跳转到相似列表
       this.$router.push({
@@ -417,6 +441,9 @@ export default {
   height: 1px;
   background-color: #eee;
   margin-top: 25px;
+}
+.pb-56{
+  padding-bottom: 56px;
 }
 </style>
 

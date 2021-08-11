@@ -2,7 +2,9 @@
   <!-- 购物车-订单支付-确认订单 -->
   <div class="vh-100 bg-grey">
     <div class="bg-green-linear">
-      <BmHeaderNav :left="{ isShow: true }" :border="false" :color="'white'" :bg_color="'bg-green-linear'" />
+      <van-sticky @scroll="stickyScroll" ref="headerStickyContainer">
+        <BmHeaderNav :left="{ isShow: true }" :title="isScrollShow ? '' : '你可能还喜欢'" :border="false" :color="isScrollShow ? 'white' : 'black'" :bg_color="isScrollShow ? 'bg-green-linear' : 'white'" />
+      </van-sticky>
       
       <!-- 结果提示 -->
       <div class="tc flex center">
@@ -21,6 +23,7 @@
         <van-button plain color="#42B7AE" class="round-8 h-32 ml-18" @click="goViewOrder">View Order</van-button>
       </div>
     </div>
+    
 
     <!-- 可能喜欢的推荐列表展示 -->
     <div>
@@ -28,27 +31,55 @@
         <BmIcon :name="'xinaixin'" :width="'0.4rem'" :height="'0.4rem'" :color="'#000'" class="mr-8" />
         {{ $t('common.mayLike') }}
       </van-divider>
-      <div class="mlr-12 flex between flex-wrap">
-        <ProductTopBtmSingle
-          :img="{ url: '', width: '3.4rem', height: '3.4rem', loadImage: require('@/assets/images/product-bgd-170.png') }" 
-          :detail="{ desc: 'categoryItem.name', price: 49.92, rate: 2.5, volumn: 50, ellipsis: 2, country: 'Ghana' }"
-          v-for="(searchItem, searchIndex) in 6" 
-          :key="'search-list-' + searchIndex"
-          class="mb-12"
-        ></ProductTopBtmSingle>
-      </div>
+      <van-list
+        v-model="loading"
+        :finished="finished"
+        finished-text=""
+        @load="onLoad"
+      >
+        <div class="mlr-12 flex between flex-wrap">
+          <ProductTopBtmSingle
+            :img="{ url: searchItem.mainPictureUrl, width: '3.4rem', height: '3.4rem', loadImage: require('@/assets/images/product-bgd-170.png') }" 
+            :detail="{ desc: searchItem.productTitle, price: searchItem.productPrice, rate: parseFloat(searchItem.starLevel), volumn: searchItem.saleCount, ellipsis: 2, country: searchItem.supplyCountryName, country_url: searchItem.supplyCountryIcon }"
+            v-for="(searchItem, searchIndex) in recommendList"
+            :key="'search-list-' + searchIndex"
+            class="mb-12"
+          />
+        </div>
+      </van-list>
     </div>
   </div>
 </template>
 
 <script>
 import ProductTopBtmSingle from '@/components/ProductTopBtmSingle';
-import { Divider } from 'vant';
+import { Divider, List, Sticky } from 'vant';
 
 export default {
   components: {
     vanDivider: Divider,
+    vanList: List,
+    vanSticky: Sticky,
     ProductTopBtmSingle
+  },
+  data() {
+    return {
+      loading: false,
+      finished: false,
+      recommendList: [],
+      total: 0,
+      isScrollShow: true,
+      pageNum: 1,
+      pageSize: 10
+    }
+  },
+  async fetch() {
+    const recommendData = await this.$api.getRecommend({ type: 2, pageNum: this.pageNum, pageSize: this.pageSize});
+    this.recommendList = this.pageNum == 1 ? recommendData.data.items : this.recommendList.concat(recommendData.data.items);
+    this.total = recommendData.data.total;
+    
+    // 加载状态结束
+    this.loading = false;
   },
   methods: {
     goHome() { // 返回首页
@@ -73,9 +104,33 @@ export default {
           name: 'me-order'
         })
       }
-      
-    }
+    },
+    onLoad() { // 加载更多推荐商品
+      if (this.total == this.recommendList.length) { // 没有下一页了
+        this.finished = true;
+        this.loading = false;
+        return false;
+      }
+      this.pageNum += 1;
+      this.$fetch();
+    },
+    stickyScroll(scrollObj) { // 吸顶滚动事件
+      if (scrollObj.isFixed) {
+        // 滚动时格式化样式 head-sticky-scroll
+        if (scrollObj.scrollTop > 2) {
+          this.$refs.headerStickyContainer.$el.classList.add('head-sticky-scroll');
+          this.isScrollShow = false;
+        }
+        if (scrollObj.scrollTop < 60) {
+          this.$refs.headerStickyContainer.$el.classList.remove('head-sticky-scroll');
+          this.isScrollShow = true;
+        }
+      }
+    },
   },
+  beforeDestroy(){
+    window.removeEventListener('scroll', this.stickyScroll); // 离开页面清除滚动事件
+  }
 }
 </script>
 
@@ -100,5 +155,14 @@ export default {
   background-color: transparent;
   border-color: #fff;
   color: #fff;
+}
+</style>
+<style lang="less">
+.head-sticky-scroll{
+  .min-h-95{
+    min-height: 0;
+    display: none;
+    animation: all 1s;
+  }
 }
 </style>

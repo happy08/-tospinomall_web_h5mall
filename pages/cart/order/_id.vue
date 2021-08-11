@@ -29,14 +29,14 @@
               <van-card
                 :title="productItem.goodTitle"
                 class="bg-white pt-24 plr-0 pb-0 custom-card lh-20 width-313"
-                :thumb="productItem.image"
+                :thumb="productItem.image | imageFormat"
                 @click="goProductDetail(singleItem.id)"
                 v-for="(productItem, productIndex) in productMapItem.skuItemVoList" :key="'product-item-' + productIndex"
-                :num="productItem.step"
+                :num="productItem.count"
               >
                 <!-- 自定义描述区域，改为展示商品型号 -->
                 <template #desc>
-                  <div class="bg-f8 pl-10 mt-8 round-4 flex vcenter pr-10 fit-width">
+                  <div class="bg-f8 mt-8 round-4 flex vcenter pr-10 fit-width">
                     <span class="grey pr-24">{{ productItem.skuAttr.join(' ') }}</span>
                     <!-- <van-icon name="arrow-down" color="#B6B6B6" size="0.16rem" /> -->
                   </div>
@@ -211,6 +211,9 @@ export default {
   filters: {
     deliveryFormat(type) {
       return type == 1 ? '空运' : type == 2 ? '海运' : type == 3 ? '陆运' : '';
+    },
+    imageFormat(image) {
+      return image == '' ? require('@/assets/images/product-bgd-90.png') : image;
     }
   },
   methods: {
