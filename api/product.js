@@ -44,18 +44,25 @@ export function getRateList(params) {
  */
 export function addGive(id) {
   return request({
-    url: `/api/product/evaluate/give/${id}`,
-    method: 'get'
+    url: `/api/product/evaluate/give`,
+    method: 'get',
+    params: {
+      id
+    }
   })
 }
 
 /**
  * 商品评价详情
  */
-export function getRateDetail(id) {
+export function getRateDetail(id, userId) {
   return request({
-    url: `/api/product/evaluate/info/${id}`,
-    method: 'get'
+    url: `/api/product/evaluate/info`,
+    method: 'get',
+    params: {
+      id,
+      userId
+    }
   })
 }
 
@@ -77,5 +84,19 @@ export function attentionGoodTop(params) {
     url: '/api/admin/buyerAttention/top/good',
     method: 'get',
     params
+  })
+}
+
+/**
+ * 提交商品评论投诉
+ */
+export function reportEvaluate(data) {
+  return request({
+    url: '/api/product/evaluate/reports',
+    method: 'post',
+    data: data,
+    headers: {
+      'Content-Type': 'application/json'
+    }
   })
 }

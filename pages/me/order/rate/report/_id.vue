@@ -1,21 +1,19 @@
 <template>
   <!-- 我的-订单-评价-举报 -->
   <div>
-    <BmHeaderNav :left="{ isShow: true }" :title="$t('me.report.report')">
-      <div slot="header-right" class="green fs-14" @click="onConfirm">{{ $t('common.confirm') }}</div>
-    </BmHeaderNav> 
+    <BmHeaderNav :left="{ isShow: true }" :title="$t('me.report.report')" /> 
 
     <!-- 原因选择 -->
     <van-radio-group v-model="radio">
       <van-cell-group>
         <van-cell
-          v-for="(item, index) in $t('me.report.reason')"
+          v-for="(item, index) in reasonList"
           clickable
           :key="index"
           class="p-20"
         >
           <template #icon>
-            <van-radio :name="index" class="w-100">
+            <van-radio :name="item.id" class="w-100">
               <template #icon="props">
                 <BmImage
                   :url="props.checked ? require('@/assets/images/icon/choose-icon.png') : require('@/assets/images/icon/choose-default-icon.png')"
@@ -25,7 +23,7 @@
                   :isShow="false"
                 />
               </template>
-              <p class="black fs-14">{{ item }}</p>
+              <p class="black fs-14">{{ item.description }}</p>
             </van-radio>
           </template>
         </van-cell>
@@ -40,12 +38,16 @@
         :placeholder="$t('me.report.supplementTip')"
         class="border round-8"
       />
+      <!-- 提交 -->
+      <BmButton class="fs-14 round-8 w-100 mt-20" :disabled="radio == 0" @btnClick="onConfirm">提交</BmButton>
     </div>
   </div>
 </template>
 
 <script>
 import { RadioGroup, Radio, Cell, CellGroup, Field } from 'vant';
+import { getLangList } from '@/api/user';
+import { reportEvaluate } from '@/api/product';
 
 export default {
   middleware: 'authenticated',
@@ -59,12 +61,23 @@ export default {
   data() {
     return {
       radio: 0,
-      message: ''
+      message: '',
+      reasonList: []
     }
+  },
+  activated() {
+    getLangList('product_goods_evaluate_scene').then(res => {
+      this.reasonList = res.data;
+    })
   },
   methods: {
     onConfirm() { // 提交
-
+      let reportingScene = this.reasonList.filter(item => { // 举报场景
+        return item.id == this.radio;
+      })[0].value;
+      reportEvaluate({ evaluateId: this.$route.params.id, reportingContent: this.message, reportingScene: reportingScene }).then(res => {
+        this.$router.go(-1);
+      })
     }
   },
 }

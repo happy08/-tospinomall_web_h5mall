@@ -6,7 +6,7 @@
     <!-- 订单展示 -->
     <div class="p-20 bg-white flex between">
       <BmImage
-        :url="require('@/assets/images/product-bgd-90.png')"
+        :url="detailData.goodPicture"
         :width="'1.2rem'" 
         :height="'1.2rem'"
         :isLazy="false"
@@ -14,7 +14,7 @@
         :fit="'cover'"
         class="border round-2 flex-shrink"
       />
-      <p class="fs-14 black ml-12 lh-20 hidden-2">Hassen’s new fall single shoes fashion wedding…</p>
+      <p class="fs-14 black ml-12 lh-20 hidden-2">{{ detailData.goodTitle }}</p>
       <!-- 加入购物车 -->
       <BmImage
         :url="require('@/assets/images/icon/add-cart-btn.png')"
@@ -96,7 +96,7 @@
       <template v-if="detailData.sellerReplyList && detailData.sellerReplyList.length > 0">
         <van-cell class="plr-0 ptb-10" title-class="fs-14" v-for="(replyItem, replyIndex) in detailData.sellerReplyList" :key="'reply-' + replyIndex">
           <template #title>
-            <span class="red">{{ replyItem.replyName }} Official customer service: </span>
+            <span class="red">{{ replyItem.replyName }}: </span>
             <span class="color-666">{{ replyItem.replyContent }}</span>
           </template>
         </van-cell>
@@ -153,7 +153,7 @@ export default {
 
     },
     getRateDetail() { // 获取评价详情
-      getRateDetail(this.$route.params.id).then(res => {
+      getRateDetail(this.$route.params.id, this.$route.query.buyerId).then(res => {
         if (res.code != 0) return false;
         this.detailData = res.data;
       })
