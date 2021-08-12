@@ -50,7 +50,6 @@
 
 <script>
 import { Cell, CellGroup } from 'vant';
-import { logout } from '@/api/login';
 
 export default {
   middleware: 'authenticated',
@@ -66,14 +65,7 @@ export default {
   },
   methods: {
     logout() { // 退出登录
-      logout().then(res => {
-        this.$store.commit('user/SET_TOKEN', null);
-        setTimeout(() => {
-          this.$router.push({
-            name: 'login'
-          })
-        }, 100);
-      })
+      this.$store.dispatch('user/Logout');
     },
   },
 }

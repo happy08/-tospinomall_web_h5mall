@@ -218,7 +218,7 @@ export default {
         tag: '', // 标签
         tagEditor: '', // 自定义标签
       }
-      this.isEmit = 1;
+      this.isEmit = 0;
       this.getNextArea({ id: 0 });
     }
   },

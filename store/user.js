@@ -1,5 +1,5 @@
 import { getUserInfo } from '@/api/user';
-import { refreshToken } from '/api/login';
+import { refreshToken, logout } from '/api/login';
 import { setCookie } from '/api/utils';
 
 export const state = () => ({
@@ -17,8 +17,8 @@ export const mutations = {
   SET_TOKEN(state, token) { // 提交token
     state.authToken = token;
     if (token == null) { // 退出登录 清除数据
-      state.userInfo = null;
-      setCookie('userInfo', null);
+      // state.userInfo = null;
+      // setCookie('userInfo', null);
     }
     setCookie('authToken', token);
   },
@@ -66,23 +66,34 @@ export const actions = {
         })
     })
   },
-  GetRefreshToken({ commit }) { // 刷新token
+  GetRefreshToken({ commit, dispatch }) { // 刷新token
     return new Promise((resolve, reject) => {
       refreshToken().then(res => {
         commit('SET_TOKEN', res.data.token_type + ' ' + res.data.access_token);
         resolve(res);
       }).catch(error => {
-        console.log(error)
-        console.log('=============www')
-
-        if (error && error.code === 10401) {
-          commit('SET_TOKEN', null);
-          setTimeout(() => {
-            this.$router.replace({
-              name: 'login'
-            })
-          }, 100)
-        }
+        // console.log(error)
+        // console.log('=============www')
+        // commit('SET_TOKEN', null);
+        // setTimeout(() => {
+        //   // console.log(window)
+        //   // console.log(this)
+        //   this.$router.push({
+        //     name: 'login'
+        //   })
+        // }, 100)
+        dispatch('Logout');
+        reject(error);
+      })
+    })
+  },
+  Logout({ commit }) {
+    return new Promise((resolve, reject) => {
+      logout().then(res => {
+        commit('SET_TOKEN', null);
+        location.href = '/login';
+        resolve(res);
+      }).catch(error => {
         reject(error);
       })
     })

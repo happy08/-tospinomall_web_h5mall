@@ -7,13 +7,13 @@
 
     <!-- 评价类型tab切换 -->
     <van-tabs sticky swipeable animated :offset-top="44" color="#42B7AE" class="customs-van-tabs" :ellipsis="false" @change="getList" v-model="tabActive">
-      <van-tab v-for="(categoryItem, tabIndex) in categoryList" :title="categoryItem + ' ' + (tabActive == 0 ? hasCommentOrReview : notComment)" :key="'scroll-tab-' + tabIndex" title-class="border-b pb-0" :name="tabIndex">
+      <van-tab v-for="(categoryItem, tabIndex) in categoryList" :title="categoryItem + ' (' + (tabIndex == 1 ? hasCommentOrReview : notComment) + ')'" :key="'scroll-tab-' + tabIndex" title-class="border-b pb-0" :name="tabIndex">
         <PullRefresh :refreshing="refreshing" @refresh="onRefresh">
           <van-list
             v-model="loading"
             :finished="finished"
             @load="onLoad"
-            :finished-text="lists.length == 0 ? '' : '没有更多了'"
+            :finished-text="lists.length == 0 ? '' : ''"
           >
             <template #loading>
               <van-loading color="#42b7ae" />
@@ -22,16 +22,18 @@
             <empty-status v-if="lists.length === 0" :image="require('@/assets/images/empty/order.png')" />
             <!-- 列表展示 -->
             <div v-else v-for="(orderitem, index) in lists" :key="index" class="mb-12 plr-20 bg-white pt-20 pb-24">
-              <OrderStoreSingle :status="tabActive === 2 ? $t('me.afterSale.refund'): ''" />
-              <OrderSingle class="mt-20" :product_num="1" :product_desc="'Hassen’s new fall 2019 suede pointe…'" :product_size="'Black / L'" :price="256.23" />
+              <OrderStoreSingle :name="orderitem.storeName" :showArrow="false" />
+              <OrderSingle class="mt-20" :product_num="orderitem.goodQuantity" :product_desc="orderitem.goodName" :product_size="orderitem.goodAttr" :price="orderitem.goodPrice" :image="orderitem.goodImg" @onClick="onClick(orderitem.goodId)" />
               <!-- 评价操作 -->
               <div class="mt-18 flex hend">
                 <!-- 待评价 -->
-                <nuxt-link :to="{ name: 'me-order-rate-evalution-id', params: { id: orderitem.id } }">
-                  <BmButton :type="'info'" class="h-32" v-show="tabActive === 0" >{{ $t('me.rate.evaluation') }}</BmButton>
+                <nuxt-link :to="{ name: 'me-order-rate-evalution-id', params: { id: orderitem.id } }" v-if="orderitem.isComment == 0">
+                  <BmButton :type="'info'" class="h-32">{{ $t('me.rate.evaluation') }}</BmButton>
                 </nuxt-link>
                 <!-- 已评价/追评 -->
-                <BmButton :type="'info'" class="h-32" v-show="tabActive === 1">{{ $t('me.rate.review') }}</BmButton>
+                <nuxt-link :to="{ name: 'me-order-rate-evalution-id', params: { id: orderitem.id }, query: { isAddId: orderitem.evaluateId } }" v-if="orderitem.isComment == 1">
+                  <BmButton :type="'info'" class="h-32" v-show="tabActive === 1">追评</BmButton>
+                </nuxt-link>
               </div>
             </div>
           </van-list>
@@ -77,11 +79,17 @@ export default {
   },
   async fetch() {
     // 查询评价订单列表
-    const listData = await this.$api.getRateList({ pageNum: this.pageNum, pageSize: this.pageSize, status: this.tabActive });
+    let listData;
+    if (this.$route.query.orderId) { // 查看某一个订单评价
+      listData = await this.$api.getRateList({ pageNum: this.pageNum, pageSize: this.pageSize, status: this.tabActive, orderId: this.$route.query.orderId });
+    } else {
+      listData = await this.$api.getRateList({ pageNum: this.pageNum, pageSize: this.pageSize, status: this.tabActive });
+    }
+
     if (listData.code != 0) return false;
 
     this.total = listData.data.total; // 列表总条数
-    this.lists = listData.data.records; // 列表数据
+    this.lists = this.pageNum == 1 ? listData.data.records : this.lists.concat(listData.data.records); // 列表数据
     this.refreshing.isFresh = false;
 
     getOrderRateCount().then(res => {
@@ -97,10 +105,21 @@ export default {
   },
   methods: {
     getList() {
-
+      this.pageNum = 1;
+      this.lists = [];
+      this.$fetch();
     },
     onRefresh() { // 下拉刷新
       this.pageNum = 1;
+      if (this.$route.query.orderId) { // 从我的订单页面跳转过来查看售后订单，刷新之后展示全部售后订单
+        this.$router.replace({
+          name: 'me-order-rate'
+        })
+        setTimeout(() => {
+          this.$fetch();
+        }, 100);
+        return false;
+      }
       this.$fetch();
     },
     onLoad() {
@@ -111,6 +130,14 @@ export default {
       }
       this.pageNum += 1;
       this.$fetch();
+    },
+    onClick(productId) { // 跳转到商品详情页
+      this.$router.push({
+        name: 'cart-product-id',
+        params: {
+          id: productId
+        }
+      })
     }
   },
 }

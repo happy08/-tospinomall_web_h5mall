@@ -93,6 +93,7 @@ service.interceptors.response.use(response => { // 成功
       return response.data; //Promise.resolve(res.data);
     } else if (response.data.code === 10401) { // 用户凭证已过期,跳转到登录页面
       tip(response.data.msg);
+      console.log(actions)
       actions.dispatch('user/GetRefreshToken'); // 用户凭证已过期，先刷新token
       
       return response.data;

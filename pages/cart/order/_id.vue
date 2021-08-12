@@ -1,6 +1,6 @@
 <template>
   <!-- 购物车-确认订单 -->
-  <div class="vh-100 bg-grey pb-68 pb-46">
+  <div class="vh-100 bg-grey pb-68 pb-46" v-if="detail.storeSaleInfoList">
     <BmHeaderNav :left="{ isShow: true }" :fixed="true" title="Confirm the Order" />
 
     <div v-if="codeData.code == 0">
@@ -203,6 +203,23 @@ export default {
     // 获取默认地址
     const addressData = await getCurrentDefaultAddress();
     if (addressData.code != 0) return false;
+
+    if (!addressData.data) { // 还没有设置地址
+      this.$dialog.confirm({
+        message: `还没有收货地址，现在去设置`,
+        onfirmButtonText: '去设置',
+        confirmButtonColor: '#42B7AE',
+        cancelButtonText: this.$t('common.cancel'),
+        cancelButtonColor: '#383838'
+      }).then(() => {
+        this.$router.push({
+          name: 'me-address'
+        })
+      }).catch(() => {
+        this.$router.go(-1);
+      })
+      return false;
+    }
     this.address = addressData.data;
 
     // 获取销售信息

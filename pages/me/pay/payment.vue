@@ -121,7 +121,7 @@ export default {
   },
   beforeRouteEnter(to, from, next) { // 从初始页面进入重置值为空
     next(vm => {
-      if (from.name === 'me-wallet') {
+      if (from.name === 'me-wallet' || from.name == 'me-order') {
         vm.payRadio = 100;
         vm.account = '';
         vm.isBackDialog = false;
@@ -180,7 +180,7 @@ export default {
       this.showPicker = false;
     },
     leftClick() {
-      if (this.$route.query.orderIds) { // 从确认订单页面进来，返回的时候1个订单返回订单详情，2个及以上跳到订单列表
+      if (this.$route.query.comfirmOrder) { // 从确认订单页面进来，返回的时候1个订单返回订单详情，2个及以上跳到订单列表
         let orderIds = JSON.parse(this.$route.query.orderIds).orderIds;
         if (orderIds.length == 1) {
           this.$router.push({
@@ -242,7 +242,8 @@ export default {
           this.$router.push({ // 校验之后成功跳转到订单支付结果页面
             name: 'cart-order-confirm',
             query: {
-              orderId: JSON.stringify({orderId: res.data.orderIds})
+              orderId: JSON.stringify({orderId: res.data.orderIds}),
+              isSuccess: 1
             }
           })
           return false;
@@ -258,6 +259,19 @@ export default {
             orderId: JSON.stringify({orderId: res.data.orderIds})
           }
         })
+      }).catch(error => {
+        if (error.code == 11000) { // 支付失败
+          if (this.payRadio === 'balance') { // 余额支付，直接跳转到支付订单结果页
+            this.$router.push({ // 校验之后成功跳转到订单支付结果页面
+              name: 'cart-order-confirm',
+              query: {
+                orderId: JSON.stringify({orderId: error.data.orderIds}),
+                isSuccess: 0
+              }
+            })
+            return false;
+          }
+        }
       })
     }
   },

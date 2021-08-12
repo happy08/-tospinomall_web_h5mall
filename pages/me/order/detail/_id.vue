@@ -401,7 +401,8 @@ export default {
         query: {
           type: 'order',
           amount: orderItem.productAmount,
-          orderIds: JSON.stringify({orderIds: [orderItem.id]})
+          orderIds: JSON.stringify({orderIds: [orderItem.id]}),
+          comfirmOrder: 1
         }
       })
     }

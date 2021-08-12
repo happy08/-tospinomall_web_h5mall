@@ -3,7 +3,6 @@
   <div class="vh-100 bg-grey pb-56">
     <van-sticky
       ref="detailStickyContainer"
-      :offset-top="0"
       @scroll="stickyScroll"
     >
       <BmHeaderNav
@@ -46,7 +45,7 @@
       v-model="tabActive"
       scrollspy
       sticky
-      offset-top="0.92rem"
+      :offset-top="!isScroll ? 0 : '0.92rem'"
       title-active-color="#FF6666"
       line-height="0"
       title-inactive-color="#383838"
@@ -227,7 +226,7 @@
           <!-- 商品图片 -->
           <div class="flex between pr-10">
             <BmImage
-              :url="selectItem.picture"
+              :url="selectItem.attrPicture"
               :width="'2rem'"
               :height="'2rem'"
               :isLazy="false"
@@ -252,13 +251,14 @@
 
         <!-- 商品评论 -->
         <div class="mt-12 bg-white pt-16">
-          <h3 class="black flex between vcenter plr-20 fn fm-helvetica">
+          <h3 class="black flex between vcenter plr-20 fn fm-helvetica pb-16">
             <span class="fs-16"
               >{{ $t("cart.topReviewer") }}
               {{ hotEvaluates.total | reviewNumFormat }}</span
             >
             <!-- 更多评论 -->
-            <nuxt-link class="fs-14" :to="{ name: 'me-order-rate-detail-list', query: { id: goodSpuVo.id } }">{{ $t("cart.more") }}</nuxt-link>
+            <span v-if="hotEvaluates.total == 0" class="fs-14">{{ $t("cart.more") }}</span>
+            <nuxt-link v-else class="fs-14" :to="{ name: 'me-order-rate-detail-list', query: { id: goodSpuVo.id } }">{{ $t("cart.more") }}</nuxt-link>
           </h3>
           <!-- 评论展示 -->
           <div
@@ -269,14 +269,15 @@
             <!-- 评论人信息 -->
             <div class="mt-14 flex between plr-20">
               <div class="flex vcenter">
-                <van-icon
-                  :name="
-                    reviewItem.buyerPortrait
-                      ? reviewItem.buyerPortrait
-                      : require('@/assets/images/icon/user-icon.png')
-                  "
-                  size="0.72rem"
-                  color="#EC500D"
+                <BmImage
+                  :url="reviewItem.buyerPortrait"
+                  :width="'0.64rem'"
+                  :height="'0.64rem'"
+                  :isLazy="false"
+                  :isShow="true"
+                  :fit="'cover'"
+                  :round="true"
+                  :errorUrl="require('@/assets/images/icon/user-icon.png')"
                 />
                 <div class="ml-8">
                   <p class="fs-14 black fm-helvetica">
@@ -379,7 +380,7 @@
       <van-tab title="Details" name="Details" class="fs-0">
         <!-- 产品说明信息 -->
         <div
-          class="mt-12 bg-white ptb-12 plr-20 fs-14 black fm-helvetica word-break"
+          class="mt-12 bg-white ptb-12 plr-20 fs-14 black fm-helvetica word-break mb-12"
           v-if="goodSpuVo.description"
           v-html="goodSpuVo.description"
         ></div>
@@ -554,9 +555,7 @@ export default {
       hotEvaluates: {
         total: 0
       }, // 商品热评
-      storeInfo: {
-        storeId: ''
-      }, // 店铺信息
+      storeInfo: {}, // 店铺信息
       servicePromises: [], // 商品的服务与承诺
       freightActive: 0,
       rate: 3,
@@ -638,6 +637,7 @@ export default {
       hide_stock: true, //是否隐藏商品剩余库存
     };
     let _skuList = [];
+    let _selectCarousel = [];
     detailData.data.saleAttr.forEach((item, itemInxdex) => { // 规格种类
       this.sku.tree.push({
         k: item.attrName, // 规格类目名称
@@ -647,6 +647,9 @@ export default {
         largeImageMode: false
       })
       item.attrValues.forEach(attrItem => { // 种类属性
+        if (_selectCarousel.length < 3) { // 商品选择的图片集展示
+          _selectCarousel.push(attrItem);
+        }
         this.sku.tree[itemInxdex].v.push({
           id: attrItem.attrValueId,
           name: attrItem.attrValue
@@ -666,48 +669,58 @@ export default {
     })
 
     // 数组合并去重
+    console.log(_skuList)
     let arr = [];
     _skuList.forEach((item) => {
       let flag = true;
       let obj = item;
       arr.forEach((newItem, index) => {
         if (item.id === newItem.id) { // id一直合并对象属性
+          console.log(newItem)
+          console.log('-------------')
           newItem.stock_num = newItem.stock_num < item.stock_num ? newItem.stock_num : item.stock_num; // 库存选择相比较小的那一个
           obj = {
             ...item,
             ...newItem
           }
           arr[index] = obj;
+          console.log(obj)
+          console.log('+++++++++++++')
           flag = false;
         }
       })
       if (flag) {
+        console.log(obj)
+        console.log('=============')
         arr.push(obj);
       }
     })
+
+    console.log(arr)
+    this.selectCarousel = _selectCarousel;
   
     this.sku.list = arr;
-    this.selectCarousel = arr.filter((item,index) => {
-      return index < 3;
-    }); // 商品选择的图片集合
-    this.initialSku = this.selectSku = {
-      ...arr[0],
-      selectedNum: 1,
-      selectedSkuComb: {
-        stock_num: arr[0].stock_num
-      }
-    }
-
+    // this.initialSku = this.selectSku = {
+    //   ...arr[0],
+    //   selectedNum: 1,
+    //   selectedSkuComb: {
+    //     stock_num: arr[0].stock_num
+    //   }
+    // }
+    this.likeList = [];
     // 获取商品推荐列表
-    const recommendData = await this.$api.getRecommendList({ shopId: 465085110123757568, categoryId: 7 });
-    this.likeList = recommendData.data;
+    if (this.storeInfo.storeId) {
+      const recommendData = await this.$api.getRecommendList({ shopId: this.storeInfo.storeId, categoryId: 7 }); // 465085110123757568
+      this.likeList = recommendData.data;
+    }
+    
   },
   activated() {
     if (this.$store.state.user.authToken) {
       getCurrentDefaultAddress().then(res => { // 查看是否有默认地址
         if (res.code != 0) return false;
         
-        if (res.data.length === 0) { // 没有默认地址的情况下获取国家列表
+        if (!res.data || res.data.length === 0) { // 没有默认地址的情况下获取国家列表
           this.getNextArea({ id: 0 });
           return false;
         };
@@ -775,7 +788,7 @@ export default {
           this.$refs.detailTabContainer.$el.classList.add('sticky-nav');
           this.isScroll = true;
         }
-        if (scrollObj.scrollTop < 50) {
+        if (scrollObj.scrollTop < 46) {
           this.$refs.detailStickyContainer.$el.classList.remove('detail-sticky-scroll');
           this.$refs.detailTabContainer.$el.classList.remove('sticky-nav');
           this.isScroll = false;
@@ -812,9 +825,13 @@ export default {
       }
     },
     onPreviewPic(index) { // 轮播图预览
+      let _this = this;
       ImagePreview({
         images: this.previewImages,
-        startPosition: index
+        startPosition: index,
+        onChange(previewIndex) {
+          _this.$refs.swiperComponentRef.$swiper.slideTo(previewIndex);
+        }
       })
     },
     getNextArea(city, flag, isNext) {
@@ -859,12 +876,6 @@ export default {
           cityCode: this.assgnStepList[2] ? this.assgnStepList[2].code : '',
           districtCode: this.assgnStepList[3] ? this.assgnStepList[3].code : ''
         }
-        // 拼接展示完整的地址
-        let _address = '';
-        this.assgnStepList.map(item => {
-          _address += item.name;
-        })
-        this.completeAddress = _address;
         this.getDeliveryInfo();
       }
     },
@@ -876,11 +887,19 @@ export default {
       getDeliveryInfo(_form).then(res => {
         if (res.data.length == 0) { // 无模板
           this.completeAddress = '';
+        } else {
+          // 拼接展示完整的地址
+          let _address = '';
+          this.assgnStepList.map(item => {
+            _address += item.name;
+          })
+          this.completeAddress = _address;
         }
       })
     },
     onSkuInfo(selectValue) { // 获取选中的商品的规格
       // 页面展示已选择的商品属性
+      this.selectSku = selectValue;
       this.goodAttr = selectValue.map(item => {
         return {
           skuId: item,

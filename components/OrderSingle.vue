@@ -11,6 +11,7 @@
         :isLazy="isLazy"
         :loadUrl="loadUrl"
         :errorUrl="errorUrl"
+        :isShow="true"
         class="flex-shrink border round-4 hidden"
       />
     </SoldOut>

@@ -126,7 +126,11 @@ export default {
       _params.status = this.tabActive + 1;
       listData = await this.$api.getAfterSaleStatusList({ pageNum: this.pageNum, pageSize: this.pageSize, ..._params }); // 申请原因/处理中列表
     } else {
-      listData = await this.$api.getAfterSaleList({ pageNum: this.pageNum, pageSize: this.pageSize, status: 1}); // 售后申请列表
+      if (this.$route.query.orderId) {
+        listData = await this.$api.getAfterSaleList({ pageNum: this.pageNum, pageSize: this.pageSize, status: 1, orderId: this.$route.query.orderId}); // 某一个订单售后申请列表
+      } else {
+        listData = await this.$api.getAfterSaleList({ pageNum: this.pageNum, pageSize: this.pageSize, status: 1}); // 售后申请列表
+      }
     }
 
     if (listData.code != 0) return false;
@@ -188,6 +192,15 @@ export default {
     },
     onRefresh() { // 下拉刷新
       this.pageNum = 1;
+      if (this.$route.query.orderId) { // 从我的订单页面跳转过来查看售后订单，刷新之后展示全部售后订单
+        this.$router.replace({
+          name: 'me-aftersale'
+        })
+        setTimeout(() => {
+          this.$fetch();
+        }, 100);
+        return false;
+      }
       this.$fetch();
     },
     onLoad() {

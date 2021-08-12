@@ -61,14 +61,16 @@
       <van-cell class="ptb-12 plr-0" :border="false" title="My Order" is-link value="View All" value-class="green" title-class="black" :to="$store.state.user.authToken ? { name: 'me-order' } : { name: 'login' }" />
       <div class="flex between tc">
         <nuxt-link v-for="(orderItem, orderIndex) in orderList" :key="'oder-' + orderIndex" :to="$store.state.user.authToken ? { name: orderItem.name, query: { type: orderItem.type } } : { name: 'login' }" >
-          <BmImage 
-            :url="require('@/assets/images/icon/' + orderItem.icon + '.png')"
-            :width="'0.8rem'" 
-            :height="'0.8rem'"
-            :isLazy="false"
-            :isShow="false"
-          />
-          <p>{{ orderItem.text }}</p>
+          <van-badge :content="orderItem.count" :color="orderItem.count == 0 ? '#fff': ''">
+            <BmImage 
+              :url="require('@/assets/images/icon/' + orderItem.icon + '.png')"
+              :width="'0.8rem'" 
+              :height="'0.8rem'"
+              :isLazy="false"
+              :isShow="false"
+            />
+            <p>{{ orderItem.text }}</p>
+          </van-badge>
         </nuxt-link>
       </div>
     </div>
@@ -89,6 +91,7 @@
 
 <script>
 import { Badge, Cell, CellGroup } from 'vant';
+import { getOrderCount } from '@/api/order';
 
 export default {
   components: {
@@ -103,7 +106,8 @@ export default {
           icon: 'to-pay-icon',
           text: 'To Pay', // 待付款
           name: 'me-order',
-          type: 1
+          type: 1,
+          count: 0
         },
         // {
         //   icon: 'to-ship-icon',
@@ -115,17 +119,20 @@ export default {
           icon: 'to-receive-icon',
           text: 'To Receive', // 待收货
           name: 'me-order',
-          type: 2
+          type: 2,
+          count: 0
         },
         {
           icon: 'to-rate-icon',
           text: 'To Rate', // 待评价
-          name: 'me-order-rate'
+          name: 'me-order-rate',
+          count: 0
         },
         {
           icon: 'to-refund-icon',
           text: 'To Refund', // 退款
-          name: 'me-aftersale'
+          name: 'me-aftersale',
+          count: 0
         }
       ],
       otherList: [ // 其他设置列表
@@ -179,7 +186,11 @@ export default {
       }
     }
   },
-  created() {
+  activated() {
+    getOrderCount().then(res => {
+      this.orderList[0].count = res.data.await_pay_count; // 待支付订单数
+      this.orderList[1].count = res.data.await_take_good_count; // 待收货订单数
+    })
   },
   methods: {
     goLogin() { // 跳转到登录页面

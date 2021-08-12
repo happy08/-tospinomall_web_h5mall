@@ -3,16 +3,22 @@
   <div class="vh-100 bg-grey">
     <div class="bg-green-linear">
       <van-sticky @scroll="stickyScroll" ref="headerStickyContainer">
-        <BmHeaderNav :left="{ isShow: true }" :title="isScrollShow ? '' : '你可能还喜欢'" :border="false" :color="isScrollShow ? 'white' : 'black'" :bg_color="isScrollShow ? 'bg-green-linear' : 'white'" />
+        <BmHeaderNav :left="{ isShow: true, isEmit: true }" :title="isScrollShow ? '' : '你可能还喜欢'" :border="false" :color="isScrollShow ? 'white' : 'black'" :bg_color="isScrollShow ? 'bg-green-linear' : 'white'"  @leftClick="leftClick" />
       </van-sticky>
       
       <!-- 结果提示 -->
       <div class="tc flex center">
-        <!-- 成功图标 -->
-        <BmIcon :name="'wancheng1'" :width="'0.4rem'" :height="'0.4rem'" :color="'#fff'" />
-        <!-- 失败图标 -->
-        <!-- <i class="iconfont icon-guanbi2 white fs-24"></i> -->
-        <span class="ml-4 white fs-18">Payment successful</span>
+        <!-- 失败 -->
+        <template v-if="$route.query.isSuccess && $route.query.isSuccess == 0">
+          <BmIcon :name="'guanbi2'" :width="'0.4rem'" :height="'0.4rem'" :color="'#fff'" />
+          <span class="ml-4 white fs-18">Payment failed</span>
+        </template>
+        <!-- 成功 -->
+        <template v-else>
+          <BmIcon :name="'wancheng1'" :width="'0.4rem'" :height="'0.4rem'" :color="'#fff'" />
+          <span class="ml-4 white fs-18">Payment successful</span>
+        </template>
+        
       </div>
 
       <!-- 按钮 -->
@@ -38,13 +44,13 @@
         @load="onLoad"
       >
         <div class="mlr-12 flex between flex-wrap">
-          <ProductTopBtmSingle
-            :img="{ url: searchItem.mainPictureUrl, width: '3.4rem', height: '3.4rem', loadImage: require('@/assets/images/product-bgd-170.png') }" 
-            :detail="{ desc: searchItem.productTitle, price: searchItem.productPrice, rate: parseFloat(searchItem.starLevel), volumn: searchItem.saleCount, ellipsis: 2, country: searchItem.supplyCountryName, country_url: searchItem.supplyCountryIcon }"
-            v-for="(searchItem, searchIndex) in recommendList"
-            :key="'search-list-' + searchIndex"
-            class="mb-12"
-          />
+          <nuxt-link :to="{ name: 'cart-product-id', params: { id: searchItem.productId } }" v-for="(searchItem, searchIndex) in recommendList" :key="'search-list-' + searchIndex">
+            <ProductTopBtmSingle
+              :img="{ url: searchItem.mainPictureUrl, width: '3.4rem', height: '3.4rem', loadImage: require('@/assets/images/product-bgd-170.png') }" 
+              :detail="{ desc: searchItem.productTitle, price: searchItem.productPrice, rate: parseFloat(searchItem.starLevel), volumn: searchItem.saleCount, ellipsis: 2, country: searchItem.supplyCountryName, country_url: searchItem.supplyCountryIcon }"
+              class="mb-12"
+            />
+          </nuxt-link>
         </div>
       </van-list>
     </div>
@@ -127,6 +133,13 @@ export default {
         }
       }
     },
+    leftClick() {
+      if (this.$route.query.isSuccess || this.$route.query.isSuccess == 0) { // 订单余额支付
+        this.$router.go(-2);
+      } else { // 订单其他支付
+        this.$router.go(-3);
+      }
+    }
   },
   beforeDestroy(){
     window.removeEventListener('scroll', this.stickyScroll); // 离开页面清除滚动事件

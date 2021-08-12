@@ -155,3 +155,37 @@ export function revokeApply(data) {
     data: qs.stringify(data)
   })
 }
+
+/**
+ * 获取个人订单统计
+ */
+export function getOrderCount() {
+  return request({
+    url: '/api/order/omsorder/buyer/get/count',
+    method: 'get'
+  })
+}
+
+/**
+ * 买家确定收货
+ */
+export function confirmReceiptOrder(orderId) {
+  return request({
+    url: `/api/order/omsorder/buyer/take/${orderId}`,
+    method: 'get'
+  })
+}
+
+/**
+ * 新增商品评价
+ */
+export function addEvaluate(data) {
+  return request({
+    url: '/api/product/evaluate/save',
+    method: 'post',
+    data: data,
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+}

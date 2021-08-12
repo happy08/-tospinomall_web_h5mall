@@ -10,7 +10,7 @@ const tip = msg => {
   });
 };
 
-export default function({ $axios, app, redirect, store, route }) {
+export default function({ $axios, app, redirect, store }) {
   $axios.defaults.timeout = 30000; // 超时
 
   $axios.onRequest(config => {
@@ -72,6 +72,7 @@ export default function({ $axios, app, redirect, store, route }) {
   $axios.onError(error => {
     if (error.code > 0) {
       if (error.code === 10401) { // 用户凭证已过期，先刷新token
+
         store.dispatch('user/GetRefreshToken');
       }
       tip(error.msg);

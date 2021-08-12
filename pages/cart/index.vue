@@ -140,13 +140,14 @@
           :offset="500"
         >
           <div class="mlr-12 flex between flex-wrap">
-            <ProductTopBtmSingle
-              :img="{ url: searchItem.mainPictureUrl, width: '3.4rem', height: '3.4rem', loadImage: require('@/assets/images/product-bgd-170.png') }" 
-              :detail="{ desc: searchItem.productTitle, price: searchItem.productPrice, rate: parseFloat(searchItem.starLevel), volumn: searchItem.saleCount, ellipsis: 2, country: searchItem.supplyCountryName, country_url: searchItem.supplyCountryIcon }"
-              v-for="(searchItem, searchIndex) in recommendList"
-              :key="'search-list-' + searchIndex"
-              class="mb-12"
-            />
+            <nuxt-link :to="{ name: 'cart-product-id', params: { id: searchItem.productId } }" v-for="(searchItem, searchIndex) in recommendList" :key="'search-list-' + searchIndex">
+              <ProductTopBtmSingle
+                :img="{ url: searchItem.mainPictureUrl, width: '3.4rem', height: '3.4rem', loadImage: require('@/assets/images/product-bgd-170.png') }" 
+                :detail="{ desc: searchItem.productTitle, price: searchItem.productPrice, rate: parseFloat(searchItem.starLevel), volumn: searchItem.saleCount, ellipsis: 2, country: searchItem.supplyCountryName, country_url: searchItem.supplyCountryIcon }"
+                class="mb-12"
+              />
+            </nuxt-link>
+            
           </div>
         </van-list>
       </div>
@@ -267,14 +268,15 @@ export default {
       }).map(resultItem => {
         return resultItem.productSku;
       }));
+      let result = storeItem.products.filter(selectItem => { // 是否选中
+        return selectItem.isSelect == 1;
+      }).map(resultItem => {
+        return resultItem.id;
+      })
       return {
         ...storeItem,
-        result: storeItem.products.filter(selectItem => { // 是否选中
-          return selectItem.isSelect == 1;
-        }).map(resultItem => {
-          return resultItem.id;
-        }),
-        isAll: false, // 是否全选
+        result: result,
+        isAll: result.length == storeItem.products.length ? true : false, // 是否全选
         isEmpty: storeItem.products.filter(selectItem => { // 是否选中
           return selectItem.stock == '' || selectItem.stock == 0;
         })
