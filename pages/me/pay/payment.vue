@@ -125,6 +125,7 @@ export default {
         vm.payRadio = 100;
         vm.account = '';
         vm.isBackDialog = false;
+        vm.balanceShow = false;
       } else if (from.name === 'me-pay-wait') { // 从确认订单页面回来
         vm.isBackDialog = true;
       }
