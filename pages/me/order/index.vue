@@ -26,7 +26,7 @@
 
     <!-- 分类 -->
     <van-tabs sticky swipeable animated color="#42B7AE" offset-top="1.6rem"  @change="getSearchList" class="customs-van-tabs" v-model="typeActive" :ellipsis="false" >
-      <van-tab v-for="(productItem, tabIndex) in tabs" :title="productItem.name" :key="'scroll-tab-' + tabIndex" title-class="border-b" :name="productItem.type">
+      <van-tab v-for="(tabItem, tabIndex) in tabs" :title="tabItem.name" :key="'scroll-tab-' + tabIndex" title-class="border-b" :name="tabItem.type">
         <PullRefresh :refreshing="refreshing" @refresh="onRefresh" :class="{ 'bg-white': lists.length === 0 }">
           <van-list
             v-model="loading"
@@ -43,9 +43,9 @@
               <!-- 订单列表 -->
               <div v-else v-for="(item,index) in lists" :key="index" class="w-100 plr-12 mb-12  pb-20 pt-24 bg-white">
                 <!-- 订单店铺 -->
-                <OrderStoreSingle :name="item.storeName" :status="item.status | statusFormat" @goStoreDetail="goOrderDetail(item.items[0].orderId)">
+                <OrderStoreSingle :name="item.storeName" :status="item.status | statusFormat(item)" @goStoreDetail="goOrderDetail(item.id)">
                   <!-- 如果是取消状态，则该订单可删除，添加操作展示  -->
-                  <div slot="other-deal" class="flex vcenter" v-if="item.status == 5 || item.status == 6">
+                  <div slot="other-deal" class="flex vcenter" v-if="item.status == 5 || item.status == 6 || item.status == 4">
                     <span class="block line-style"></span>
                     <BmImage 
                       :url="require('@/assets/images/icon/delete-icon.svg')"
@@ -65,13 +65,13 @@
                     :product_size="productItem.goodAttr"
                     :price="productItem.goodPrice"
                     :product_num="item.totalQuantity"
-                    @onClick="goOrderDetail(productItem.orderId)"
+                    @onClick="goOrderDetail(item.id)"
                     v-for="(productItem,productIndex) in item.items"
                     :key="productIndex"
                   />
                 </template>
                 <!-- 多个商品 -->
-                <div v-else class="more-order-content">
+                <div v-else class="more-order-content" @click="goOrderDetail(item.id)">
                   <swiper
                     ref="swiperComponentRef"
                     :class="{ 'swiper mt-20 order-page__global-swiper': true, 'swiper-no-swiping' : item.totalQuantity <= 4 }"
@@ -81,12 +81,13 @@
                       loopFillGroupWithBlank: item.totalQuantity > 4
                     }"
                   >
-                    <swiper-slide v-for="(productItem,productIndex) in item.items" :key="'swiper-' + productIndex" @click="goOrderDetail(productItem.orderId)">
+                    <swiper-slide v-for="(productItem,productIndex) in item.items" :key="'swiper-' + productIndex">
                       <BmImage 
                         :url="productItem.goodImg"
                         :width="'1.68rem'" 
                         :height="'1.68rem'"
                         :isLazy="false"
+                        :isShow="true"
                         class="flex-shrink border round-4 hidden"
                       />
                     </swiper-slide>
@@ -247,7 +248,7 @@ export default {
       ],
       lists: [],
       filterPopup: false,
-      typeActive: this.$route.query.type ? this.$route.query.type : 100,
+      typeActive: 100,
       loading: false,
       finished: false,
       refreshing: {
@@ -279,15 +280,20 @@ export default {
       beforeTwoYear: ''
     }
   },
+  beforeRouteEnter(to, from, next) { // 从绑定或修改页面进入重置值为空
+    next(vm => {
+      if (from.name === 'me' || from.name == null) {
+        vm.typeActive = vm.$route.query.type ? parseFloat(vm.tabs[vm.$route.query.type].type) : vm.typeActive;
+      }
+    });
+  },
   async fetch() {
-    if (this.$route.query.type && this.isFirst) this.typeActive = this.tabs[this.$route.query.type].type;
-
     if (this.typeActive == 100) { // 全部
       this.params = {
         pageNum: this.params.pageNum,
         pageSize: this.params.pageSize
       }
-    } else if (this.filterTimeType == 0) {
+    } else {
       this.params = {
         pageNum: this.params.pageNum,
         pageSize: this.params.pageSize,
@@ -314,8 +320,8 @@ export default {
     this.isFirst = false;
   },
   filters: {
-    statusFormat(val) {
-      return val == 0 ? '待付款' : val == 1 ? '待发货' : val == 2 ? '待收货' : val == 3 ? '待评价' : val == 4 ? '已完成' : val == 5 ? '已取消' : val == 6 ? '交易关闭' : val == 7 ? '已拒收' : '其他';
+    statusFormat(val, item) {
+      return val == 0 ? '待付款' : val == 1 ? '待发货' : val == 2 ? '待收货' : val == 3 || (val == 4 && item.hasComment == 0) ? '待评价' : val == 4 && item.hasComment == 1 ? '已完成' : val == 5 ? '已取消' : val == 6 ? '交易关闭' : val == 7 ? '已拒收' : '其他';
     }
   },
   activated() {
@@ -331,7 +337,9 @@ export default {
     })
   },
   methods: {
-    async getSearchList() { // 获取分类列表
+    async getSearchList(index) { // 获取分类列表
+      console.log(index)
+      // this.typeActive = index;
       this.params.pageNum = 1;
       this.$fetch();
     },

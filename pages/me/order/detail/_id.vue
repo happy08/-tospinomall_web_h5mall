@@ -46,7 +46,7 @@
     </div>
     
     <!-- 运输方式，待收货时展示 -->
-    <van-cell class="p-20" :title="'Fulfillment by Tospino'" is-link title-class="fw black ml-12" :to="{ name: 'me-order-detail-logistics' }" v-if="detail.status == 2">
+    <van-cell class="p-20" :title="detail.latestLogistics" is-link title-class="fw black ml-12" :to="{ name: 'me-order-detail-logistics', query: { deliverySn: detail.deliverySn } }" v-if="detail.status == 2">
       <!-- 左侧图标 -->
       <template #icon>
         <van-icon :name="require('@/assets/images/icon/car-icon.png')" size="0.48rem" />
@@ -80,9 +80,12 @@
         <!-- 待付款状态/待发货/已取消/超时关闭/已拒收 -->
         <BmButton v-if="detail.status == 0 || detail.status == 1 || detail.status == 5 || detail.status == 6 || detail.status == 7" type="info" plain class="plr-12 round-8 h-30 mt-24" @click="addCart(item)">{{ $t('me.order.addShopCart') }}</BmButton>
 
+        
         <!-- 待收货状态 / 已完成状态 -->
-        <div v-else-if="detail.status == 2 || detail.status == 4">
-          <BmButton type="default" plain class="plr-12 round-8 h-30 mt-24">{{ $t('me.order.afterSales') }}</BmButton>
+        <!-- 退款/售后：在线支付[待发货1且已支付1且可售后1,待收货2且已支付1且可售后1,已完成4且可售后1]；货到付款[待发货1且已支付1且可售后1,待收货2且可售后1,已完成4且可售后1] -->
+        
+        <div v-else-if="detail.status == 2 || detail.status == 4" class="mt-24">
+          <BmButton class="fs-14 ml-10 round-8 plr-12 h-30 gery-border" :type="'info'" v-if="(detail.paymentType == 1 && (((detail.status == 1 || detail.status == 2) && detail.payState == 1) || detail.status == 4)  && detail.showAfterSale == 1) || (detail.paymentType == 0 && ((detail.status == 1 && detail.payState == 1) || detail.status == 2 || detail.status == 4) && detail.showAfterSale == 1)" @btnClick="onApplyAfterSale(item)">申请售后</BmButton>
           <BmButton :type="'info'" class="h-30 ml-10" @click="addCart(item)">{{ $t('me.order.addShopCart') }}</BmButton>
         </div>
       </div>
@@ -142,11 +145,11 @@
       <!-- 去支付：在线支付[待付款0] -->
       <BmButton class="fs-14 ml-10 round-0 plr-30 v-100" v-if="detail.paymentType == 1 && detail.status == 0" @btnClick="onPay(detail)">去支付</BmButton>
       <!-- 去评价：在线支付[已完成4且未评价0]；货到付款[已完成4且未评价0] -->
-      <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" v-if="detail.hasComment == 0 && detail.status == 4">去评价</BmButton>
-      <!-- 退款/售后：在线支付[待发货1且已支付1且可售后1,待收货2且已支付1且可售后1,已完成4且可售后1]；货到付款[待发货1且已支付1且可售后1,待收货2且可售后1,已完成4且可售后1] -->
-      <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" v-if="(detail.paymentType == 1 && (((detail.status == 1 || detail.status == 2) && detail.payState == 1) || detail.status == 4)  && detail.showAfterSale == 1) || (detail.paymentType == 0 && ((detail.status == 1 && detail.payState == 1) || detail.status == 2 || detail.status == 4) && detail.showAfterSale == 1)">退款/售后</BmButton>
+      <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" v-if="detail.hasComment == 0 && detail.status == 4" @btnClick="onRate(detail)">去评价</BmButton>
+      <!-- 退款/售后：在线支付[待发货1且已支付1且可售后1, 该处2/4不展示[待收货2且已支付1且可售后1,已完成4且可售后1]]；货到付款[待发货1且已支付1且可售后1,该地方不展示[待收货2且可售后1,已完成4且可售后1]] -->
+      <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" v-if="(detail.paymentType == 1 && (((detail.status == 1) && detail.payState == 1))  && detail.showAfterSale == 1) || (detail.paymentType == 0 && ((detail.status == 1 && detail.payState == 1)) && detail.showAfterSale == 1)" @btnClick="onAfterSale(detail)">退款/售后</BmButton>
       <!-- 确认收货：在线支付[待收货2且已支付1]；货到付款[待收货2] -->
-      <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" v-if="(detail.paymentType == 1 && detail.status == 2 && detail.payState == 1) || (detail.paymentType == 0 && detail.status == 2)">确认收货</BmButton>
+      <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" v-if="(detail.paymentType == 1 && detail.status == 2 && detail.payState == 1) || (detail.paymentType == 0 && detail.status == 2)" @btnClick="onReceipt(detail)">确认收货</BmButton>
       <!-- 去购买：待发货1,待收货2,待评价3,已完成4,已取消5,超时未付款6,已拒收7,其他8 -->
       <BmButton class="fs-14 ml-10 round-0 plr-30 v-100" v-if="detail.status != 0" @btnClick="onBuy(detail)">{{ $t('me.order.buyAgain') }}</BmButton>
     </div>
@@ -204,7 +207,7 @@ import OrderSingle from '@/components/OrderSingle';
 import OrderStoreSingle from '@/components/OrderStoreSingle';
 import ClipboardJS from 'clipboard';
 import ProductTopBtmSingle from '@/components/ProductTopBtmSingle';
-import { getOrderDetail, cancelOrder, getOrderReasonList } from '@/api/order';
+import { getOrderDetail, cancelOrder, getOrderReasonList, confirmReceiptOrder } from '@/api/order';
 import { addCart } from '@/api/cart';
 
 export default {
@@ -285,15 +288,19 @@ export default {
         clipboard.destroy()
       })
     },
-    onReceipt() { // 确认收货弹窗
+    onReceipt(orderItem) { // 确认收货
       this.$dialog.confirm({
-        message: this.$t('me.order.receiptConfirmTip'),
-        onfirmButtonText: this.$t('common.confirm'),
+        message: `确认收货后，您的订单将开始履行售后条款，请再次确认您已经收到货品`,
+        onfirmButtonText: '确认收货',
         confirmButtonColor: '#42B7AE',
         cancelButtonText: this.$t('common.cancel'),
         cancelButtonColor: '#383838'
       }).then(() => {
+        confirmReceiptOrder(orderItem.id).then(res => {
+          if (res.code != 0) return false;
 
+          this.getOrderDetail();
+        })
       }).catch(() => {
 
       })
@@ -403,6 +410,30 @@ export default {
           amount: orderItem.productAmount,
           orderIds: JSON.stringify({orderIds: [orderItem.id]}),
           comfirmOrder: 1
+        }
+      })
+    },
+    onAfterSale(orderItem) { // 退款售后
+      this.$router.push({
+        name: 'me-aftersale',
+        query: {
+          orderId: orderItem.id
+        }
+      })
+    },
+    onRate(orderItem) { // 去评价
+      this.$router.push({
+        name: 'me-order-rate',
+        query: {
+          orderId: orderItem.id
+        }
+      })
+    },
+    onApplyAfterSale(orderItem) { // 申请售后
+      this.$router.push({
+        name: 'me-aftersale-apply',
+        query: {
+          itemId: orderItem.id
         }
       })
     }

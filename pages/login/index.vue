@@ -113,6 +113,8 @@ export default {
       authLogin({ username: this.account, password: this.password, grant_type: 'password' }).then(res => {
         if (res.code != 0) return false;
         this.$store.commit('user/SET_TOKEN', res.data.token_type + ' ' + res.data.access_token);
+        this.$store.commit('user/SET_REFRESHTOKEN', res.data.refresh_token);
+        this.$store.commit('user/SET_SCOPE', res.data.scope);
         // 获取用户信息
         this.$store.dispatch('user/GetUserInfo', res.data.token_type + ' ' + res.data.access_token);
         // 登录成功跳转到首页

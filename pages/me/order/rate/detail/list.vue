@@ -42,7 +42,7 @@
         v-model="loading"
         :finished="finished"
         @load="onLoad"
-        :finished-text="list.length == 0 ? '' : '没有更多了'"
+        :finished-text="list.length == 0 ? '' : ''"
       >
         <div class="mt-12 pt-14 bg-white pb-20" v-for="(item, index) in list" :key="'review-' + index">
           <!-- 用户头像、昵称、日期 -->
@@ -63,14 +63,14 @@
             <div class="light-grey fs-14">{{ item.createTime }}</div>
           </div>
           <!-- 评分 -->
-          <div class="mt-14 flex vcenter plr-20" @click="goDetail(item.id)">
+          <div class="mt-14 flex vcenter plr-20" @click="goDetail(item)">
             <van-rate v-model="item.goodsScores" allow-half readonly size="14" color="#F7B500" void-color="#DDDDDD" void-icon="star" />
             <div class="grey ml-12">{{ item.saleAttr }}</div>
           </div>
           <!-- 描述 -->
-          <p class="black fs-14 mt-10 border-b plr-20 pb-20" @click="goDetail(item.id)">{{ item.content }}</p>
+          <p class="black fs-14 mt-10 border-b plr-20 pb-20" @click="goDetail(item)">{{ item.content }}</p>
           <!-- 展示图片 -->
-          <div class="mt-20 flex flex-wrap plr-20" v-if="item.pictures.length > 0" @click="goDetail(item.id)">
+          <div class="mt-20 flex flex-wrap plr-20" v-if="item.pictures.length > 0" @click="goDetail(item)">
             <div v-for="(picItem, picIndex) in item.pictures" :key="'pic-' + picItem.id">
               <BmImage
                 :url="picItem.imgUrl"
@@ -90,7 +90,7 @@
             <!-- 追加评论 -->
             <template v-if="item.additionalEvaluates && item.additionalEvaluates.length > 0">
               <p class="fw black fs-14">购买后追评</p>
-              <div v-for="addItem in item.additionalEvaluates" :key="'add-review-' + addItem.id">
+              <div v-for="addItem in item.additionalEvaluates" :key="'add-review-' + addItem.id" @click="goDetail(item)">
                 <p class="black fs-14 mt-10">{{ addItem.content }}</p>
                 <div class="mt-10 flex flex-wrap">
                   <div v-for="(addPicItem, addPicIndex) in addItem.pictures" :key="'add-pic-' + addPicItem.id">
@@ -111,7 +111,7 @@
             <!-- <van-cell class="plr-0 ptb-20" :title="$t('me.report.reviewAfterPurchase')" title-class="fw black fs-14" label-class="fs-14 color-666" label="The quality is very good. Mom likes it very much" /> -->
             <!-- 卖家回复 -->
             <template v-if="item.sellerReplyList">
-              <van-cell class="plr-0 ptb-10" title-class="fs-14" v-for="(replyItem, replyIndex) in item.sellerReplyList" :key="'reply-' + replyIndex">
+              <van-cell class="plr-0 ptb-10" title-class="fs-14" v-for="(replyItem, replyIndex) in item.sellerReplyList" :key="'reply-' + replyIndex" @click="goDetail(item)">
                 <template #title>
                   <span class="red">{{ replyItem.replyName }}: </span>
                   <span class="color-666">{{ replyItem.replyContent }}</span>
@@ -123,7 +123,7 @@
           <div class="clear flex hend vcenter mt-12 plr-20">
             <!-- report按钮 -->
             <BmButton :type="'info'" class="h-30 round-8 black time-out fr" @btnClick="onReport(item.id)">{{ $t('me.report.report') }}</BmButton>
-            <div class="ml-20 flex vcenter black fs-14">
+            <div class="ml-20 flex vcenter black fs-14" @click="goDetail(item)">
               <span>{{ item.replyCount }}</span>
               <BmImage
                 :url="require('@/assets/images/icon/message-icon.png')"
@@ -153,7 +153,6 @@ import { getRateList, addGive } from '@/api/product';
 import PullRefresh from '@/components/PullRefresh';
 
 export default {
-  middleware: 'authenticated',
   components: {
     vanCheckbox: Checkbox,
     vanCell: Cell,
@@ -185,7 +184,14 @@ export default {
   },
   methods: {
     getList() { // 获取数据
-      getRateList({ goodsId: this.$route.query.id, pageNum: this.pageNum, pageSize: this.pageSize }).then(res => {
+      let _params = { goodsId: this.$route.query.id, pageNum: this.pageNum, pageSize: this.pageSize }
+      if (this.tabActive == 1) {
+        _params.sortType = 1; // 最新创建时间排序
+      }
+      if (this.tabActive == 2) {
+        _params.hasType = 8; // 有视频/图片
+      }
+      getRateList(_params).then(res => {
         if (res.code != 0) return false;
 
         let list = res.data.records.map(item => {
@@ -204,6 +210,12 @@ export default {
       })
     },
     onReport(id) { // 举报
+      if (!this.$store.state.user.authToken) {
+        this.$router.push({
+          name: 'login'
+        })
+        return false;
+      }
       this.$router.push({
         name: 'me-order-rate-report-id',
         params: {
@@ -212,6 +224,12 @@ export default {
       })
     },
     addGive(item) { // 点赞
+      if (!this.$store.state.user.authToken) {
+        this.$router.push({
+          name: 'login'
+        })
+        return false;
+      }
       if (item.isGiveLike == 1) { // 已点赞，取消点赞
         return false;
       }

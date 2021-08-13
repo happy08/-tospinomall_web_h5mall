@@ -28,7 +28,7 @@ export const mutations = {
 
 export const actions = {
   // 数据持久化
-  async nuxtServerInit ({ commit }, { $cookies, $api }) {
+  async nuxtServerInit ({ commit, dispatch }, { $cookies, $api }) {
     const lang = $cookies.get('lang'); // 语言
     commit('SET_LANG', lang);
     
@@ -36,11 +36,18 @@ export const actions = {
     console.log('持久化')
     console.log(authToken)
     // 如果有token获取用户信息
-    if (authToken) {
-      commit('user/SET_TOKEN', authToken);
-      const userInfoData = await $api.getUserInfo(authToken);
-      commit('SET_NOWTIME', userInfoData.data.nowTime); // 获取服务器时间
-      commit('user/SET_USERINFO', userInfoData.data);
+    if (authToken) { // 如果已经登录，每次刷新页面时先重新获取token
+      const authTokenData = await $api.refreshToken();
+      if (authTokenData.code != 0) {
+        commit('user/SET_TOKEN', null);
+        return false;
+      }
+      commit('user/SET_TOKEN', authTokenData.data.token_type + ' ' + authTokenData.data.access_token);
+      commit('user/SET_REFRESHTOKEN', authTokenData.data.refresh_token);
+      commit('user/SET_SCOPE', authTokenData.data.scope);
+      // 获取用户信息
+      const userInfo = await $api.getUserInfo();
+      commit('user/SET_USERINFO', userInfo.data);
     }
 
     const searchList = $cookies.get('searchList'); // 商品搜索历史

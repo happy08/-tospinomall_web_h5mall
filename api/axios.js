@@ -15,7 +15,7 @@ export default function({ $axios, app, redirect, store }) {
 
   $axios.onRequest(config => {
     // 调用登录接口的时候需要固定值 Basic YnV5ZXI6YnV5ZXI= , 登录之后需要在headers中传用户token
-    console.log(config)
+    // console.log(config)
     config.headers['Authorization'] = 'Basic YnV5ZXI6YnV5ZXI=';
     if (config.method === 'post' || config.method === 'get') {
       config.headers['Content-Type'] = config.headers['Content-Type'] || 'application/x-www-form-urlencoded';
@@ -24,10 +24,11 @@ export default function({ $axios, app, redirect, store }) {
     }
     console.log(22222222222222222)
     // 登录之后要重新复值token
-    if (store.state.user.authToken && config.url != '/api/auth/oauth/token?grant_type=refresh_token') {
+    if (store.state.user.authToken && config.url != '/auth/oauth/token?grant_type=refresh_token') {
       config.headers['Authorization'] = `${store.state.user.authToken}`;
     }
     config.headers.language = store.state.locale;
+    console.log(config)
     // const _local = JSON.parse(localStorage.getItem('b2c-store'));
     // console.log(localStorage.getItem('b2c-store'))
     // if (_local.user.authToken) { // 已登录需要改变头部token
@@ -50,19 +51,16 @@ export default function({ $axios, app, redirect, store }) {
     //响应成功
     if (res) {
       if (res.data.code === 0) {
-        //0 数据成功
         return res.data; //Promise.resolve(res.data);
-      }
-      else if (res.data.code === 10401) {
-        store.dispatch('user/GetRefreshToken'); // 用户凭证已过期，先刷新token
-      }
-      else {
+      } else if (res.data.code === 10401) { // 用户凭证过期跳转到登录页面
+        store.commit('user/SET_TOKEN', null);
+      } else {
         if (res.data.msg) {
           console.log(res.data.msg)
           tip(res.data.msg);
         }
       }
-      return Promise.reject(res.data);
+      return Promise.resolve(res.data);
     } else {
       //无响应
       return Promise.reject(res);
@@ -71,11 +69,14 @@ export default function({ $axios, app, redirect, store }) {
 
   $axios.onError(error => {
     if (error.code > 0) {
-      if (error.code === 10401) { // 用户凭证已过期，先刷新token
-
-        store.dispatch('user/GetRefreshToken');
+      if (error.code === 10401) { // 用户凭证过期跳转到登录页面
+        store.commit('user/SET_TOKEN', null);
+        // redirect({
+        //   name: 'login'
+        // })
       }
       tip(error.msg);
+      
       return Promise.reject(error);
     }
     const { response } = error;
@@ -83,7 +84,7 @@ export default function({ $axios, app, redirect, store }) {
       // 请求已发出，但是不在2xx的范围
       errorHandle(response.status, redirect, store);
       // 可以新建一个错误页面来展示错误
-      console.log(response.status)
+      // console.log(response.status)
       // redirect({
       //   name: 'error',
       //   query: {
@@ -93,12 +94,12 @@ export default function({ $axios, app, redirect, store }) {
       return Promise.reject(response);
     } else {
       // 处理断网的情况
-      redirect({
-        name: 'error',
-        query: {
-          status: 100000000
-        }
-      })
+      // redirect({
+      //   name: 'error',
+      //   query: {
+      //     status: 100000000
+      //   }
+      // })
       return Promise.reject();
     }
   });
@@ -114,12 +115,11 @@ const errorHandle = (status, redirect, store) => {
     case 401:
       redirect('/login');
       break;
-    case 403:
+    case 10401:
       tip('登录过期，请重新登录');
-      // store.commit('user/SET_TOKEN', null); // 清除token并跳转登录页
-      setTimeout(() => {
-        redirect('/login');
-      }, 1000);
+      // setTimeout(() => {
+      //   redirect('/login');
+      // }, 1000);
       break;
     case 404:
       tip('请求的资源不存在');

@@ -83,7 +83,8 @@
 
 <script>
 import { Cell, CellGroup, Rate, Uploader, Checkbox, Field } from 'vant';
-import { getOrderItem, addEvaluate } from '@/api/order';
+import { getOrderItem } from '@/api/order';
+import { addEvaluate } from '@/api/product';
 import { getPicUrl } from '@/api/user';
 
 export default {
@@ -150,7 +151,9 @@ export default {
           expressPackingScores: this.expressPackingScores, // 快递包装打分
         }
       }
-      addEvaluate(_data).then(res => {
+      addEvaluate(_data).then(() => {
+        this.fileList = [];
+        this.imgList = [];
         this.$router.go(-1);
       })
     },

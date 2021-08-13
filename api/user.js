@@ -3,20 +3,6 @@ import qs from 'qs';
 import { encrypt } from './cryptoAES'; // 加密解密
 
 /**
- * 获取用户信息
- */
-export function getUserInfo(token) {
-  return request({
-    url: '/api/admin/ums/buyer/findCurrentUserinfo',
-    method: 'get',
-    headers: {
-      Authorization: token,
-      'Content-Type': 'application/json'
-    }
-  })
-}
-
-/**
  * 修改用户信息
  */
 export function updateUserInfo(data) {

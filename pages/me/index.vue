@@ -61,7 +61,7 @@
       <van-cell class="ptb-12 plr-0" :border="false" title="My Order" is-link value="View All" value-class="green" title-class="black" :to="$store.state.user.authToken ? { name: 'me-order' } : { name: 'login' }" />
       <div class="flex between tc">
         <nuxt-link v-for="(orderItem, orderIndex) in orderList" :key="'oder-' + orderIndex" :to="$store.state.user.authToken ? { name: orderItem.name, query: { type: orderItem.type } } : { name: 'login' }" >
-          <van-badge :content="orderItem.count" :color="orderItem.count == 0 ? '#fff': ''">
+          <van-badge :content="orderItem.count" :color="orderItem.count == 0 ? '#fff': ''" max="99">
             <BmImage 
               :url="require('@/assets/images/icon/' + orderItem.icon + '.png')"
               :width="'0.8rem'" 
@@ -69,8 +69,8 @@
               :isLazy="false"
               :isShow="false"
             />
-            <p>{{ orderItem.text }}</p>
           </van-badge>
+          <p>{{ orderItem.text }}</p>
         </nuxt-link>
       </div>
     </div>
@@ -187,10 +187,12 @@ export default {
     }
   },
   activated() {
-    getOrderCount().then(res => {
-      this.orderList[0].count = res.data.await_pay_count; // 待支付订单数
-      this.orderList[1].count = res.data.await_take_good_count; // 待收货订单数
-    })
+    if (this.$store.state.user.authToken) {
+      getOrderCount().then(res => {
+        this.orderList[0].count = res.data.await_pay_count; // 待支付订单数
+        this.orderList[1].count = res.data.await_take_good_count; // 待收货订单数
+      })
+    }
   },
   methods: {
     goLogin() { // 跳转到登录页面

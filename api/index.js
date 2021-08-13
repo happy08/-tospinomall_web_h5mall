@@ -171,6 +171,28 @@ export default ({ app }, inject) => {
           'Content-Type': 'application/json'
         }
       })
+    },
+    refreshToken() { // 刷新token
+      return app.$axios({
+        url: `${url}/auth/oauth/token?grant_type=refresh_token`,
+        method: 'post',
+        data: qs.stringify({
+          scope: app.$cookies.get('scope'),
+          refresh_token: app.$cookies.get('refreshToken')
+        }),
+        headers: {
+          'Authorization': 'Basic YnV5ZXI6YnV5ZXI='
+        }
+      })
+    },
+    logout() { // 退出
+      return app.$axios({
+        url: `${url}/auth/token/logout`,
+        method: 'delete',
+        headers: {
+          Authorization: app.$cookies.get('authToken')
+        }
+      })
     }
   };
 

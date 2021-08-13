@@ -104,7 +104,7 @@
                   <!-- 自定义价格 -->
                   <template #price>
                     <div class="mt-8" @click="goProductDetail(singleItem.productId)">
-                      <span class="red fs-16 fw">{{ $store.state.rate.currency }}{{ singleItem.addCartPrice }}</span>
+                      <span class="red fs-16 fw" v-if="$store.state.rate">{{ $store.state.rate.currency }}{{ singleItem.addCartPrice }}</span>
                       <!-- <span class="grey fs-12 ml-10 line-through">{{ $store.state.rate.currency }}{{ item.cost }}</span> -->
                     </div>
                   </template>
@@ -154,7 +154,7 @@
     </PullRefresh>
 
     <!-- 购物车编辑 -->
-    <div class="bg-white custom-submit-bar pl-16 pr-12 flex vcenter between">
+    <div class="bg-white custom-submit-bar pl-16 pr-12 flex vcenter between" v-if="$store.state.user.authToken">
       <van-checkbox v-model="checked" @click="checkAll">
         全选
         <template #icon="props">
@@ -257,6 +257,11 @@ export default {
     }
   },
   async fetch() {
+    // 获取商品推荐列表
+    const recommendData = await this.$api.getRecommend({type: 0, pageNum: this.pageNum, pageSize: this.pageSize});
+    if (recommendData.code != 0) return false;
+    this.recommendList = recommendData.data.items;
+    this.total = recommendData.data.total;
     // 未登录情况下不获取数据
     if (!this.$store.state.user.authToken) return false;
     this.listTotal = 0;
@@ -284,11 +289,6 @@ export default {
     });
     this.onCountPrice();
     this.refreshing.isFresh = false;
-    // 获取商品推荐列表
-    const recommendData = await this.$api.getRecommend({type: 0, pageNum: this.pageNum, pageSize: this.pageSize});
-    if (recommendData.code != 0) return false;
-    this.recommendList = recommendData.data.items;
-    this.total = recommendData.data.total;
   },
   activated() {
     if (this.$store.state.user.authToken) { // 登录的情况下才请求数据

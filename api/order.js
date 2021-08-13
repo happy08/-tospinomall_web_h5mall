@@ -177,15 +177,11 @@ export function confirmReceiptOrder(orderId) {
 }
 
 /**
- * 新增商品评价
+ * 查看物流信息
  */
-export function addEvaluate(data) {
+export function getLogisticsInfo(no) {
   return request({
-    url: '/api/product/evaluate/save',
-    method: 'post',
-    data: data,
-    headers: {
-      'Content-Type': 'application/json'
-    }
+    url: `/api/order/omsorder/buyer/getLogisticsInfo/${no}`,
+    method: 'get'
   })
 }

@@ -33,7 +33,7 @@
       <van-rate class="mt-10" v-if="detail.rate >= 0" v-model="detail.rate" allow-half size="0.24rem" color="#F7B500" void-color="#DDDDDD" void-icon="star" />
       <div class="mt-12 flex between hidden-1 plr-4 vcenter" v-if="detail.price >= 0 && detail.price != ''">
         <span class="red fs-16 fw">
-          <span class="fm-menlo">{{ $store.state.rate.currency }}</span><span class="fm-din">{{ detail.price }}</span>
+          <span class="fm-menlo" v-if="$store.state.rate">{{ $store.state.rate.currency }}</span><span class="fm-din">{{ detail.price }}</span>
         </span>
         <span v-if="detail.volumn >= 0" class="fs-10 clr-black-25">{{ detail.volumn }}+Sold</span>
       </div>

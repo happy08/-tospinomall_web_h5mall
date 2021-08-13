@@ -1,7 +1,9 @@
+/**
+ * 该部分请求都必须是在客户端发起，服务端发起的请求在api/axios.js中
+ */
 import * as axios from 'axios';
 import { Toast } from 'vant';
 import { url } from './config'; // 导入配置域名
-import { actions } from '@/store/user';
 import { getCookie, setCookie } from './utils';
 
 const service = axios.create({
@@ -90,11 +92,10 @@ service.interceptors.response.use(response => { // 成功
   if (response) {
     if (response.data.code === 0) {
       //0 数据成功
-      return response.data; //Promise.resolve(res.data);
+      return response.data;
     } else if (response.data.code === 10401) { // 用户凭证已过期,跳转到登录页面
       tip(response.data.msg);
-      console.log(actions)
-      actions.dispatch('user/GetRefreshToken'); // 用户凭证已过期，先刷新token
+      $nuxt.$store.commit('user/SET_TOKEN', null); // 用户凭证已过期，先刷新token
       
       return response.data;
     } else {
@@ -109,6 +110,9 @@ service.interceptors.response.use(response => { // 成功
   }
 }, error => { // 失败
   if (error.code > 0) {
+    if (error.code == 10401) {
+      $nuxt.$store.commit('user/SET_TOKEN', null); // 用户凭证已过期，先刷新token
+    }
     console.log('error:');
     console.log(error);
     return;

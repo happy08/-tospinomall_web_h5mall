@@ -57,7 +57,7 @@ export function addGive(id) {
  */
 export function getRateDetail(id, userId) {
   return request({
-    url: `/api/product/evaluate/info`,
+    url: `/api/product/evaluate/info/app`,
     method: 'get',
     params: {
       id,
@@ -93,6 +93,34 @@ export function attentionGoodTop(params) {
 export function reportEvaluate(data) {
   return request({
     url: '/api/product/evaluate/reports',
+    method: 'post',
+    data: data,
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+}
+
+/**
+ * 新增商品评价
+ */
+ export function addEvaluate(data) {
+  return request({
+    url: '/api/product/evaluate/save',
+    method: 'post',
+    data: data,
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+}
+
+/**
+ * 商品评论回复
+ */
+export function replyEvaluate(data) {
+  return request({
+    url: '/api/product/evaluate/reply',
     method: 'post',
     data: data,
     headers: {

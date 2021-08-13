@@ -265,6 +265,7 @@
             v-for="(reviewItem, reviewIndex) in hotEvaluates.lists"
             :key="'reviewItem-' + reviewIndex"
             class="pb-20 border-b"
+            @click="$router.push({ name: 'me-order-rate-detail-list', query: { id: goodSpuVo.id } })"
           >
             <!-- 评论人信息 -->
             <div class="mt-14 flex between plr-20">
