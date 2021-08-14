@@ -107,7 +107,7 @@
             <BmIcon :name="'cellphone'" :width="'0.64rem'" :height="'0.64rem'" />
           </nuxt-link>
         </div>
-        <p class="fs-14 tc mt-20 lh-20 login-page__btm--service">By loging in,you agree to <nuxt-link :to="{ name: 'service-type', params: { type: 'register' } }">Tospino's Terms of Service</nuxt-link> and <nuxt-link :to="{ name: 'service-type', params: { type: 'privacy' } }">Privacy Policy</nuxt-link></p>
+        <p class="fs-14 tc mt-20 lh-20 login-page__btm--service">By loging in,you agree to <nuxt-link :to="{ name: 'service-type', params: { type: 'serve' }, query: { isH5: 1 } }">Tospino's Terms of Service</nuxt-link> and <nuxt-link :to="{ name: 'service-type', params: { type: 'privacy' }, query: { isH5: 1 } }">Privacy Policy</nuxt-link></p>
       </div>
     </div>
   </div>
@@ -214,6 +214,8 @@ export default {
         this.$store.dispatch('user/GetUserInfo', res.data.token_type + ' ' + res.data.access_token);
         // 登录成功跳转到首页
         setTimeout(() => {
+          this.account = '';
+          this.code = '';
           this.$router.push({
             name: 'home'
           })
