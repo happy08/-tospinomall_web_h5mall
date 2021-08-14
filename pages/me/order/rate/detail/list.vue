@@ -236,7 +236,8 @@ export default {
       }
       addGive(item.id).then(res => {
         if (res.code != 0) return false;
-        this.getList();
+        item.isGiveLike = 1;
+        item.glike += 1;
       })
     },
     goDetail(item) { // 跳转到评价详情

@@ -24,13 +24,15 @@
           </dl>
           <div v-else class="ml-10 fs-16" @click="goLogin">请先登录</div>
         </div>
-        <BmImage
-          :url="require('@/assets/images/message-icon.png')"
-          :width="'.64rem'" 
-          :height="'.64rem'"
-          :isLazy="false"
-          :isShow="false"
-        />
+        <nuxt-link :to="{ name: 'me-message' }">
+          <BmImage
+            :url="require('@/assets/images/message-icon.png')"
+            :width="'.64rem'" 
+            :height="'.64rem'"
+            :isLazy="false"
+            :isShow="false"
+          />
+        </nuxt-link>
       </div>
 
       <!-- 收藏信息 -->
@@ -61,7 +63,7 @@
       <van-cell class="ptb-12 plr-0" :border="false" title="My Order" is-link value="View All" value-class="green" title-class="black" :to="$store.state.user.authToken ? { name: 'me-order' } : { name: 'login' }" />
       <div class="flex between tc">
         <nuxt-link v-for="(orderItem, orderIndex) in orderList" :key="'oder-' + orderIndex" :to="$store.state.user.authToken ? { name: orderItem.name, query: { type: orderItem.type } } : { name: 'login' }" >
-          <van-badge :content="orderItem.count" :color="orderItem.count == 0 ? '#fff': ''" max="99">
+          <van-badge :content="orderItem.count" max="99" :class="{'custom-badge': true, 'isNo-badge': orderItem.count == 0}">
             <BmImage 
               :url="require('@/assets/images/icon/' + orderItem.icon + '.png')"
               :width="'0.8rem'" 
@@ -191,6 +193,8 @@ export default {
       getOrderCount().then(res => {
         this.orderList[0].count = res.data.await_pay_count; // 待支付订单数
         this.orderList[1].count = res.data.await_take_good_count; // 待收货订单数
+        this.orderList[2].count = res.data.await_comment; // 待评价
+        this.orderList[3].count = res.data.order_refund_await_deal; // 售后
       })
     }
   },
@@ -227,4 +231,19 @@ export default {
 .user-page__other{
   box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.09);
 }
+</style>
+
+<style lang="less">
+.custom-badge{
+  .van-badge{
+    border: 1px solid #FD5457;
+    top: 4px;
+    right: 4px;
+  }
+  &.isNo-badge .van-badge{
+    color: transparent;
+    border-color: transparent;
+  }
+}
+
 </style>
