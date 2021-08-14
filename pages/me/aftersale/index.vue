@@ -65,9 +65,9 @@
                     <!-- 修改申请 -->
                     <!-- <BmButton :type="'info'" class="h-32 time-out" v-if="orderitem.status == 1 || orderitem.status == 7">修改申请</BmButton> -->
                     <!-- 填写运单号 -->
-                    <!-- <BmButton :type="'info'" class="h-32 time-out" v-if="orderitem.status == 2">填写运单号</BmButton> -->
+                    <!-- <BmButton :type="'info'" class="h-32 time-out" v-if="orderitem.status == 2 && orderitem.deliveryType == 1">填写运单号</BmButton> -->
                     <!-- 修改物流单号 -->
-                    <!-- <BmButton :type="'info'" class="h-32 time-out" v-if="orderitem.status == 3">修改物流单号</BmButton> -->
+                    <!-- <BmButton :type="'info'" class="h-32 time-out" v-if="orderitem.status == 3 && orderitem.deliveryType == 1">修改物流单号</BmButton> -->
                     <!-- 客服介入 -->
                     <!-- <BmButton :type="'info'" class="h-32 time-out" v-if="(orderitem.status == 7 || orderitem.status == 8) && orderitem.involvedStatus == 0 && orderitem.orderType == 1 && orderitem.surplusTime > 0">客服介入</BmButton> -->
                     <!-- 追加举证 -->

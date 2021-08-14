@@ -28,7 +28,7 @@ export const mutations = {
 
 export const actions = {
   // 数据持久化
-  async nuxtServerInit ({ commit, dispatch }, { $cookies, $api }) {
+  async nuxtServerInit ({ commit }, { $cookies, $api }) {
     const lang = $cookies.get('lang'); // 语言
     commit('SET_LANG', lang);
     
@@ -48,6 +48,9 @@ export const actions = {
       // 获取用户信息
       const userInfo = await $api.getUserInfo();
       commit('user/SET_USERINFO', userInfo.data);
+
+      // 消息信息
+      commit('user/SET_WEBSOCKET', $cookies.get('websocketMsg'));
     }
 
     const searchList = $cookies.get('searchList'); // 商品搜索历史

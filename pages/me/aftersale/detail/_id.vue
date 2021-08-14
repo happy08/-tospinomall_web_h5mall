@@ -146,9 +146,9 @@
         <!-- 撤销工单 -->
         <BmButton :type="'info'" class="h-32 time-out" v-if="(detail.status == 7 || detail.status == 8) && (detail.involvedStatus == 1 || detail.involvedStatus == 2)">撤销工单</BmButton>
         <!-- 填写运单号 -->
-        <BmButton :type="'info'" class="h-32 time-out" v-if="detail.status == 2">填写运单号</BmButton>
+        <BmButton :type="'info'" class="h-32 time-out" v-if="detail.status == 2 && orderitem.deliveryType == 1">填写运单号</BmButton>
         <!-- 修改物流单号 -->
-        <BmButton :type="'info'" class="h-32 time-out" v-if="detail.status == 3">修改物流单号</BmButton>
+        <BmButton :type="'info'" class="h-32 time-out" v-if="detail.status == 3 && orderitem.deliveryType == 1">修改物流单号</BmButton>
         <!-- 客服介入 -->
         <BmButton :type="'info'" class="h-32 time-out" v-if="(detail.status == 7 || detail.status == 8) && detail.involvedStatus == 0 && detail.orderType == 1 && detail.surplusTime > 0">客服介入</BmButton>
         <!-- 追加举证 -->

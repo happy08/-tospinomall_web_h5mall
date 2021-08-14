@@ -1,7 +1,7 @@
 export default {
   server: {
     host: '0.0.0.0',
-    port: 8000
+    port: 8080
   },
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
@@ -66,10 +66,10 @@ export default {
 
   proxy: {
     "/api": {
-      target: "http://192.168.2.34:9999", //120.78.145.142
+      // target: "http://192.168.2.34:9999", //120.78.145.142
       // target: "http://192.168.2.70:9999",
       // target: "https://tospinomallapi.fyynet.com",
-      // target: "http://192.168.2.35:9999",
+      target: "http://192.168.2.35:9999",
       //target: "http://120.78.145.142:9999",
       pathRewrite: {
         "^/api": "/"

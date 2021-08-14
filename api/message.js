@@ -10,3 +10,13 @@ export function getMsgList(params) {
     params
   })
 }
+
+/**
+ * 买家-消息分类查询
+ */
+export function getMsgCategory() {
+  return request({
+    url: '/api/sock/message/buyer/msgCategory',
+    method: 'get'
+  })
+}

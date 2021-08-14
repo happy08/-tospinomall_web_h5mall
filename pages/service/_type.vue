@@ -38,6 +38,9 @@ export default {
     if (this.$route.params.type == 'copyright') { // 版权信息
       _type = 3;
     }
+    if (this.$route.params.type == 'take') { // 上门取件
+      _type = 8;
+    }
     getService({ platform: 1, type: _type }).then(res => {
       this.title = res.data.name;
       this.intro = res.data.content;

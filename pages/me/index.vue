@@ -24,14 +24,16 @@
           </dl>
           <div v-else class="ml-10 fs-16" @click="goLogin">请先登录</div>
         </div>
-        <nuxt-link :to="{ name: 'me-message' }">
-          <BmImage
-            :url="require('@/assets/images/message-icon.png')"
-            :width="'.64rem'" 
-            :height="'.64rem'"
-            :isLazy="false"
-            :isShow="false"
-          />
+        <nuxt-link :to="{ name: $store.state.user.authToken ? 'me-message' : 'login' }">
+          <van-badge :dot="$store.state.user.isNewMessage">
+            <BmImage
+              :url="require('@/assets/images/message-icon.png')"
+              :width="'.64rem'" 
+              :height="'.64rem'"
+              :isLazy="false"
+              :isShow="false"
+            />
+          </van-badge>
         </nuxt-link>
       </div>
 
@@ -94,8 +96,11 @@
 <script>
 import { Badge, Cell, CellGroup } from 'vant';
 import { getOrderCount } from '@/api/order';
+import * as SockJS from 'sockjs-client';
+import Stomp from 'stomp-websocket';
 
 export default {
+  middleware: 'sockjs',
   components: {
     vanBadge: Badge,
     vanCell: Cell,
@@ -207,7 +212,7 @@ export default {
         })
       }
     }
-  },
+  }
 }
 </script>
 
@@ -233,6 +238,8 @@ export default {
 .custom-badge{
   .van-badge{
     border: 1px solid #FD5457;
+    background-color: transparent;
+    color: #FD5457;
     top: 4px;
     right: 4px;
   }

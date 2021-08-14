@@ -68,6 +68,7 @@ const tip = msg => {
 
 // request拦截器
 service.interceptors.request.use(config => {
+  config.headers['clientType'] = 'h5';
   config.headers['Authorization'] = config.headers.Authorization ? config.headers.Authorization: 'Basic YnV5ZXI6YnV5ZXI=';
   console.log('线下请求')
   console.log(getCookie('authToken') != 'null')

@@ -33,13 +33,17 @@
         </van-search>
       </div>
       <!-- 信息入口 -->
-      <BmImage 
-        class="home-page-nav__message"
-        :url="require('@/assets/images/message-icon.png')"
-        :width="'.64rem'" 
-        :height="'.64rem'"
-        :isShow="false"
-      />
+      <nuxt-link :to="{ name: $store.state.user.authToken ? 'me-message' : 'login' }">
+        <van-badge :dot="$store.state.user.isNewMessage" class="home-page-nav__message">
+          <BmImage
+            :url="require('@/assets/images/message-icon.png')"
+            :width="'.64rem'" 
+            :height="'.64rem'"
+            :isLazy="false"
+            :isShow="false"
+          />
+        </van-badge>
+      </nuxt-link>
     </van-sticky>
 
     <!-- 下拉刷新 -->
@@ -265,12 +269,15 @@
 </template>
 
 <script>
-import { Search, CountDown, Sticky, Tab, Tabs, Loading, List } from 'vant';
+import { Search, CountDown, Sticky, Tab, Tabs, Loading, List, Badge } from 'vant';
 import ProductTopBtmSingle from '@/components/ProductTopBtmSingle';
 import EmptyStatus from '@/components/EmptyStatus';
 import PullRefresh from '@/components/PullRefresh';
+import * as SockJS from 'sockjs-client';
+import Stomp from 'stomp-websocket';
 
 export default {
+  middleware: 'sockjs',
   components: {
     vanSearch: Search,
     vanSticky: Sticky,
@@ -279,6 +286,7 @@ export default {
     vanCountDown: CountDown,
     vanLoading: Loading,
     vanList: List,
+    vanBadge: Badge,
     ProductTopBtmSingle,
     EmptyStatus,
     PullRefresh
@@ -368,10 +376,7 @@ export default {
   },
   activated() {
     // 如果上次请求超过一分钟了，就再次发起请求
-    if (this.$fetchState.timestamp <= Date.now() - 60000) {
-      this.$fetch();
-      console.log('+++++++++++++')
-    }
+    this.$fetch();
   },
   methods: {
     stickyScroll(scrollObj) { // 吸顶滚动事件

@@ -6,7 +6,9 @@ export const state = () => ({
   searchList: [], // 商品搜索历史
   orderSearchList: [], // 订单搜索历史
   refreshToken: null,
-  scope: null
+  scope: null,
+  websocketMsg: null,
+  isNewMessage: false
 });
 
 export const mutations = {
@@ -50,6 +52,13 @@ export const mutations = {
       state.orderSearchList = [...new Set(state.orderSearchList)]; // 去重
     }
     setCookie('orderSearchList', state.orderSearchList);
+  },
+  SET_WEBSOCKET(state, websocketMsg) {
+    state.websocketMsg = websocketMsg;
+    this.$cookies.set('websocketMsg', websocketMsg);
+  },
+  SET_ISNEWMESSAGE(state, isNewMessage) {
+    state.isNewMessage = isNewMessage;
   }
 };
 
