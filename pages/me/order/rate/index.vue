@@ -2,7 +2,7 @@
   <!-- 我的-订单-评价列表 -->
   <div class="vh-100 bg-grey">
     <BmHeaderNav :left="{ isShow: true }" :title="$t('me.rate.evalutionCenter')">
-      <nuxt-link :to="{ name: 'me-order-rate-rule' }" slot="header-right" class="green fs-14">{{ $t('me.rate.rules') }}</nuxt-link>
+      <nuxt-link :to="{ name: 'service-type', params: { type: 'evaluation' }, query: { isH5: 1 } }" slot="header-right" class="green fs-14">{{ $t('me.rate.rules') }}</nuxt-link>
     </BmHeaderNav>
 
     <!-- 评价类型tab切换 -->

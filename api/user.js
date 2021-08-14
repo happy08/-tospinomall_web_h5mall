@@ -110,3 +110,14 @@ export function operateFeedback(data) {
     }
   })
 }
+
+/**
+ * 查询服务信息
+ */
+export function getService(params) {
+  return request({
+    url: '/api/basics/operateSinglePage/findByQuery',
+    method: 'get',
+    params
+  })
+}

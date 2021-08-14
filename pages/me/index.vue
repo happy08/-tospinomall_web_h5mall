@@ -181,11 +181,7 @@ export default {
           name: 'me-about',
           icon: 'about-tospino'
         }
-      ],
-      userinfo: {
-        username: '',
-        headPictureUrl: require('@/assets/images/icon/user-icon.png')
-      }
+      ]
     }
   },
   activated() {

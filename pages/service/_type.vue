@@ -8,6 +8,8 @@
 </template>
 
 <script>
+import { getService } from '@/api/user';
+
 export default {
   data() {
     return {
@@ -16,29 +18,30 @@ export default {
       isShow: false
     }
   },
-  fetch() { // 根据type类型展示协议内容
-    if (!this.$route.query.type) { // type = 'client'
+  activated() {
+    if (this.$route.query.isH5) { // h5 展示
       this.isShow = true;
     }
-    if (this.$route.params.type == 'about') { // 用户协议
-      this.title = '用户协议'
-      this.intro = '协议内容';
+    let _type;
+    if (this.$route.params.type == 'serve') { // 服务协议
+      _type = 2;
     }
-    if (this.$route.params.type == 'privacy') { // 隐私协议
-      this.title = '隐私协议'
-      this.intro = '协议内容';
+    if (this.$route.params.type == 'privacy') { // 隐私政策
+      _type = 1;
     }
-    if (this.$route.params.type == 'register') { // 注册协议
-      this.title = '注册协议'
-      this.intro = '协议内容';
+    if (this.$route.params.type == 'evaluation') { // 评价规则
+      _type = 6;
     }
     if (this.$route.params.type == 'aftersale') { // 退货/退款说明
-      this.title = '退货退款'
-      this.intro = '退货退款内容';
+      _type = 7;
     }
-  },
-  activated() {
-    this.$fetch();
+    if (this.$route.params.type == 'copyright') { // 版权信息
+      _type = 3;
+    }
+    getService({ platform: 1, type: _type }).then(res => {
+      this.title = res.data.name;
+      this.intro = res.data.content;
+    })
   }
 }
 </script>
