@@ -60,7 +60,7 @@
       <!-- 描述 -->
       <p class="black fs-14 mt-10">{{ detailData.content }}</p>
       <!-- 展示图片 -->
-      <div v-for="picItem in detailData.pictures" :key="'pic-' + picItem.id" class="mt-10">
+      <div v-for="(picItem, picIndex) in detailData.pictures" :key="'pic-' + picIndex" class="mt-10">
         <BmImage
           :url="picItem.imgUrl"
           :width="'6.68rem'" 
@@ -70,6 +70,7 @@
           :fit="'cover'"
           :class="{'border round-8 hidden': true}"
           v-if="picItem.fileType == 1"
+          @onClick="onPreview(detailData.pictures, picIndex)"
         />
       </div>
       <!-- 追加评论 -->
@@ -80,7 +81,7 @@
           <p class="black fs-14 mt-10">{{ addItem.content }}</p>
           <!-- 展示图片 -->
           <div class="flex flex-wrap">
-            <div v-for="addPicItem in addItem.pictures" :key="'add-pic-' + addPicItem.id">
+            <div v-for="(addPicItem, addPicIndex) in addItem.pictures" :key="'add-pic-' + addPicIndex">
               <BmImage
                 :url="addPicItem.imgUrl"
                 :width="'6.68rem'" 
@@ -90,6 +91,7 @@
                 :fit="'cover'"
                 :class="{'border round-8 hidden mt-10 block': true}"
                 v-if="addPicItem.fileType == 1"
+                @onClick="onPreview(addItem.pictures, addPicIndex)"
               />
             </div>
           </div>
@@ -155,7 +157,7 @@
 </template>
 
 <script>
-import { Rate, Field, Cell, Sticky } from 'vant';
+import { Rate, Field, Cell, Sticky, ImagePreview } from 'vant';
 import { getRateDetail, addGive, getGoodAttr, replyEvaluate } from '@/api/product';
 import ProductSku from '@/components/ProductSku';
 
@@ -296,6 +298,16 @@ export default {
       }).then(() => {
         this.thoughts = '';
         this.getRateDetail();
+      })
+    },
+    onPreview(item, index) { // 图片预览
+      const imgs = item.map(picItem => {
+        return picItem.imgUrl;
+      });
+      ImagePreview({
+        images: imgs,
+        startPosition: index,
+        loop: false
       })
     }
   },

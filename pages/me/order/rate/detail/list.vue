@@ -70,7 +70,7 @@
           <!-- 描述 -->
           <p class="black fs-14 mt-10 border-b plr-20 pb-20" @click="goDetail(item)">{{ item.content }}</p>
           <!-- 展示图片 -->
-          <div class="mt-20 flex flex-wrap plr-20" v-if="item.pictures.length > 0" @click="goDetail(item)">
+          <div class="mt-20 flex flex-wrap plr-20" v-if="item.pictures.length > 0">
             <div v-for="(picItem, picIndex) in item.pictures" :key="'pic-' + picItem.id">
               <BmImage
                 :url="picItem.imgUrl"
@@ -81,17 +81,17 @@
                 :fit="'cover'"
                 :class="{'border round-2 hidden': true, 'ml-8': picIndex != 0}"
                 v-if="picItem.fileType == 1"
+                @onClick="onPreview(item.pictures, picIndex)"
               />
             </div>
           </div>
           
-          <!--  -->
           <van-cell-group class="mt-10 plr-20" :border="false">
             <!-- 追加评论 -->
             <template v-if="item.additionalEvaluates && item.additionalEvaluates.length > 0">
               <p class="fw black fs-14">购买后追评</p>
-              <div v-for="addItem in item.additionalEvaluates" :key="'add-review-' + addItem.id" @click="goDetail(item)">
-                <p class="black fs-14 mt-10">{{ addItem.content }}</p>
+              <div v-for="addItem in item.additionalEvaluates" :key="'add-review-' + addItem.id">
+                <p class="black fs-14 mt-10" @click="goDetail(item)">{{ addItem.content }}</p>
                 <div class="mt-10 flex flex-wrap">
                   <div v-for="(addPicItem, addPicIndex) in addItem.pictures" :key="'add-pic-' + addPicItem.id">
                     <BmImage
@@ -103,6 +103,7 @@
                       :fit="'cover'"
                       :class="{'border round-2 hidden block mt-8': true, 'ml-8': addPicIndex % 3 != 0}"
                       v-if="addPicItem.fileType == 1"
+                      @onClick="onPreview(addItem.pictures, addPicIndex)"
                     />
                   </div>
                 </div>
@@ -148,7 +149,7 @@
 </template>
 
 <script>
-import { Checkbox, Cell, Tab, Tabs, Rate, CellGroup, List } from 'vant';
+import { Checkbox, Cell, Tab, Tabs, Rate, CellGroup, List, ImagePreview } from 'vant';
 import { getRateList, addGive } from '@/api/product';
 import PullRefresh from '@/components/PullRefresh';
 
@@ -261,6 +262,16 @@ export default {
       }
       this.pageNum += 1;
       this.getRateList();
+    },
+    onPreview(item, index) { // 图片预览
+      const imgs = item.map(picItem => {
+        return picItem.imgUrl;
+      });
+      ImagePreview({
+        images: imgs,
+        startPosition: index,
+        loop: false
+      })
     }
   },
 }
