@@ -1,6 +1,6 @@
 <template>
   <div class="vh-100 bg-grey pb-120 pt-46">
-    <BmHeaderNav :title="$t('cart.title')" :border="false" :fixed="true">
+    <BmHeaderNav :left="{ isShow: $route.query.isBar ? true: false }" :title="$t('cart.title')" :border="false" :fixed="true">
       <div slot="header-right" class="green fs-16" @click="onEdit">
         {{ isEdit ? $t('common.done') : $t('common.edit') }}
       </div>
@@ -137,7 +137,6 @@
           :finished="finished"
           finished-text=""
           @load="onLoad"
-          :offset="500"
         >
           <div class="mlr-12 flex between flex-wrap">
             <nuxt-link :to="{ name: 'cart-product-id', params: { id: searchItem.productId } }" v-for="(searchItem, searchIndex) in recommendList" :key="'search-list-' + searchIndex">
@@ -154,7 +153,7 @@
     </PullRefresh>
 
     <!-- 购物车编辑 -->
-    <div class="bg-white custom-submit-bar pl-16 pr-12 flex vcenter between" v-if="$store.state.user.authToken">
+    <div :class="{'bg-white pl-16 pr-12 flex vcenter between custom-submit-bar': true, 'isBar': $route.query.isBar}" v-if="$store.state.user.authToken">
       <van-checkbox v-model="checked" @click="checkAll">
         全选
         <template #icon="props">
@@ -188,7 +187,7 @@
     <ProductSku :productShow="productShow" :goodSpuVo="goodSpuVo" :initialSku="initialSku" :sku="sku" :type="'cart'" @onRefresh="$fetch()" />
 
     <!-- 底部 -->
-    <BmTabbar />
+    <BmTabbar v-if="!$route.query.isBar" />
   </div>
 </template>
 
@@ -565,6 +564,7 @@ export default {
       })
     },
     onLoad() { // 加载更多推荐商品
+      console.log('-------------加载')
       if (this.total == this.recommendList.length) { // 没有下一页了
         this.finished = true;
         this.loading = false;
@@ -634,6 +634,9 @@ export default {
   right: 0;
   height: 56px;
   position: fixed;
+  &.isBar {
+    bottom: 0;
+  }
 }
 </style>
 

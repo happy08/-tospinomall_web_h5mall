@@ -30,7 +30,7 @@
           </nuxt-link>
         </div>
 
-        <div slot="header-right">
+        <div slot="header-right" @click="$router.push({ name: 'cart', query: { isBar: 1 } })">
           <van-icon
             :name="require('@/assets/images/icon/cart-bgd.svg')"
             size="0.64rem"
