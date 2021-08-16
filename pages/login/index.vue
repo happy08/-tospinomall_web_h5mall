@@ -109,6 +109,12 @@ export default {
   },
   methods: {
     login() {
+      // 加载图标
+      this.$toast.loading({
+        forbidClick: true,
+        loadingType: 'spinner',
+        duration: 0
+      });
       // 登录
       authLogin({ username: this.account, password: this.password, grant_type: 'password' }).then(res => {
         if (res.code != 0) return false;
@@ -119,6 +125,7 @@ export default {
         this.$store.dispatch('user/GetUserInfo', res.data.token_type + ' ' + res.data.access_token);
         // 获取消息信息
         this.$store.commit('user/SET_WEBSOCKET', res.data.user_info.passUrl);
+        this.$toast.clear();
         // 登录成功跳转到首页
         setTimeout(() => {
           this.account = '';

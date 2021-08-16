@@ -203,12 +203,18 @@ export default {
       })
     },
     login() { // 验证码登录
+      // 加载图标
+      this.$toast.loading({
+        forbidClick: true,
+        loadingType: 'spinner',
+        duration: 0
+      });
       authCodeLogin({
         code: this.code, 
         mobile: this.$route.query.changeWay === 'email' ? this.account : this.prefixCode.split('+')[1] + this.account, 
         // userType: 'buyer'
       }).then(res => {
-        if (res.code != 0) return false;
+        this.$toast.clear();
         this.$store.commit('user/SET_TOKEN', res.data.token_type + ' ' + res.data.access_token);
         // 获取用户信息
         this.$store.dispatch('user/GetUserInfo', res.data.token_type + ' ' + res.data.access_token);
