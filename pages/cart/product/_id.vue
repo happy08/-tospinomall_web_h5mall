@@ -197,11 +197,8 @@
                 </template>
               </van-step>
             </van-steps>
-            <p class="mt-16 fs-14 light-grey fm-helvetica">
-              Finish the order before 23:59 today, and the goods are expected to
-              be delivered before 23:30 on janu-ary 2nd.
-            </p>
-            <p class="mt-8 orange fs-12 pb-10">From January 3rd to January 27th</p>
+            <p class="mt-16 fs-14 light-grey fm-helvetica pb-20" v-if="deliveryInfo">{{ deliveryInfo[0].estimeate }}</p>
+            <!-- <p class="mt-8 orange fs-12 pb-10">From January 3rd to January 27th</p> -->
           </template>
         </div>
       </van-tab>
@@ -514,7 +511,7 @@
     </div>
 
     <!-- 产品规格 -->
-    <ProductSku :productShow="productShow" :goodSpuVo="goodSpuVo" :initialSku="initialSku" :sku="sku" :type="skuType" @onSkuInfo="onSkuInfo" />
+    <ProductSku :productShow="productShow" :goodSpuVo="goodSpuVo" :initialSku="initialSku" :sku="sku" :type="skuType" @onSkuInfo="onSkuInfo" @onSelectedSkuCombId="selectedSkuCombId = $event" />
   </div>
 </template>
 
@@ -600,6 +597,8 @@ export default {
       selectCarousel: [], // 产品选择的图片展示列表
       skuType: '', // cart 操作区按钮为确认，''操作区按钮为加入购物车/立即购买
       goodAttr: [], // 商品选中的属性规格展示
+      selectedSkuCombId: null,
+      deliveryInfo: null
     }
   },
   async fetch() {
@@ -735,7 +734,7 @@ export default {
           cityCode: res.data.cityCode, // 市编码
           districtCode: res.data.districtCode //区编码
         }
-        this.completeAddress = res.data.completeAddress; // 完整地址
+        // this.completeAddress = res.data.completeAddress; // 完整地址
         // 获取地址的时候默认是最后一级
         this.getNextArea(res.data.areaList[res.data.areaList.length - 2], false, true);
         // 获取运费模板
@@ -877,15 +876,18 @@ export default {
           cityCode: this.assgnStepList[2] ? this.assgnStepList[2].code : '',
           districtCode: this.assgnStepList[3] ? this.assgnStepList[3].code : ''
         }
-        this.getDeliveryInfo();
+        if (this.selectedSkuCombId) {
+          this.getDeliveryInfo();
+        }
       }
     },
     getDeliveryInfo() { // 获取配送运费模板信息
       let _form = {
         ...this.form,
-        skuId: this.selectSku.selectedSkuComb.id
+        skuId: this.selectedSkuCombId
       }
       getDeliveryInfo(_form).then(res => {
+        this.deliveryInfo = res.data;
         if (res.data.length == 0) { // 无模板
           this.completeAddress = '';
         } else {

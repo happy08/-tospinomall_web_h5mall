@@ -52,26 +52,36 @@
                     :image="orderitem.productImage"
                     @onClick="goReturnDetail(orderitem.id)" 
                   />
-                  <p class="fs-14 light-grey mt-18 w-50">{{ orderitem.status | statusFormat }}</p>
-                  <!-- 处理中 -->
-                  <!-- 工单状态involvedStatus： 0未开始 1->待举证 2->平台处理中 3->工单关闭 4->工单已完结 -->
-                  <!-- status: 1->商家/运营待处理 2->待自行寄回/待上门取件 3商家/运营待收货 4->待退款 5->退款成功 6->关闭售后单 7->商家/运营驳回申请 8->商家/运营拒收退货商品 -->
-                  <!-- 订单类型orderType：1->FBM订单 2->FBT订单 -->
-                  <div class="mt-8 flex hend">
-                    <!-- 撤销申请 -->
-                    <BmButton :type="'info'" class="h-32" v-if="orderitem.status == 1 || orderitem.status == 2 || (orderitem.status == 7 && orderitem.involvedStatus == 0) || (orderitem == 8 && orderitem.involvedStatus == 0)">撤销申请</BmButton>
-                    <!-- 撤销工单 -->
-                    <!-- <BmButton :type="'info'" class="h-32 time-out" v-if="(orderitem.status == 7 || orderitem.status == 8) && (orderitem.involvedStatus == 1 || orderitem.involvedStatus == 2)">撤销工单</BmButton> -->
-                    <!-- 修改申请 -->
-                    <!-- <BmButton :type="'info'" class="h-32 time-out" v-if="orderitem.status == 1 || orderitem.status == 7">修改申请</BmButton> -->
-                    <!-- 填写运单号 -->
-                    <!-- <BmButton :type="'info'" class="h-32 time-out" v-if="orderitem.status == 2 && orderitem.deliveryType == 1">填写运单号</BmButton> -->
-                    <!-- 修改物流单号 -->
-                    <!-- <BmButton :type="'info'" class="h-32 time-out" v-if="orderitem.status == 3 && orderitem.deliveryType == 1">修改物流单号</BmButton> -->
-                    <!-- 客服介入 -->
-                    <!-- <BmButton :type="'info'" class="h-32 time-out" v-if="(orderitem.status == 7 || orderitem.status == 8) && orderitem.involvedStatus == 0 && orderitem.orderType == 1 && orderitem.surplusTime > 0">客服介入</BmButton> -->
-                    <!-- 追加举证 -->
-                    <!-- <BmButton :type="'info'" class="h-32 time-out" v-if="(orderitem.status == 7 || orderitem.status == 8) && orderitem.involvedStatus == 1 && orderitem.orderType == 1 && orderitem.surplusTime > 0">追加举证</BmButton> -->
+                  <div class="flex between mt-18">
+                    <div class="fs-14 light-grey w-50">
+                      <p>{{ orderitem.status | statusFormat(orderitem.deliveryType) }}</p>
+                      <!-- 退款成功 -->
+                      <p v-if="orderitem.status == 5">退款{{ $store.state.rate.currency }}{{ orderitem.returnAmount }}</p>
+                    </div>
+                    <!-- 处理中 -->
+                    <!-- 工单状态involvedStatus： 0未开始 1->待举证 2->平台处理中 3->工单关闭 4->工单已完结 -->
+                    <!-- status: 1->商家/运营待处理 2->待自行寄回/待上门取件 3商家/运营待收货 4->待退款 5->退款成功 6->关闭售后单 7->商家/运营驳回申请 8->商家/运营拒收退货商品 -->
+                    <!-- 订单类型orderType：1->FBM订单 2->FBT订单 -->
+                    <div class="flex hend">
+                      <!-- 撤销申请 -->
+                      <BmButton :type="'info'" class="h-32" v-if="orderitem.status == 1 || orderitem.status == 2 || (orderitem.status == 7 && orderitem.involvedStatus == 0) || (orderitem == 8 && orderitem.involvedStatus == 0)" @btnClick="onRevokeApply(orderitem.id)">撤销申请</BmButton>
+                      <!-- 删除 -->
+                      <BmButton :type="'info'" class="h-32 time-out" v-if="orderitem.status == 5 || orderitem.status == 6" @btnClick="onRemoveOrder(orderitem.id)">删除</BmButton>
+                      <!-- 查看详情 -->
+                      <BmButton :type="'info'" class="h-32 ml-12" v-if="orderitem.status == 5 || orderitem.status == 6" @btnClick="$router.push({ name: 'me-aftersale-detail-id', params: { id: orderitem.id } })">查看详情</BmButton>
+                      <!-- 撤销工单 -->
+                      <!-- <BmButton :type="'info'" class="h-32 time-out" v-if="(orderitem.status == 7 || orderitem.status == 8) && (orderitem.involvedStatus == 1 || orderitem.involvedStatus == 2)">撤销工单</BmButton> -->
+                      <!-- 修改申请 -->
+                      <!-- <BmButton :type="'info'" class="h-32 time-out" v-if="orderitem.status == 1 || orderitem.status == 7">修改申请</BmButton> -->
+                      <!-- 填写运单号 -->
+                      <!-- <BmButton :type="'info'" class="h-32 time-out" v-if="orderitem.status == 2 && orderitem.deliveryType == 1">填写运单号</BmButton> -->
+                      <!-- 修改物流单号 -->
+                      <!-- <BmButton :type="'info'" class="h-32 time-out" v-if="orderitem.status == 3 && orderitem.deliveryType == 1">修改物流单号</BmButton> -->
+                      <!-- 客服介入 -->
+                      <!-- <BmButton :type="'info'" class="h-32 time-out" v-if="(orderitem.status == 7 || orderitem.status == 8) && orderitem.involvedStatus == 0 && orderitem.orderType == 1 && orderitem.surplusTime > 0">客服介入</BmButton> -->
+                      <!-- 追加举证 -->
+                      <!-- <BmButton :type="'info'" class="h-32 time-out" v-if="(orderitem.status == 7 || orderitem.status == 8) && orderitem.involvedStatus == 1 && orderitem.orderType == 1 && orderitem.surplusTime > 0">追加举证</BmButton> -->
+                    </div>
                   </div>
                 </div>
               </div>
@@ -88,7 +98,7 @@
 import { Tab, Tabs, List } from 'vant';
 import OrderSingle from '@/components/OrderSingle';
 import OrderStoreSingle from '@/components/OrderStoreSingle';
-import { getOrderAfterSalesCount } from '@/api/order';
+import { getOrderAfterSalesCount, removeOrder, revokeApply } from '@/api/order';
 import PullRefresh from '@/components/PullRefresh';
 
 export default {
@@ -134,7 +144,7 @@ export default {
     }
 
     if (listData.code != 0) return false;
-    this.lists = listData.data.records;
+    this.lists = this.pageNum == 1 ? listData.data.records : this.lists.concat(listData.data.records);
     this.loading = false;
     this.refreshing.isFresh = false;
     this.total = listData.data.total;
@@ -150,8 +160,8 @@ export default {
     this.$fetch();
   },
   filters: {
-    statusFormat(val) {
-      return val == 1 ? '商家待处理' : val == 2 ? '待自行寄回/待上门取件' : val == 3 ? '商家待收货' : val == 4 ? '待退款' : val == 5 ? '退款成功' : val == 6 ? '关闭售后单' : val == 7 ? '商家驳回申请' : val == 8 ? '商家拒收退货商品' : '';
+    statusFormat(val, deliveryType) {
+      return val == 1 ? '商家待处理' : val == 2 ? (deliveryType == 1 ? '待自行寄回':'待上门取件') : val == 3 ? '商家待收货' : val == 4 ? '待退款' : val == 5 ? '退款成功' : val == 6 ? '关闭售后单' : val == 7 ? '商家驳回申请' : val == 8 ? '商家拒收退货商品' : '';
     },
     returnTypeFormat(val) {
       return val == 0 ? '退款' : val == 1 ? '退款退货' : '';
@@ -159,9 +169,10 @@ export default {
   },
   methods: {
     titleFormat(val, titleIndex) {
-      return `${val} ${titleIndex == 0 ? this.afterSalesCount : titleIndex == 1 ? this.untreatedCount : this.recordCount}`;
+      return `${val} (${titleIndex == 0 ? this.afterSalesCount : titleIndex == 1 ? this.untreatedCount : this.recordCount})`;
     },
     getSearchList() { // 获取列表数据
+      this.lists = [];
       this.pageNum = 1;
       this.$fetch();
     },
@@ -212,6 +223,20 @@ export default {
       this.pageNum += 1;
       this.$fetch();
     },
+    onRemoveOrder(id) { // 删除订单
+      removeOrder(id).then(res => {
+        this.lists.forEach((item, index) => {
+          if (item.id == id) {
+            this.lists.splice(index, 1);
+          }
+        })
+      })
+    },
+    onRevokeApply(id) {
+      revokeApply(id).then(res => {
+
+      })
+    }
   },
 }
 </script>
@@ -219,7 +244,7 @@ export default {
 <style lang="less" scoped>
 .time-out{
   border-color: #eee!important;
-  color: #BFBFBF!important;
+  color: #383838!important;
   background-color: transparent!important;
 }
 .mt-18{

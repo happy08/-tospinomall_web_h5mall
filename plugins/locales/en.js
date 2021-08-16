@@ -195,7 +195,17 @@ const en = {
       paymentFailed: 'Payment Failed',
       failed: 'Fail!',
       viewOrder: 'View order',
-      clearBrowingRecords: 'Clear All Browing Records?'
+      clearBrowingRecords: 'Clear All Browing Records?',
+      returnMethodList: [
+        {
+          title: '上门取件',
+          desc: '商家同意退货后，将为您上门取件，具体日期将以短信或电话形式通知，您可随时修改或取消'
+        },
+        {
+          title: '自行寄回',
+          desc: '由您自行选择快递，邮寄第三方卖家或指定地址，邮寄后需要您自行填写运单号运费自行支付/垫付'
+        }
+      ]
     },
     wallet: {
       myPure: 'My purse',
@@ -223,6 +233,7 @@ const en = {
       waitProcess: 'Please wait for the merchant to process',
       countdown: 'Countdown',
       processStep: ['Refund Application', 'In process', 'Recund Successfully'],
+      processReturnShopStep: ['提交申请', '商家处理', '寄回商品', '商家退款', '退款成功'],
       refundWaitTitle: 'You have initiated a refund request,please wait for Processing.',
       refundMerchantsTip: 'Merchants ask the refund to overtime,the system will retund the refund.',
       refundMerchantsRefuseTip: 'If the merchant refuses, you can modify the refund request and initiate again, and the merchant will process it again.',

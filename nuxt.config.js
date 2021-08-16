@@ -1,15 +1,16 @@
 export default {
   server: {
     host: '0.0.0.0',
-    port: 8080
+    port: 8000
   },
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    title: "B2CWebH5",
+    title: "Tospino",
     meta: [
       { charset: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, viewport-fit=cover, user-scalable=no" },
-      { hid: "description", name: "description", content: "Tospino Ghana online shopping" }
+      { name: "viewport", content: "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" },
+      { hid: "description", name: "description", content: "Tospino Ghana online shopping" },
+      { hid: 'keywords', name: 'keywords', content: 'Tospino Ghana online shopping' }
     ],
     link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }],
     script: [

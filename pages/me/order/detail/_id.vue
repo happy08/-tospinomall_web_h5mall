@@ -19,9 +19,9 @@
           待发货
         </div>
         <!-- 待收货 -->
-        <div class="fs-14 white mt-14 pb-40 plr-30 tc lh-20" v-else-if="detail.status == 2">
+        <!-- <div class="fs-14 white mt-14 pb-40 plr-30 tc lh-20" v-else-if="detail.status == 2">
           {{ $t('me.order.sending') }}
-        </div>
+        </div> -->
         <!-- 待评价 -->
         <div class="fs-14 white mt-14 pb-40 plr-30 tc lh-20" v-else-if="detail.status == 3">
           待评价

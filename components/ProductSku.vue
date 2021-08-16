@@ -153,6 +153,10 @@ export default {
           return item != '';
         })
         this.$emit('onSkuInfo', selectedSku);
+        //选中的属性id
+        if (value.selectedSkuComb) {
+          this.$emit('onSelectedSkuCombId', value.selectedSkuComb.id);
+        }
       }
     },
     getSkuStock() { // 判断库存是否充足

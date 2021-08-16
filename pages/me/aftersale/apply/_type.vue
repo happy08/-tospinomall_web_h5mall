@@ -32,19 +32,23 @@
     <!-- 退款金额 -->
     <van-cell class="ptb-20 plr-20 mt-12" center :title="$t('me.afterSale.refundAmount')" title-class="fs-14 black" :label="$t('me.afterSale.modifyAmount')" value-class="black fw fs-18" >
       <template #default>
-        <van-field v-model="detail.returnAmount" type="number" input-align="right" @blur="onBlur" @focus="onFocus" />
+        <van-field v-model="detail.realAmount" type="number" input-align="right" :formatter="onFormatter" />
       </template>
     </van-cell>
-    <div class="p-20 fs-14 black">On successful refund, you will be returned with {{ $store.state.rate.currency }}{{ detail.returnAmount }} cash</div>
-
-    <!-- 退货退款才展示 -->
-    <p class="fs-14 black m-20" v-if="$route.params.type == 2">On successful refund, you will be returned with $ 90.09 cash</p>
+    <div class="p-20 fs-14 black">On successful refund, you will be returned with {{ detail.realAmount }} cash</div>
 
     <!-- 申请指令 -->
     <div class="plr-20 pt-20 pb-24 bg-white">
       <h3 class="fs-14 black">{{ $t('me.afterSale.applyIntructions') }}</h3>
-      <p class="mt-16 fs-14 light-grey">{{ $t('me.afterSale.applyIntructionsDesc') }}</p>
-      <van-uploader class="mt-10" v-model="fileList" multiple :max-count="6" preview-size="1.62rem" :after-read="afterRead" @delete="onDeleteFile">
+      <van-field
+        class="mt-16 fs-14 plr-0"
+        v-model="applyMessage"
+        rows="2"
+        type="textarea"
+        :placeholder="$t('me.afterSale.applyIntructionsDesc')"
+        :border="false"
+      />
+      <van-uploader v-model="fileList" multiple :max-count="6" preview-size="1.62rem" :after-read="afterRead" @delete="onDeleteFile">
         <div class="custom-proof-upload tc">
           <van-icon name="plus" size="0.32rem" />
           <div class="mt-10 fs-12 lh-1">Up to 6 Pics</div>
@@ -54,13 +58,13 @@
     </div>
 
     <!-- 电话 -->
-    <van-field v-model="phone" type="tel" :label="$t('me.afterSale.phone')" class="mt-12 p-20" label-width="1.2rem" />
+    <!-- <van-field v-model="phone" type="tel" :label="$t('me.afterSale.phone')" class="mt-12 p-20" label-width="1.2rem" /> -->
 
     <!-- 退货方法 退货退款才展示 -->
     <div class="p-20 bg-white mt-12" v-if="$route.params.type == 2">
-      <van-cell class="ptb-20 plr-20" :title="$t('me.afterSale.returnMethod')" title-class="fs-14 black" value="Door to take" is-link />
-      <p class="light-grey">The delivery service is provided by the cooperative express company, The expected fee is $20.09. The specific fee shall be subject to the actual charge of the delivery personnel</p>
-      <van-checkbox class="flex vcenter mt-20" @click="isGreenment = !isGreenment">
+      <van-cell class="pb-20 pt-0 plr-0" :title="$t('me.afterSale.returnMethod')" title-class="fs-14 black" :value="returnMethodTitle" is-link :border="false" @click="returnMethod = true" />
+      <!-- 上门取件,服务协议 -->
+      <van-checkbox class="flex vcenter" @click="isGreenment = !isGreenment" v-if="returnMethodRadio == 0">
         <template #icon>
           <BmImage
             :url="isGreenment ? require('@/assets/images/icon/choose-icon.png') : require('@/assets/images/icon/choose-default-icon.png')"
@@ -70,40 +74,57 @@
             :isShow="false"
           />
         </template>
-        <span class="ml-14 fs-14 lh-20 grey-666">Read and agree to the Door-to-Door Pick-up Service Agreement</span>
+        <span class="fs-14 lh-20 grey-666">Read and agree to the Door-to-Door Pick-up Service Agreement</span>
       </van-checkbox>
 
-      <!-- 地址 -->
-      <van-cell class="mt-20 plr-0 ptb-0" :title="'Fulfillment by Tospino'" title-class="black ml-12">
+      <!-- 上门取件-选择地址 -->
+      <van-cell class="mt-20 plr-0 ptb-0" title-class="black ml-12" is-link :to="{ name: 'me-address' }" v-if="returnMethodRadio == 0">
         <!-- 左侧图标 -->
         <template #icon>
-          <i class="iconfont icon-dingwei fs-24 black trans-rotate"></i>
+          <van-icon :name="require('@/assets/images/icon/address-icon.png')" size="0.48rem" />
         </template>
         <!-- 左侧内容 -->
         <template #title>
-          <div>
-            <p class="fs-14 fw lh-20">
-              <span>Lucy</span>
-              <span class="ml-10">13165340019</span>
-            </p>
-            <p class="mt-8 lh-20 grey">5th floor, building 7, Tongfu xufa science and Technology Park</p>
-          </div>
+          <p class="fs-14 fw lh-20" v-if="detail.order && detail.order.receiverName">
+            <span>{{ detail.order.receiverName }}</span>
+            <span class="ml-10">{{ detail.order.receiverPhone }}</span>
+          </p>
+          <p class="mt-8 lh-20 grey" v-if="detail.order && detail.order.receiverCompleteAddress">{{ detail.order.receiverCompleteAddress }}</p>
         </template>
       </van-cell>
+
+      <!-- 自行寄回 -->
+      <p class="fs-14 light-grey pb-10" v-if="returnMethodRadio == 1">商品寄回地址将在审核后通过短信形式告知，或在申请记录中查询。期间产生的物流费用，需要您自行承担。</p>
+      <van-field
+        v-model="concatName"
+        label="联系人"
+        placeholder="请输入联系人"
+        v-if="returnMethodRadio == 1"
+        class="plr-0 ptb-10"
+        :border="false"
+      />
+      <van-field
+        v-model="concatCell"
+        label="联系电话"
+        placeholder="请输入联系电话"
+        v-if="returnMethodRadio == 1"
+        class="plr-0 ptb-10"
+        :border="false"
+      />
     </div>
 
     <!-- 是否设置为默认的退货地址 退货退款才展示 -->
-    <van-cell v-if="$route.params.type == 2" center :title="$t('me.address.shipAddress')" :label="$t('me.afterSale.keepSamePickupAddress')" title-class="grey" label-class="black">
+    <!-- <van-cell v-if="$route.params.type == 2" center :title="$t('me.address.shipAddress')" :label="$t('me.afterSale.keepSamePickupAddress')" title-class="grey" label-class="black">
       <template #right-icon>
         <van-switch v-model="addressChecked" size="0.48rem" active-color="#34C759" />
       </template>
-    </van-cell>
+    </van-cell> -->
 
     <!-- 提交 -->
     <div class="mlr-20 mt-30 tc">
       <BmButton class="round-8 w-100 mb-20" @btnClick="applyAfterSale">{{ $t('common.submit') }}</BmButton>
-      <!-- 返回和交换指令 仅退款展示 -->
-      <nuxt-link :to="{ name: 'service-type', params: { type: 'aftersale' } }" class="green" v-if="$route.params.type == 1">{{ $t('me.afterSale.returnAndChange') }}</nuxt-link>
+      <!-- 退货退款说明 -->
+      <nuxt-link :to="{ name: 'service-type', params: { type: 'aftersale' }, query: { isH5: 1 } }" class="green">{{ $t('me.afterSale.returnAndChange') }}</nuxt-link>
     </div>
 
     <!-- 选择申请类型type 货物状态status 申请原因reason -->
@@ -131,6 +152,34 @@
       <!-- 提交按钮 -->
       <div class="plr-20 mt-30 pb-60">
         <BmButton class="fs-16 round-8 w-100" @click="onConfirm">Confirm</BmButton>
+      </div>
+    </van-popup>
+
+    <!-- 退货方式 -->
+    <van-popup v-model="returnMethod" position="bottom" closeable>
+      <van-radio-group v-model="returnMethodRadio" :border="false">
+        <van-cell-group>
+          <van-cell class="p-20" :title="$t('me.afterSale.returnMethod')" title-class="black fw fs-18" />
+          <van-cell class="p-20" :title="returnItem.title" clickable v-for="(returnItem, returnIndex) in $t('me.order.returnMethodList')" :key="returnIndex" @click="returnMethodRadio = returnIndex" title-class="fs-14 lh-20" :label="returnItem.desc" label-class="mt-20 w-90">
+            <template #right-icon>
+              <van-radio :name="returnIndex" icon-size="0.48rem">
+                <template #icon="props">
+                  <BmImage
+                    :url="props.checked ? require('@/assets/images/icon/choose-icon.png') : require('@/assets/images/icon/choose-default-icon.png')"
+                    :width="'0.32rem'" 
+                    :height="'0.32rem'"
+                    :isLazy="false"
+                    :isShow="false"
+                  />
+                </template>
+              </van-radio>
+            </template>
+          </van-cell>
+        </van-cell-group>
+      </van-radio-group>
+      <!-- 提交按钮 -->
+      <div class="plr-20 mt-30 pb-20">
+        <BmButton class="fs-16 round-8 w-100" @click="onReturnConfirm">Confirm</BmButton>
       </div>
     </van-popup>
   </div>
@@ -182,13 +231,20 @@ export default {
       goodsStatus: -1, // 货物状态
       goodsStatusLabel: '',
       cancelReasonList: [],
-      imgList: []
+      imgList: [],
+      returnMethod: false,
+      returnMethodRadio: 0,
+      returnMethodTitle: '',
+      applyMessage: '',
+      concatName: '',
+      concatCell: ''
     }
   },
   activated() {
     if (this.$route.params.type == 1) this.title = 'me.afterSale.afterSaleService'; // 仅退款
     if (this.$route.params.type == 2) this.title = 'me.afterSale.returnRefund'; // 退货退款
     if (this.$route.params.type == 3) this.title = 'me.afterSale.exchange'; // 换货
+    this.returnMethodTitle = this.$t('me.order.returnMethodList')[this.returnMethodRadio].title;
 
     let _ajax = this.$route.query.edit ? getUpdateReturnDetail(this.$route.query.itemId) : getOrderItem(this.$route.query.itemId);
     
@@ -212,6 +268,13 @@ export default {
         // 获取状态
         this.goodsStatus = res.data.goodState;
         this.goodsStatusLabel = this.$t('me.afterSale.stateGoodsList')[res.data.goodState];
+        // 申请信息
+        this.applyMessage = res.data.applyDesc;
+        if (res.data.returnType == 1) { // 退货退款
+          this.returnMethodRadio = res.data.deliveryType == 1 ? 1 : 0;
+          this.concatName = res.data.receiverName;
+          this.concatCell = res.data.receiverPhone;
+        }
         // 凭证图片
         let pics = res.data.proofPics != '' ? res.data.proofPics.split(',') : [];
         this.fileList = pics.map(item => {
@@ -282,11 +345,8 @@ export default {
       }
       this.isSelectType = true;
     },
-    onBlur(value) { // 输入金额格式化
+    onFormatter(value) { // 输入金额格式化
       return this.$store.state.rate.currency + value;
-    },
-    onFocus(value) {
-      return value;
     },
     async afterRead(file) { // 上传图片
       if (Array.isArray(file)) { // 多张图片
@@ -316,12 +376,62 @@ export default {
       })
     },
     applyAfterSale() { // 申请售后/修改售后申请
+      // 选择申请原因
       if (this.applyReasonLabel == '') {
         this.$toast('请选择申请原因');
         return false;
       }
+      // 输入申请信息
+      if (this.applyMessage == '') {
+        this.$toast(this.$t('me.afterSale.applyIntructionsDesc'));
+        return false;
+      }
+      if (this.$route.params.type == 2) { // 退货退款
+        // 上门取件-未勾选服务协议
+        if (this.returnMethodRadio == 0 && this.isGreenment == false) {
+          this.$toast('请勾选同意上门取件服务协议');
+          return false;
+        }
+        // 自行寄回
+        if (this.returnMethodRadio == 1) {
+          if (this.concatName == '') {
+            this.$toast('请输入联系人');
+          }
+          if (this.concatCell == '') {
+            this.$toast('请输入联系电话');
+          }
+          return false;
+        }
+      }
+
+      // 参数处理
+      let _data = {
+        applyReason: this.applyReasonLabel,
+        goodState: this.goodsStatus,
+        returnType: this.applyType,
+        proofPics: this.imgList.join(','),
+        productQuantity: this.detail.goodQuantity,
+        applyDesc: this.applyMessage,
+        deliveryType: this.returnMethodRadio == 0 ? 2 : 1,
+        returnAmount: this.returnAmount
+      };
+      if (this.$route.params.type == 2) { // 退货退款
+        if (this.returnMethodRadio == 0) { // 上门取件
+          _data.sendAddressId = this.detail.order.receiverAddressId;
+        }
+        if (this.returnMethodRadio == 1) { // 自行寄件
+          _data.contactPerson = this.concatName;
+          _data.contactPhone = this.concatCell;
+        }
+      }
+      if (this.$route.query.edit) {
+        _data.id = this.detail.id;
+      } else {
+        _data.orderId = this.detail.orderId;
+        _data.orderItemId = this.detail.id;
+      }
       // edit 存在表示修改申请
-      let _ajax = this.$route.query.edit ? updateApply({ applyReason: this.applyReasonLabel, goodState: this.goodsStatus, id: this.detail.id, proofPics: this.imgList.join(','), returnType: this.applyType, productQuantity: this.detail.goodQuantity }) : applyAfterSale({ applyReason: this.applyReasonLabel, goodState: this.goodsStatus, orderId: this.detail.orderId, orderItemId: this.detail.id, proofPics: this.imgList.join(','), returnType: this.applyType, productQuantity: this.detail.goodQuantity });
+      let _ajax = this.$route.query.edit ? updateApply(_data) : applyAfterSale(_data);
 
       _ajax.then(res => {
         if (res.code != 0) return false;
@@ -337,10 +447,14 @@ export default {
         })
       })
     },
-    onDeleteFile() {
+    onDeleteFile() { // 删除选择的图片
       this.imgList = this.fileList.map(item => {
         return item.url;
       })
+    },
+    onReturnConfirm() { // 选择退货方式
+      this.returnMethodTitle = this.$t('me.order.returnMethodList')[this.returnMethodRadio].title;
+      this.returnMethod = false;
     }
   },
 }
@@ -358,5 +472,8 @@ export default {
 }
 .mt-18{
   margin-top: 18px;
+}
+.w-90{
+  width: 90%;
 }
 </style>

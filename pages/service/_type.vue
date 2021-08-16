@@ -1,9 +1,9 @@
 <template>
   <!-- 协议 -->
-  <div>
-    <BmHeaderNav :left="{ isShow: true }" :title="title" v-if="isShow" />
+  <div :class="{'pt-46': isShow}">
+    <BmHeaderNav :left="{ isShow: true }" :title="title" v-if="isShow" :fixed="true" />
     
-    <div class="fs-14 mlr-20 mt-20" v-html="intro"></div>
+    <div class="fs-14 mlr-20 mt-20 pb-20 lh-20" v-html="intro"></div>
   </div>
 </template>
 
@@ -16,6 +16,11 @@ export default {
       title: '',
       intro: '',
       isShow: false
+    }
+  },
+  head() { // 头部设置，方便seo
+    return {
+      title: this.title
     }
   },
   activated() {

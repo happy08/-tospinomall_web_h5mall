@@ -51,7 +51,8 @@ export function cancelOrder(data) {
  */
 export function getOrderReasonList(params) {
   return request({
-    url: '/api/basics/base/trade/orderReason/findByConditions',
+    // url: '/api/basics/base/trade/orderReason/findByConditions',
+    url: '/api/basics/base/trade/orderReason/findReasonByApplyTypeAndGoodsStatus',
     method: 'get',
     params
   })
@@ -148,11 +149,11 @@ export function getNegotiationHistory(orderReturnId) {
 /**
  * 买家撤销申请
  */
-export function revokeApply(data) {
+export function revokeApply(orderReturnId) {
   return request({
     url: '/api/order/orderReturn/buyer/revokeApply',
     method: 'post',
-    data: qs.stringify(data)
+    data: qs.stringify({ orderReturnId })
   })
 }
 
@@ -183,5 +184,16 @@ export function getLogisticsInfo(no) {
   return request({
     url: `/api/order/omsorder/buyer/getLogisticsInfo/${no}`,
     method: 'get'
+  })
+}
+
+/**
+ * 买家-删除订单
+ */
+export function removeOrder(id) {
+  return request({
+    url: '/api/order/orderReturn/buyer/removeOrder',
+    method: 'post',
+    data: qs.stringify({ id })
   })
 }

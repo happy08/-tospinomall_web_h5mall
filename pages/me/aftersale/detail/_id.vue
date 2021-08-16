@@ -1,101 +1,99 @@
 <template>
   <!-- 我的-售后-售后详情 type: 1仅退款 2退货退款 3换货  -->
-  <div class="vh-100 bg-grey pt-46">
+  <div class="vh-100 bg-grey pt-46 pb-56">
     <BmHeaderNav :left="{ isShow: true, isEmit: true }" :title="$t('me.afterSale.detailRefund')" :fixed="true" @leftClick="leftClick" />
     
     <!-- 仅退款,退款中 -->
     <!-- 退款类型returnType：0->退款 1退款退货 -->
-    <div v-if="detail.returnType == 0 && detail.surplusTime > 0">
-      <!-- 退款/退货退款/换货 进度 -->
-      <div class="bg-green-linear ptb-12 plr-8">
-        <div class="bg-white pb-14 pt-20 plr-8 round-13">
-          <h4 class="fs-14">{{ $t('me.afterSale.waitProcess') }}</h4>
-          <div class="light-grey fs-14 mt-8 flex flex-wrap vcenter">
-            <span>{{ $t('me.afterSale.countdown') }}</span>
-            <van-count-down :time="detail.surplusTime" format="DD 天 HH 时 mm 分 ss 秒" class="ml-4" />
-          </div>
-          <!-- 步骤条 -->
-          <van-steps :active="stepActive" active-color="#42B7AE" inactive-color="#BFBFBF" class="mt-24 pt-0">
-            <van-step v-for="(stepItem, stepIndex) in $t('me.afterSale.processStep')" :key="stepIndex">
-              <!-- 已激活状态图标 -->
-              <template #active-icon>
-                <BmImage 
-                  :url="require('@/assets/images/icon/circle-active-icon.svg')"
-                  :width="'0.22rem'" 
-                  :height="'0.22rem'"
-                  :isLazy="false"
-                  :isShow="false"
-                  :round="true"
-                />
-              </template>
-              <!-- 已完成状态图标 -->
-              <template #finish-icon>
-                <BmImage 
-                  :url="require('@/assets/images/icon/circle-finished-active.svg')"
-                  :width="'0.22rem'" 
-                  :height="'0.22rem'"
-                  :isLazy="false"
-                  :isShow="false"
-                  :round="true"
-                />
-              </template>
-              {{ stepItem }}
-            </van-step>
-          </van-steps>
+    <!-- 订单类型orderType：1->FBM订单 2->FBT订单 -->
+    <!-- status：1->商家/运营待处理 2->待自行寄回/待上门取件 3商家/运营待收货 4->待退款 5->退款成功 6->关闭售后单 7->商家/运营驳回申请 8->商家/运营拒收退货商品 -->
+    <!-- 工单状态involvedStatus：1->待举证 2->等平台处理中 3->工单关闭 4->工单已完毕 -->
+    <!-- deliveryType: 1->自行寄出 2->上门取件 -->
+    <!-- 退款/退货退款/换货 进度，处理中 -->
+    <div class="bg-green-linear ptb-12 plr-8" v-if="detail.status == 1 || detail.status == 2 || detail.status == 3 || detail.status == 4">
+      <!-- 退款处理中 -->
+      <div class="bg-white pb-14 pt-20 plr-8 round-13" v-if="detail.involvedStatus == 0">
+        <h4 class="fs-14" v-if="detail.status == 4">退款处理中</h4>
+        <h4 class="fs-14" v-else-if="detail.status == 1">{{ detail.orderType == 1 ? '请等待商家处理' : '请等待平台处理'}}</h4>
+        <div class="light-grey fs-14 mt-8 flex flex-wrap vcenter" v-if="detail.surplusTime > 0">
+          <span>{{ $t('me.afterSale.countdown') }}</span>
+          <van-count-down :time="detail.surplusTime" format="DD 天 HH 时 mm 分 ss 秒" class="ml-4" />
         </div>
-      </div>
-
-      <!-- 您已发起退款/退货退款/换货请求，请等待处理。提示语 --> 
-      <div class="bg-white plr-12 pb-30 pt-18">
-        <h4 class="fs-14 fw">{{ $t('me.afterSale.refundWaitTitle') }}</h4>
-        <p class="pt-18 fs-12 light-grey">{{ $t('me.afterSale.refundMerchantsTip') }}</p>
-        <p class="pt-12 fs-12 light-grey">{{ $t('me.afterSale.refundMerchantsRefuseTip') }}</p>
+        <!-- 步骤条 -->
+        <van-steps :active="stepActive" active-color="#42B7AE" inactive-color="#BFBFBF" class="mt-24 pt-0 custom-step-aftersale">
+          <van-step v-for="(stepItem, stepIndex) in stepList" :key="stepIndex">
+            <!-- 已激活状态图标 -->
+            <template #active-icon>
+              <BmImage 
+                :url="require('@/assets/images/icon/circle-active-icon.svg')"
+                :width="'0.22rem'" 
+                :height="'0.22rem'"
+                :isLazy="false"
+                :isShow="false"
+                :round="true"
+              />
+            </template>
+            <!-- 已完成状态图标 -->
+            <template #finish-icon>
+              <BmImage 
+                :url="require('@/assets/images/icon/circle-finished-active.svg')"
+                :width="'0.22rem'" 
+                :height="'0.22rem'"
+                :isLazy="false"
+                :isShow="false"
+                :round="true"
+              />
+            </template>
+            {{ stepItem }}
+          </van-step>
+        </van-steps>
       </div>
     </div>
 
-    <!-- 退款成功 -->
-    <div v-if="detail.returnType == 0 && detail.status == 5">
-      <!-- 退款成功提示 -->
-      <div class="mt-12 bg-green-linear ptb-12 plr-8">
-        <div class="bg-white pb-14 pt-20 plr-8 round-13">
-          <div class="flex">
-            <BmImage 
-              :url="require('@/assets/images/icon/fail-icon.svg')"
-              :width="'0.36rem'" 
-              :height="'0.36rem'"
-              :isLazy="false"
-              :isShow="false"
-              :round="true"
-            />
-            <div class="ml-10">
-              <p class="fw fs-14 black">{{ $t('me.afterSale.refundSuccess') }}</p>
-              <p class="fs-12 light-grey mt-14">07-07-2020 13:34:00</p>
-            </div>
-          </div>
-        </div>
+    <!-- 退款成功/关闭售后单 -->
+    <div class="mt-12 bg-green-linear ptb-12 plr-8" v-if="detail.status == 5 || detail.status == 6">
+      <div class="bg-white ptb-20 plr-8 round-13">
+        <p class="fw fs-14 black ml-10" v-if="detail.status == 5">{{ $t('me.afterSale.refundSuccess') }}</p>
+        <p class="fw fs-14 black ml-10" v-if="detail.status == 6">已关闭</p>
+        <p class="fs-12 light-grey mt-10 ml-10">{{ detail.updateTime }}</p>
       </div>
-      <!-- 退款成功提示文案及金额展示 -->
-      <div class="pt-18 plr-10 bg-white pb-20">
-        <p class="fs-14 black">{{ $t('me.afterSale.refundSuccessTip') }}</p>
-        <div class="red fs-14 mt-20 flex between">
-          <span>{{ $t('me.afterSale.totalRefund') }}</span>
-          <span>{{ $store.state.rate.currency }}259.00</span>
-        </div>
+    </div>
+
+    <!-- 已发起退款申请，请耐心等待商家处理 -->
+    <div class="bg-white plr-12 ptb-20" v-if="detail.status == 1 && detail.orderType == 1">
+      <h4 class="fs-14 fw">您已成功发起退款申请，请耐心等待商家处理</h4>
+      <!-- 退款 -->
+      <p class="mt-12 fs-12 light-grey" v-if="detail.returnType == 0">商家同意退款或者超时未处理，系统将退款给您。<br/>如果商家拒绝，您可以修改退款申请后再次发起，商家会重新处理</p>
+      <!-- 退货退款 -->
+      <p class="mt-12 fs-12 light-grey" v-if="detail.returnType == 1">商家同意退款或者超时未处理，系统将退款给您<br/>如果商家拒绝，您可以修改退款申请后再次发起，商家会重新处理如商家超时未处理，退货申请将达成，请按系统给出的退货地址退货</p>
+    </div>
+    <!-- 商家同意退款/退款成功[超时/未超时] -->
+    <div class="bg-white plr-12 ptb-20" v-if="(detail.status == 4 || detail.status == 5) && detail.orderType == 1">
+      <h4 class="fs-14 fw" v-if="detail.status == 4 || detail.status == 3">商家已同意您的退款申请，请等待系统退款</h4>
+      <h4 class="fs-14 fw" v-if="detail.status == 5 && detail.isAutoAudit == 0">商家已同意您的退款申请，系统已退款给您</h4>
+      <h4 class="fs-14 fw" v-if="detail.status == 5 && detail.isAutoAudit == 1">因商家超时未处理，交易支付退款</h4>
+      <div class="flex red between mt-12" v-if="detail.status == 5">
+        <span class="fs-12">退款总金额</span>
+        <span class="fs-14 fw">{{ $store.state.rate.currency }}{{ detail.returnAmount }}</span>
       </div>
+    </div>
+    <!-- 已关闭 -->
+    <div class="bg-white plr-12 ptb-20" v-if="detail.status == 6">
+      <h4 class="fs-14 fw">关闭原因：卖家撤销申请</h4>
     </div>
 
     <!-- 退货退款/换货 成功, 换货暂时不做 -->
-    <div v-if="detail.returnType == 1" class="bg-green-linear p-20 white tc">
+    <!-- <div v-if="detail.returnType == 1" class="bg-green-linear p-20 white tc">
       <p class="fw fs-18">{{ $t('me.afterSale.refundSuccess2') }}</p>
       <p class="mt-20 fs-14">March -5-2020</p>
-    </div>
+    </div> -->
 
     <!-- 协商历史 -->
     <van-cell class="mt-12 ptb-20 plr-12" :title="$t('me.afterSale.negotiationHistory')" title-class="fs-14 black" is-link :to="{ name: 'me-aftersale-negotiation-id', params: { id: detail.id } }" />
 
     <!-- 订单展示 -->
     <div class="mt-12 bg-white pt-24 plr-20 pb-20">
-      <OrderStoreSingle :name="detail.storeName" />
+      <OrderStoreSingle :name="detail.storeName" :showArrow="false" />
       <OrderSingle class="mt-20" :product_num="detail.returnQuantity" :product_desc="detail.productName" :product_size="detail.productAttr" :price="detail.productPrice" :image="detail.productImage" />
     </div>
 
@@ -115,23 +113,23 @@
       <van-cell class="ptb-20 plr-20" :title="$t('me.afterSale.refundNumber')" title-class="fs-14 black flex-2" value-class="tl flex-3 light-grey">
         <template #default>
           <div class="flex vcenter">
-            <span class="copy-order">{{ detail.returnSn }}</span>
-            <van-icon :name="require('@/assets/images/icon/copy-icon.png')" size="0.48rem" class="ml-10 copy-member" @click="copy" />
+            <span>{{ detail.returnSn }}</span>
+            <van-icon :name="require('@/assets/images/icon/copy-icon.png')" size="0.48rem" class="ml-10 copy-order" @click="copy" />
           </div>
         </template>
       </van-cell>
-      <!-- 返回方式 -->
-      <!-- <van-cell class="ptb-20 plr-20" :title="$t('me.afterSale.returnWay')" title-class="fs-14 black flex-2" value-class="tl flex-3 light-grey" value="Door to take"/> -->
+      <!-- 退货方式 -->
+      <van-cell class="ptb-20 plr-20" :title="$t('me.afterSale.returnWay')" title-class="fs-14 black flex-2" value-class="tl flex-3 light-grey" :value="detail.deliveryType == 1 ? '自行寄回' : '上门取件'" v-if="detail.returnType == 1" />
       <!-- 姓名、电话、地址 -->
-      <!-- <van-cell class="ptb-20 plr-20">
+      <van-cell class="ptb-20 plr-20" v-if="detail.returnType == 1">
         <template #default>
           <div class="flex between">
-            <p class="fs-14 black">Wu 139***9875698</p>
+            <p class="fs-14 black">{{ detail.sendName }}  {{ detail.sendPhone }}</p>
             <p class="light-grey fs-14">Shipping address</p>
           </div>
-          <p class="black fs-14 mt-12">Address: Room 302, Geya Building, Guangming District, Shenzhen</p>
+          <p class="black fs-14 mt-12">地址: {{ detail.sendCompleteAddress }}</p>
         </template>
-      </van-cell> -->
+      </van-cell>
     </van-cell-group>
 
     <div class="w-100 bg-white btn-content flex hend vcenter">
@@ -146,9 +144,9 @@
         <!-- 撤销工单 -->
         <BmButton :type="'info'" class="h-32 time-out" v-if="(detail.status == 7 || detail.status == 8) && (detail.involvedStatus == 1 || detail.involvedStatus == 2)">撤销工单</BmButton>
         <!-- 填写运单号 -->
-        <BmButton :type="'info'" class="h-32 time-out" v-if="detail.status == 2 && orderitem.deliveryType == 1">填写运单号</BmButton>
+        <BmButton :type="'info'" class="h-32 time-out" v-if="detail.status == 2 && detail.deliveryType == 1">填写运单号</BmButton>
         <!-- 修改物流单号 -->
-        <BmButton :type="'info'" class="h-32 time-out" v-if="detail.status == 3 && orderitem.deliveryType == 1">修改物流单号</BmButton>
+        <BmButton :type="'info'" class="h-32 time-out" v-if="detail.status == 3 && detail.deliveryType == 1">修改物流单号</BmButton>
         <!-- 客服介入 -->
         <BmButton :type="'info'" class="h-32 time-out" v-if="(detail.status == 7 || detail.status == 8) && detail.involvedStatus == 0 && detail.orderType == 1 && detail.surplusTime > 0">客服介入</BmButton>
         <!-- 追加举证 -->
@@ -179,7 +177,8 @@ export default {
   data() {
     return {
       stepActive: 1,
-      detail: {}
+      detail: {},
+      stepList: []
     }
   },
   activated() {
@@ -197,7 +196,7 @@ export default {
     copy() { // 复制
       let clipboard = new ClipboardJS('.copy-order', {
         text: () => {
-          return 'XSD2020071509472000002840';
+          return this.detail.returnSn;
         }
       })
       clipboard.on('success', () => {
@@ -243,11 +242,18 @@ export default {
           surplusTime: res.data.surplusTime * 1000
         };
         // 状态: 1->商家/运营待处理 2->待自行寄回/待上门取件 3商家/运营待收货 4->待退款 5->退款成功 6->关闭售后单 7->商家/运营驳回申请 8->商家/运营拒收退货商品
-        if (res.data.status == 5) {
-          this.stepActive = 2;
-        } else {
-          this.stepActive = 1;
+        if (res.data.returnType == 0) { // 退款
+          if (res.data.status == 5) {
+            this.stepActive = 2;
+          } else {
+            this.stepActive = 1;
+          }
+          this.stepList = this.$t('me.afterSale.processStep');
+        } else { // 退货退款
+          this.stepActive = res.data.status == 1 ? 1 : res.data.status == 2 ? 2 : (res.data.status == 4 || res.data.status == 3) ? 3 : res.data.status == 5 ? 4 : 0;
+          this.stepList = this.$t('me.afterSale.processReturnShopStep');
         }
+        
       })
     },
     onEditApply() { // 修改申请
@@ -284,9 +290,6 @@ export default {
 .round-13{
   border-radius: 13px;
 }
-.pt-18{
-  padding-top: 18px;
-}
 .flex-3{
   flex: 3;
 }
@@ -310,5 +313,17 @@ export default {
   border-color: #eee!important;
   color: #383838!important;
   background-color: transparent!important;
+}
+.pb-56{
+  padding-bottom: 56px;
+}
+</style>
+
+<style lang="less">
+.custom-step-aftersale{
+  .van-step__circle{
+    width: 11px;
+    height: 11px;
+  }
 }
 </style>

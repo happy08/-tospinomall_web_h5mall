@@ -273,8 +273,6 @@ import { Search, CountDown, Sticky, Tab, Tabs, Loading, List, Badge } from 'vant
 import ProductTopBtmSingle from '@/components/ProductTopBtmSingle';
 import EmptyStatus from '@/components/EmptyStatus';
 import PullRefresh from '@/components/PullRefresh';
-import * as SockJS from 'sockjs-client';
-import Stomp from 'stomp-websocket';
 
 export default {
   middleware: 'sockjs',

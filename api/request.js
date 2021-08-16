@@ -97,6 +97,9 @@ service.interceptors.response.use(response => { // 成功
     } else if (response.data.code === 10401) { // 用户凭证已过期,跳转到登录页面
       tip(response.data.msg);
       $nuxt.$store.commit('user/SET_TOKEN', null); // 用户凭证已过期，先刷新token
+      $nuxt.$router.push({
+        name: 'login'
+      })
       
       return response.data;
     } else {
@@ -113,6 +116,9 @@ service.interceptors.response.use(response => { // 成功
   if (error.code > 0) {
     if (error.code == 10401) {
       $nuxt.$store.commit('user/SET_TOKEN', null); // 用户凭证已过期，先刷新token
+      $nuxt.$router.push({
+        name: 'login'
+      })
     }
     console.log('error:');
     console.log(error);
