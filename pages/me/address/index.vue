@@ -7,7 +7,7 @@
       <div class="flex between vcenter address-single__top">
         <div class="flex vcenter fm-helvetica">
           <!-- 标签 -->
-          <span class="white fs-12 p-4 bg-orange round-4 lh-18 mr-4" v-show="item.isDefault">Default</span>
+          <span class="white fs-12 p-4 bg-orange round-4 lh-18 mr-4" v-show="item.isDefault">{{ $t('me.address.default') }}</span>
           <span class="white fs-12 p-4 bg-green round-4 lh-18 mr-12" v-show="item.tag">{{ $t('me.address.tag')[item.tag-1] }}</span>
           <span class="white fs-12 p-4 bg-green round-4 lh-18 mr-12" v-show="item.tagEditor">{{ item.tagEditor }}</span>
           <!-- 姓名/手机号 -->
@@ -35,7 +35,7 @@
           :isLazy="false"
           :isShow="false"
         />
-        <span :class="{'fm-helvetica fs-14 ml-8': true, 'red': item.isDefault}">{{ item.isDefault ? 'Default': 'Set as Default' }}</span>
+        <span :class="{'fm-helvetica fs-14 ml-8': true, 'red': item.isDefault}">{{ item.isDefault ? $t('me.address.default'): $t('me.address.setDefault') }}</span>
       </div>
     </div>
 

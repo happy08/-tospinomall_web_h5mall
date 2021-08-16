@@ -1,3 +1,4 @@
+// 英语
 const en = {
   common: {
     or: 'OR',
@@ -60,7 +61,14 @@ const en = {
       title: 'About Tospino',
       termMenu: 'Term of Service',
       privacyMenu: 'Privacy policy',
-      userAgreementMenu: 'User agreement'
+      userAgreementMenu: 'User agreement',
+      likes: '我的关注',
+      recentlyViewed: '最近浏览',
+      wallet: '我的钱包',
+      addressManagement: '地址管理',
+      shop: '我的店铺',
+      setting: '设置',
+      feedback: '反馈'
     },
     accountSetting: {
       title: 'Account Setting',
@@ -68,7 +76,6 @@ const en = {
       accountSecurity: 'Account and Security',
       paySetting: 'Payment settings',
       langSetting: 'Language setting',
-      clearCache: 'Clear Cache',
       securityTitle: 'Account security',
       securityWelcome: ',Welcome back to security',
       changePwd: 'Change Password',

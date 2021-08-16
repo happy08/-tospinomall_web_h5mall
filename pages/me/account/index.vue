@@ -38,9 +38,6 @@
       <van-cell class="p-20" :title="$t('me.accountSetting.langSetting')" is-link title-class="black" :to="{ name: 'me-language' }" />
     </div>
 
-    <!-- 清除缓存 -->
-    <!-- <van-cell class="mt-20 p-20" :title="$t('me.accountSetting.clearCache')" title-class="black"/> -->
-
     <!-- 退出 -->
     <div class="plr-20 w-100 pb-20">
       <BmButton class="w-100 account-btn" :type="'info'" @click="logout">退出</BmButton>

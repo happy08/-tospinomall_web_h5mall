@@ -41,7 +41,7 @@ export default ({ app, store }) => {
   app.i18n = new VueI18n({
     locale: store.state.locale,
     // fallbackLocale: store.state.locale || 'en',
-    fallbackLocale: 'en', // 没有文案的时候默认英文语言
+    fallbackLocale: 'zh-CN', // 没有文案的时候默认英文语言
     messages: {
       'zh-CN': {
         ...zhCNLocale,
@@ -74,5 +74,5 @@ export default ({ app, store }) => {
     }
   });
   
-  vantLocales(store.state.locale || 'en');
+  vantLocales(store.state.locale || 'zh-CN');
 };

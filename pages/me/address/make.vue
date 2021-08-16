@@ -10,7 +10,7 @@
     <!-- 收货地址 -->
     <div class="bg-white">
       <!-- 收货人姓名 -->
-      <van-field v-model="form.name" class="p-20" placeholder="The consignee" />
+      <van-field v-model="form.name" class="p-20" :placeholder="$t('me.address.consignee')" />
       <!-- 收货人电话号码 -->
       <van-field
         v-model="form.phone"
@@ -45,7 +45,7 @@
         rows="4"
         type="textarea"
         class="p-20"
-        placeholder="Detailed address:such as road,building number..."
+        :placeholder="$t('me.address.buildingNumber')"
       />
       <!-- 标签 -->
       <van-field v-model="form.tag" label="文本" label-width="0.72rem">
@@ -74,7 +74,7 @@
         </template>
       </van-field>
       <!-- 设置默认地址 -->
-      <van-cell title="Set as the default adress" label="Reminder: This address is recommended by default for each order" title-class="black" class="p-20" >
+      <van-cell :title="$t('me.address.setDefaultAddress')" label="Reminder: This address is recommended by default for each order" title-class="black" class="p-20" >
         <template #right-icon>
           <van-switch v-model="form.isDefault" active-color="#34C759" inactive-color="#dcdee0" size="0.45rem" />
         </template>

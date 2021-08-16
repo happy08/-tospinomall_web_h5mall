@@ -42,13 +42,13 @@
         <nuxt-link :to="$store.state.user.authToken ? { name: 'me-likes' } : { name: 'login' }" v-slot="{ navigate }" class="tc">
           <dl @click="navigate" role="link">
             <dt class="fs-24 black fw">0</dt>
-            <dd class="fs-12 grey mt-4">Collection</dd>
+            <dd class="fs-12 grey mt-4">{{ $t('me.about.collect') }}</dd>
           </dl>
         </nuxt-link>
         <nuxt-link :to="$store.state.user.authToken ? { name: 'me-wallet' }: { name: 'login' }" v-slot="{ navigate }" class="tc">
           <dl @click="navigate" role="link">
             <dt class="fs-24 black fw">0</dt>
-            <dd class="fs-12 grey mt-4">Wallet</dd>
+            <dd class="fs-12 grey mt-4">{{ $t('me.about.wallet') }}</dd>
           </dl>
         </nuxt-link>
         <!-- <dl class="tc">
@@ -62,7 +62,7 @@
 
     <!-- 我的订单 -->
     <div class="bg-white mlr-12 round-8 plr-12 pb-20 user-page__order">
-      <van-cell class="ptb-12 plr-0" :border="false" title="My Order" is-link value="View All" value-class="green" title-class="black" :to="$store.state.user.authToken ? { name: 'me-order' } : { name: 'login' }" />
+      <van-cell class="ptb-12 plr-0" :border="false" :title="$t('me.order.myOrderTitle')" is-link :value="$t('me.order.viewAll')" value-class="green" title-class="black" :to="$store.state.user.authToken ? { name: 'me-order' } : { name: 'login' }" />
       <div class="flex between tc">
         <nuxt-link v-for="(orderItem, orderIndex) in orderList" :key="'oder-' + orderIndex" :to="$store.state.user.authToken ? { name: orderItem.name, query: { type: orderItem.type } } : { name: 'login' }" >
           <van-badge :content="orderItem.count" max="99" :class="{'custom-badge': true, 'isNo-badge': orderItem.count == 0}">
@@ -74,14 +74,14 @@
               :isShow="false"
             />
           </van-badge>
-          <p>{{ orderItem.text }}</p>
+          <p>{{ $t(orderItem.text) }}</p>
         </nuxt-link>
       </div>
     </div>
     <div class="clearfix"></div>
     <!-- 其他设置项 -->
     <div class="round-8 bg-white mlr-12 mt-12 hidden user-page__other">
-      <van-cell class="ptb-14 plr-12" :title="otherItem.text" title-class="pl-12" v-for="(otherItem, otherIndex) in otherList" :key="'other-list-' + otherIndex" :to="($store.state.user.authToken || otherItem.name === 'me-about') ? { name: otherItem.name, query: otherItem.query } : { name: 'login' }">
+      <van-cell class="ptb-14 plr-12" :title="$t(otherItem.text)" title-class="pl-12" v-for="(otherItem, otherIndex) in otherList" :key="'other-list-' + otherIndex" :to="($store.state.user.authToken || otherItem.name === 'me-about') ? { name: otherItem.name, query: otherItem.query } : { name: 'login' }">
         <template #icon>
           <BmIcon :name="otherItem.icon" :width="'0.48rem'" :height="'0.48rem'"></BmIcon>
         </template>
@@ -96,8 +96,6 @@
 <script>
 import { Badge, Cell, CellGroup } from 'vant';
 import { getOrderCount } from '@/api/order';
-import * as SockJS from 'sockjs-client';
-import Stomp from 'stomp-websocket';
 
 export default {
   middleware: 'sockjs',
@@ -111,7 +109,7 @@ export default {
       orderList: [ // 订单展示项
         {
           icon: 'to-pay-icon',
-          text: 'To Pay', // 待付款
+          text: 'me.order.toPay', // 待付款
           name: 'me-order',
           type: 1,
           count: 0
@@ -124,47 +122,47 @@ export default {
         // },
         {
           icon: 'to-receive-icon',
-          text: 'To Receive', // 待收货
+          text: 'me.order.toReceive', // 待收货
           name: 'me-order',
           type: 2,
           count: 0
         },
         {
           icon: 'to-rate-icon',
-          text: 'To Rate', // 待评价
+          text: 'me.order.toRate', // 待评价
           name: 'me-order-rate',
           count: 0
         },
         {
           icon: 'to-refund-icon',
-          text: 'To Refund', // 退款
+          text: 'me.order.toRefund', // 售后
           name: 'me-aftersale',
           count: 0
         }
       ],
       otherList: [ // 其他设置列表
         {
-          text: 'My Likes', // 我关注的
+          text: 'me.about.likes', // 我关注的
           name: 'me-likes',
           icon: 'my-likes'
         },
         {
-          text: 'Recently Viewed', // 最近浏览
+          text: 'me.about.recentlyViewed', // 最近浏览
           name: 'me-footprint',
           icon: 'recently-viewed'
         },
         {
-          text: 'My wallet', // 钱包
+          text: 'me.about.myWallet', // 钱包
           name: 'me-wallet',
           icon: 'my-wallet'
         },
         {
-          text: 'Address Management', // 地址管理
+          text: 'me.about.addressManagement', // 地址管理
           name: 'me-address',
           icon: 'address-management'
         },
         {
-          text: 'My Shop', // 我的店铺
+          text: 'me.about.shop', // 我的店铺
           name: 'me-likes',
           query: {
             active: 1
@@ -172,17 +170,17 @@ export default {
           icon: 'my-shop'
         },
         {
-          text: 'Settings', // 设置
+          text: 'me.about.setting', // 设置
           name: 'me-account',
           icon: 'settings'
         },
         {
-          text: 'Feedback', // 反馈
+          text: 'me.about.feedback', // 反馈
           name: 'me-feedback',
           icon: 'feedback'
         },
         {
-          text: 'About Tospino', // 关于
+          text: 'me.about.title', // 关于
           name: 'me-about',
           icon: 'about-tospino'
         }
