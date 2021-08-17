@@ -1,10 +1,10 @@
 <template>
   <!-- 我的-售后列表 -->
   <div class="vh-100 bg-grey pt-46">
-    <BmHeaderNav :left="{ isShow: true }" :title="$t('me.afterSale.title')" :fixed="true" />
+    <BmHeaderNav :left="{ isShow: true }" :title="$t('refund_after_sale')" :fixed="true" />
     <!-- 售后列表 -->
     <van-tabs sticky swipeable animated :offset-top="46" color="#42B7AE" class="customs-van-tabs" :ellipsis="false" @change="getSearchList" v-model="tabActive">
-      <van-tab v-for="(categoryItem, tabIndex) in categoryList" :title="titleFormat(categoryItem, tabIndex)" :key="'scroll-tab-' + tabIndex" title-class="border-b pb-0" :name="tabIndex">
+      <van-tab v-for="(categoryItem, tabIndex) in $t('after_sale_status')" :title="titleFormat(categoryItem, tabIndex)" :key="'scroll-tab-' + tabIndex" title-class="border-b pb-0" :name="tabIndex">
         <PullRefresh :refreshing="refreshing" @refresh="onRefresh">
           <div class="pb-20 bg-grey">
             <!-- 空列表 -->
@@ -35,8 +35,8 @@
                     <div :class="{'mt-24 flex vcenter': true, 'hend': productItem.showAfterSale != 0, 'between': productItem.showAfterSale == 0}" v-if="tabActive === 0">
                       <!-- 订单售后状态showAfterSale：-1->数量达到不可售后 0->时间达到不可售后 1->可以售后 -->
                       <div v-if="productItem.showAfterSale == 0" class="tl">The goods have timed out</div>
-                      <BmButton :type="'info'" class="h-32" v-if="productItem.showAfterSale == 1" @click="afterSales(productItem)">{{ $t('me.afterSale.applySales') }}</BmButton>
-                      <BmButton :type="'info'" class="h-32 time-out" v-else>{{ $t('me.afterSale.applySales') }}</BmButton>
+                      <BmButton :type="'info'" class="h-32" v-if="productItem.showAfterSale == 1" @click="afterSales(productItem)">{{ $t('apply_for_after_sales') }}</BmButton>
+                      <BmButton :type="'info'" class="h-32 time-out" v-else>{{ $t('apply_for_after_sales') }}</BmButton>
                     </div>
                   </div>
                 </template>
@@ -53,34 +53,34 @@
                     @onClick="goReturnDetail(orderitem.id)" 
                   />
                   <div class="flex between mt-18">
-                    <div class="fs-14 light-grey w-50">
+                    <div class="fs-14 light-grey w-auto">
                       <p>{{ orderitem.status | statusFormat(orderitem.deliveryType) }}</p>
                       <!-- 退款成功 -->
-                      <p v-if="orderitem.status == 5">退款{{ $store.state.rate.currency }}{{ orderitem.returnAmount }}</p>
+                      <p v-if="orderitem.status == 5">{{ $t('refund') }}{{ $store.state.rate.currency }}{{ orderitem.returnAmount }}</p>
                     </div>
                     <!-- 处理中 -->
                     <!-- 工单状态involvedStatus： 0未开始 1->待举证 2->平台处理中 3->工单关闭 4->工单已完结 -->
                     <!-- status: 1->商家/运营待处理 2->待自行寄回/待上门取件 3商家/运营待收货 4->待退款 5->退款成功 6->关闭售后单 7->商家/运营驳回申请 8->商家/运营拒收退货商品 -->
                     <!-- 订单类型orderType：1->FBM订单 2->FBT订单 -->
                     <div class="flex hend">
+                      <!-- 客服介入 -->
+                      <BmButton :type="'info'" class="h-32 mr-12 time-out" v-if="(orderitem.status == 7 || orderitem.status == 8) && orderitem.involvedStatus == 0 && orderitem.orderType == 1 && orderitem.surplusTime > 0" @btnClick="$router.push({ name: 'me-aftersale-proof-id', params: { id: orderitem.id } })">{{ $t('customer_service_intervention') }}</BmButton>
+                      <!-- 追加举证 -->
+                      <!-- <BmButton :type="'info'" class="h-32 time-out" v-if="(orderitem.status == 7 || orderitem.status == 8) && orderitem.involvedStatus == 1 && orderitem.orderType == 1 && orderitem.surplusTime > 0">追加举证</BmButton> -->
                       <!-- 撤销申请 -->
-                      <BmButton :type="'info'" class="h-32" v-if="orderitem.status == 1 || orderitem.status == 2 || (orderitem.status == 7 && orderitem.involvedStatus == 0) || (orderitem == 8 && orderitem.involvedStatus == 0)" @btnClick="onRevokeApply(orderitem.id)">撤销申请</BmButton>
-                      <!-- 删除 -->
-                      <BmButton :type="'info'" class="h-32 time-out" v-if="orderitem.status == 5 || orderitem.status == 6" @btnClick="onRemoveOrder(orderitem.id)">删除</BmButton>
-                      <!-- 查看详情 -->
-                      <BmButton :type="'info'" class="h-32 ml-12" v-if="orderitem.status == 5 || orderitem.status == 6" @btnClick="$router.push({ name: 'me-aftersale-detail-id', params: { id: orderitem.id } })">查看详情</BmButton>
+                      <BmButton :type="'info'" class="h-32" v-if="orderitem.status == 1 || orderitem.status == 2 || (orderitem.status == 7 && orderitem.involvedStatus == 0) || (orderitem == 8 && orderitem.involvedStatus == 0)" @btnClick="onRevokeApply(orderitem.id)">{{ $t('cancel_the_application') }}</BmButton>
                       <!-- 撤销工单 -->
-                      <!-- <BmButton :type="'info'" class="h-32 time-out" v-if="(orderitem.status == 7 || orderitem.status == 8) && (orderitem.involvedStatus == 1 || orderitem.involvedStatus == 2)">撤销工单</BmButton> -->
+                      <BmButton :type="'info'" class="h-32" v-if="(orderitem.status == 7 || orderitem.status == 8) && (orderitem.involvedStatus == 1 || orderitem.involvedStatus == 2)" @btnClick="onCancelApply(orderitem.workId)">{{ $t('cancel_the_application') }}</BmButton>
+                      <!-- 删除 -->
+                      <BmButton :type="'info'" class="h-32 time-out" v-if="orderitem.status == 5 || orderitem.status == 6" @btnClick="onRemoveOrder(orderitem.id)">{{ $t('delete') }}</BmButton>
+                      <!-- 查看详情 -->
+                      <BmButton :type="'info'" class="h-32 ml-12" v-if="orderitem.status == 5 || orderitem.status == 6" @btnClick="$router.push({ name: 'me-aftersale-detail-id', params: { id: orderitem.id } })">{{ $t('watch_detail') }}</BmButton>
                       <!-- 修改申请 -->
                       <!-- <BmButton :type="'info'" class="h-32 time-out" v-if="orderitem.status == 1 || orderitem.status == 7">修改申请</BmButton> -->
                       <!-- 填写运单号 -->
                       <!-- <BmButton :type="'info'" class="h-32 time-out" v-if="orderitem.status == 2 && orderitem.deliveryType == 1">填写运单号</BmButton> -->
                       <!-- 修改物流单号 -->
                       <!-- <BmButton :type="'info'" class="h-32 time-out" v-if="orderitem.status == 3 && orderitem.deliveryType == 1">修改物流单号</BmButton> -->
-                      <!-- 客服介入 -->
-                      <!-- <BmButton :type="'info'" class="h-32 time-out" v-if="(orderitem.status == 7 || orderitem.status == 8) && orderitem.involvedStatus == 0 && orderitem.orderType == 1 && orderitem.surplusTime > 0">客服介入</BmButton> -->
-                      <!-- 追加举证 -->
-                      <!-- <BmButton :type="'info'" class="h-32 time-out" v-if="(orderitem.status == 7 || orderitem.status == 8) && orderitem.involvedStatus == 1 && orderitem.orderType == 1 && orderitem.surplusTime > 0">追加举证</BmButton> -->
                     </div>
                   </div>
                 </div>
@@ -98,7 +98,7 @@
 import { Tab, Tabs, List } from 'vant';
 import OrderSingle from '@/components/OrderSingle';
 import OrderStoreSingle from '@/components/OrderStoreSingle';
-import { getOrderAfterSalesCount, removeOrder, revokeApply } from '@/api/order';
+import { getOrderAfterSalesCount, removeOrder, revokeApply, cancelApply } from '@/api/order';
 import PullRefresh from '@/components/PullRefresh';
 
 export default {
@@ -114,7 +114,6 @@ export default {
   data() {
     return {
       lists: [],
-      categoryList: ['After-sale application', 'Processing', 'Application record'],
       tabActive: 0,
       afterSalesCount: 0,
       recordCount: 0,
@@ -164,7 +163,7 @@ export default {
       return val == 1 ? '商家待处理' : val == 2 ? (deliveryType == 1 ? '待自行寄回':'待上门取件') : val == 3 ? '商家待收货' : val == 4 ? '待退款' : val == 5 ? '退款成功' : val == 6 ? '关闭售后单' : val == 7 ? '商家驳回申请' : val == 8 ? '商家拒收退货商品' : '';
     },
     returnTypeFormat(val) {
-      return val == 0 ? '退款' : val == 1 ? '退款退货' : '';
+      return val == 0 ? '退款' : val == 1 ? '退货退款' : '';
     }
   },
   methods: {
@@ -224,7 +223,7 @@ export default {
       this.$fetch();
     },
     onRemoveOrder(id) { // 删除订单
-      removeOrder(id).then(res => {
+      removeOrder(id).then(() => {
         this.lists.forEach((item, index) => {
           if (item.id == id) {
             this.lists.splice(index, 1);
@@ -232,9 +231,26 @@ export default {
         })
       })
     },
-    onRevokeApply(id) {
-      revokeApply(id).then(res => {
-
+    onRevokeApply(id) { // 撤销申请
+      revokeApply(id).then(() => {
+        this.lists.forEach((item, index) => {
+          if (item.id == id) {
+            this.lists.splice(index, 1);
+            this.untreatedCount -= 1;
+            this.recordCount += 1;
+          }
+        })
+      })
+    },
+    onCancelApply(id) { // 撤销工单的申请
+      cancelApply(id).then(() => {
+        this.lists.forEach((item, index) => {
+          if (item.workId == id) {
+            this.lists.splice(index, 1);
+            this.untreatedCount -= 1;
+            this.recordCount += 1;
+          }
+        })
       })
     }
   },
@@ -250,7 +266,8 @@ export default {
 .mt-18{
   margin-top: 18px;
 }
-.w-50{
-  width: 50%;
+.w-auto{
+  width: fit-content;
+  max-width: 60%;
 }
 </style>

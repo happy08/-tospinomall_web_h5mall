@@ -147,7 +147,7 @@ export function getNegotiationHistory(orderReturnId) {
 }
 
 /**
- * 买家撤销申请
+ * 买家售后撤销申请
  */
 export function revokeApply(orderReturnId) {
   return request({
@@ -195,5 +195,81 @@ export function removeOrder(id) {
     url: '/api/order/orderReturn/buyer/removeOrder',
     method: 'post',
     data: qs.stringify({ id })
+  })
+}
+
+/**
+ * 申请平台介入
+ */
+export function applyMallIntervene(data) {
+  return request({
+    url: '/api/order/order/return/work/buyer/applyMallIntervene',
+    method: 'post',
+    data: qs.stringify(data)
+  })
+}
+
+/**
+ * 举证详情
+ */
+export function returnWorkDetail(workId) {
+  return request({
+    url: '/api/order/order/return/work/info/findReturnWorkAllegeList',
+    method: 'get',
+    params: {
+      workId
+    }
+  })
+}
+
+/**
+ * 买家售后工单撤销申请
+ */
+export function cancelApply(workId) {
+  return request({
+    url: '/api/order/order/return/work/buyer/cancel/apply',
+    method: 'get',
+    params: {
+      workId
+    }
+  })
+}
+
+/**
+ * 追加举证
+ */
+export function addToProof(params) {
+  return request({
+    url: '/api/order/order/return/work/buyer/addto/proof',
+    method: 'get',
+    params
+  })
+}
+
+/**
+ * 填写退货单
+ */
+export function writeReturnOrder(data) {
+  return request({
+    url: '/api/order/orderReturn/buyer/writeRefundOrder',
+    method: 'post',
+    data: data,
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+}
+
+/**
+ * 修改运单号
+ */
+export function updateLogisticsOrder(data) {
+  return request({
+    url: '/api/order/orderReturn/buyer/updateLogisticsOrder',
+    method: 'post',
+    data: data,
+    headers: {
+      'Content-Type': 'application/json'
+    }
   })
 }

@@ -396,11 +396,12 @@ export default {
         if (this.returnMethodRadio == 1) {
           if (this.concatName == '') {
             this.$toast('请输入联系人');
+            return false;
           }
           if (this.concatCell == '') {
             this.$toast('请输入联系电话');
+            return false;
           }
-          return false;
         }
       }
 
@@ -415,6 +416,7 @@ export default {
         deliveryType: this.returnMethodRadio == 0 ? 2 : 1,
         returnAmount: this.returnAmount
       };
+      
       if (this.$route.params.type == 2) { // 退货退款
         if (this.returnMethodRadio == 0) { // 上门取件
           _data.sendAddressId = this.detail.order.receiverAddressId;
@@ -424,17 +426,42 @@ export default {
           _data.contactPhone = this.concatCell;
         }
       }
+
       if (this.$route.query.edit) {
         _data.id = this.detail.id;
       } else {
         _data.orderId = this.detail.orderId;
         _data.orderItemId = this.detail.id;
       }
+
+      this.$toast.loading({
+        forbidClick: true,
+        loadingType: 'spinner',
+        duration: 0
+      })
+      
       // edit 存在表示修改申请
       let _ajax = this.$route.query.edit ? updateApply(_data) : applyAfterSale(_data);
 
       _ajax.then(res => {
-        if (res.code != 0) return false;
+        this.$toast.clear();
+
+        // 提交之后数据清空
+        this.applyReason = -1; // 售后原因
+        this.applyReasonLabel = '';
+        this.applyType = -1; // 申请类型状态
+        this.applyTypeLabel = '';
+        this.goodsStatus = -1; // 货物状态
+        this.goodsStatusLabel = '';
+        this.cancelReasonList = [];
+        this.imgList = [];
+        this.fileList = [];
+        this.applyMessage = '';
+        this.returnMethodRadio = 0;
+        this.returnMethodTitle = '';
+        this.applyMessage = '';
+        this.concatName = '';
+        this.concatCell = '';
 
         this.$router.push({
           name: 'me-aftersale-detail-id',

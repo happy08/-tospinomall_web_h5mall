@@ -22,7 +22,7 @@
             <dt class="fs-18 green fw" v-if="$store.state.user.userInfo">{{ $store.state.user.userInfo.nickname == '' ? '--': $store.state.user.userInfo.nickname }}</dt>
             <dd class="fs-12 grey mt-8" v-if="$store.state.user.userInfo">{{ $store.state.user.userInfo.id }}</dd>
           </dl>
-          <div v-else class="ml-10 fs-16" @click="goLogin">请先登录</div>
+          <div v-else class="ml-10 fs-16" @click="goLogin">{{ $t('login_register') }}</div>
         </div>
         <nuxt-link :to="{ name: $store.state.user.authToken ? 'me-message' : 'login' }">
           <van-badge :dot="$store.state.user.isNewMessage">
@@ -42,13 +42,13 @@
         <nuxt-link :to="$store.state.user.authToken ? { name: 'me-likes' } : { name: 'login' }" v-slot="{ navigate }" class="tc">
           <dl @click="navigate" role="link">
             <dt class="fs-24 black fw">0</dt>
-            <dd class="fs-12 grey mt-4">{{ $t('me.about.collect') }}</dd>
+            <dd class="fs-12 grey mt-4">{{ $t('collect') }}</dd>
           </dl>
         </nuxt-link>
         <nuxt-link :to="$store.state.user.authToken ? { name: 'me-wallet' }: { name: 'login' }" v-slot="{ navigate }" class="tc">
           <dl @click="navigate" role="link">
             <dt class="fs-24 black fw">0</dt>
-            <dd class="fs-12 grey mt-4">{{ $t('me.about.wallet') }}</dd>
+            <dd class="fs-12 grey mt-4">{{ $t('wallet') }}</dd>
           </dl>
         </nuxt-link>
         <!-- <dl class="tc">
@@ -62,7 +62,7 @@
 
     <!-- 我的订单 -->
     <div class="bg-white mlr-12 round-8 plr-12 pb-20 user-page__order">
-      <van-cell class="ptb-12 plr-0" :border="false" :title="$t('me.order.myOrderTitle')" is-link :value="$t('me.order.viewAll')" value-class="green" title-class="black" :to="$store.state.user.authToken ? { name: 'me-order' } : { name: 'login' }" />
+      <van-cell class="ptb-12 plr-0" :border="false" :title="$t('my_order')" is-link :value="$t('view_all')" value-class="green" title-class="black" :to="$store.state.user.authToken ? { name: 'me-order' } : { name: 'login' }" />
       <div class="flex between tc">
         <nuxt-link v-for="(orderItem, orderIndex) in orderList" :key="'oder-' + orderIndex" :to="$store.state.user.authToken ? { name: orderItem.name, query: { type: orderItem.type } } : { name: 'login' }" >
           <van-badge :content="orderItem.count" max="99" :class="{'custom-badge': true, 'isNo-badge': orderItem.count == 0}">
@@ -109,7 +109,7 @@ export default {
       orderList: [ // 订单展示项
         {
           icon: 'to-pay-icon',
-          text: 'me.order.toPay', // 待付款
+          text: 'to_pay', // 待付款
           name: 'me-order',
           type: 1,
           count: 0
@@ -122,47 +122,47 @@ export default {
         // },
         {
           icon: 'to-receive-icon',
-          text: 'me.order.toReceive', // 待收货
+          text: 'to_receive', // 待收货
           name: 'me-order',
           type: 2,
           count: 0
         },
         {
           icon: 'to-rate-icon',
-          text: 'me.order.toRate', // 待评价
+          text: 'to_rate', // 待评价
           name: 'me-order-rate',
           count: 0
         },
         {
           icon: 'to-refund-icon',
-          text: 'me.order.toRefund', // 售后
+          text: 'after_sale', // 售后
           name: 'me-aftersale',
           count: 0
         }
       ],
       otherList: [ // 其他设置列表
         {
-          text: 'me.about.likes', // 我关注的
+          text: 'my_likes', // 我关注的
           name: 'me-likes',
           icon: 'my-likes'
         },
         {
-          text: 'me.about.recentlyViewed', // 最近浏览
+          text: 'recently_viewed', // 最近浏览
           name: 'me-footprint',
           icon: 'recently-viewed'
         },
         {
-          text: 'me.about.myWallet', // 钱包
+          text: 'my_wallet', // 钱包
           name: 'me-wallet',
           icon: 'my-wallet'
         },
         {
-          text: 'me.about.addressManagement', // 地址管理
+          text: 'address_management', // 地址管理
           name: 'me-address',
           icon: 'address-management'
         },
         {
-          text: 'me.about.shop', // 我的店铺
+          text: 'my_shop', // 我的店铺
           name: 'me-likes',
           query: {
             active: 1
@@ -170,17 +170,17 @@ export default {
           icon: 'my-shop'
         },
         {
-          text: 'me.about.setting', // 设置
+          text: 'settings', // 设置
           name: 'me-account',
           icon: 'settings'
         },
         {
-          text: 'me.about.feedback', // 反馈
+          text: 'feedback', // 反馈
           name: 'me-feedback',
           icon: 'feedback'
         },
         {
-          text: 'me.about.title', // 关于
+          text: 'about', // 关于
           name: 'me-about',
           icon: 'about-tospino'
         }

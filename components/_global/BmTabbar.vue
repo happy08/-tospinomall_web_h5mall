@@ -22,22 +22,22 @@ export default {
       tabs: [
         {
           name: 'home',
-          text: 'common.home',
+          text: 'title_home',
           icon: 'home'
         },
         {
           name: 'categories',
-          text: 'common.categories',
+          text: 'categories',
           icon: 'categories'
         },
         {
           name: 'cart',
-          text: 'common.cart',
+          text: 'cart',
           icon: 'cart'
         },
         {
           name: 'me',
-          text: 'common.me',
+          text: 'me',
           icon: 'me'
         }
       ]

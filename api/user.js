@@ -78,7 +78,7 @@ export function checkCurrentCode(data) {
 }
 
 /**
- * 获取语言列表
+ * 获取语言列表-查询字典接口
  */
 export function getLangList(type = 'sys_language_type') {
   return request({

@@ -2,13 +2,13 @@
   <!-- 我的-订单 -->
   <div class="vh-100 bg-grey">
     <van-sticky class="bg-white">
-      <BmHeaderNav :left="{ isShow: true, url: '/me' }" :title="$t('me.order.myOrderTitle')" :border="false" />
+      <BmHeaderNav :left="{ isShow: true, url: '/me' }" :title="$t('my_order')" :border="false" />
       <!-- 搜索 -->
       <div class="flex vcenter pl-20 pr-12 bg-white">
         <van-search
           v-model="searchVal"
           shape="round"
-          placeholder="请输入搜索关键词"
+          :placeholder="$t('enter_key_words')"
           class="w-100"
           @click="goSearch"
         > 
@@ -26,7 +26,7 @@
 
     <!-- 分类 -->
     <van-tabs sticky swipeable animated color="#42B7AE" offset-top="1.6rem"  @change="getSearchList" class="customs-van-tabs" v-model="typeActive" :ellipsis="false" >
-      <van-tab v-for="(tabItem, tabIndex) in tabs" :title="tabItem.name" :key="'scroll-tab-' + tabIndex" title-class="border-b" :name="tabItem.type">
+      <van-tab v-for="(tabItem, tabIndex) in tabs" :title="$t(tabItem.name)" :key="'scroll-tab-' + tabIndex" title-class="border-b" :name="tabItem.type">
         <PullRefresh :refreshing="refreshing" @refresh="onRefresh" :class="{ 'bg-white': lists.length === 0 }">
           <van-list
             v-model="loading"
@@ -57,7 +57,7 @@
                       </template>
                     </van-checkbox>
                     <!-- 订单店铺 -->
-                    <OrderStoreSingle :name="item.storeName" :status="item.status | statusFormat(item)" @goStoreDetail="goOrderDetail(item.id)">
+                    <OrderStoreSingle :name="item.storeName" :status="statusFormat(item.status, item)" @goStoreDetail="goOrderDetail(item.id)">
                       <!-- 如果是取消状态，则该订单可删除，添加操作展示  -->
                       <div slot="other-deal" class="flex vcenter" v-if="item.status == 5 || item.status == 6 || item.status == 4">
                         <span class="block line-style"></span>
@@ -121,17 +121,17 @@
                     <!-- 售后状态showAfterSale：0->不可售后 1->可以售后 -->
 
                     <!-- 取消订单：在线支付[待付款0]；货到付款[待发货1且未支付0] -->
-                    <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" v-if="(item.paymentType == 1 && item.status == 0) || (item.paymentType == 0 && item.status == 1 && item.payState == 0)" @btnClick="onCancel(item)">取消订单</BmButton>
+                    <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" v-if="(item.paymentType == 1 && item.status == 0) || (item.paymentType == 0 && item.status == 1 && item.payState == 0)" @btnClick="onCancel(item)">{{ $t('cancel_order') }}</BmButton>
                     <!-- 去支付：在线支付[待付款0] -->
-                    <BmButton class="fs-14 ml-10 round-8 plr-12 h-32" :type="'info'" v-if="item.paymentType == 1 && item.status == 0" @btnClick="onPay(item)">去支付</BmButton>
+                    <BmButton class="fs-14 ml-10 round-8 plr-12 h-32" :type="'info'" v-if="item.paymentType == 1 && item.status == 0" @btnClick="onPay(item)">{{ $t('pay_now') }}</BmButton>
                     <!-- 退款/售后：在线支付[待发货1且已支付1且可售后1,待收货2且已支付1且可售后1,已完成4且可售后1]；货到付款[待发货1且已支付1且可售后1,待收货2且可售后1,已完成4且可售后1] -->
-                    <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" v-if="(item.paymentType == 1 && (((item.status == 1 || item.status == 2) && item.payState == 1) || item.status == 4)  && item.showAfterSale == 1) || (item.paymentType == 0 && ((item.status == 1 && item.payState == 1) || item.status == 2 || item.status == 4) && item.showAfterSale == 1)" @btnClick="onAfterSale(item)">退款/售后</BmButton>
+                    <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" v-if="(item.paymentType == 1 && (((item.status == 1 || item.status == 2) && item.payState == 1) || item.status == 4)  && item.showAfterSale == 1) || (item.paymentType == 0 && ((item.status == 1 && item.payState == 1) || item.status == 2 || item.status == 4) && item.showAfterSale == 1)" @btnClick="onAfterSale(item)">{{ $t('refund_after_sale') }}</BmButton>
                     <!-- 去评价：在线支付[已完成4且未评价0]；货到付款[已完成4且未评价0] -->
-                    <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" v-if="item.hasComment == 0 && item.status == 4" @btnClick="onEvaluate(item)">评价</BmButton>
+                    <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" v-if="item.hasComment == 0 && item.status == 4" @btnClick="onEvaluate(item)">{{ $t('evaluation') }}</BmButton>
                     <!-- 确认收货：在线支付[待收货2且已支付1]；货到付款[待收货2] -->
-                    <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" v-if="(item.paymentType == 1 && item.status == 2 && item.payState == 1) || (item.paymentType == 0 && item.status == 2)" @btnClick="onReceipt(item)">确认收货</BmButton>
+                    <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" v-if="(item.paymentType == 1 && item.status == 2 && item.payState == 1) || (item.paymentType == 0 && item.status == 2)" @btnClick="onReceipt(item)">{{ $t('confirm_receipt') }}</BmButton>
                     <!-- 去购买：待发货1,待收货2,待评价3,已完成4,已取消5,超时未付款6,已拒收7,其他8 -->
-                    <BmButton class="fs-14 ml-10 round-8 plr-12 h-32" :type="'info'" v-if="item.status != 0" @btnClick="onBuy(item)">{{ $t('me.order.buyAgain') }}</BmButton>
+                    <BmButton class="fs-14 ml-10 round-8 plr-12 h-32" :type="'info'" v-if="item.status != 0" @btnClick="onBuy(item)">{{ $t('buy_again') }}</BmButton>
                   </div>
                 </van-checkbox-group>
               </div>
@@ -148,20 +148,20 @@
       class="order-search"
     >
       <div class="order-search-filter">
-        <h3 class="fs-16 black fw order-search-filter__title">According to the time</h3>
+        <h3 class="fs-16 black fw order-search-filter__title">{{ $t('according_to_the_time') }}</h3>
         <div class="mt-10 black flex between flex-wrap order-search-filter__tags">
-          <span :class="{'fs-14 round-8 tc': true, 'is-active': filterTimeType == 1}" @click="filterTimeType = 1">一周之内</span>
-          <span :class="{'fs-14 round-8 tc': true, 'is-active': filterTimeType == 2}" @click="filterTimeType = 2">一月之内</span>
-          <span :class="{'fs-14 round-8 tc': true, 'is-active': filterTimeType == 3}" @click="filterTimeType = 3">3个月内</span>
-          <span :class="{'fs-14 round-8 tc': true, 'is-active': filterTimeType == 4}" @click="filterTimeType = 4">今年</span>
+          <span :class="{'fs-14 round-8 tc': true, 'is-active': filterTimeType == 1}" @click="filterTimeType = 1">{{ $t('oneWeek') }}</span>
+          <span :class="{'fs-14 round-8 tc': true, 'is-active': filterTimeType == 2}" @click="filterTimeType = 2">{{ $t('oneMonth') }}</span>
+          <span :class="{'fs-14 round-8 tc': true, 'is-active': filterTimeType == 3}" @click="filterTimeType = 3">{{ $t('threeMonth') }}</span>
+          <span :class="{'fs-14 round-8 tc': true, 'is-active': filterTimeType == 4}" @click="filterTimeType = 4">{{ $t('this_year') }}</span>
           <span :class="{'fs-14 round-8 tc': true, 'is-active': filterTimeType == 5}" @click="filterTimeType = 5">In {{ beforeOneYear }}</span>
           <span :class="{'fs-14 round-8 tc': true, 'is-active': filterTimeType == 6}" @click="filterTimeType = 6">In {{ beforeTwoYear }}</span>
         </div>
       </div>
 
       <div class="order-search__btn flex">
-        <button class="red fw order-search__btn--reset" @click="filterTimeType = 0">Reset</button>
-        <button class="white fw bg-green-linear" @click="onConfirmFilter">Determine</button>
+        <button class="red fw order-search__btn--reset" @click="filterTimeType = 0">{{ $t('reset') }}</button>
+        <button class="white fw bg-green-linear" @click="onConfirmFilter">{{ $t('determine') }}</button>
       </div>
     </van-popup>
 
@@ -248,11 +248,11 @@ export default {
       searchVal: '',
       tabs: [
         {
-          name: 'All',
+          name: 'all',
           type: 100
         },
         {
-          name: 'Unpaid',
+          name: 'unpaid',
           type: 0
         },
         {
@@ -260,11 +260,11 @@ export default {
           type: 2
         },
         {
-          name: 'Done',
+          name: 'completed',
           type: 4
         },
         {
-          name: 'Cancelled',
+          name: 'cancelled',
           type: 5
         }
       ],
@@ -343,11 +343,6 @@ export default {
     this.refreshing.isFresh = false;
     this.isFirst = false;
   },
-  filters: {
-    statusFormat(val, item) {
-      return val == 0 ? '待付款' : val == 1 ? '待发货' : val == 2 ? '待收货' : val == 3 || (val == 4 && item.hasComment == 0) ? '待评价' : val == 4 && item.hasComment == 1 ? '已完成' : val == 5 ? '已取消' : val == 6 ? '交易关闭' : val == 7 ? '已拒收' : '其他';
-    }
-  },
   activated() {
     this.isFirst = true;
     this.$fetch();
@@ -362,8 +357,6 @@ export default {
   },
   methods: {
     async getSearchList(index) { // 获取分类列表
-      console.log(index)
-      // this.typeActive = index;
       this.params.pageNum = 1;
       this.$fetch();
     },
@@ -430,7 +423,11 @@ export default {
 
       deleteOrder(orderId).then(() => {
         this.$toast.clear();
-        this.$fetch();
+        this.lists.forEach((item, index) => {
+          if (item.id == orderId) {
+            this.lists.splice(index, 1);
+          }
+        })
       })
     },
     goOrderDetail(orderId) { // 跳转到订单详情
@@ -445,7 +442,7 @@ export default {
       this.params.pageNum = 1;
       this.$fetch();
     },
-    onLoad() {
+    onLoad() { // 加载更多
       if (this.total == this.lists.length) {
         this.loading = false;
         this.finished = true;
@@ -480,7 +477,11 @@ export default {
         if (res.code != 0) return false;
 
         this.isCancelShow = false;
-        this.$fetch();
+        this.lists.forEach((item, index) => {
+          if (item.id == this.currentOrder.id) {
+            this.lists.splice(index, 1);
+          }
+        })
       })
     },
     onPay(orderItem) { // 去支付
@@ -503,16 +504,20 @@ export default {
     },
     onReceipt(orderItem) { // 确认收货
       this.$dialog.confirm({
-        message: `确认收货后，您的订单将开始履行售后条款，请再次确认您已经收到货品`,
-        onfirmButtonText: '确认收货',
+        message: this.$t('confirm_receipt_tips'),
+        onfirmButtonText: this.$t('confirm_receipt'),
         confirmButtonColor: '#42B7AE',
-        cancelButtonText: this.$t('common.cancel'),
+        cancelButtonText: this.$t('cancel'),
         cancelButtonColor: '#383838'
       }).then(() => {
         confirmReceiptOrder(orderItem.id).then(res => {
           if (res.code != 0) return false;
 
-          this.$fetch();
+          this.lists.forEach((item, index) => {
+            if (item.id == orderItem.id) {
+              this.lists.splice(index, 1);
+            }
+          })
         })
       }).catch(() => {
 
@@ -544,6 +549,9 @@ export default {
           comfirmOrder: 1
         }
       })
+    },
+    statusFormat(val, item) {
+      return val == 0 ? this.$t('unpaid') : val == 1 ? this.$t('to_be_delivered') : val == 2 ? this.$t('unreceived') : val == 3 || (val == 4 && item.hasComment == 0) ? this.$t('to_be_evaluated') : val == 4 && item.hasComment == 1 ? this.$t('completed') : val == 5 ? this.$t('cancelled') : val == 6 ? this.$t('trading_close') : val == 7 ? this.$t('unRejected') : this.$t('other');
     }
   },
 } 
