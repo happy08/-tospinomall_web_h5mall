@@ -1,8 +1,8 @@
 <template>
   <div class="vh-100 bg-grey pb-120 pt-46">
-    <BmHeaderNav :left="{ isShow: $route.query.isBar ? true: false }" :title="$t('cart.title')" :border="false" :fixed="true">
+    <BmHeaderNav :left="{ isShow: $route.query.isBar ? true: false }" :title="$t('cart')" :border="false" :fixed="true">
       <div slot="header-right" class="green fs-16" @click="onEdit">
-        {{ isEdit ? $t('common.done') : $t('common.edit') }}
+        {{ isEdit ? $t('done') : $t('edit') }}
       </div>
     </BmHeaderNav>
 
@@ -12,14 +12,14 @@
       <!-- 分类TAB -->
       <van-sticky v-else :offset-top="'0.92rem'">
         <van-tabs sticky animated color="#42B7AE" class="bg-white customs-van-tabs" :ellipsis="false" @change="getList" v-model="tabActive" line-height="0">
-          <van-tab v-for="(categoryItem, tabIndex) in $t('cart.categoryList')" :title="categoryItem + '(' + (tabIndex == 0 ? allTotal : tabIndex == 1 ? priceCutTotal : oftenBuyTotal) + ')'" :key="'scroll-tab-' + tabIndex" title-class="border-b pb-0" :name="tabIndex" />
+          <van-tab v-for="(categoryItem, tabIndex) in $t('category_list')" :title="categoryItem + '(' + (tabIndex == 0 ? allTotal : tabIndex == 1 ? priceCutTotal : oftenBuyTotal) + ')'" :key="'scroll-tab-' + tabIndex" title-class="border-b pb-0" :name="tabIndex" />
         </van-tabs>
       </van-sticky>
     </div>
 
     <PullRefresh :refreshing="refreshing" @refresh="onRefresh">
       <!-- 空数据 -->
-      <empty-status v-if="list.length === 0 && $store.state.user.authToken" :image="require('@/assets/images/empty/cart.png')" :description="$t('cart.emptyTip')" :btn="{ btn: $t('me.likes.shopNow'), isEmit: true }" @emptyClick="goHome" />
+      <empty-status v-if="list.length === 0 && $store.state.user.authToken" :image="require('@/assets/images/empty/cart.png')" :description="$t('cart_empty_tip')" :btn="{ btn: $t('shop_now'), isEmit: true }" @emptyClick="goHome" />
       <!-- 数据列表展示 -->
       <template v-else>
         <div class="pt-14 pb-12 bg-white" v-for="item in list" :key="item.id">
@@ -130,7 +130,7 @@
       <div>
         <van-divider class="plr-30 mt-24 fw fs-14 clr-black-85">
           <BmIcon :name="'xinaixin'" :width="'0.26rem'" :height="'0.22rem'" :color="'#FA2022'" class="mr-8" />
-          {{ $t('common.mayLike') }}
+          {{ $t('you_may_also_like') }}
         </van-divider>
         <van-list
           v-model="loading"
@@ -171,15 +171,15 @@
       <!-- 结算 -->
       <div v-show="!isEdit" class="flex vcenter">
         <div>
-          <span class="black fs-14 mr-4">{{ $t('cart.total') }}:</span>
+          <span class="black fs-14 mr-4">{{ $t('total2') }}:</span>
           <span class="red fs-14 fw">{{ $store.state.rate.currency }}{{ totalAmount }}</span>
         </div>
-        <BmButton class="round-8 h-40 ml-12" @click="onCheckOut">{{ $t('cart.checkOut') }}</BmButton>
+        <BmButton class="round-8 h-40 ml-12" @click="onCheckOut">{{ $t('check_out') }}</BmButton>
       </div>
       <!-- 编辑 -->
       <div v-show="isEdit">
         <BmButton :type="'info'" class="round-8 h-32 orange bg-white orange-border" @click="onMove">{{ $t('cart.moveFavorite') }}</BmButton>
-        <BmButton :type="'info'" class="round-8 h-32 orange bg-white orange-border ml-12" @click="onEmitDelete">{{ $t('common.delete') }}</BmButton>
+        <BmButton :type="'info'" class="round-8 h-32 orange bg-white orange-border ml-12" @click="onEmitDelete">{{ $t('delete') }}</BmButton>
       </div>
     </div>
 
@@ -203,6 +203,7 @@ import PullRefresh from '@/components/PullRefresh';
 import ProductSku from '@/components/ProductSku';
 
 export default {
+  middleware: 'authenticated',
   components: {
     vanDivider: Divider,
     vanTab: Tab,

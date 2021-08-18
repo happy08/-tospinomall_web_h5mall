@@ -20,15 +20,14 @@
           </van-dropdown-menu>
         </div> -->
         <!-- title -->
-        <h1 class="tc black lagin-page__title">{{ $t('login.loginTitle') }}</h1>
+        <h1 class="tc black lagin-page__title">{{ $t('log_in') }}</h1>
         <div class="login-page__container">
-          <!-- 验证码 -->
-          <van-field v-if="$route.query.changeWay === 'email'" class="field-container" v-model="account" :placeholder="$t('login.enterEmail')" />
+          <van-field v-if="$route.query.changeWay === 'email'" class="field-container" v-model="account" :placeholder="$t('enter_your_email')" />
           <!-- 手机验证码 -->
           <div v-else>
             <van-field
               v-model="account"
-              :placeholder="$t('login.phoneNumber')"
+              :placeholder="$t('phone_number')"
               class="field-container phone-code-field"
               type="tel"
             >
@@ -54,11 +53,11 @@
             v-model="code"
             center
             clearable
-            :placeholder="$t('login.enterCode')"
+            :placeholder="$t('enter_verification_code')"
             class="field-container"
           >
             <template #button>
-              <van-button class="fs-14 green lh-20 verification-btn" v-show="countdown === 0" @click="sendCode" :disabled="account.length === 0">Get It</van-button>
+              <van-button class="fs-14 green lh-20 verification-btn" v-show="countdown === 0" @click="sendCode" :disabled="account.length === 0">{{ $t('get_it') }}</van-button>
               <button class="fs-14 lh-20 round-8 verification-countdown-btn" v-show="countdown > 0">{{ countdown }}S</button>
             </template>
           </van-field>
@@ -68,36 +67,36 @@
             color="linear-gradient(270deg, #3EB5AE 0%, #70CEB6 100%)"
             :disabled="account.length === 0 || code.length === 0"
             @click="login">
-            {{ $t('login.loginBtn') }}
+            {{ $t('log_in') }}
           </van-button>
-          <nuxt-link :to="{ name: 'login' }" replace class="tc green mt-10 block">密码登录</nuxt-link>
+          <nuxt-link :to="{ name: 'login' }" replace class="tc green mt-10 block">{{ $t('password_login') }}</nuxt-link>
         </div>
       </div>
 
       <!-- 其他登录方式及协议 -->
       <div class="login-page__btm">
-        <van-divider>{{ $t('common.or') }}</van-divider>
+        <van-divider>{{ $t('or') }}</van-divider>
         <div class="flex login-page__btm--concat">
           <!-- facebook -->
           <a href="#">
             <BmIcon :name="'facebook-icon'" :width="'0.64rem'" :height="'0.64rem'" />
           </a>
           <!-- 电话 -->
-          <a href="#">
+          <!-- <a href="#">
             <BmIcon :name="'phone-icon'" :width="'0.64rem'" :height="'0.64rem'" />
-          </a>
+          </a> -->
           <!-- twitter -->
-          <a href="#">
+          <!-- <a href="#">
             <BmIcon :name="'twitter-icon'" :width="'0.64rem'" :height="'0.64rem'" />
-          </a>
+          </a> -->
           <!-- google -->
           <a href="#">
             <BmIcon :name="'google-icon'" :width="'0.64rem'" :height="'0.64rem'" />
           </a>
           <!-- 微信 -->
-          <a href="#">
+          <!-- <a href="#">
             <BmIcon :name="'wechat-icon'" :width="'0.64rem'" :height="'0.64rem'" />
-          </a>
+          </a> -->
           <!-- email -->
           <nuxt-link :to="{ name: 'login-code', query: { changeWay: 'email' } }" replace v-if="this.$route.query.changeWay !== 'email'">
             <BmIcon :name="'email-icon'" :width="'0.64rem'" :height="'0.64rem'" />
@@ -107,7 +106,7 @@
             <BmIcon :name="'cellphone'" :width="'0.64rem'" :height="'0.64rem'" />
           </nuxt-link>
         </div>
-        <p class="fs-14 tc mt-20 lh-20 login-page__btm--service">By loging in,you agree to <nuxt-link :to="{ name: 'service-type', params: { type: 'serve' }, query: { isH5: 1 } }">Tospino's Terms of Service</nuxt-link> and <nuxt-link :to="{ name: 'service-type', params: { type: 'privacy' }, query: { isH5: 1 } }">Privacy Policy</nuxt-link></p>
+        <div class="fs-14 tc mt-20 lh-20 login-page__btm--service" v-html="login_service_privacy()"></div>
       </div>
     </div>
   </div>
@@ -220,6 +219,8 @@ export default {
         this.$store.dispatch('user/GetUserInfo', res.data.token_type + ' ' + res.data.access_token);
         // 获取消息信息
         this.$store.commit('user/SET_WEBSOCKET', res.data.user_info.passUrl);
+        // 当前登录账号
+        this.$store.commit('user/SET_ACCOUNT', this.account);
         // 登录成功跳转到首页
         setTimeout(() => {
           this.account = '';
@@ -233,7 +234,10 @@ export default {
     // changeLang(lang) { // 切换语言
     //   this.$store.commit('SET_LANG', lang.value);
     //   this.$refs.dropdownLang.toggle();
-    // }
+    // },
+    login_service_privacy() {
+      return this.$t('login_service_privacy').replace('%1$s', `<a class="clr-blue" href="/service/serve?isH5=1">Tospino's ${this.$t('term_of_service')}</a>`).replace('%2$s', `<a class="clr-blue" href="/service/privacy?isH5=1">${this.$t('privacy_policy')}</a>`)
+    }
   }
 }
 </script>
@@ -259,9 +263,6 @@ export default {
     }
     .login-page__btm--service{
       color: #BFBFBF;
-      a{
-        color: #0F66DE;
-      }
     }
   }
 }

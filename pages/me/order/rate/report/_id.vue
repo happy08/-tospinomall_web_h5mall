@@ -1,7 +1,7 @@
 <template>
   <!-- 我的-订单-评价-举报 -->
   <div>
-    <BmHeaderNav :left="{ isShow: true }" :title="$t('me.report.report')" /> 
+    <BmHeaderNav :left="{ isShow: true }" :title="$t('report')" /> 
 
     <!-- 原因选择 -->
     <van-radio-group v-model="radio">
@@ -39,7 +39,7 @@
         class="border round-8"
       />
       <!-- 提交 -->
-      <BmButton class="fs-14 round-8 w-100 mt-20" :disabled="radio == 0" @btnClick="onConfirm">提交</BmButton>
+      <BmButton class="fs-14 round-8 w-100 mt-20" :disabled="radio == 0" @btnClick="onConfirm">{{ $t('submit') }}</BmButton>
     </div>
   </div>
 </template>

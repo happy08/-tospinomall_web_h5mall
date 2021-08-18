@@ -1,7 +1,7 @@
 <template>
   <!-- 我的-设置-安全认证-修改密码-使用密码认证 -->
   <div class="bg-grey vh-100">
-    <BmHeaderNav :left="{ isShow: true }" :title="$t('me.authentication.title')" />
+    <BmHeaderNav :left="{ isShow: true }" :title="$t('authentication')" />
 
     <div class="plr-20 bg-white">
       <!-- 当前登录密码 -->
@@ -9,7 +9,7 @@
         v-model="pwd"
         center
         clearable
-        :placeholder="$t('me.authentication.currentPlaceholder')"
+        :placeholder="$t('enter_the_current_login_password')"
         :type="pwdType"
         class="field-container"
       >
@@ -24,7 +24,7 @@
         v-model="newPwd"
         center
         clearable
-        :placeholder="$t('me.authentication.pwdPlaceholder')"
+        :placeholder="$t('_6_20_new_password')"
         :type="newPwdType"
         class="field-container"
       >
@@ -38,11 +38,11 @@
     </div>
     
     <div class="plr-20 w-100 mt-14">
-      <p class="fs-14">{{ $t('me.authentication.tip') }}</p>
+      <p class="fs-14">{{ $t('verify_password_tip') }}</p>
       <!-- 下一步 -->
-      <BmButton class="w-100 round-8 authentication-btn" @click="jump" :disabled="pwd.length < 6 || pwd.length > 20 || newPwd.length < 6 || newPwd.length > 20">{{ $t('common.next') }}</BmButton>
+      <BmButton class="w-100 round-8 authentication-btn" @click="jump" :disabled="pwd.length < 6 || pwd.length > 20 || newPwd.length < 6 || newPwd.length > 20">{{ $t('next') }}</BmButton>
       <!-- 其他认证方式 -->
-      <p class="fs-14 green tc mt-20" @click="goback">{{ $t('me.authentication.otherMethod') }}</p>
+      <p class="fs-14 green tc mt-20" @click="goback">{{ $t('use_other_authentication_method') }}</p>
     </div>
   </div>
 </template>
@@ -52,7 +52,6 @@ import { Field } from 'vant';
 import { checkPassword } from '@/api/user';
 
 export default {
-  middleware: 'authenticated',
   components: {
     vanField: Field
   },
@@ -85,6 +84,11 @@ export default {
       }
     },
     jump() { // 校验登录密码，成功之后跳转到确认新密码页面
+      const reg = /^(?![\d]+$)(?![a-zA-Z]+$)(?![-=+_.,]+$)[\da-zA-Z-=+_.,]{6,18}$/;
+      if (!reg.test(this.newPwd) || !reg.test(this.pwd)) {
+        this.$toast(this.$t('t_format_error'));
+        return false;
+      }
       checkPassword(this.pwd).then(res => {
         if (res.code != 0) return false;
 
@@ -95,9 +99,6 @@ export default {
             oldPassword: this.pwd
           }
         })
-
-        // this.newPwd = '';
-        // this.pwd = '';
       })
       
     }

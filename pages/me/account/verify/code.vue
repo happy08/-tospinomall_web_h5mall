@@ -4,17 +4,17 @@
     <BmHeaderNav :left="{ isShow: true }" :title="title" />
 
     <div class="bg-white pt-20 plr-20">
-      <p class="fs-16 black">{{ $t('me.authentication.completeVerify') }}</p>
-      <p class="fs-14 lh-12 mt-12 sms-tip">{{ $t('me.authentication.smsReceivedTip') }} {{ account }}</p>
+      <p class="fs-16 black">{{ $t('complete_certification') }}</p>
+      <p class="fs-14 lh-12 mt-12 sms-tip">{{ $t('enter_phone_verify_code_tip', { replace_tip: account }) }}</p>
       <van-field
         v-model="code"
         center
         clearable
-        :placeholder="$t('login.enterCode')"
+        :placeholder="$t('enter_verification_code')"
         class="field-container"
       >
         <template #button>
-          <van-button class="fs-14 green lh-20 verification-btn" v-show="countdown === 0" @click="sendCode" :disabled="account.length === 0">Get It</van-button>
+          <van-button class="fs-14 green lh-20 verification-btn" v-show="countdown === 0" @click="sendCode" :disabled="account.length === 0">{{ $t('get_it') }}</van-button>
           <button class="fs-14 lh-20 round-8 verification-countdown-btn" v-show="countdown > 0">{{ countdown }}S</button>
         </template>
       </van-field>
@@ -22,17 +22,17 @@
 
     <div class="plr-20 w-100">
       <!-- 下一步 -->
-      <BmButton class="w-100 round-8 sms-btn" @click="jump" :disabled="code.length === 0">{{ $t('common.next') }}</BmButton>
+      <BmButton class="w-100 round-8 sms-btn" @click="jump" :disabled="code.length === 0">{{ $t('next') }}</BmButton>
       <!-- 其他认证方式 -->
-      <p class="fs-14 green tc mt-24" @click="goback">{{ $t('me.authentication.otherMethod') }}</p>
+      <p class="fs-14 green tc mt-24" @click="goback">{{ $t('use_other_authentication_method') }}</p>
 
       <!-- 温馨提示 -->
-      <div class="fs-14 light-grey tip-container lh-20" v-if="$route.query.type && $route.query.type == 'bind'">
+      <!-- <div class="fs-14 light-grey tip-container lh-20" v-if="$route.query.type && $route.query.type == 'bind'">
         <p>{{ $t('common.tips') }}:</p>
         <ul>
           <li v-for="(tipItem, tipIndex) in $t('me.authentication.phoneVerifyTips')" :key="tipIndex" v-html="tipItem"></li>
         </ul>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
@@ -57,7 +57,7 @@ export default {
   },
   computed: {
     title() {
-      return this.$route.query.changeType === 'phone' || !this.$route.query.type ? this.$route.query.changeWay === 'email' ? this.$t('me.authentication.smsEmailTitle') : this.$t('me.authentication.smsTitle') : this.$t('me.authentication.emailTitle');
+      return this.$route.query.changeType === 'phone' || !this.$route.query.type ? this.$route.query.changeWay === 'email' ? this.$t('email_verification') : this.$t('mobile_phone_verification') : this.$t('me.authentication.emailTitle');
     }
   },
   beforeRouteEnter(to, from, next) { // 从绑定或修改页面进入重置值为空

@@ -1,7 +1,7 @@
 <template>
   <!-- 我的-订单-待付款-支付页面 -->
   <div class="bg-grey vh-100">
-    <BmHeaderNav :left="{ isShow: true, isEmit: true }" :title="$t('me.pay.payment')" @leftClick="leftClick" />
+    <BmHeaderNav :left="{ isShow: true, isEmit: true }" :title="$t('payment')" @leftClick="leftClick" />
 
     <!-- 选择-单选 -->
     <van-radio-group v-model="payRadio" v-if="list.length > 0">
@@ -35,7 +35,7 @@
         <!-- 支持输入手机号 -->
         <van-field
           v-model="account"
-          :placeholder="$t('me.pay.prefPlaceholder')"
+          :placeholder="$t('phone_number')"
           :class="{'field-container phone-code-field pt-0 pb-20': true, 'is-active': payRadio == item}"
           type="tel"
           v-if="item != 'balance'"
@@ -63,7 +63,7 @@
     <!-- 底部金额以及支付按钮 -->
     <div class="w-100 bg-white flex between pl-20 vcenter pay-content__btn">
       <div class="red fs-18 fw">{{ $store.state.rate.currency }}{{ $route.query.amount }}</div>
-      <BmButton class="fs-16 round-0 pay-content__btn--pay" :disabled="account.length === 0 && payRadio !== 'balance'" @click="onPay">Pay</BmButton>
+      <BmButton class="fs-16 round-0 pay-content__btn--pay" :disabled="account.length === 0 && payRadio !== 'balance'" @click="onPay">{{ $t('pay') }}</BmButton>
     </div>
 
     <!-- 余额支付点击支付按钮，需要输入支付密码 -->

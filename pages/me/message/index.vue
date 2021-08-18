@@ -1,7 +1,7 @@
 <template>
   <!-- 我的-消息分类列表 -->
   <div class="vh-100 bg-grey pt-46">
-    <BmHeaderNav :left="{ isShow: true }" :title="'消息'" :fixed="true">
+    <BmHeaderNav :left="{ isShow: true }" :title="$t('message')" :fixed="true">
       <div slot="header-right">
         <BmImage 
           :url="require('@/assets/images/icon/delete-icon.svg')"

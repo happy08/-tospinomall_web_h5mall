@@ -14,7 +14,7 @@
       <div class="mlr-12 home-page-nav__search" ref="homeSearch" @click="$router.push({ name: 'search' })">
         <van-search
           v-model="searchVal"
-          :placeholder="$t('common.searchPlaceholder')"
+          :placeholder="$t('search_product_of_interest')"
           shape="round"
           class="search-container"
           disabled
@@ -27,7 +27,7 @@
               color="linear-gradient(270deg, #3EB5AE 0%, #70CEB6 100%)"
               class="button-container small"
             >
-              {{ $t('common.search') }}
+              {{ $t('search') }}
             </van-button>
           </template>
         </van-search>

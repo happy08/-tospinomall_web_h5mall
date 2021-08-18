@@ -8,7 +8,8 @@ export const state = () => ({
   refreshToken: null,
   scope: null,
   websocketMsg: null,
-  isNewMessage: false
+  isNewMessage: false,
+  account: null // 登陆账号
 });
 
 export const mutations = {
@@ -59,6 +60,10 @@ export const mutations = {
   },
   SET_ISNEWMESSAGE(state, isNewMessage) {
     state.isNewMessage = isNewMessage;
+  },
+  SET_ACCOUNT(state, account) {
+    state.account = account;
+    this.$cookies.set('account', account);
   }
 };
 
@@ -81,7 +86,7 @@ export const actions = {
   GetRefreshToken({ commit }) { // 刷新token
     return new Promise((resolve, reject) => {
       this.$api.refreshToken().then(res => {
-        console.log('===================')
+        console.log('刷新token===================')
         commit('SET_TOKEN', res.data.token_type + ' ' + res.data.access_token);
         commit('SET_REFRESHTOKEN', res.data.refresh_token);
         commit('SET_SCOPE', res.data.scope);

@@ -1,25 +1,25 @@
 <template>
   <!-- 我的-售后-售后申请 -->
   <div class="bg-grey vh-100">
-    <BmHeaderNav :left="{ isShow: true }" :title="$t('me.afterSale.afterSaleService')" />
+    <BmHeaderNav :left="{ isShow: true }" :title="$t('after_sales_service')" />
 
     <!-- 订单详情 -->
     <OrderSingle class="bg-white p-20" :image="detail.goodImg" :product_num="detail.goodQuantity" :product_desc="detail.goodName" :product_size="detail.goodAttr" :price="detail.goodPrice" />
 
     <van-cell-group class="mt-12">
       <!-- 选择售后类型 type: 1仅退款 2退货退款 3换货 -->
-      <van-cell class="ptb-20 plr-20" :title="$t('me.afterSale.selectAfterSalesType')" title-class="fs-14 black fw"/>
+      <van-cell class="ptb-20 plr-20" :title="$t('select_after_sales_type')" title-class="fs-14 black fw"/>
       <!-- 退货退款 -->
-      <van-cell class="ptb-20 plr-20" :title="$t('me.afterSale.returnRefund')" :title-class="{'fs-14': true, 'black': detail.status != 1, 'grey': detail.status == 1 }" is-link @click="onApply(2)" />
+      <van-cell class="ptb-20 plr-20" :title="$t('return_refund')" :title-class="{'fs-14': true, 'black': detail.status != 1, 'grey': detail.status == 1 }" is-link @click="onApply(2)" />
       <!-- 换货,暂时不做 -->
       <!-- <van-cell class="ptb-20 plr-20" :title="$t('me.afterSale.exchange')" title-class="fs-14 black"  is-link @click="onApply(3)" /> -->
       <!-- 仅退款 -->
-      <van-cell class="ptb-20 plr-20" :title="$t('me.afterSale.refundNoReturn')" title-class="fs-14 black"  is-link @click="onApply(1)"  />
+      <van-cell class="ptb-20 plr-20" :title="$t('applyReturn')" title-class="fs-14 black"  is-link @click="onApply(1)"  />
     </van-cell-group>
 
     <!-- 退货退款说明 -->
     <div class="mt-60 tc">
-      <nuxt-link :to="{ name: 'service-type', params: { type: 'aftersale' } }" class="green">{{ $t('me.afterSale.returnAndChange') }}</nuxt-link>
+      <nuxt-link :to="{ name: 'service-type', params: { type: 'aftersale' } }" class="green">{{ $t('return_and_exchange_instructions') }}</nuxt-link>
     </div>
   </div>
 </template>

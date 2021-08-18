@@ -5,37 +5,80 @@
     
     <div class="plr-20 tc result-page__container">
       <van-icon name="checked" color="#52C41A" size="54" />
-      <p class="fs-18 fw black mt-30 result-page__container--title">{{ $t('common.congratulations') }}</p>
+      <p class="fs-18 fw black mt-30 result-page__container--title">{{ $t('congratulations') }}</p>
       <!-- 注册成功提示语 -->
       <p class="light-grey fs-14 mt-12">{{ desc }}</p>
       <van-button
         class="mt-60 btn_h48 fw fs-16 round-8 w-100"
         color="linear-gradient(270deg, #3EB5AE 0%, #70CEB6 100%)"
-        @click="loginClick"> 
-        {{ $t('login.loginNow') }}
+        @click="login"> 
+        {{ $t('log_in_now') }}
       </van-button>
     </div>
   </div>
 </template>
 
 <script>
+import { authLogin } from '@/api/login';
+
 export default {
+  data() {
+    return {
+      countdown: 5
+    }
+  },
   computed: {
     title() { // 头部标题
-      return this.$route.query.type === 'forgot' ? this.$t('forgot.title') : this.$t('register.register');
+      return this.$route.query.type === 'forgot' ? this.$t('forgot.title') : this.$t('register');
     },
     desc() {
-      return this.$route.query.type === 'forgot' ? this.$t('forgot.successTip') : this.$t('register.successTip');
+      return this.$route.query.type === 'forgot' ? this.$t('congratulations_you_have_successfully_set_the_password') : this.$t('register_success_tip').replace('%1$s', this.countdown);
+    }
+  },
+  activated() {
+    if (!this.$route.query.type) {
+      this.countdown = 5;
+      let timer = setInterval(() => {
+        if (this.countdown == 1) {
+          this.login();
+          clearInterval(timer);
+        }
+        this.countdown -= 1;
+      }, 1000)
     }
   },
   methods: {
-    loginClick() { // 点击登录 
-      this.$router.push({
-        name: 'login'
+    login() { // 点击登录 
+      if (this.$route.query.type) { // 忘记密码
+        this.$router.push({
+          name: 'login'
+        })
+        return false;
+      }
+      this.$toast.loading({
+        forbidClick: true,
+        loadingType: 'spinner',
+        duration: 0
+      });
+      authLogin({ username: this.$route.query.phone ? this.$route.query.phone : this.$route.query.email, password: this.$route.query.password, grant_type: 'password' }).then(res => {
+        this.$toast.clear();
+        this.$store.commit('user/SET_TOKEN', res.data.token_type + ' ' + res.data.access_token);
+        this.$store.commit('user/SET_REFRESHTOKEN', res.data.refresh_token);
+        this.$store.commit('user/SET_SCOPE', res.data.scope);
+        // 获取用户信息
+        this.$store.dispatch('user/GetUserInfo', res.data.token_type + ' ' + res.data.access_token);
+        // 获取消息信息
+        this.$store.commit('user/SET_WEBSOCKET', res.data.user_info.passUrl);
+        this.$toast.clear();
+        // 登录成功跳转到首页
+        setTimeout(() => {
+          this.account = '';
+          this.password = '';
+          this.$router.push({
+            name: 'home'
+          })
+        }, 300);
       })
-    },
-    login() {
-
     }
   }
 }

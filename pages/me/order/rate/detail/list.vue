@@ -1,7 +1,7 @@
 <template>
   <!-- 订单评价列表/商品-商品详情-评价列表 -->
   <div class="vh-100 bg-grey pt-46">
-    <BmHeaderNav :left="{ isShow: true }" :title="$t('me.rate.review')" :fixed="true" />
+    <BmHeaderNav :left="{ isShow: true }" :title="$t('product_evaluation')" :fixed="true" />
 
     <PullRefresh :refreshing="refreshing" @refresh="onRefresh">
       <!-- 评价列表分类 -->
@@ -18,21 +18,21 @@
                 :isShow="false"
               />
             </template>
-            <span class="ml-12 fs-14 lh-20 black">Current commodity</span>
+            <span class="ml-8 fs-14 lh-20 black">{{ $t('current_commodity') }}</span>
           </van-checkbox>
-          <div class="fs-14 lh-20 light-grey">Rating of 94%</div>
+          <div class="fs-14 lh-20 light-grey">{{ $t('rating_num').replace('%1$s', '94%') }}</div>
         </div>
 
         <!-- 标签 -->
-        <div class="mt-20 flex flex-wrap between">
+        <!-- <div class="mt-20 flex flex-wrap between">
           <span class="ptb-4 plr-12 round-8 border fs-14 lh-20 color-666 mb-10">Soft and comfortable 290</span>
           <span class="ptb-4 plr-12 round-8 border fs-14 lh-20 color-666 mb-10">New fashion</span>
           <span class="ptb-4 plr-12 round-8 border fs-14 lh-20 color-666 mb-10">Size of the appropriate 20</span>
-        </div>
+        </div> -->
 
         <!-- 评价分类 -->
-        <van-tabs sticky swipeable animated :offset-top="44" color="#42B7AE" class="customs-van-tabs" :ellipsis="false" @change="getList" v-model="tabActive">
-          <van-tab v-for="(categoryItem, tabIndex) in $t('me.report.categoryList')" :title="categoryItem" :key="'scroll-tab-' + tabIndex" title-class="pb-0" :name="tabIndex">
+        <van-tabs sticky swipeable animated :offset-top="44" color="#42B7AE" class="mt-20 customs-van-tabs" :ellipsis="false" @change="getList" v-model="tabActive">
+          <van-tab v-for="(categoryItem, tabIndex) in $t('product_rate_tab')" :title="categoryItem" :key="'scroll-tab-' + tabIndex" title-class="pb-0" :name="tabIndex">
           </van-tab>
         </van-tabs>
       </div>
@@ -89,7 +89,7 @@
           <van-cell-group class="mt-10 plr-20" :border="false">
             <!-- 追加评论 -->
             <template v-if="item.additionalEvaluates && item.additionalEvaluates.length > 0">
-              <p class="fw black fs-14">购买后追评</p>
+              <p class="fw black fs-14">{{ $t('review_after_purchase') }}</p>
               <div v-for="addItem in item.additionalEvaluates" :key="'add-review-' + addItem.id">
                 <p class="black fs-14 mt-10" @click="goDetail(item)">{{ addItem.content }}</p>
                 <div class="mt-10 flex flex-wrap">
@@ -123,7 +123,7 @@
 
           <div class="clear flex hend vcenter mt-12 plr-20">
             <!-- report按钮 -->
-            <BmButton :type="'info'" class="h-30 round-8 black time-out fr" @btnClick="onReport(item.id)">{{ $t('me.report.report') }}</BmButton>
+            <BmButton :type="'info'" class="h-30 round-8 black time-out fr" @btnClick="onReport(item.id)">{{ $t('report') }}</BmButton>
             <div class="ml-20 flex vcenter black fs-14" @click="goDetail(item)">
               <span>{{ item.replyCount }}</span>
               <BmImage

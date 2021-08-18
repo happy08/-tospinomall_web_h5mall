@@ -1,14 +1,14 @@
 <template>
   <div class="forgot-page">
     <!-- 忘记密码-修改密码页面 -->
-    <BmHeaderNav :title="$t('forgot.title')" />
+    <BmHeaderNav :title="$t('forgot_password')" />
     
     <div class="mlr-20">
       <van-field
         v-model="pwd"
         center
         clearable
-        placeholder="6-12 new Password"
+        :placeholder="$t('enter_password_6_20')"
         :type="pwdType"
         class="field-container"
       >
@@ -23,7 +23,7 @@
         v-model="confirmPwd"
         center
         clearable
-        placeholder="Enter again"
+        :placeholder="$t('enter_again')"
         :type="confirmPwdType"
         class="field-container"
       >
@@ -41,7 +41,7 @@
         color="linear-gradient(270deg, #3EB5AE 0%, #70CEB6 100%)"
         :disabled="pwd.length < 6 || confirmPwd.length < 6"
         @click="submit">
-        {{ $t('common.confirm') }}
+        {{ $t('111confirm') }}
       </van-button>
     </div>
   </div>

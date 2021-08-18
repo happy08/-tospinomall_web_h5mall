@@ -1,13 +1,13 @@
 <template>
   <!-- 我的-订单-评价列表 -->
   <div class="vh-100 bg-grey">
-    <BmHeaderNav :left="{ isShow: true }" :title="$t('me.rate.evalutionCenter')">
-      <nuxt-link :to="{ name: 'service-type', params: { type: 'evaluation' }, query: { isH5: 1 } }" slot="header-right" class="green fs-14">{{ $t('me.rate.rules') }}</nuxt-link>
+    <BmHeaderNav :left="{ isShow: true }" :title="$t('evalution_center')">
+      <nuxt-link :to="{ name: 'service-type', params: { type: 'evaluation' }, query: { isH5: 1 } }" slot="header-right" class="green fs-14">{{ $t('rules') }}</nuxt-link>
     </BmHeaderNav>
 
     <!-- 评价类型tab切换 -->
     <van-tabs sticky swipeable animated :offset-top="44" color="#42B7AE" class="customs-van-tabs" :ellipsis="false" @change="getList" v-model="tabActive">
-      <van-tab v-for="(categoryItem, tabIndex) in categoryList" :title="categoryItem + ' (' + (tabIndex == 1 ? hasCommentOrReview : notComment) + ')'" :key="'scroll-tab-' + tabIndex" title-class="border-b pb-0" :name="tabIndex">
+      <van-tab v-for="(categoryItem, tabIndex) in $t('rate_tab')" :title="categoryItem + ' (' + (tabIndex == 1 ? hasCommentOrReview : notComment) + ')'" :key="'scroll-tab-' + tabIndex" title-class="border-b pb-0" :name="tabIndex">
         <PullRefresh :refreshing="refreshing" @refresh="onRefresh">
           <van-list
             v-model="loading"
@@ -19,7 +19,7 @@
               <van-loading color="#42b7ae" />
             </template>
             <!-- 空列表 -->
-            <empty-status v-if="lists.length === 0" :image="require('@/assets/images/empty/order.png')" />
+            <empty-status v-if="lists.length === 0" :image="require('@/assets/images/empty/order.png')" :description="$t('empty')" />
             <!-- 列表展示 -->
             <div v-else v-for="(orderitem, index) in lists" :key="index" class="mb-12 plr-20 bg-white pt-20 pb-24">
               <OrderStoreSingle :name="orderitem.storeName" :showArrow="false" />
@@ -64,7 +64,6 @@ export default {
     return {
       tabActive: 0, // 0->未评价 1->已评价/追评
       lists: [],
-      categoryList: ['Comment', 'Evaluated/reviewed'],
       pageNum: 1,
       pageSize: 10,
       total: 0,

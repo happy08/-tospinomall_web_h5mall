@@ -1,7 +1,7 @@
 <template>
   <!-- 我的-设置-安全认证-使用密码-验证新密码 -->
   <div class="bg-grey vh-100">
-    <BmHeaderNav :left="{ isShow: true }" :title="$t('me.authentication.confirmPwdTitle')" />
+    <BmHeaderNav :left="{ isShow: true }" :title="$t('authentication')" />
 
     <div class="plr-20 bg-white">
       <!-- 新密码 -->
@@ -9,7 +9,7 @@
         v-model="pwd"
         center
         clearable
-        :placeholder="$t('me.authentication.currentPlaceholder')"
+        :placeholder="$t('enter_the_login_password')"
         :type="pwdType"
         class="field-container"
       >
@@ -24,8 +24,8 @@
 
     <!-- 提交确认密码 -->
     <div class="plr-20 w-100 mt-14">
-      <p class="fs-14 mt-28">{{ $t('me.authentication.tip') }}</p>
-      <BmButton class="w-100 round-8 confirm-btn" :disabled="pwd.length < 6 || pwd.length > 20" @click="confirm">{{ $t('common.next') }}</BmButton>
+      <p class="fs-14 mt-28">{{ $t('verify_password_tip') }}</p>
+      <BmButton class="w-100 round-8 confirm-btn" :disabled="pwd.length < 6 || pwd.length > 20" @click="confirm">{{ $t('confirm') }}</BmButton>
     </div>
   </div>
 </template>
@@ -45,17 +45,31 @@ export default {
       pwdType: 'password'
     }
   },
+  beforeRouteEnter(to, from, next) { // 从认证页面进入重置值为空
+    next(vm => {
+      if (from.name === 'me-account-verify') {
+        vm.pwd = '';
+      }
+    });
+  },
   methods: {
     confirm() { // 确认修改密码
+      const reg = /^(?![\d]+$)(?![a-zA-Z]+$)(?![-=+_.,]+$)[\da-zA-Z-=+_.,]{6,18}$/;
+      if (!reg.test(this.pwd)) {
+        this.$toast(this.$t('t_format_error'));
+        return false;
+      }
       if (this.$route.query.code) { // 使用验证码修改密码
         forgetPwd({ code: this.$route.query.code, password: this.pwd, repeatPassword: this.pwd }).then(res => {
           if (res.code != 0) return false;
 
           // 密码修改成功之后需要重新登录
           this.$store.commit('user/SET_TOKEN', null);
-          this.pwd = '';
           this.$router.push({
-            name: 'me-account-verify-result'
+            name: 'me-account-verify-result',
+            query: {
+              pwd: this.pwd
+            }
           })
         })
         return false;
@@ -69,10 +83,13 @@ export default {
       updatePassword({ newPassword: this.pwd, oldPassword: this.$route.query.oldPassword }).then(res => {
         if (res.code != 0) return false;
         // 密码修改成功之后需要重新登录
-        this.$store.commit('user/SET_TOKEN', null);
-        this.pwd = '';
+        // this.$store.commit('user/SET_TOKEN', null);
+        
         this.$router.push({
-          name: 'me-account-verify-result'
+          name: 'me-account-verify-result',
+          query: {
+            pwd: this.pwd
+          }
         })
       })
     }

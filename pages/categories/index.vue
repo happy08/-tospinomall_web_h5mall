@@ -5,7 +5,7 @@
     <div class="mlr-12 mt-4 mb-4" @click="$router.push({ name: 'search' })">
       <van-search 
         v-model="searchVal" 
-        placeholder="Enter key words"
+        :placeholder="$t('enter_key_words')"
         shape="round"
         disabled
       >

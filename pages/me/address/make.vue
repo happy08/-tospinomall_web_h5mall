@@ -1,20 +1,20 @@
 <template>
   <!-- 我的-设置-新建收货地址 -->
-  <div class="bg-grey vh-100">
-    <BmHeaderNav :left="{ isShow: true }" :title="$t('me.address.shipAddress')">
+  <div class="bg-grey vh-100 pt-46">
+    <BmHeaderNav :left="{ isShow: true }" :title="$t('shipping_address')" :fixed="true">
       <div slot="header-right" class="green" @click="deleteFn" v-if="$route.query.id">
-        {{ $t('common.delete') }}
+        {{ $t('delete') }}
       </div>
     </BmHeaderNav>
 
     <!-- 收货地址 -->
     <div class="bg-white">
       <!-- 收货人姓名 -->
-      <van-field v-model="form.name" class="p-20" :placeholder="$t('me.address.consignee')" />
+      <van-field v-model="form.name" class="p-20" :placeholder="$t('the_consignee')" />
       <!-- 收货人电话号码 -->
       <van-field
         v-model="form.phone"
-        placeholder="Phpne number"
+        :placeholder="$t('phone_number')"
         class="p-20"
         type="tel"
       >
@@ -28,7 +28,7 @@
       <!-- 收货人地址 -->
       <van-field
         v-model="allAddress"
-        placeholder="Address"
+        :placeholder="$t('region')"
         class="p-20"
         @click="chooseAddressFn"
       >
@@ -45,36 +45,36 @@
         rows="4"
         type="textarea"
         class="p-20"
-        :placeholder="$t('me.address.buildingNumber')"
+        :placeholder="$t('detailde_address_such_as_road_building_number')"
       />
       <!-- 标签 -->
-      <van-field v-model="form.tag" label="文本" label-width="0.72rem">
+      <van-field v-model="form.tag" :label="$t('label')" label-width="0.72rem">
         <template #input>
           <div class="flex flex-wrap">
-            <div :class="{'fs-14 plr-12 bg-orange round-8 tag mr-12 mb-20': true, 'active': form.tag == (index + 1)}" v-for="tag, index in $t('me.address.tag')" :key="index" @click="form.tag = (index + 1)">{{ tag }}</div>
+            <div :class="{'fs-14 plr-12 bg-orange round-8 tag mr-12 mb-20': true, 'active': form.tag == (index + 1)}" v-for="tag, index in $t('address_tag')" :key="index" @click="form.tag = (index + 1)">{{ tag }}</div>
             <!-- 添加标签按钮 -->
             <div @click="isEmit = 1" v-if="isEmit === 0" class="mb-20 bg-orange round-8 tag plr-24">+</div>
             <!-- 添加标签时的展示样式 -->
             <van-field
-              v-model="form.tagEditor"
-              placeholder="Input label name"
+              v-model.trim="form.tagEditor"
+              :placeholder="$t('input_label_name')"
               :class="{'p-0 border round-8 hidden custom-field mb-20 vcenter': true}"
               v-else-if="isEmit === 1"
             >
               <template #button>
-                <van-button size="small" type="primary" :class="{'bg-grey': form.tagEditor.length === 0, 'bg-green': form.tagEditor.length > 0}" @click="isEmit = 2">Add</van-button>
+                <van-button size="small" type="primary" :class="{'bg-grey': form.tagEditor == '', 'bg-green': form.tagEditor != ''}" :disabled="form.tagEditor == ''" @click="onAddTag">{{ $t('add') }}</van-button>
               </template>
             </van-field>
             <!-- 添加之后的标签展示样式 -->
             <div :class="{'flex round-8 border mb-20 hidden': true, 'border-green': form.tag == form.tagEditor}" v-else-if="isEmit === 2">
               <span :class="{'plr-12 fs-14 ptb-3': true, 'green': form.tag == form.tagEditor}" @click="form.tag = form.tagEditor">{{ form.tagEditor }}</span>
-              <span class="plr-12 fs-14 bg-green white ptb-3" @click="isEmit = 1">editor</span>
+              <span class="plr-12 fs-14 bg-green white ptb-3" @click="isEmit = 1">{{ $t('edit') }}</span>
             </div>
           </div>
         </template>
       </van-field>
       <!-- 设置默认地址 -->
-      <van-cell :title="$t('me.address.setDefaultAddress')" label="Reminder: This address is recommended by default for each order" title-class="black" class="p-20" >
+      <van-cell :title="$t('set_as_the_default_address')" :label="$t('set_default_order_tip')" title-class="black" class="p-20" >
         <template #right-icon>
           <van-switch v-model="form.isDefault" active-color="#34C759" inactive-color="#dcdee0" size="0.45rem" />
         </template>
@@ -82,7 +82,7 @@
     </div>
     <!-- 添加地址 -->
     <div class="mlr-20 pb-20">
-      <BmButton class="round-8 w-100 save-btn" @click="save" :disabled="isDisabled">{{ $t('me.address.addShipAddressBtn') }}</BmButton>
+      <BmButton class="round-8 w-100 save-btn" @click="save" :disabled="isDisabled">{{ $t('save') }}</BmButton>
     </div>
 
     <!-- 修改地址 -->
@@ -238,20 +238,26 @@ export default {
           id: this.$route.query.id
         }
       }
+      this.$toast.loading({
+        forbidClick: true,
+        loadingType: 'spinner',
+        duration: 0
+      });
       
       let _ajax = this.$route.query.id ? updateAddress(_form) : addAddress(_form);
       _ajax.then(() => {
+        this.$toast.clear();
         // 地址保存成功跳转到地址列表页面
         this.$router.go(-1);
       })
     },
     deleteFn() { // 删除地址
       this.$dialog.confirm({
-        title: this.$t('me.address.deleteTitle'),
-        message: this.$t('me.address.deleteMessage'),
-        confirmButtonText: this.$t('common.yes'),
+        title: this.$t('are_you_sure_to_delete_the_address'),
+        message: this.$t('delete_address_tip'),
+        confirmButtonText: this.$t('confirm'),
         confirmButtonColor: '#42B7AE',
-        cancelButtonText: this.$t('common.no'),
+        cancelButtonText: this.$t('cancel'),
         cancelButtonColor: '#383838'
       }).then(res => { // 提交接口
         deleteAddress(this.$route.query.id).then(res => {
@@ -367,6 +373,10 @@ export default {
           districtCode: this.assgnStepList[3] ? this.assgnStepList[3].code : ''
         };
       }
+    },
+    onAddTag() {
+      this.isEmit = 2;
+      this.form.tag = this.form.tagEditor;
     }
   },
 }

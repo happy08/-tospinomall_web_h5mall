@@ -2,10 +2,10 @@
   <!-- 账单 -->
   <div class="bg-grey vh-100">
     <van-sticky :class="{'is-animate': isHeader}">
-      <BmHeaderNav :left="{ isShow: true }" :border="false" :title="$t('me.wallet.bill')" :class="{'is-show': isHeader}" />
+      <BmHeaderNav :left="{ isShow: true }" :border="false" :title="$t('bill')" :class="{'is-show': isHeader}" />
 
       <!-- 搜索框 -->
-      <div class="bg-white plr-12 pt-4 pb-10 border-b">
+      <div class="bg-white plr-12 pt-4 pb-10 border-b" v-if="list.length > 0">
         <van-search 
           v-model="searchVal" 
           :placeholder="$t('me.wallet.searchBillPlaceholder')"
@@ -58,7 +58,7 @@
       </van-list>
     </PullRefresh>
 
-    <empty-status v-else :image="require('@/assets/images/empty/order.png')" />
+    <empty-status v-else :image="require('@/assets/images/empty/order.png')" :description="$t('empty')" />
   </div>
 </template>
 

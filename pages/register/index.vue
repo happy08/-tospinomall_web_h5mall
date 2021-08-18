@@ -8,7 +8,7 @@
         <!-- 邮箱 -->
         <van-field
           v-model="account"
-          :placeholder="$t('login.enterEmail')"
+          :placeholder="$t('enter_your_email')"
           class="field-container phone-code-field"
           type="email"
           v-if="isType === 'email'" 
@@ -17,7 +17,7 @@
         <div v-else>
           <van-field
             v-model="account"
-            :placeholder="$t('login.phoneNumber')"
+            :placeholder="$t('phone_number')"
             class="field-container phone-code-field"
             type="tel"
           >
@@ -44,45 +44,45 @@
           v-model="code"
           center
           clearable
-          :placeholder="$t('login.enterCode')"
+          :placeholder="$t('enter_verification_code')"
           class="field-container"
         >
           <template #button>
-            <van-button class="fs-14 green lh-20 round-8 verification-btn" v-show="countdown === 0" @click="sendCode" :disabled="account.length === 0">Get It</van-button>
+            <van-button class="fs-14 green lh-20 round-8 verification-btn" v-show="countdown === 0" @click="sendCode" :disabled="account.length === 0">{{ $t('get_it') }}</van-button>
             <button class="fs-14 lh-20 round-8 verification-countdown-btn" v-show="countdown > 0">{{ countdown }}S</button>
           </template>
         </van-field>
         <!-- 注册，点击跳转到设置密码页面 -->
         <van-button class="mt-60 btn_h48 fw fs-16 w-100" color="linear-gradient(270deg, #3EB5AE 0%, #70CEB6 100%)" :disabled="account.length === 0 || code.length === 0" @click="jumpPwd">
-          {{ $t('common.next') }}
+          {{ $t('next') }}
         </van-button> 
       </div>
   
       <!-- 忘记密码时 可以切换手机和邮箱两种方式 -->
       <!-- <div class="login-page__btm" v-if="$route.query.type === 'forgot'"> -->
       <div class="login-page__btm">
-        <van-divider>{{ $t('common.or') }}</van-divider>
+        <van-divider>{{ $t('or') }}</van-divider>
         <div class="flex login-page__btm--concat">
           <!-- facebook -->
-          <a href="#">
+          <!-- <a href="#">
             <BmIcon :name="'facebook-icon'" :width="'0.64rem'" :height="'0.64rem'" />
-          </a>
+          </a> -->
           <!-- 电话 -->
-          <a href="#">
+          <!-- <a href="#">
             <BmIcon :name="'phone-icon'" :width="'0.64rem'" :height="'0.64rem'" />
-          </a>
+          </a> -->
           <!-- twitter -->
-          <a href="#">
+          <!-- <a href="#">
             <BmIcon :name="'twitter-icon'" :width="'0.64rem'" :height="'0.64rem'" />
-          </a>
+          </a> -->
           <!-- google -->
-          <a href="#">
+          <!-- <a href="#">
             <BmIcon :name="'google-icon'" :width="'0.64rem'" :height="'0.64rem'" />
-          </a>
+          </a> -->
           <!-- 微信 -->
-          <a href="#">
+          <!-- <a href="#">
             <BmIcon :name="'wechat-icon'" :width="'0.64rem'" :height="'0.64rem'" />
-          </a>
+          </a> -->
           <!-- email -->
           <nuxt-link
             v-if="$route.query.changeWay === 'phone' || !$route.query.changeWay" 
@@ -95,7 +95,7 @@
             <BmIcon :name="'cellphone'" :width="'0.64rem'" :height="'0.64rem'" />
           </nuxt-link>
         </div>
-        <p class="fs-14 tc mt-20 lh-20 login-page__btm--service">By loging in,you agree to <nuxt-link :to="{ name: 'service-type', params: { type: 'serve' }, query: { isH5: 1 } }">Tospino's Terms of Service</nuxt-link> and <nuxt-link :to="{ name: 'service-type', params: { type: 'privacy' }, query: { isH5: 1 } }">Privacy Policy</nuxt-link></p>
+        <!-- <div class="fs-14 tc mt-20 lh-20 login-page__btm--service" v-html="login_service_privacy()"></div> -->
       </div>
     </div>
   </div>
@@ -135,7 +135,7 @@ export default {
   },
   computed: {
     title() {
-      return this.$route.query.type === 'forgot' ? this.$t('forgot.title') : this.$t('register.register');
+      return this.$route.query.type === 'forgot' ? this.$t('forgot_password') : this.$t('individual_registration');
     }
   },
   beforeRouteEnter(to, from, next) { // 从绑定或修改页面进入重置值为空
@@ -170,7 +170,11 @@ export default {
         return false;
       }
       this.isCodeFlag = true;
-      
+      this.$toast.loading({
+        forbidClick: true,
+        loadingType: 'spinner',
+        duration: 0
+      });
       let _axios;
       if (this.$route.query.changeWay === 'email') { // 获取邮箱验证码
         _axios = getEmailCode({ email: this.account, userType: 'buyer', type: this.$route.query.type === 'forgot' ? 2 : 1 });
@@ -198,6 +202,11 @@ export default {
         return false;
       }
       this.isNextFlag = true;
+      this.$toast.loading({
+        forbidClick: true,
+        loadingType: 'spinner',
+        duration: 0
+      });
 
       let _axios;
       if (this.$route.query.changeWay === 'email') { // 校验邮箱验证码
@@ -206,7 +215,8 @@ export default {
         _axios = checkPhoneCode({ code: this.code, phone: this.account, phonePrefix: this.prefixCode.split('+')[1], userType: 'buyer', isDelCode: 0 });
       }
       // 接口返回的操作处理
-      _axios.then(res => {
+      _axios.then(() => {
+        this.$toast.clear();
         this.isNextFlag = false;
         // 如果是忘记密码，手机验证通过之后跳转到设置密码页面
         if (this.$route.query.type === 'forgot') {
@@ -229,6 +239,9 @@ export default {
       }).catch(() => {
         this.isNextFlag = false;
       })
+    },
+    login_service_privacy() {
+      return this.$t('login_service_privacy').replace('%1$s', `<a class="clr-blue" href="/service/serve?isH5=1">Tospino's ${this.$t('term_of_service')}</a>`).replace('%2$s', `<a class="clr-blue" href="/service/privacy?isH5=1">${this.$t('privacy_policy')}</a>`)
     }
   },
 }
@@ -272,9 +285,6 @@ export default {
     }
     .login-page__btm--service{
       color: #BFBFBF;
-      a{
-        color: #0F66DE;
-      }
     }
   }
 }

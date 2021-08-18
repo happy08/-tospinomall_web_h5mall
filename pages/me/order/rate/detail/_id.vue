@@ -1,7 +1,7 @@
 <template>
   <!-- 商品-评价-评价详情/ 我的-评价-评价详情 -->
   <div class="vh-100 bg-grey pb-80 pt-46">
-    <BmHeaderNav :left="{ isShow: true }" :title="$t('me.report.detail')" :fixed="true" />
+    <BmHeaderNav :left="{ isShow: true }" :title="$t('review_details')" :fixed="true" />
 
     <!-- 订单展示 -->
     <van-sticky :offset-top="'0.925rem'">
@@ -75,7 +75,7 @@
       </div>
       <!-- 追加评论 -->
       <template v-if="detailData.additionalEvaluates && detailData.additionalEvaluates.length > 0">
-        <p class="fw black fs-14 mt-20">购买后追评</p>
+        <p class="fw black fs-14 mt-20">{{ $t('review_after_purchase') }}</p>
         <div v-for="addItem in detailData.additionalEvaluates" :key="'add-review-' + addItem.id">
           <!-- 描述 -->
           <p class="black fs-14 mt-10">{{ addItem.content }}</p>
@@ -101,7 +101,7 @@
 
     <!-- 全部回复 -->
     <div class="mt-12 bg-white">
-      <p class="fw black fs-14 ptb-12 plr-20 border-b">全部回复</p>
+      <p class="fw black fs-14 ptb-12 plr-20 border-b">{{ $t('all_reply') }}</p>
       <template v-if="detailData.replyList && detailData.replyList.length > 0">
         <van-cell class="plr-20 ptb-10 w-100 hidden" title-class="fs-14" v-for="(replyItem, replyIndex) in detailData.replyList" :key="'reply-' + replyIndex" :label="replyItem.replyContent" label-class="mt-10 black">
           <template #title>
@@ -128,9 +128,9 @@
 
     <!-- 你的意见、信息、点赞 -->
     <div class="plr-20 ptb-12 flex between vcenter fixed bg-white">
-      <van-field v-model.trim="thoughts" class="custom-field" ref="customEvaluate" :border="false" :placeholder="$t('me.report.writeThoughts')">
+      <van-field v-model.trim="thoughts" class="custom-field" ref="customEvaluate" :border="false" :placeholder="$t('write_down_your_thoughts')">
         <template #right-icon>
-          <span class="green" @click="onSend">确认</span>
+          <span class="green" @click="onSend">{{ $t('confirm') }}</span>
         </template>
       </van-field>
       <!-- 评价人数 -->
@@ -162,7 +162,6 @@ import { getRateDetail, addGive, getGoodAttr, replyEvaluate } from '@/api/produc
 import ProductSku from '@/components/ProductSku';
 
 export default {
-  middleware: 'authenticated',
   components: {
     vanRate: Rate,
     vanField: Field,

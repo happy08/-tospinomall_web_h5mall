@@ -1,10 +1,10 @@
 <template>
   <!-- 我的-设置-账户设置-用户信息 -->
   <div class="bg-grey vh-100">
-    <BmHeaderNav :left="{ isShow: true }" :title="$t('me.accountSetting.title')" />
+    <BmHeaderNav :left="{ isShow: true }" :title="$t('account_settings')" />
     
     <!-- 用户头像 -->
-    <van-cell class="ptb-20" center :title="$t('me.userInfo.avatar')" title-class="black">
+    <van-cell class="ptb-20" center :title="$t('avatar')" title-class="black">
       <template #default>
         <!-- 上传头像 -->
         <van-uploader :after-read="uploadAvatar">
@@ -25,7 +25,7 @@
     <!-- 其他信息 -->
     <div class="mt-12">
       <!-- 会员账户 -->
-      <van-cell class="ptb-20 plr-20" :title="$t('me.userInfo.memberAccount')" value-class="light-grey" center is-link title-class="black">
+      <van-cell class="ptb-20 plr-20" :title="$t('member_account')" value-class="light-grey" center is-link title-class="black">
         <template #default>
           <div class="flex vcenter hend">
             <van-icon :name="require('@/assets/images/icon/copy-icon.png')" size="0.48rem" class="mr-10 copy-member" @click="copy" />
@@ -34,15 +34,15 @@
         </template>
       </van-cell>
       <!-- 姓名 -->
-      <van-cell class="ptb-20 plr-20" :title="$t('me.userInfo.name')" :value="userInfo.username" value-class="light-grey" is-link title-class="black" :to="{ name: 'me-account-username', query: { name: userInfo.username, type: 'username' } }" />
+      <van-cell class="ptb-20 plr-20" :title="$t('name')" :value="userInfo.username" value-class="light-grey" is-link title-class="black" :to="{ name: 'me-account-username', query: { name: userInfo.username, type: 'username' } }" />
       <!-- 昵称 -->
-      <van-cell class="ptb-20 plr-20" :title="$t('me.userInfo.nickname')" :value="userInfo.nickname" value-class="light-grey" is-link title-class="black" :to="{ name: 'me-account-username', query: { name: userInfo.nickname, type: 'nickname' } }" />
+      <van-cell class="ptb-20 plr-20" :title="$t('nick_name')" :value="userInfo.nickname" value-class="light-grey" is-link title-class="black" :to="{ name: 'me-account-username', query: { name: userInfo.nickname, type: 'nickname' } }" />
       <!-- 性别 -->
-      <van-cell class="ptb-20 plr-20" :title="$t('me.userInfo.gender')" :value="userInfo.sex" value-class="light-grey" title-class="black" @click="changeInfo('sex')" is-link />
+      <van-cell class="ptb-20 plr-20" :title="$t('gender')" :value="userInfo.sex" value-class="light-grey" title-class="black" @click="changeInfo('sex')" is-link />
       <!-- 生日 -->
-      <van-cell class="ptb-20 plr-20" :title="$t('me.userInfo.birth')" :value="userInfo.cellBirthday" value-class="light-grey" title-class="black" @click="changeInfo('birthday')" is-link />
+      <van-cell class="ptb-20 plr-20" :title="$t('date_of_birth')" :value="userInfo.cellBirthday" value-class="light-grey" title-class="black" @click="changeInfo('birthday')" is-link />
       <!-- 婚姻状态 -->
-      <van-cell class="ptb-20 plr-20" :title="$t('me.userInfo.maritalStatus')" :value="userInfo.maritalStatus" value-class="light-grey" title-class="black" @click="changeInfo('maritalStatus')" is-link />
+      <van-cell class="ptb-20 plr-20" :title="$t('marital_status')" :value="userInfo.maritalStatus" value-class="light-grey" title-class="black" @click="changeInfo('maritalStatus')" is-link />
     </div>
 
     
@@ -52,15 +52,15 @@
         v-if="changeCurrentType === 'birthday'"
         v-model="userInfo.birthday"
         type="date"
-        :confirm-button-text="$t('common.confirm')"
-        :cancel-button-text="$t('common.cancel')"
+        :confirm-button-text="$t('confirm')"
+        :cancel-button-text="$t('cancel')"
         @confirm="onBirthdayConfirm"
         @cancel="isPickerShow = false"
       />
       <!-- 性别选择 1男，2女，3双性，4保密-->
-      <van-picker v-if="changeCurrentType === 'sex'" :default-index="$store.state.user.userInfo.sex - 1" show-toolbar :columns="$t('common.gander')" @confirm="onSexConfirm" @cancel="isPickerShow = false" />
+      <van-picker v-if="changeCurrentType === 'sex'" :default-index="$store.state.user.userInfo.sex - 1" show-toolbar :columns="$t('gander')" @confirm="onSexConfirm" @cancel="isPickerShow = false" />
       <!-- 婚姻状态选择 1：未婚，2：已婚，3：保密-->
-      <van-picker v-if="changeCurrentType === 'maritalStatus'" show-toolbar :columns="$t('common.maritalStatus')" @confirm="onMaritalConfirm" @cancel="isPickerShow = false" />
+      <van-picker v-if="changeCurrentType === 'maritalStatus'" show-toolbar :columns="$t('marital_status_list')" @confirm="onMaritalConfirm" @cancel="isPickerShow = false" />
     </van-popup>
     
   </div>
@@ -91,11 +91,11 @@ export default {
       changeCurrentType: null
     }
   },
-  created() {
+  activated() {
     this.userInfo = {
       ...this.$store.state.user.userInfo,
-      sex: this.$t('common.gander')[this.$store.state.user.userInfo.sex-1],
-      maritalStatus: this.$t('common.maritalStatus')[this.$store.state.user.userInfo.maritalStatus - 1],
+      sex: this.$t('gander')[this.$store.state.user.userInfo.sex-1],
+      maritalStatus: this.$t('marital_status_list')[this.$store.state.user.userInfo.maritalStatus - 1],
       birthday: this.$store.state.user.userInfo.birthday ? Moment(this.$store.state.user.userInfo.birthday).format('MMM-DD-YYYY') : '',
       cellBirthday: this.$store.state.user.userInfo.birthday ? Moment(this.$store.state.user.userInfo.birthday).format('MMM-DD-YYYY') : ''
     };
@@ -136,7 +136,7 @@ export default {
         }
       })
       clipboard.on('success', () => {
-        let msg = this.$t('common.copySuccess');
+        let msg = this.$t('t_copied_to_clipboard');
         this.$toast({
           message: msg,
           type: 'success'
@@ -144,7 +144,7 @@ export default {
         clipboard.destroy()
       })
       clipboard.on('error', () => {
-        let msg = this.$t('common.copyError');
+        let msg = this.$t('fail_copied_to_clipboard');
         this.$toast({
           message: msg,
           type: 'fail'
@@ -157,8 +157,8 @@ export default {
         this.$store.commit('user/SET_USERINFO', res.data);
         this.userInfo = {
           ...res.data,
-          sex: this.$t('common.gander')[res.data.sex-1],
-          maritalStatus: this.$t('common.maritalStatus')[res.data.maritalStatus - 1],
+          sex: this.$t('gander')[res.data.sex-1],
+          maritalStatus: this.$t('marital_status_list')[res.data.maritalStatus - 1],
           birthday: res.data.birthday ? Moment(res.data.birthday).format('MMM-DD-YYYY') : null,
           cellBirthday: res.data.birthday ? Moment(res.data.birthday).format('MMM-DD-YYYY') : ''
         };

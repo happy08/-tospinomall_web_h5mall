@@ -4,15 +4,15 @@
     <BmHeaderNav :left="{ isShow: true }" :fixed="true">
       <!-- tab切换 -->
       <van-tabs v-model="active" slot="header-title" class="customs-van-tabs likes-tabs" @click="getList">
-        <van-tab :title="$t('common.product')" />
-        <van-tab :title="$t('common.store')" />
+        <van-tab :title="$t('product')" />
+        <van-tab :title="$t('store')" />
       </van-tabs>
       <!-- 操作 -->
-      <div slot="header-right" class="fs-16 color_666" v-show="!edit" @click="onEdit">{{ $t('common.edit') }}</div>
+      <div slot="header-right" class="fs-16 color_666" v-show="!edit" @click="onEdit">{{ $t('edit') }}</div>
       <!-- 编辑 -->
       <div slot="header-right" class="fs-16 color_666" v-show="edit" @click="onEdit">
         <i class="iconfont icon-shanchu fs-18 mr-12"></i>
-        {{ $t('common.done') }}
+        {{ $t('done') }}
       </div>
     </BmHeaderNav>
 
@@ -24,9 +24,9 @@
         @load="onLoad"
       >
         <!-- 商品/店铺展示 -->
-        <div class="bg-white">
+        <div :class="{'bg-white': true}">
           <!-- 无数据时展示 -->
-          <empty-status v-if="list.length === 0" :image="require('@/assets/images/empty/result.png')" :description="active == 0 ? $t('me.likes.notProduct') : $t('me.likes.noStore')" :btn="{ btn: $t('me.likes.shopNow'), isEmit: true }" @emptyClick="emptyClick" />
+          <empty-status v-if="list.length === 0" :image="require('@/assets/images/empty/result.png')" :btn="{ btn: $t('shop_now'), isEmit: true }" @emptyClick="emptyClick" />
           <!-- 已关注的店铺列表展示 -->
           <van-checkbox-group v-model="checkResult" ref="checkboxStoreGroup">
             <van-cell-group>
@@ -61,7 +61,7 @@
                       />
                       <div class="ml-12 fs-14 fm-helvetica">
                         <p class="black hidden-2">{{ item.storeName }}</p>
-                        <p class="color_666 mt-8">{{ item.followers }} followers</p>
+                        <p class="color_666 mt-8">{{ item.followers }} {{ $t('followers') }}</p>
                       </div>
                     </div>
 
@@ -70,7 +70,7 @@
                       <OrderSingle class="pl-30 pt-20" :isShowRight="false" :product_desc="item.productName" :image="item.productImg" :price="item.productPrice" @onClick="goProduct(item)" />
                       <div class="flex hend">
                         <!-- 看相似 -->
-                        <BmButton type="default" plain class="plr-12 round-8 h-25 mt-0" @btnClick="goSimilar(item.productId)">{{ $t('me.likes.lookSimilar') }}</BmButton>
+                        <BmButton type="default" plain class="plr-12 round-8 h-25 mt-0" @btnClick="goSimilar(item.productId)">{{ $t('look_similar') }}</BmButton>
                         <!-- 购物车 -->
                         <BmImage
                           :url="require('@/assets/images/icon/add-cart-btn.png')"
@@ -88,8 +88,8 @@
 
                     <template #right>
                       <div class="flex hend h-100">
-                        <BmButton class="round-0 bg-yellow h-100 w-70" @click="onUnsubscribe(item)">Unsub-scribe</BmButton>
-                        <BmButton class="round-0 bg-green h-100 w-70" @click="onTop(item)">Store Top</BmButton>
+                        <BmButton class="round-0 bg-yellow h-100 w-70" @click="onUnsubscribe(item)">{{ $t('unsubscribe') }}</BmButton>
+                        <BmButton class="round-0 bg-green h-100 w-70" @click="onTop(item)">{{ $t('top') }}</BmButton>
                       </div>
                     </template>
                   </van-swipe-cell>
@@ -112,7 +112,7 @@
               </template>
               <span class="ml-14 fs-14 lh-20 black">{{ $t('common.all') }}</span>
             </van-checkbox>
-            <BmButton class="fs-16 round-0 v-100" @click="onUnsubscribe">Unsubscribe</BmButton>
+            <BmButton class="fs-16 round-0 v-100" @click="onUnsubscribe">{{ $t('unsubscribe') }}</BmButton>
           </div>
         </div>
 
@@ -120,7 +120,7 @@
         <template v-if="recommendList.length > 0 && active == 0 && !edit">
           <van-divider class="plr-30 mt-24 fw fs-14 clr-black-85">
             <BmIcon :name="'xinaixin'" :width="'0.26rem'" :height="'0.22rem'" :color="'#FA2022'" class="mr-8" />
-            {{ $t('common.mayLike') }}
+            {{ $t('you_may_also_like') }}
           </van-divider>
           <div class="mlr-12 flex between flex-wrap">
             <ProductTopBtmSingle
@@ -222,10 +222,10 @@ export default {
     },
     onUnsubscribe(item) { // 取消订阅
       this.$dialog.confirm({
-        message: '确定取消订阅?',
-        onfirmButtonText: this.$t('common.confirm'),
+        message: this.$t('are_you_unsubscribe'),
+        onfirmButtonText: this.$t('confirm'),
         confirmButtonColor: '#42B7AE',
-        cancelButtonText: this.$t('common.cancel'),
+        cancelButtonText: this.$t('cancel'),
         cancelButtonColor: '#383838'
       }).then(() => {
         let _ajax = this.active == 1 ? storeCancelFollow(item ? [item.storeId] : this.checkResult) : cancelAttentionGood(item ? [item.productId] : this.checkResult);

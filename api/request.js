@@ -69,12 +69,20 @@ const tip = msg => {
 // request拦截器
 service.interceptors.request.use(config => {
   config.headers['clientType'] = 'h5';
-  config.headers['Authorization'] = config.headers.Authorization ? config.headers.Authorization: 'Basic YnV5ZXI6YnV5ZXI=';
-  console.log('线下请求')
-  console.log(getCookie('authToken') != 'null')
-  if (getCookie('authToken') && getCookie('authToken') != 'null' && getCookie('authToken').length > 10) { // 已登录需要改变头部token
+  if (config.headers.Authorization) {
+    config.headers['Authorization'] = config.headers.Authorization;
+  } else if (getCookie('authToken') && getCookie('authToken') != 'null' && getCookie('authToken').length > 10) {
     config.headers['Authorization'] = getCookie('authToken');
+  } else {
+    config.headers['Authorization'] = 'Basic YnV5ZXI6YnV5ZXI=';
   }
+  // config.headers['Authorization'] = config.headers.Authorization ? config.headers.Authorization: 'Basic YnV5ZXI6YnV5ZXI=';
+  // console.log('线下请求')
+  // console.log(getCookie('authToken') != 'null')
+  // console.log(getCookie('authToken'))
+  // if (getCookie('authToken') && getCookie('authToken') != 'null' && getCookie('authToken').length > 10) { // 已登录需要改变头部token
+  //   config.headers['Authorization'] = getCookie('authToken');
+  // }
   
   if (config.method === 'post' || config.method === 'get') {
     config.headers['Content-Type'] = config.headers['Content-Type'] || 'application/x-www-form-urlencoded';

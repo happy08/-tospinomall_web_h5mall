@@ -89,7 +89,8 @@ export function authLogin(params) { // 账号登录
     headers: {
       clientType: 'web',
       version: '1.0.0',
-      language: getCookie('lang')
+      language: getCookie('lang'),
+      Authorization: 'Basic YnV5ZXI6YnV5ZXI='
     }
   })
 }

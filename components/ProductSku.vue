@@ -34,7 +34,7 @@
           @change="getSkuInfo(props, 'stepper')"
         />
         <div class="mt-20" v-if="props.selectedSkuComb">
-          in stock: {{ props.selectedSkuComb.stock_num }}
+          {{ $t('in_stock') }} {{ props.selectedSkuComb.stock_num }}
         </div>
       </div>
     </template>
@@ -44,22 +44,22 @@
       <!-- 购物车-是修改商品sku -->
       <template v-if="type == 'cart' || type == 'product' || type == 'buy'">
         <div class="mlr-12 mb-30 mt-10" v-if="props.selectedSkuComb && props.selectedSkuComb.stock_num == 0">
-          <BmButton class="fs-16 round-8 w-100 h-48 bg-ddd" @click="onOutStock">out of stock</BmButton>
+          <BmButton class="fs-16 round-8 w-100 h-48 bg-ddd" @click="onOutStock">{{ $t('out_of_stock') }}</BmButton>
         </div>
         <div class="mlr-12 mb-12 mt-10" v-else>
-          <BmButton class="fs-16 round-8 w-100 h-48" @click="onChange">确认</BmButton>
+          <BmButton class="fs-16 round-8 w-100 h-48" @click="onChange">{{ $t('confirm') }}</BmButton>
         </div>
       </template>
       <template v-else>
         <!-- 缺货 -->
         <div class="mlr-12 mb-30 mt-10" v-if="props.selectedSkuComb && props.selectedSkuComb.stock_num == 0">
-          <BmButton class="fs-16 round-8 w-100 h-48 bg-ddd" @click="onOutStock">out of stock</BmButton>
+          <BmButton class="fs-16 round-8 w-100 h-48 bg-ddd" @click="onOutStock">{{ $t('out_of_stock') }}</BmButton>
         </div>
         <div class="mlr-12 mb-12 mt-10 flex between" v-else>
           <!-- 加入购物车 -->
-          <BmButton :type="'info'" class="fs-16 round-8 w-169 h-48 add-cart-btn" @click="onConfirm(false)">Add to cart</BmButton>
+          <BmButton :type="'info'" class="fs-16 round-8 w-169 h-48 add-cart-btn" @click="onConfirm(false)">{{ $t('add_to_cart') }}</BmButton>
           <!-- 立即购买 -->
-          <BmButton class="fs-16 round-8 w-169 h-48" @click="onConfirm(true)">Buy Now</BmButton>
+          <BmButton class="fs-16 round-8 w-169 h-48" @click="onConfirm(true)">{{ $t('buy_now') }}</BmButton>
         </div>
       </template>
     </template>

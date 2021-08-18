@@ -18,16 +18,13 @@
         <!-- 店铺名、关注数 -->
         <dl class="ml-12">
           <dt class="fs-14 fw color-23 max-w-160">{{ detailData.storeName }}</dt>
-          <dd class="fs-12 light-grey mt-4">{{ detailData.collectNum }} followers</dd>
+          <dd class="fs-12 light-grey mt-4">{{ detailData.collectNum }} {{ $t('followers') }}</dd>
         </dl>
       </div>
       <!-- 取消订阅 -->
-      <van-button  v-if="detailData && detailData.isAttention == 1" color="#FC2B31" class="round-8 h-26 plr-8" @click="onSubscribe(false)">Unsubscribe</van-button>
+      <van-button  v-if="detailData && detailData.isAttention == 1" color="#FC2B31" class="round-8 h-26 plr-8" @click="onSubscribe(false)">{{ $t('unsubscribe') }}</van-button>
       <!-- 订阅 -->
-      <van-button plain color="#FC2B31" class="round-8 h-26 plr-8" @click="onSubscribe(true)" v-else>
-        +
-        <span class="ml-4">Subscribe</span>
-      </van-button>
+      <van-button plain color="#FC2B31" class="round-8 h-26 plr-8" @click="onSubscribe(true)" v-else>{{ $t('add_subscribe') }}</van-button>
     </div>
 
     <!-- 详情 -->
@@ -48,9 +45,9 @@
 
     <van-cell-group class="mt-20" :border="false">
       <!-- 开店时间 -->
-      <van-cell title="Open a shop time" title-class="black fs-14" class="p-20" :value="detailData.createTime" value-class="light-grey" />
+      <van-cell :title="$t('open_a_shop_time')" title-class="black fs-14" class="p-20" :value="detailData.createTime" value-class="light-grey" />
       <!-- 品牌销售 -->
-      <van-cell title="Sales of the brand" title-class="black fs-14" class="p-20" value-class="light-grey">
+      <van-cell :title="$t('sales_of_the_brand')" title-class="black fs-14" class="p-20" value-class="light-grey">
         <template #default>
           <span v-for="(item, index) in detailData.brandNameList" :key="index">{{ item }}</span>
         </template>
@@ -60,7 +57,7 @@
     <!-- 所有商品 -->
     <nuxt-link class="ptb-20 flex center bg-white mt-20" v-slot="{ navigate }" :to="{ name: 'cart-store-id', params: { id: this.$route.params.id }, query: { tabbarActive: 1, sellerId: this.$route.query.sellerId } }">
       <div @click="navigate" role="link">
-        <span class="fs-14 black mr-20">All Products</span>
+        <span class="fs-14 black mr-20">{{ $t('all_products') }}</span>
         <van-icon name="arrow" color="rgba(0, 0, 0, 0.45)" />
       </div>
     </nuxt-link>
@@ -87,7 +84,10 @@ export default {
     const detailData = await this.$api.getStoreInfo({ sellerId: this.$route.query.sellerId, storeId: this.$route.params.id, userId: this.$store.state.user.userInfo.id });
     if (detailData.code != 0) return false;
 
-    this.detailData = detailData.data;
+    this.detailData = {
+      ...detailData.data,
+      collectNum: detailData.data.collectNum
+    };
   },
   methods: {
     onSubscribe(flag) { // 订阅/取消订阅 flag: true 订阅 false 取消订阅

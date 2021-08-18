@@ -1,13 +1,13 @@
 <template>
   <!-- 我的-浏览足迹 -->
   <div class="pt-46">
-    <BmHeaderNav :left="{ isShow: true }" :title="'我的足迹'" :fixed="true">
+    <BmHeaderNav :left="{ isShow: true }" :title="$t('recently_viewed')" :fixed="true">
       <!-- 操作 -->
-      <div slot="header-right" class="fs-16 color_666" v-show="!edit" @click="edit = true">{{ $t('common.edit') }}</div>
+      <div slot="header-right" class="fs-16 color_666" v-show="!edit" @click="edit = true">{{ $t('edit') }}</div>
       <!-- 编辑 -->
       <div slot="header-right" class="fs-16 color_666" v-show="edit" @click="edit = false">
         <i class="iconfont icon-shanchu fs-18 mr-12"></i>
-        {{ $t('common.done') }}
+        {{ $t('done') }}
       </div>
     </BmHeaderNav>
 
@@ -22,7 +22,7 @@
         <!-- 商品/店铺展示 -->
         <div class="bg-white">
           <!-- 无数据时展示 -->
-          <empty-status v-if="list.length === 0" :image="require('@/assets/images/empty/result.png')" :description="$t('me.likes.notProduct')" :btn="{ btn: $t('me.likes.shopNow'), isEmit: true }" @emptyClick="emptyClick" />
+          <empty-status v-if="list.length === 0" :image="require('@/assets/images/empty/result.png')" :description="$t('empty')" />
           <!-- 已关注的店铺列表展示 -->
           <van-checkbox-group v-model="checkResult" ref="checkboxStoreGroup">
             <van-cell :border="false" :class="{'ptb-0 plr-0': true }" v-for="(item, index) in list" :key="index">
@@ -48,7 +48,7 @@
                     <OrderSingle class="pl-30 pt-20" :isShowRight="false" :product_desc="item.goodTitle" :image="item.img" :price="item.price" @onClick="goProduct(item)" :stock="item.isValid" />
                     <div class="flex hend">
                       <!-- 看相似 -->
-                      <BmButton type="default" plain class="plr-12 round-8 h-25 mt-0" @btnClick="goSimilar(item.goodId)">{{ $t('me.likes.lookSimilar') }}</BmButton>
+                      <BmButton type="default" plain class="plr-12 round-8 h-25 mt-0" @btnClick="goSimilar(item.goodId)">{{ $t('look_similar') }}</BmButton>
                       <!-- 购物车 -->
                       <BmImage
                         :url="require('@/assets/images/icon/add-cart-btn.png')"
@@ -88,9 +88,9 @@
                   :isShow="false"
                 />
               </template>
-              <span class="ml-14 fs-14 lh-20 black">{{ $t('common.all') }}</span>
+              <span class="ml-14 fs-14 lh-20 black">{{ $t('all') }}</span>
             </van-checkbox>
-            <BmButton class="fs-16 round-0 v-100 plr-30" @click="onDelete">{{ $t('common.delete') }}</BmButton>
+            <BmButton class="fs-16 round-0 v-100 plr-30" @click="onDelete">{{ $t('delete') }}</BmButton>
           </div>
         </div>
       </van-list>

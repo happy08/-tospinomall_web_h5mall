@@ -1,14 +1,14 @@
 <template>
   <!-- 我的-设置-账户设置-用户信息-修改昵称/姓名 -->
   <div class="bg-grey vh-100">
-    <BmHeaderNav :left="{ isShow: true }" :title="$t('me.userInfo.modifyNameTitle')">
+    <BmHeaderNav :left="{ isShow: true }" :title="$route.query.type == 'username' ? $t('modify_user_name') : $t('modify_nickname')">
       <div slot="header-right" class="green" @click="onConfirm">
-        {{ $t('common.done') }}
+        {{ $t('done') }}
       </div>
     </BmHeaderNav>
 
-    <van-field v-model="name" class="p-20" clearable maxlength="30" />
-    <p class="mt-10 fs-14 plr-20 username-tip">{{ $t('me.userInfo.characterTip') }}</p>
+    <van-field v-model="name" class="p-20" clearable maxlength="30" minlength="4" />
+    <p class="mt-10 fs-14 plr-20 username-tip">{{ $t('characters_limit') }}</p>
   </div>
 </template>
 
@@ -36,20 +36,21 @@ export default {
       if (this.name.length < 4) { // 长度要大于4
         this.$toast({
           type: 'fail',
-          message: this.$t('me.userInfo.characterTip'),
+          message: this.$t('characters_limit'),
         })
         return false;
       }
       
       updateUserInfo({ [this.type]: this.name }).then(res => {
         this.$store.commit('user/SET_USERINFO', res.data);
-        this.$toast({
-          type: 'success',
-          message: '修改成功',
-          onClose() { // 返回上一页
-            history.back();
-          }
-        })
+        history.back();
+        // this.$toast({
+        //   type: 'success',
+        //   message: '修改成功',
+        //   onClose() { // 返回上一页
+        //     history.back();
+        //   }
+        // })
       })
     }
   },

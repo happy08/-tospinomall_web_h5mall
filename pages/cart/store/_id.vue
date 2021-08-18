@@ -8,6 +8,7 @@
         class="w-100 ml-20"
         disabled
         slot="header-title"
+        :placeholder="$t('search_our_products')"
         @click="$router.push({ name: 'search' })"
       />
     </div>
@@ -29,7 +30,7 @@
               <!-- 店铺名、关注数 -->
               <dl class="ml-12 fm-helvetica">
                 <dt class="fs-14 fw color-23">{{ detailData.storeName }}</dt>
-                <dd class="fs-12 light-grey mt-4">{{ detailData.collectNum }} followers</dd>
+                <dd class="fs-12 light-grey mt-4">{{ detailData.collectNum }} {{ $t('followers') }}</dd>
               </dl>
             </div>
           </nuxt-link>
@@ -37,16 +38,13 @@
         
         
         <!-- 取消订阅 -->
-        <van-button  v-if="detailData && detailData.isAttention == 1" color="#FC2B31" class="round-8 h-26 plr-8" @click="onSubscribe(false)">Unsubscribe</van-button>
+        <van-button  v-if="detailData && detailData.isAttention == 1" color="#FC2B31" class="round-8 h-26 plr-8" @click="onSubscribe(false)">{{ $t('unsubscribe') }}</van-button>
         <!-- 订阅 -->
-        <van-button plain color="#FC2B31" class="round-8 h-26 plr-8" @click="onSubscribe(true)" v-else>
-          +
-          <span class="ml-4">Subscribe</span>
-        </van-button>
+        <van-button plain color="#FC2B31" class="round-8 h-26 plr-8" @click="onSubscribe(true)" v-else>{{ $t('add_subscribe') }}</van-button>
         
       </div>
       <van-tabs v-if="tabbarActive == 1" sticky swipeable animated color="#42B7AE" class="customs-van-tabs bg-white plr-20" v-model="productTabActive" line-height="0" line-width="0" :before-change="beforeChange">
-        <van-tab v-for="tabItem, tabIndex in tabList" :key="tabIndex">
+        <van-tab v-for="tabItem, tabIndex in $t('store_product_tab')" :key="tabIndex">
           <template #title="props" :class="{'flex vcenter': true}">
             <div :class="{'flex vcenter': true}">
               {{ tabItem }} {{ props }}
@@ -245,7 +243,7 @@
     </template>
 
     <!-- 底部标签栏 -->
-    <van-tabbar v-model="tabbarActive" active-color="#FA2A32" inactive-color="#DBDBDB">
+    <van-tabbar v-model="tabbarActive" active-color="#FA2A32" inactive-color="#DBDBDB" v-if="$route.query.hasAdornment == true">
       <van-tabbar-item>
         <template #icon="props">
           <img :src="props.active ? require('@/assets/images/icon/store-tab-1-active.png') : require('@/assets/images/icon/store-tab-1.png')" alt="store-tab" />
@@ -308,7 +306,6 @@ export default {
       },
       productTabActive: 0,
       // rate: 2.5,
-      tabList: ['推荐', '销量', '价格', '有货'],
       moduleData: [],
       swiperComponentOption: { // 一排三列 滚动
         slidesPerView: 3,
@@ -330,17 +327,21 @@ export default {
     }
   },
   async fetch() {
-    if (this.$route.query.tabbarActive) this.tabbarActive = this.$route.query.tabbarActive;
     // 获取店铺详情
     const detailData = await this.$api.getStoreInfo({ sellerId: this.$route.query.sellerId, storeId: this.$route.params.id, userId: this.$store.state.user.userInfo.id });
     if (detailData.code != 0) return false;
-    this.detailData = detailData.data;
-    // 店铺组件数据
-    const moduleData = await this.$api.getStoreIndex({shopId: this.$route.params.id});
-    if (moduleData.code != 0) return false;
-    this.moduleData = moduleData.data.components;
+    this.detailData = {
+      ...detailData.data,
+      collectNum: detailData.data.collectNum == '' ? 0 : detailData.data.collectNum
+    };
+    // 店铺组件数据,店铺有装修才可看
+    if (this.$route.query.hasAdornment == true) {
+      const moduleData = await this.$api.getStoreIndex({shopId: this.$route.params.id});
+      if (moduleData.code != 0) return false;
+      this.moduleData = moduleData.data.components;
+    }
     this.sort = {
-      shopId: this.$route.params.id, pageIndex: this.pageIndex, pageSize: this.pageSize, recommend: 1
+      shopId: this.$route.params.id, pageIndex: this.pageIndex, pageSize: this.pageSize
     }
     // 商品列表数据
     const listData = await this.$api.getProductSearch(this.sort);
@@ -354,6 +355,8 @@ export default {
     });
   },
   activated() {
+    if (this.$route.query.tabbarActive) this.tabbarActive = this.$route.query.tabbarActive;
+    if (this.$route.query.hasAdornment == false || this.$route.query.hasAdornment == 'false') this.tabbarActive = 1;
     this.$fetch();
   },
   methods: {

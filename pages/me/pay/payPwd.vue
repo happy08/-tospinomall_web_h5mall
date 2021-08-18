@@ -1,12 +1,12 @@
 <template>
   <!-- 支付密码验证 -->
   <div class="bg-grey vh-100">
-    <BmHeaderNav :left="{ isShow: true }" :title="'支付密码'" />
+    <BmHeaderNav :left="{ isShow: true }" :title="$t('payment_password_verification')" />
 
     <!-- 设置密码 -->
     <div class="mlr-12 payment-container">
       <!-- 首次设置输入密码提示 -->
-      <p class="fs-18 black tc">请输入支付密码</p>
+      <p class="fs-18 black tc">{{ $t('modify_6_digit_payment_password') }}</p>
       <!-- 密码输入框 -->
       <van-password-input
         :value="value"
@@ -26,9 +26,7 @@
       />
 
       <!-- 首次设置支付密码的提示语 -->
-      <ul class="mt-20">
-        <li class="fs-14 light-grey" v-for="(tipItem, tipIndex) in $t('me.pay.firstSetPwdTip')" :key="tipIndex" v-html="tipItem"></li>
-      </ul>
+      <div class="mt-20 fs-14 light-grey pre-wrap" v-html="$t('forgot_password_tips')"></div>
       
     </div>
   </div>

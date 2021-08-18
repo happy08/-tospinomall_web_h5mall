@@ -1,11 +1,11 @@
 <template>
   <!-- 我的-意见反馈 -->
   <div>
-    <BmHeaderNav :left="{ isShow: true }" :title="$t('me.feedback.title')" />
+    <BmHeaderNav :left="{ isShow: true }" :title="$t('feedback')" />
 
     <div class="mt-20 mlr-20">
       <!-- 反馈类型 -->
-      <h2 class="fs-14 black">{{ $t('me.feedback.typeTitle') }}</h2>
+      <h2 class="fs-14 black">{{ $t('type_of_problem_feedback') }}</h2>
       <div class="mt-20">
         <span :class="{'plr-12 round-8 border mr-12 iblock mb-10 tag-name': true, 'is-active': activeTag == tag.id }" @click="activeTag = tag.id" v-for="(tag, index) in feedbackType" :key="index">{{ tag.title }}</span>
       </div>
@@ -15,7 +15,7 @@
         class="mt-10 bg-grey round-8"
         v-model="phone"
         type="text"
-        :placeholder="$t('me.feedback.feedbackPlaceholder')"
+        :placeholder="$t('feedback_contact_tip')"
       />
 
       <!-- 反馈意见 -->
@@ -25,7 +25,7 @@
           v-model="message"
           rows="2"
           type="textarea"
-          :placeholder="$t('me.feedback.picPlaceholder')"
+          :placeholder="$t('feedback_input_hint')"
         />
         <!-- 上传图片 -->
         <van-uploader class="plr-12 pb-20" :after-read="afterRead" v-model="fileList" preview-size="1.2rem" multiple>
@@ -40,7 +40,7 @@
         </van-uploader>
       </div>
       <!-- 提交 -->
-      <BmButton @click.stop="submit" class="w-100 feedback-btn round-8">{{ $t('common.submit') }}</BmButton>
+      <BmButton @click.stop="submit" :disabled="this.activeTag == '' || this.message == '' || this.phone == ''" class="w-100 feedback-btn round-8">{{ $t('submit') }}</BmButton>
     </div>
   </div>
 </template>
@@ -99,14 +99,6 @@ export default {
       })
     },
     submit() { // 提交反馈意见
-      if (this.activeTag == '') { // 选择反馈类型
-        this.$toast(this.$t('me.feedback.typeTitle'));
-        return false;
-      }
-      if (this.message == '') { // 输入反馈建议和意见
-        this.$toast(this.$t('me.feedback.picPlaceholder'));
-        return false;
-      }
       operateFeedback({ content: this.message, feedbackCategoryId: this.activeTag, phone: this.phone, imgUrls: this.imgList.join(',') }).then(res => {
         if (res.code != 0) return false;
 

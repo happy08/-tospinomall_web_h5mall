@@ -61,7 +61,7 @@
     <!-- 退款成功/关闭售后单 -->
     <div class="mt-12 bg-green-linear ptb-12 plr-8" v-if="detail.status == 5 || detail.status == 6">
       <div class="bg-white ptb-20 plr-8 round-13">
-        <p class="fw fs-14 black ml-10" v-if="detail.status == 5">{{ $t('me.afterSale.refundSuccess') }}</p>
+        <p class="fw fs-14 black ml-10" v-if="detail.status == 5">{{ $t('refund_successfully') }}</p>
         <p class="fw fs-14 black ml-10" v-if="detail.status == 6">已关闭</p>
         <p class="fs-12 light-grey mt-10 ml-10">{{ detail.updateTime }}</p>
       </div>

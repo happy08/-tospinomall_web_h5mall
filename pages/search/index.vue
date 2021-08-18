@@ -1,18 +1,36 @@
 <template>
   <!-- 首页-头部-搜索页面 -->
   <div :class="{'vh-100': true, 'bg-grey': !isShowTip}">
-    <BmHeaderNav :left="{ isShow: true }" :title="$t('common.search')" :border="false" />
-    <!-- 搜索 -->
-    <van-search
-      v-model="searchVal"
-      shape="round"
-      :placeholder="hintName"
-      class="plr-20 bg-white ptb-12 border-b"
-      @input="inputChange"
-      @search="onSearch"
-      @focus="onFocus"
-      ref="searchContainer"
-    />
+    <van-sticky :offset-top="0">
+      <BmHeaderNav :left="{ isShow: true }" :title="$t('search')" :border="false" />
+      <!-- 搜索 -->
+      <van-search
+        v-model="searchVal"
+        shape="round"
+        :placeholder="hintName"
+        class="plr-20 bg-white ptb-12 border-b"
+        @input="inputChange"
+        @search="onSearch"
+        @focus="onFocus"
+        ref="searchContainer"
+      />
+      <!-- 分类 -->
+      <div class="flex between vcenter plr-20 bg-white" v-show="!isShowTip">
+        <van-tabs swipeable animated color="#42B7AE"  @change="getSearchList" @disabled="filterPopup = true" class="customs-van-tabs" v-model="typeActive" line-height="0" :ellipsis="false">
+          <van-tab v-for="(productItem, tabIndex) in tabs" :title="$t(productItem.name)" :key="'scroll-tab-' + tabIndex" title-class="p-0 pr-60" :name="productItem.type" :disabled="productItem.type == 2">
+            <template #title="props" v-if="productItem.type === 0">
+              {{ props }}
+              <van-dropdown-menu active-color="#42B7AE" class="custom-dropdown-menu">
+                <van-dropdown-item v-model="dropdownVal" :options="$t('search_filter_price')" />
+              </van-dropdown-menu>
+            </template>
+          </van-tab>
+        </van-tabs>
+
+        <!-- 展示一列或者两列 -->
+        <van-icon :name="require('@/assets/images/icon/arrange-'+arrangeType+'.svg')" size="0.38rem" @click="changeArrange" />
+      </div>
+    </van-sticky>
     <!-- 搜索列表展示 -->
     <template v-if="isShowTip === -1">
       <div class="bg-white">
@@ -24,7 +42,7 @@
       <div class="mlr-20 mt-12" v-show="isShowTip">
         <!-- 搜索历史 -->
         <h2 class="fs-14 black flex between vcenter" v-if="searchHistoryList.length > 0">
-          <span>{{ $t('search.history') }}</span>
+          <span>{{ $t('search_for_history') }}</span>
           <BmIcon :name="'shanchu'" :width="'0.32rem'" :height="'0.32rem'" @iconClick="deleteFn" />
         </h2>
         <div class="mt-12 flex flex-wrap">
@@ -32,33 +50,18 @@
           <BmIcon :name="'down-icon'" :width="'0.64rem'" :height="'0.64rem'" v-if="historyNum" @iconClick="showMoreHistory" />
         </div>
         <!-- 搜索发现 -->
-        <h2 class="fs-14 black mt-30">{{ $t('search.found') }}</h2>
+        <h2 class="fs-14 black mt-30">{{ $t('search_found') }}</h2>
         <div class="mt-12">
           <span class="plr-10 round-8 mr-12 iblock mb-10 tag-name" v-for="(tag, index) in searchFindList" :key="index" @click="onSearch(tag.name)">{{ tag.name }}</span>
         </div>
       </div>
 
       <div v-show="!isShowTip">
-        <!-- 分类 -->
-        <div class="flex between vcenter plr-20 bg-white">
-          <van-tabs sticky swipeable animated :offset-top="104" color="#42B7AE"  @change="getSearchList" @disabled="filterPopup = true" class="customs-van-tabs" v-model="typeActive" line-height="0" :ellipsis="false">
-            <van-tab v-for="(productItem, tabIndex) in tabs" :title="productItem.name" :key="'scroll-tab-' + tabIndex" title-class="p-0 pr-60" :name="productItem.type" :disabled="productItem.type == 2">
-              <template #title="props" v-if="productItem.type === 0">
-                {{ props }}
-                <van-dropdown-menu active-color="#42B7AE" class="custom-dropdown-menu">
-                  <van-dropdown-item v-model="dropdownVal" :options="dropdownOption" />
-                </van-dropdown-menu>
-              </template>
-            </van-tab>
-          </van-tabs>
-
-          <!-- 展示一列或者两列 -->
-          <van-icon :name="require('@/assets/images/icon/arrange-'+arrangeType+'.svg')" size="0.38rem" @click="changeArrange" />
-        </div>
+        
 
         <div :class="{'w-100': true, 'plr-20 bg-white': arrangeType == 1 && list.length > 0, 'plr-12': arrangeType == 2} ">
           <!-- 空状态  -->
-          <empty-status v-if="list.length === 0" :image="require('@/assets/images/empty/order.png')" :description="$t('common.noRecord')"/>
+          <empty-status v-if="list.length === 0" :image="require('@/assets/images/empty/order.png')" :description="$t('out_of_stock')"/>
           <div 
             :class="{'flex between flex-wrap w-100': arrangeType == 2}"
             v-else>
@@ -66,12 +69,13 @@
                 v-for="(searchItem, searchIndex) in list" 
                 :key="'search-list-' + searchIndex"
                 :to="{ name: 'cart-product-id', params: { id: searchItem.productId } }"
-                >
+                class="mt-12"
+              >
                 <!-- 商品展示两列 -->
                 <ProductTopBtmSingle
                   :img="{ url: searchItem.mainPictureUrl, width: '3.4rem', height: '3.4rem', loadImage: require('@/assets/images/product-bgd-170.png') }" 
                   :detail="{ desc: searchItem.productTitle, price: searchItem.productPrice, rate: searchItem.starLevel, volumn: searchItem.saleCount, ellipsis: 2, country: searchItem.supplyCountryName, country_url: searchItem.supplyCountryIcon }"
-                  class="round-4 bg-white hidden mt-12"
+                  class="round-4 bg-white hidden v-100"
                   v-if="arrangeType === 2"
                 ></ProductTopBtmSingle>
                 <!-- 商品展示一列 -->
@@ -87,13 +91,13 @@
                   </div>
                   <div class="ml-14 w-230 hidden-1">
                     <p class="fs-14 black hidden-1" v-html="searchItem.productTitle"></p>
-                    <p class="mt-8 fs-14 light-grey">Ships from {{ searchItem.supplyCountryName }} </p>
+                    <p class="mt-8 fs-14 light-grey">{{ $t('ship_from') }}{{ searchItem.supplyCountryName }} </p>
                     <div class="mt-16 flex vcenter between">
                       <div>
                         <span class="red fs-18">{{ $store.state.rate.currency }}{{ searchItem.productPrice }}</span>
                         <span class="fs-10 line-through bg-grey ml-8">{{ $store.state.rate.currency }}{{ searchItem.promotionPrice }}</span>
                       </div>
-                      <div class="fs-14 black">{{ searchItem.saleCount }}+Sold</div>
+                      <div class="fs-14 black">{{ searchItem.saleCount }}{{ $t('add_sold') }}</div>
                     </div>
                   </div>
                 </div>
@@ -112,32 +116,31 @@
     >
       <div class="v-100">
         <div class="plr-12 product-search-filter">
-          <h3 class="fs-16 black fw">Price range</h3>
+          <h3 class="fs-16 black fw">{{ $t('price_range') }}</h3>
           <!-- 价格区间 -->
           <div class="mt-20 flex between vcenter">
-            <van-field v-model="minPrice" type="number" size="small" class="bg-grey-f5 round-8 mr-8 lh-1 ptb-6" placeholder="minimum price" />
+            <van-field v-model="minPrice" type="number" size="small" class="bg-grey-f5 round-8 mr-8 lh-1 ptb-6" :placeholder="$t('minimum_price')" />
             -
-            <van-field v-model="maxPrice" type="number" size="small" class="bg-grey-f5 round-8 ml-8 lh-1 ptb-6" placeholder="highest price" />
+            <van-field v-model="maxPrice" type="number" size="small" class="bg-grey-f5 round-8 ml-8 lh-1 ptb-6" :placeholder="$t('maximum_price')" />
           </div>
           <!-- 服务/折扣 -->
           <div class="mt-32">
-            <h3 class="fs-16 black fw">Service/Discount</h3>
+            <h3 class="fs-16 black fw">{{ $t('service_discount') }}</h3>
             <div class="mt-6 flex flex-wrap">
-              <span class="ptb-6 black fs-14 lh-20 tc w-130 mt-14 ml-10 odd-0 plr-4 hidden-1 bg-grey-f5 round-8">Tospino logistics</span>
-              <span class="ptb-6 black fs-14 lh-20 tc w-130 mt-14 ml-10 odd-0 plr-4 hidden-1 bg-grey-f5 round-8">Only see stock</span>
-              <span class="ptb-6 black fs-14 lh-20 tc w-130 mt-14 ml-10 odd-0 plr-4 hidden-1 bg-grey-f5 round-8">Tospino logistics</span>
+              <span class="ptb-6 black fs-14 lh-20 tc w-130 mt-14 ml-10 odd-0 plr-4 hidden-1 bg-grey-f5 round-8">{{ $t('tospino_logistics') }}</span>
+              <span class="ptb-6 black fs-14 lh-20 tc w-130 mt-14 ml-10 odd-0 plr-4 hidden-1 bg-grey-f5 round-8">{{ $t('only_see_stock') }}</span>
+              <span class="ptb-6 black fs-14 lh-20 tc w-130 mt-14 ml-10 odd-0 plr-4 hidden-1 bg-grey-f5 round-8">{{ $t('overseas_purchase') }}</span>
             </div>
           </div>
           <!-- 品牌 -->
           <div class="mt-32">
-            <h3 class="fs-16 black fw">品牌</h3>
+            <h3 class="fs-16 black fw">{{ $t('service_discount') }}</h3>
             <div class="mt-6 flex flex-wrap">
-              <span class="ptb-6 black fs-14 lh-20 tc w-84 mt-14 ml-10 odd-3 plr-4 hidden-1 bg-grey-f5 round-8">士力架</span>
-              <span class="ptb-6 black fs-14 lh-20 tc w-84 mt-14 ml-10 odd-3 plr-4 hidden-1 bg-grey-f5 round-8">德芙</span>
+              <span class="ptb-6 black fs-14 lh-20 tc w-84 mt-14 ml-10 odd-3 plr-4 hidden-1 bg-grey-f5 round-8" v-for="(brandItem, brandIndex) in brandList" :key="'brand-item-' + brandIndex">{{ brandItem.value }}</span>
             </div>
           </div>
           <!-- 所有类别 -->
-          <div class="mt-32">
+          <!-- <div class="mt-32">
             <h3 class="fs-16 black fw">品牌</h3>
             <div class="mt-6 flex flex-wrap">
               <span class="ptb-6 black fs-14 lh-20 tc w-84 mt-14 ml-10 odd-3 plr-4 hidden-1 bg-grey-f5 round-8">Tospino</span>
@@ -145,22 +148,20 @@
               <span class="ptb-6 black fs-14 lh-20 tc w-84 mt-14 ml-10 odd-3 plr-4 hidden-1 bg-grey-f5 round-8">logistics</span>
               <span class="ptb-6 black fs-14 lh-20 tc w-84 mt-14 ml-10 odd-3 plr-4 hidden-1 bg-grey-f5 round-8">logistics</span>
             </div>
-          </div>
+          </div> -->
           <!-- 所有类别 -->
           <div class="mt-32">
-            <h3 class="fs-16 black fw">All Categories</h3>
+            <h3 class="fs-16 black fw">{{ $t('all_categories') }}</h3>
             <div class="mt-6 flex flex-wrap">
-              <span class="ptb-6 black fs-14 lh-20 tc w-84 mt-14 ml-10 odd-3 plr-4 hidden-1 bg-grey-f5 round-8">Tospino logistics</span>
-              <span class="ptb-6 black fs-14 lh-20 tc w-84 mt-14 ml-10 odd-3 plr-4 hidden-1 bg-grey-f5 round-8">Only see stock</span>
-              <span class="ptb-6 black fs-14 lh-20 tc w-84 mt-14 ml-10 odd-3 plr-4 hidden-1 bg-grey-f5 round-8">Tospino logistics</span>
+              <span class="ptb-6 black fs-14 lh-20 tc w-84 mt-14 ml-10 odd-3 plr-4 hidden-1 bg-grey-f5 round-8" v-for="(categoryItem, categoryIndex) in categoryList" :key="'category-index-' + categoryIndex">{{ categoryItem.value }}</span>
             </div>
           </div>
         </div>
       </div>
 
       <div class="product-search__btn flex">
-        <button class="red fw fs-16 product-search__btn--reset" @click="onReset">Reset</button>
-        <button class="white fw fs-16 bg-green-linear" @click="onFilter">Determine</button>
+        <button class="red fw fs-16 product-search__btn--reset" @click="onReset">{{ $t('reset') }}</button>
+        <button class="white fw fs-16 bg-green-linear" @click="onFilter">{{ $t('determine') }}</button>
       </div>
     </van-popup>
     
@@ -168,7 +169,7 @@
 </template>
 
 <script>
-import { Search, Tab, Tabs, DropdownItem, DropdownMenu, Popup, Field, Cell } from 'vant';
+import { Search, Tab, Tabs, DropdownItem, DropdownMenu, Popup, Field, Cell, Sticky } from 'vant';
 import ProductTopBtmSingle from '@/components/ProductTopBtmSingle';
 import EmptyStatus from '@/components/EmptyStatus';
 import { getSearchPull } from '@/api/search';
@@ -183,6 +184,7 @@ export default {
     vanPopup: Popup,
     vanField: Field,
     vanCell: Cell,
+    vanSticky: Sticky,
     EmptyStatus,
     ProductTopBtmSingle
   },
@@ -191,26 +193,21 @@ export default {
       arrangeType: 1,
       tabs: [
         {
-          name: '综合排序',
+          name: 'search_filter_overall',
           type: 0,
           key: ''
         },
         {
-          name: '销量',
+          name: 'sale',
           type: 1,
           key: 'sale_count'
         },
         {
-          name: '筛选',
+          name: 'filtrate',
           type: 2
         }
       ],
       typeActive: 0,
-      dropdownOption: [
-        { text: '综合排序', value: 0 },
-        { text: '价格升序', value: 1 },
-        { text: '价格降序', value: 2 }
-      ],
       dropdownVal: 0,
       sortMap: {},
       filterPopup: false,
@@ -224,7 +221,9 @@ export default {
       searchPullList: [],
       inputChange: null,
       searchFindList: [],
-      hintName: ''
+      hintName: '',
+      brandList: [],
+      categoryList: []
     }
   },
   async fetch() {
@@ -239,13 +238,16 @@ export default {
       this.$store.commit('user/SET_SEARCHLIST', this.searchVal); // 搜索历史存储
       // 获取搜索列表数据
       const listData = await this.$api.getProductSearch(_params);
+      
       // 数据列表需要格式化
       this.list = listData.data.items.map(item => {
         return {
           ...item,
-          starLevel: parseFloat(item.starLevel)
+          starLevel: parseFloat(item.starLevel),
+          saleCount: parseFloat(item.saleCount)
         }
       });
+      
       // 更新页面展示
       this.searchHistoryList = this.$store.state.user.searchList.filter((item, index) => {
         return index < 6;
@@ -316,6 +318,10 @@ export default {
             starLevel: parseFloat(item.starLevel)
           }
         });
+        // 品牌列表
+        this.brandList = res.data.brandList;
+        // 所有分类
+        this.categoryList = res.data.categoryList;
         this.isShowTip = false;
       })
     },

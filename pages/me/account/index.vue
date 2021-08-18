@@ -1,7 +1,7 @@
 <template>
   <!-- 我的-设置-账户设置页面 -->
   <div class="bg-grey vh-100">
-    <BmHeaderNav :left="{ isShow: true, url: '/me' }" :title="$t('me.accountSetting.title')" />
+    <BmHeaderNav :left="{ isShow: true, url: '/me' }" :title="$t('account_settings')" />
 
     <div class="bg-white">
       <!-- 账户信息信息 -->
@@ -20,27 +20,27 @@
             <!-- 姓名、id -->
             <dl class="ml-10">
               <dt class="fs-18 black fw" v-if="$store.state.user.userInfo">{{ $store.state.user.userInfo.nickname == '' ? '--': $store.state.user.userInfo.nickname }}</dt>
-              <dd class="fs-12 grey mt-8 lh-1">{{ $store.state.user.userInfo.id }}</dd>
+              <dd class="fs-12 grey mt-8 lh-1">{{ $store.state.user.userInfo.phone }}</dd>
             </dl>
           </div>
         </template>
       </van-cell>
       <!-- 收货地址 -->
-      <van-cell class="ptb-20 plr-20" :title="$t('me.accountSetting.harvestAddress')" is-link title-class="black" :to="{ name: 'me-address' }" />
+      <van-cell class="ptb-20 plr-20" :title="$t('harvest_address')" is-link title-class="black" :to="{ name: 'me-address' }" />
     </div>
 
     <div class="mt-12">
       <!-- 账户安全 -->
-      <van-cell class="p-20" :title="$t('me.accountSetting.accountSecurity')" is-link title-class="black" :to="{ name: 'me-account-security'}" />
+      <van-cell class="p-20" :title="$t('account_and_security')" is-link title-class="black" :to="{ name: 'me-account-security'}" />
       <!-- 支付设置 -->
-      <van-cell class="p-20" :title="$t('me.accountSetting.paySetting')" is-link title-class="black" :to="{ name: 'me-pay' }" />
+      <van-cell class="p-20" :title="$t('payment_settings')" is-link title-class="black" :to="{ name: 'me-pay' }" />
       <!-- 语言设置 -->
-      <van-cell class="p-20" :title="$t('me.accountSetting.langSetting')" is-link title-class="black" :to="{ name: 'me-language' }" />
+      <van-cell class="p-20" :title="$t('language_settings')" is-link title-class="black" :to="{ name: 'me-language' }" />
     </div>
 
     <!-- 退出 -->
     <div class="plr-20 w-100 pb-20">
-      <BmButton class="w-100 account-btn" :type="'info'" @click="logout">退出</BmButton>
+      <BmButton class="w-100 account-btn" :type="'info'" @click="logout">{{ $t('log_out') }}</BmButton>
     </div>
   </div>
 </template>

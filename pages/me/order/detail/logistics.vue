@@ -1,15 +1,15 @@
 <template>
   <!-- 我的-订单-查看物流 -->
   <div class="bg-grey vh-100 pt-46">
-    <BmHeaderNav :left="{ isShow: true }" :title="$t('me.order.logisticsTracking')" :fixed="true" />
+    <BmHeaderNav :left="{ isShow: true }" :title="$t('logistics_tracking')" :fixed="true" />
 
     <!-- 物流单号及运送者 -->
     <div class="plr-20 pb-20 pt-20 bg-white">
       <p class="fs-14 black flex vcenter">
-        <span class="word-break">{{ $t('me.order.trackingNo') }}: {{ detail.sign }}</span>
+        <span class="word-break">{{ $t('tracking_no_') }}{{ detail.sign }}</span>
         <i class="iconfont icon-fuzhi fs-20 ml-12 copy-order" @click="copy"></i>
       </p>
-      <p class="fs-14 black flex vcenter mt-18">{{ $t('me.order.carrier') }}: {{ detail.senderName }}</p>
+      <p class="fs-14 black flex vcenter mt-18">{{ $t('carrier_') }}{{ detail.senderName }}</p>
     </div>
 
     <!-- 步骤条-物流详情 -->

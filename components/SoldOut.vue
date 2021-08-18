@@ -1,7 +1,7 @@
 <template>
   <div class="soldout-container" :style="'width: ' + width + ';height: ' + height + ';'" @click="onClick">
     <div class="white fs-12 lh-1 flex center soldout-container__tip"  v-if="isShow">
-      <span>Sold Out</span>
+      <span>{{ $t('sold_out') }}</span>
     </div>
     <slot />
   </div>

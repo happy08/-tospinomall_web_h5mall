@@ -17,7 +17,7 @@
       <div v-else>
         <van-field
           v-model="account"
-          :placeholder="$t('login.phoneNumber')"
+          :placeholder="$t('phone_number')"
           class="field-container phone-code-field"
           type="tel"
         >
@@ -48,7 +48,7 @@
         class="field-container"
       >
         <template #button>
-          <van-button class="fs-14 green lh-20 round-8 verification-btn" v-show="countdown === 0" @click="sendCode" :disabled="account.length === 0">Get It</van-button>
+          <van-button class="fs-14 green lh-20 round-8 verification-btn" v-show="countdown === 0" @click="sendCode" :disabled="account.length === 0">{{ $t('get_it') }}</van-button>
           <button class="fs-14 lh-20 round-8 verification-countdown-btn" v-show="countdown > 0">{{ countdown }}S</button>
         </template>
       </van-field>
@@ -56,17 +56,12 @@
 
     <div class="plr-20 w-100">
       <!-- 下一步 -->
-      <BmButton class="w-100 round-8 sms-btn" @click="jump" :disabled="account.length === 0 || code.length === 0">{{ $t('common.next') }}</BmButton>
+      <BmButton class="w-100 round-8 sms-btn" @click="jump" :disabled="account.length === 0 || code.length === 0">{{ $t('next') }}</BmButton>
       <!-- 其他认证方式 -->
-      <p class="fs-14 green tc mt-24" @click="goback">{{ $t('me.authentication.otherMethod') }}</p>
+      <p class="fs-14 green tc mt-24" @click="goback">{{ $t('use_other_authentication_method') }}</p>
 
       <!-- 温馨提示 -->
-      <div class="fs-14 light-grey tip-container">
-        <p>{{ $t('common.tips') }}:</p>
-        <ul>
-          <li v-for="(tipItem, tipIndex) in $t('me.authentication.phoneVerifyTips')" :key="tipIndex" v-html="tipItem"></li>
-        </ul>
-      </div>
+      <div class="fs-14 light-grey tip-container pre-wrap" v-html="$t('forgot_password_tips')"></div>
     </div>
   </div>
 </template>
@@ -97,10 +92,10 @@ export default {
   },
   computed: {
     rebindTip() {
-      return this.$route.query.changeWay === 'email' ? this.$t('me.authentication.rebindEmail') : this.$t('me.authentication.rebindPhone')
+      return this.$route.query.changeWay === 'email' ? this.$t('me.authentication.rebindEmail') : this.$t('bind_mobile_phone_number')
     },
     title() {
-      return this.$route.query.changeWay === 'email' ? this.$t('me.authentication.associatedEmail') : this.$t('me.authentication.associatedNumber')
+      return this.$route.query.changeWay === 'email' ? this.$t('me.authentication.associatedEmail') : this.$t('associated_number')
     }
   },
   beforeRouteEnter(to, from, next) { // 从绑定或修改页面进入重置值为空

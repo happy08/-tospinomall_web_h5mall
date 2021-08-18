@@ -20,17 +20,17 @@
     
     <van-cell-group class="mt-12">
       <!-- 申请类型 -->
-      <van-cell class="ptb-20 plr-20" :title="$t('me.afterSale.applicationType')" title-class="fs-14 black" is-link @click="selectPopup('type')" :value="applyTypeLabel" />
+      <van-cell class="ptb-20 plr-20" :title="$t('application_type')" title-class="fs-14 black" is-link @click="selectPopup('type')" :value="applyTypeLabel" />
       <!-- 货物状态 -->
-      <van-cell class="ptb-20 plr-20" :title="$t('me.afterSale.stateOfTheGoods')" title-class="fs-14 black" is-link @click="selectPopup('status')" :value="goodsStatusLabel" />
+      <van-cell class="ptb-20 plr-20" :title="$t('state_of_the_goods')" title-class="fs-14 black" is-link @click="selectPopup('status')" :value="goodsStatusLabel" />
       <!-- 申请原因 -->
-      <van-cell class="ptb-20 plr-20" :title="$t('me.afterSale.applyReason')" title-class="fs-14 black" is-link @click="selectPopup('reason')" :value="applyReasonLabel" />
+      <van-cell class="ptb-20 plr-20" :title="$t('applyReason')" title-class="fs-14 black" is-link @click="selectPopup('reason')" :value="applyReasonLabel" />
       <!-- 换货商品 仅换货时展示 -->
-      <van-cell class="ptb-20 plr-20" v-if="$route.params.type == 3" :title="$t('me.afterSale.replacementGoods')" title-class="fs-14 black" is-link @click="productShow = true" />
+      <!-- <van-cell class="ptb-20 plr-20" v-if="$route.params.type == 3" :title="$t('me.afterSale.replacementGoods')" title-class="fs-14 black" is-link @click="productShow = true" /> -->
     </van-cell-group>
 
     <!-- 退款金额 -->
-    <van-cell class="ptb-20 plr-20 mt-12" center :title="$t('me.afterSale.refundAmount')" title-class="fs-14 black" :label="$t('me.afterSale.modifyAmount')" value-class="black fw fs-18" >
+    <van-cell class="ptb-20 plr-20 mt-12" center :title="$t('refund_amount')" title-class="fs-14 black" :label="$t('modify_the_amount')" value-class="black fw fs-18" >
       <template #default>
         <van-field v-model="detail.realAmount" type="number" input-align="right" :formatter="onFormatter" />
       </template>
@@ -39,13 +39,13 @@
 
     <!-- 申请指令 -->
     <div class="plr-20 pt-20 pb-24 bg-white">
-      <h3 class="fs-14 black">{{ $t('me.afterSale.applyIntructions') }}</h3>
+      <h3 class="fs-14 black">{{ $t('apply_for_instructions') }}</h3>
       <van-field
         class="mt-16 fs-14 plr-0"
         v-model="applyMessage"
         rows="2"
         type="textarea"
-        :placeholder="$t('me.afterSale.applyIntructionsDesc')"
+        :placeholder="$t('apply_for_instructions_tips')"
         :border="false"
       />
       <van-uploader v-model="fileList" multiple :max-count="6" preview-size="1.62rem" :after-read="afterRead" @delete="onDeleteFile">
@@ -54,7 +54,7 @@
           <div class="mt-10 fs-12 lh-1">Up to 6 Pics</div>
         </div>
       </van-uploader>
-      <p class="fs-14 orange mt-10">{{ $t('me.afterSale.applyIntructionsUploadTip') }}</p>
+      <p class="fs-14 orange mt-10">{{ $t('apply_after_sale_upload_tips') }}</p>
     </div>
 
     <!-- 电话 -->
@@ -94,10 +94,10 @@
       </van-cell>
 
       <!-- 自行寄回 -->
-      <p class="fs-14 light-grey pb-10" v-if="returnMethodRadio == 1">商品寄回地址将在审核后通过短信形式告知，或在申请记录中查询。期间产生的物流费用，需要您自行承担。</p>
+      <p class="fs-14 light-grey pb-10" v-if="returnMethodRadio == 1">{{ $t('self_return_freight_tips') }}</p>
       <van-field
         v-model="concatName"
-        label="联系人"
+        :label="$t('contacts')"
         placeholder="请输入联系人"
         v-if="returnMethodRadio == 1"
         class="plr-0 ptb-10"
@@ -105,7 +105,7 @@
       />
       <van-field
         v-model="concatCell"
-        label="联系电话"
+        :label="$t('contact_phone')"
         placeholder="请输入联系电话"
         v-if="returnMethodRadio == 1"
         class="plr-0 ptb-10"
@@ -122,9 +122,9 @@
 
     <!-- 提交 -->
     <div class="mlr-20 mt-30 tc">
-      <BmButton class="round-8 w-100 mb-20" @btnClick="applyAfterSale">{{ $t('common.submit') }}</BmButton>
+      <BmButton class="round-8 w-100 mb-20" @btnClick="applyAfterSale">{{ $t('submit') }}</BmButton>
       <!-- 退货退款说明 -->
-      <nuxt-link :to="{ name: 'service-type', params: { type: 'aftersale' }, query: { isH5: 1 } }" class="green">{{ $t('me.afterSale.returnAndChange') }}</nuxt-link>
+      <nuxt-link :to="{ name: 'service-type', params: { type: 'aftersale' }, query: { isH5: 1 } }" class="green">{{ $t('return_and_exchange_instructions') }}</nuxt-link>
     </div>
 
     <!-- 选择申请类型type 货物状态status 申请原因reason -->
@@ -151,7 +151,7 @@
       </van-radio-group>
       <!-- 提交按钮 -->
       <div class="plr-20 mt-30 pb-60">
-        <BmButton class="fs-16 round-8 w-100" @click="onConfirm">Confirm</BmButton>
+        <BmButton class="fs-16 round-8 w-100" @click="onConfirm">{{ $t('confirm') }}</BmButton>
       </div>
     </van-popup>
 
@@ -159,8 +159,8 @@
     <van-popup v-model="returnMethod" position="bottom" closeable>
       <van-radio-group v-model="returnMethodRadio" :border="false">
         <van-cell-group>
-          <van-cell class="p-20" :title="$t('me.afterSale.returnMethod')" title-class="black fw fs-18" />
-          <van-cell class="p-20" :title="returnItem.title" clickable v-for="(returnItem, returnIndex) in $t('me.order.returnMethodList')" :key="returnIndex" @click="returnMethodRadio = returnIndex" title-class="fs-14 lh-20" :label="returnItem.desc" label-class="mt-20 w-90">
+          <van-cell class="p-20" :title="$t('returnMethodTitle')" title-class="black fw fs-18" />
+          <van-cell class="p-20" :title="returnItem.title" clickable v-for="(returnItem, returnIndex) in $t('returnMethodList')" :key="returnIndex" @click="returnMethodRadio = returnIndex" title-class="fs-14 lh-20" :label="returnItem.desc" label-class="mt-20 w-90">
             <template #right-icon>
               <van-radio :name="returnIndex" icon-size="0.48rem">
                 <template #icon="props">
@@ -179,7 +179,7 @@
       </van-radio-group>
       <!-- 提交按钮 -->
       <div class="plr-20 mt-30 pb-20">
-        <BmButton class="fs-16 round-8 w-100" @click="onReturnConfirm">Confirm</BmButton>
+        <BmButton class="fs-16 round-8 w-100" @click="onReturnConfirm">{{ $t('confirm') }}</BmButton>
       </div>
     </van-popup>
   </div>
@@ -241,10 +241,10 @@ export default {
     }
   },
   activated() {
-    if (this.$route.params.type == 1) this.title = 'me.afterSale.afterSaleService'; // 仅退款
-    if (this.$route.params.type == 2) this.title = 'me.afterSale.returnRefund'; // 退货退款
-    if (this.$route.params.type == 3) this.title = 'me.afterSale.exchange'; // 换货
-    this.returnMethodTitle = this.$t('me.order.returnMethodList')[this.returnMethodRadio].title;
+    if (this.$route.params.type == 1) this.title = 'applyReturn'; // 仅退款
+    if (this.$route.params.type == 2) this.title = 'return_refund'; // 退货退款
+    // if (this.$route.params.type == 3) this.title = 'me.afterSale.exchange'; // 换货
+    this.returnMethodTitle = this.$t('returnMethodList')[this.returnMethodRadio].title;
 
     let _ajax = this.$route.query.edit ? getUpdateReturnDetail(this.$route.query.itemId) : getOrderItem(this.$route.query.itemId);
     
@@ -264,10 +264,10 @@ export default {
         this.applyReasonLabel = res.data.applyReason;
         // 申请类型
         this.applyType = res.data.returnType;
-        this.applyTypeLabel = this.$t('me.afterSale.selectReason')[res.data.returnType];
+        this.applyTypeLabel = this.$t('selectReason')[res.data.returnType];
         // 获取状态
         this.goodsStatus = res.data.goodState;
-        this.goodsStatusLabel = this.$t('me.afterSale.stateGoodsList')[res.data.goodState];
+        this.goodsStatusLabel = this.$t('stateGoodsList')[res.data.goodState];
         // 申请信息
         this.applyMessage = res.data.applyDesc;
         if (res.data.returnType == 1) { // 退货退款
@@ -296,11 +296,11 @@ export default {
       }
       if (this.currentSelect.type == 'type') { // 申请类型
         this.applyType = this.typeRadio;
-        this.applyTypeLabel = this.$t('me.afterSale.selectReason')[this.typeRadio]
+        this.applyTypeLabel = this.$t('selectReason')[this.typeRadio]
       }
       if (this.currentSelect.type == 'status') { // 货物状态
         this.goodsStatus = this.typeRadio;
-        this.goodsStatusLabel = this.$t('me.afterSale.stateGoodsList')[this.typeRadio]
+        this.goodsStatusLabel = this.$t('stateGoodsList')[this.typeRadio]
       }
       if (this.currentSelect.type == 'reason') { // 申请原因
         this.applyReason = this.typeRadio;
@@ -328,7 +328,7 @@ export default {
           this.cancelReasonList = res.data;
           this.currentSelect = {
             type: type,
-            title: this.$t('me.afterSale.applyReason'),
+            title: this.$t('applyReason'),
             list: res.data.map(item => {
               return item.applyReason;
             })
@@ -340,8 +340,8 @@ export default {
 
       this.currentSelect = {
         type: type,
-        title: type === 'type' ? this.$t('me.afterSale.selecApplicationType') : type === 'status' ? this.$t('me.afterSale.stateOfTheGoods') : type === 'reason' ? this.$t('me.afterSale.applyReason') : '',
-        list: type === 'type' ? this.detail.status == 1 ? [this.$t('me.afterSale.selectReason')[0]] : this.$t('me.afterSale.selectReason') : type === 'status' ? this.$t('me.afterSale.stateGoodsList') : type === 'reason' ? this.$t('me.afterSale.reasonList') : ''
+        title: type === 'type' ? this.$t('returnMethodTitle') : type === 'status' ? this.$t('state_of_the_goods') : type === 'reason' ? this.$t('applyReason') : '',
+        list: type === 'type' ? this.detail.status == 1 ? [this.$t('selectReason')[0]] : this.$t('returnMethodList') : type === 'status' ? this.$t('stateGoodsList') : ''
       }
       this.isSelectType = true;
     },

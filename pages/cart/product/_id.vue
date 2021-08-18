@@ -107,7 +107,7 @@
           >
             <template #title>
               <div class="flex vcenter">
-                <span class="fw fs-12 block">{{ $t("cart.freight") }}</span>
+                <span class="fw fs-12 block">{{ $t("freight") }}</span>
                 <!-- <span
                   class="ml-12 fs-12 grey fm-helvetica"
                   @click="deliveryShow = true"
@@ -213,7 +213,7 @@
           >
             <template #title>
               <div class="flex vcenter">
-                <span class="fw fs-12 block">{{ $t("cart.select") }}</span>
+                <span class="fw fs-12 block">{{ $t("select") }}</span>
                 <span class="ml-12 fs-12 grey fm-helvetica"
                   >{{ goodAttr | goodAttrFormat }}</span
                 >
@@ -250,12 +250,12 @@
         <div class="mt-12 bg-white pt-16">
           <h3 class="black flex between vcenter plr-20 fn fm-helvetica pb-16">
             <span class="fs-16"
-              >{{ $t("cart.topReviewer") }}
+              >{{ $t("evaluation") }}
               {{ hotEvaluates.total | reviewNumFormat }}</span
             >
             <!-- 更多评论 -->
-            <span v-if="hotEvaluates.total == 0" class="fs-14">{{ $t("cart.more") }}</span>
-            <nuxt-link v-else class="fs-14" :to="{ name: 'me-order-rate-detail-list', query: { id: goodSpuVo.id } }">{{ $t("cart.more") }}</nuxt-link>
+            <span v-if="hotEvaluates.total == 0" class="fs-14">{{ $t("more") }}</span>
+            <nuxt-link v-else class="fs-14" :to="{ name: 'me-order-rate-detail-list', query: { id: goodSpuVo.id } }">{{ $t("more") }}</nuxt-link>
           </h3>
           <!-- 评论展示 -->
           <div
@@ -344,11 +344,11 @@
         </div>
       </van-tab>
       <van-tab title="Similar" name="Similar">
-        <!-- 可能感兴趣的 -->
+        <!-- 同店商品 -->
         <div class="mt-12 bg-white ptb-20">
           <h3 class="black flex between vcenter plr-20 fn fm-helvetica">
-            <span class="fs-16">{{ $t("cart.justForYou") }}</span>
-            <nuxt-link class="fs-14" :to="{ }">{{ $t("cart.more") }}</nuxt-link>
+            <span class="fs-16">{{ $t("just_for_you") }}</span>
+            <nuxt-link class="fs-14" :to="{ }">{{ $t("more") }}</nuxt-link>
           </h3>
           <!-- 推荐商品 -->
           <swiper
@@ -442,7 +442,7 @@
 
     <!-- 地址选择 -->
     <van-popup v-model="addressShow" position="bottom" closeable class="ptb-20" style="min-height: 80%;" @close="closePopup">
-      <h4 class="fs-18 black lh-20 tc plr-20">Choose a country or region</h4>
+      <h4 class="fs-18 black lh-20 tc plr-20">{{ $t('choose_a_country_or_region') }}</h4>
       <!-- 地址选择步骤条 -->
       <van-steps direction="vertical" :active="stepActive" class="mt-24" @click-step="stepClick">
         <van-step v-for="item, stepIndex in stepArr" :key="'step-' + stepIndex">
@@ -482,14 +482,14 @@
 
     <!-- 加入购入车/收藏/店铺/立即购买 -->
     <div class="bg-white flex vcenter between pl-10 product-detail__operate">
-      <div>
+      <div class="flex arround w-100">
         <!-- 客服 -->
         <!-- <van-icon
           :name="require('@/assets/images/icon/chat-icon.png')"
           size="0.6rem"
         /> -->
         <!-- 店铺 -->
-        <nuxt-link :to="{ name: 'cart-store-id', params: { id: storeInfo.storeId }, query: { sellerId: storeInfo.sellerId} }">
+        <nuxt-link :to="{ name: 'cart-store-id', params: { id: storeInfo.storeId }, query: { sellerId: storeInfo.sellerId, hasAdornment: storeInfo.hasAdornment} }">
           <van-icon :name="require('@/assets/images/icon/store-icon.png')" size="0.6rem" />
         </nuxt-link>
         <!-- 收藏 0未关注 1已关注 -->
@@ -499,13 +499,13 @@
         <!-- 加入购物车 -->
         <BmButton
           :type="'info'"
-          class="fs-16 round-0 w-120 h-56 add-cart-btn border-no"
+          class="fs-16 round-0 w-130 h-56 add-cart-btn border-no"
           @click="onAddCart"
-          >Add to cart</BmButton
+          >{{ $t('add_to_cart') }}</BmButton
         >
         <!-- 立即购买 -->
-        <BmButton class="fs-16 round-0 w-120 h-56" @click="onBuySku"
-          >Buy Now</BmButton
+        <BmButton class="fs-16 round-0 w-130 h-56" @click="onBuySku"
+          >{{ $t('buy_now') }}</BmButton
         >
       </div>
     </div>
@@ -767,16 +767,16 @@ export default {
   },
   computed: {
     chooseTitle() {
-      if (this.form.countryCode === '') {
-        return '选择国家';
+      if (this.stepActive == -1) {
+        return this.$t('please_select_a_country');
       }
-      if (this.form.provinceCode === '') {
-        return '选择州/省/地区';
+      if (this.stepActive == 0) {
+        return this.$t('please_select_a_state_province_region');
       }
-      if (this.form.cityCode === '') {
-        return '选择城市';
+      if (this.stepActive == 1) {
+        return this.$t('Please_select_city');
       }
-      return '选择街道或城镇';
+      return this.$t('please_select_district_county');
     }
   },
   methods: {
@@ -1031,8 +1031,8 @@ export default {
 .pb-56 {
   padding-bottom: 56px;
 }
-.w-120 {
-  width: 120px !important;
+.w-130 {
+  width: 130px !important;
 }
 .ptb-2{
   padding-top: 2px;

@@ -1,14 +1,14 @@
 <template>
   <!-- 我的-设置-收货地址 -->
   <div>
-    <BmHeaderNav :left="{ isShow: true }" :title="$t('me.address.shipAddress')" />
+    <BmHeaderNav :left="{ isShow: true }" :title="$t('harvest_address')" />
     <!-- 地址列表 -->
     <div class="p-20 address-single" v-for="(item, index) in lists" :key="index">
       <div class="flex between vcenter address-single__top">
         <div class="flex vcenter fm-helvetica">
           <!-- 标签 -->
-          <span class="white fs-12 p-4 bg-orange round-4 lh-18 mr-4" v-show="item.isDefault">{{ $t('me.address.default') }}</span>
-          <span class="white fs-12 p-4 bg-green round-4 lh-18 mr-12" v-show="item.tag">{{ $t('me.address.tag')[item.tag-1] }}</span>
+          <span class="white fs-12 p-4 bg-orange round-4 lh-18 mr-4" v-show="item.isDefault">{{ $t('defaultText') }}</span>
+          <span class="white fs-12 p-4 bg-green round-4 lh-18 mr-12" v-show="item.tag">{{ $t('address_tag')[item.tag-1] }}</span>
           <span class="white fs-12 p-4 bg-green round-4 lh-18 mr-12" v-show="item.tagEditor">{{ item.tagEditor }}</span>
           <!-- 姓名/手机号 -->
           <span class="black fs-14 lh-18">{{ item.name }}</span>
@@ -35,12 +35,12 @@
           :isLazy="false"
           :isShow="false"
         />
-        <span :class="{'fm-helvetica fs-14 ml-8': true, 'red': item.isDefault}">{{ item.isDefault ? $t('me.address.default'): $t('me.address.setDefault') }}</span>
+        <span :class="{'fm-helvetica fs-14 ml-8': true, 'red': item.isDefault}">{{ item.isDefault ? $t('defaultText'): $t('set_as_default') }}</span>
       </div>
     </div>
 
     <div class="mlr-20">
-      <BmButton class="round-8 w-100 address-btn" @click="addAddress">{{ $t('me.address.addShipAddressBtn') }}</BmButton>
+      <BmButton class="round-8 w-100 address-btn" @click="addAddress">{{ $t('add_shipping_address') }}</BmButton>
     </div>
   </div>
 </template>

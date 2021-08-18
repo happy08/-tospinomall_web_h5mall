@@ -1,7 +1,7 @@
 <template>
   <!-- 我的-设置-账户安全 -->
   <div>
-    <BmHeaderNav :left="{ isShow: true, url: '/me/account' }" :title="$t('me.accountSetting.securityTitle')" />
+    <BmHeaderNav :left="{ isShow: true, url: '/me/account' }" :title="$t('account_security')" />
     
     <!-- 欢迎用户语 -->
     <div class="bg-green-linear plr-20 ptb-16 flex vcenter">
@@ -14,20 +14,20 @@
         class="mr-12"
         :errorUrl="require('@/assets/images/icon/user-icon.png')"
       />
-      <p class="white">{{ $store.state.user.userInfo.nickname }}{{ $t('me.accountSetting.securityWelcome') }}</p>
+      <p class="white">{{ $store.state.user.userInfo.nickname }}{{ $t('welcome_back_to_security') }}</p>
     </div>
 
     <div class="mt-12">
       <!-- 修改密码 -->
-      <van-cell class="ptb-10 plr-20" center :title="$t('me.accountSetting.changePwd')" value-class="light-grey" is-link title-class="black" :to="{ name: 'me-account-verifymethod' }">
+      <van-cell class="ptb-10 plr-20" center :title="$t('change_password')" value-class="light-grey" is-link title-class="black" :to="{ name: 'me-account-verifymethod' }">
         <template #default v-if="$store.state.user.userInfo.pwdLastUpdateTime">
-          {{ $t('common.lastEmit') }} <br/> {{ $store.state.user.userInfo.pwdLastUpdateTime }}
+          <span v-html="$t('last_modified')" class="pre-wrap"></span>{{ $store.state.user.userInfo.pwdLastUpdateTime }}
         </template>
       </van-cell>
       <!-- 修改绑定手机 -->
-      <van-cell class="ptb-20 plr-20" :title="$t('me.accountSetting.bindPhone')" :value="$store.state.user.userInfo.phone" value-class="light-grey" is-link title-class="black" :to="{ name: 'me-account-bind', query: { changeType: 'phone' } }" />
+      <van-cell class="ptb-20 plr-20" :title="$t('modify_binding_phone')" :value="$store.state.user.userInfo.phone" value-class="light-grey" is-link title-class="black" :to="{ name: 'me-account-bind', query: { changeType: 'phone' } }" />
       <!-- 修改绑定邮箱 -->
-      <van-cell class="ptb-20 plr-20" :title="$t('me.accountSetting.chnageEmail')" :value="$store.state.user.userInfo.email" value-class="light-grey" is-link title-class="black" :to="{ name: $store.state.user.userInfo.email == '' ? 'me-account-bind-rebind': 'me-account-bind', query: { changeWay: 'email', changeType: 'email' } }" />
+      <van-cell class="ptb-20 plr-20" :title="$t('modify_binding_email')" :value="$store.state.user.userInfo.email" value-class="light-grey" is-link title-class="black" :to="{ name: $store.state.user.userInfo.email == '' ? 'me-account-bind-rebind': 'me-account-bind', query: { changeWay: 'email', changeType: 'email' } }" />
     </div>
   </div>
 </template>

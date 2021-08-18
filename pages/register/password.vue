@@ -1,14 +1,13 @@
 <template>
   <!-- 设置密码 -->
   <div class="register-pwd">
-    <BmHeaderNav :left="{ isShow: true }" :title="$t('register.title')" />
+    <BmHeaderNav :left="{ isShow: true }" :title="$t('individual_registration')" />
 
     <div class="plr-20">
-      <!-- 验证码 -->
       <van-field
         clickable
         v-model="password"
-        :placeholder="$t('register.enterPwd')"
+        :placeholder="$t('enter_password_6_20')"
         class="field-container phone-code-field"
         :type="pwdType"
       >
@@ -19,7 +18,7 @@
           <van-icon v-else :name="require('@/assets/images/icon/eye-close.png')" size="0.48rem" @click="pwdType = 'text'" />
         </template>
       </van-field>
-      <p class="fs-14 register-pwd__tip">The password consists of 6-20 letters, numbers or symbols, and the letters should be case sensitive</p>
+      <p class="fs-14 register-pwd__tip">{{ $t('register_set_password_limit_tips') }}</p>
       <!-- 注册 -->
       <van-button 
         class="mt-60 btn_h48 fw fs-16 w-100"
@@ -27,7 +26,7 @@
         :disabled="password.length < 6"
         maxlength="20"
         @click="registerClick">
-        {{ $t('register.register') }}
+        {{ $t('register') }}
       </van-button>
     </div>
   </div>
@@ -49,6 +48,11 @@ export default {
   },
   methods: {
     registerClick() { // 买家用户注册
+      const reg = /^(?![\d]+$)(?![a-zA-Z]+$)(?![-=+_.,]+$)[\da-zA-Z-=+_.,]{6,18}$/;
+      if (!reg.test(this.password)) {
+        this.$toast(this.$t('t_format_error'));
+        return false;
+      }
       // 通过路由获取上一步输入的信息
       const _params = {
         ...this.$route.query,
@@ -58,7 +62,11 @@ export default {
       
       buyerRegister(_params).then(res => {
         this.$router.push({
-          name: 'register-result'
+          name: 'register-result',
+          query: {
+            ...this.$route.query,
+            password: this.password,
+          }
         })
       })
     }

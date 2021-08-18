@@ -17,7 +17,7 @@ export default function({ $axios, app, redirect, store }) {
     // 调用登录接口的时候需要固定值 Basic YnV5ZXI6YnV5ZXI= , 登录之后需要在headers中传用户token
     // console.log(config)
     config.headers['clientType'] = 'h5';
-    config.headers['Authorization'] = 'Basic YnV5ZXI6YnV5ZXI=';
+    // config.headers['Authorization'] = 'Basic YnV5ZXI6YnV5ZXI=';
     if (config.method === 'post' || config.method === 'get') {
       config.headers['Content-Type'] = config.headers['Content-Type'] || 'application/x-www-form-urlencoded';
     } else {
@@ -25,8 +25,15 @@ export default function({ $axios, app, redirect, store }) {
     }
     console.log(22222222222222222)
     // 登录之后要重新复值token
-    if (store.state.user.authToken && config.url != '/auth/oauth/token?grant_type=refresh_token') {
+    // if (store.state.user.authToken && config.url != '/auth/oauth/token?grant_type=refresh_token') {
+    //   config.headers['Authorization'] = `${store.state.user.authToken}`;
+    // }
+    if (config.headers.Authorization) {
+      config.headers['Authorization'] = config.headers.Authorization;
+    } else if (store.state.user.authToken && config.url != '/auth/oauth/token?grant_type=refresh_token') {
       config.headers['Authorization'] = `${store.state.user.authToken}`;
+    } else {
+      config.headers['Authorization'] = 'Basic YnV5ZXI6YnV5ZXI=';
     }
     config.headers.language = store.state.locale;
     console.log(config)

@@ -48,9 +48,12 @@ export const actions = {
       // 获取用户信息
       const userInfo = await $api.getUserInfo();
       commit('user/SET_USERINFO', userInfo.data);
+      commit('SET_NOWTIME', userInfo.data.nowTime);
 
       // 消息信息
       commit('user/SET_WEBSOCKET', $cookies.get('websocketMsg'));
+      // 当前账户名
+      commit('user/SET_ACCOUNT', $cookies.get('account'));
     }
 
     const searchList = $cookies.get('searchList'); // 商品搜索历史

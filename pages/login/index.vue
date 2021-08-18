@@ -20,20 +20,20 @@
           </van-dropdown-menu>
         </div> -->
         <!-- title -->
-        <h1 class="tc black lagin-page__title">{{ $t('login.loginTitle') }}</h1>
+        <h1 class="tc black lagin-page__title">{{ $t('log_in') }}</h1>
         <div class="tc login-page__container">
           <!-- 验证码 -->
-          <van-field class="field-container" v-model="account" :placeholder="$t('login.accountPlaceholder')" />
-          <van-field class="field-container" v-model="password" type="password" :placeholder="$t('login.pwdPlaceholder')" />
+          <van-field class="field-container" v-model="account" :placeholder="$t('phone_number_or_email')" />
+          <van-field class="field-container" v-model="password" type="password" :placeholder="$t('your_password_6_20')" />
           <!-- 忘记密码 -->
-          <nuxt-link :to="{ name: 'register', query: { type: 'forgot' } }" class="fs-14 tr block mt-12 lh-20 login-page__container--forgot">{{ $t('forgot.title') }}</nuxt-link>
+          <nuxt-link :to="{ name: 'register', query: { type: 'forgot' } }" class="fs-14 tr block mt-12 lh-20 login-page__container--forgot">{{ $t('forgot_password') }}</nuxt-link>
           <!-- 登录 -->
           <van-button
             class="btn_h48 fw fs-16 w-100 login-btn"
             color="linear-gradient(270deg, #3EB5AE 0%, #70CEB6 100%)"
             :disabled="account.length === 0 || password.length < 6"
             @click="login">
-            {{ $t('login.loginBtn') }}
+            {{ $t('log_in') }}
           </van-button>
           <nuxt-link class="green iblock mt-10 lh-20 login-page__container--register" :to="{ name: 'register' }">立即注册</nuxt-link>
         </div>
@@ -41,28 +41,28 @@
 
       <!-- 其他登录方式及协议 -->
       <div class="login-page__btm">
-        <van-divider>{{ $t('common.or') }}</van-divider>
+        <van-divider>{{ $t('or') }}</van-divider>
         <div class="flex login-page__btm--concat">
           <!-- facebook -->
           <a href="#">
             <BmIcon :name="'facebook-icon'" :width="'0.64rem'" :height="'0.64rem'" />
           </a>
           <!-- 电话 -->
-          <a href="#">
+          <!-- <a href="#">
             <BmIcon :name="'phone-icon'" :width="'0.64rem'" :height="'0.64rem'" />
-          </a>
+          </a> -->
           <!-- twitter -->
-          <a href="#">
+          <!-- <a href="#">
             <BmIcon :name="'twitter-icon'" :width="'0.64rem'" :height="'0.64rem'" />
-          </a>
+          </a> -->
           <!-- google -->
           <a href="#">
             <BmIcon :name="'google-icon'" :width="'0.64rem'" :height="'0.64rem'" />
           </a>
           <!-- 微信 -->
-          <a href="#">
+          <!-- <a href="#">
             <BmIcon :name="'wechat-icon'" :width="'0.64rem'" :height="'0.64rem'" />
-          </a>
+          </a> -->
           <!-- email -->
           <nuxt-link :to="{ name: 'login-code', query: { changeWay: 'email' } }" replace>
             <BmIcon :name="'email-icon'" :width="'0.64rem'" :height="'0.64rem'" />
@@ -72,7 +72,7 @@
             <BmIcon :name="'cellphone'" :width="'0.64rem'" :height="'0.64rem'" />
           </nuxt-link>
         </div>
-        <p class="fs-14 tc mt-20 lh-20 login-page__btm--service">By loging in,you agree to <nuxt-link :to="{ name: 'service-type', params: { type: 'serve' }, query: { isH5: 1 } }">Tospino's Terms of Service</nuxt-link> and <nuxt-link :to="{ name: 'service-type', params: { type: 'privacy' }, query: { isH5: 1 } }">Privacy Policy</nuxt-link></p>
+        <div class="fs-14 tc mt-20 lh-20 login-page__btm--service" v-html="login_service_privacy()"></div>
       </div>
     </div>
   </div>
@@ -125,6 +125,8 @@ export default {
         this.$store.dispatch('user/GetUserInfo', res.data.token_type + ' ' + res.data.access_token);
         // 获取消息信息
         this.$store.commit('user/SET_WEBSOCKET', res.data.user_info.passUrl);
+        // 当前登录账号
+        this.$store.commit('user/SET_ACCOUNT', this.account);
         this.$toast.clear();
         // 登录成功跳转到首页
         setTimeout(() => {
@@ -139,6 +141,9 @@ export default {
     changeLang(lang) { // 切换语言
       this.$store.commit('SET_LANG', lang);
       this.$refs.dropdownLang.toggle();
+    },
+    login_service_privacy() {
+      return this.$t('login_service_privacy').replace('%1$s', `<a class="clr-blue" href="/service/serve?isH5=1">Tospino's ${this.$t('term_of_service')}</a>`).replace('%2$s', `<a class="clr-blue" href="/service/privacy?isH5=1">${this.$t('privacy_policy')}</a>`)
     }
   },
 }
@@ -165,9 +170,6 @@ export default {
     }
     .login-page__btm--service{
       color: #BFBFBF;
-      a{
-        color: #0F66DE;
-      }
     }
   }
 }

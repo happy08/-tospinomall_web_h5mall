@@ -39,7 +39,7 @@
             </template>
             <div class="flex between flex-wrap">
               <!-- 空状态  -->
-              <empty-status v-if="lists.length === 0" :image="require('@/assets/images/empty/order.png')" :description="$t('common.noRecord')"/>
+              <empty-status v-if="lists.length === 0" :image="require('@/assets/images/empty/order.png')" :description="$t('empty')"/>
               <!-- 订单列表 -->
               <div v-else v-for="(item,index) in lists" :key="index" class="w-100 plr-12 mb-12  pb-20 pt-24 bg-white">
                 <van-checkbox-group v-model="togetherResult">
@@ -150,9 +150,9 @@
       <div class="order-search-filter">
         <h3 class="fs-16 black fw order-search-filter__title">{{ $t('according_to_the_time') }}</h3>
         <div class="mt-10 black flex between flex-wrap order-search-filter__tags">
-          <span :class="{'fs-14 round-8 tc': true, 'is-active': filterTimeType == 1}" @click="filterTimeType = 1">{{ $t('oneWeek') }}</span>
-          <span :class="{'fs-14 round-8 tc': true, 'is-active': filterTimeType == 2}" @click="filterTimeType = 2">{{ $t('oneMonth') }}</span>
-          <span :class="{'fs-14 round-8 tc': true, 'is-active': filterTimeType == 3}" @click="filterTimeType = 3">{{ $t('threeMonth') }}</span>
+          <span :class="{'fs-14 round-8 tc': true, 'is-active': filterTimeType == 1}" @click="filterTimeType = 1">{{ $t('within_a_week') }}</span>
+          <span :class="{'fs-14 round-8 tc': true, 'is-active': filterTimeType == 2}" @click="filterTimeType = 2">{{ $t('within_a_month') }}</span>
+          <span :class="{'fs-14 round-8 tc': true, 'is-active': filterTimeType == 3}" @click="filterTimeType = 3">{{ $t('within_3_month') }}</span>
           <span :class="{'fs-14 round-8 tc': true, 'is-active': filterTimeType == 4}" @click="filterTimeType = 4">{{ $t('this_year') }}</span>
           <span :class="{'fs-14 round-8 tc': true, 'is-active': filterTimeType == 5}" @click="filterTimeType = 5">In {{ beforeOneYear }}</span>
           <span :class="{'fs-14 round-8 tc': true, 'is-active': filterTimeType == 6}" @click="filterTimeType = 6">In {{ beforeTwoYear }}</span>
@@ -551,7 +551,7 @@ export default {
       })
     },
     statusFormat(val, item) {
-      return val == 0 ? this.$t('unpaid') : val == 1 ? this.$t('to_be_delivered') : val == 2 ? this.$t('unreceived') : val == 3 || (val == 4 && item.hasComment == 0) ? this.$t('to_be_evaluated') : val == 4 && item.hasComment == 1 ? this.$t('completed') : val == 5 ? this.$t('cancelled') : val == 6 ? this.$t('trading_close') : val == 7 ? this.$t('unRejected') : this.$t('other');
+      return val == 0 ? this.$t('unpaid') : val == 1 ? this.$t('to_be_delivered') : val == 2 ? this.$t('unreceived') : val == 3 || (val == 4 && item.hasComment == 0) ? this.$t('to_be_evaluated') : val == 4 && item.hasComment == 1 ? this.$t('completed') : val == 5 ? this.$t('cancelled') : val == 6 ? this.$t('trading_close') : val == 7 ? this.$t('un_rejected') : this.$t('other');
     }
   },
 } 

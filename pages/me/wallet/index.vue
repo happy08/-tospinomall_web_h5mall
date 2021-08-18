@@ -1,9 +1,9 @@
 <template>
   <!-- 我的-钱包 -->
   <div>
-    <BmHeaderNav :left="{ isShow: true, url: '/me' }" :title="$t('me.wallet.myPure')">
+    <BmHeaderNav :left="{ isShow: true, url: '/me' }" :title="$t('my_purse')">
       <div slot="header-right" class="green fs-16" @click="goBill">
-        {{ $t('me.wallet.bill') }}
+        {{ $t('bill') }}
       </div>
     </BmHeaderNav>
 
@@ -13,7 +13,7 @@
         <div class="flex column white fw purse-total__container tc">
           <span class="fs-30" v-show="pwdType === 'text'"><span class="fm-menlo">{{ $store.state.rate.currency }}</span><span class="fm-din">{{ detail.balance }}</span></span>
           <span class="fs-30" v-show="pwdType === 'password'">****</span>
-          <span class="fs-18 mt-10">{{ $t('me.wallet.myBlance') }}</span>
+          <span class="fs-18 mt-10">{{ $t('balance') }}</span>
         </div>
         <div class="purse-total__show">
           <!-- 睁眼 -->
@@ -26,16 +26,16 @@
       <!-- 可选择的充值额度选项 -->
       <ul class="flex flex-wrap" v-if="detail.fixedRechargeCard && detail.fixedRechargeCard.cardItems">
         <li class="bg-grey round-8 fw tc fs-18 mt-10 black perse-li flex column center" v-for="(fixedCard, fixedCardIndex) in detail.fixedRechargeCard.cardItems" :key="'fixed-card-' + fixedCardIndex" @click="onRecharge(1, fixedCard.rechargeAmount)">{{ $store.state.rate.currency }} {{ fixedCard.rechargeAmount }}
-          <div class="red fs-10 block lh-1" v-if="fixedCard.giftAmount > 0">Give Ghs {{ fixedCard.giftAmount }}</div>
+          <div class="red fs-10 block lh-1" v-if="fixedCard.giftAmount > 0">{{ $t('give') }}{{ $store.state.rate.currency }}{{ fixedCard.giftAmount }}</div>
         </li>
       </ul>
       <!-- 自定义金额 -->
-      <van-field class="mt-24 border round-8" v-model="amount" type="number" :placeholder="$t('me.wallet.enterAmount')" />
+      <van-field class="mt-24 border round-8" v-model="amount" type="number" :placeholder="$t('enter_a_custom_amount')" />
     </div>
     
     <!-- 充值按钮 -->
     <div class="mt-24 mlr-20">
-      <BmButton class="w-100 round-8" @click.stop="onRecharge(2, amount)">{{ $t('me.wallet.rechargeNow') }}</BmButton>
+      <BmButton class="w-100 round-8" @click.stop="onRecharge(2, amount)">{{ $t('recharge_now') }}</BmButton>
     
       <p class="mt-40 fs-14 black" v-if="detail.freeRechargeCard && detail.freeRechargeCard.rechargeExplain">{{ $t('me.wallet.rechargeInstructions') }}</p>
       <p class="mt-8 fs-14 light-grey" v-if="detail.freeRechargeCard && detail.freeRechargeCard.rechargeExplain">{{ detail.freeRechargeCard.rechargeExplain }}</p>

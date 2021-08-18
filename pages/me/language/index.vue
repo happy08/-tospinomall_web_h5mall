@@ -1,7 +1,7 @@
 <template>
   <!-- 我的-设置-语言设置 -->
   <div class="bg-grey vh-100">
-    <BmHeaderNav :left="{ isShow: true }" :title="$t('common.accountLang')" />
+    <BmHeaderNav :left="{ isShow: true }" :title="$t('language_settings')" />
 
     <div>
       <van-cell class="p-20" :title="langItem.label" :title-class="['fm-pf-r fs-14', $store.state.locale == langItem.value ? 'green' : 'black']" @click="changeLang(langItem.value)" v-for="langItem in langList" :key="'lang-' + langItem.id" />
