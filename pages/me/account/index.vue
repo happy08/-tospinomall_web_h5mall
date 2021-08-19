@@ -40,7 +40,7 @@
 
     <!-- 退出 -->
     <div class="plr-20 w-100 pb-20">
-      <BmButton class="w-100 account-btn" :type="'info'" @click="logout">{{ $t('log_out') }}</BmButton>
+      <BmButton class="w-100 account-btn fs-16 black" :type="'info'" @click="logout">{{ $t('log_out') }}</BmButton>
     </div>
   </div>
 </template>
@@ -72,5 +72,7 @@ export default {
 .account-btn{
   margin-top: 140px;
   height: 50px!important;
+  border-color: #EEEEEE!important;
+  background-color: transparent!important;
 }
 </style>
