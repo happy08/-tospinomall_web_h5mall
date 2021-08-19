@@ -715,7 +715,8 @@ const cn = {
   go_set_address: '还没有收货地址，现在去设置',
   go_seeting: '去设置',
   move_to_favorites_success: '移入收藏夹成功',
-  set_often_buy_success: '设置经常购买成功'
+  set_often_buy_success: '设置经常购买成功',
+  choose_product_sku: '请先选择产品规格'
 }
 
 export default cn;

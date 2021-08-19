@@ -107,13 +107,10 @@ export default {
       selectSku: {}
     }
   },
-  activated() {
-    console.log('进入')
-  },
   methods: {
     async onConfirm(flag) { // 确认加入
       if (!this.selectSku.selectedSkuComb) {
-        this.$toast('请先选择商品规格');
+        this.$toast(this.$t('choose_product_sku'));
         return false;
       }
       const num = await this.getSkuStock();
@@ -129,7 +126,7 @@ export default {
         }
 
         addCart({ quantity: this.selectSku.selectedNum, skuId: this.selectSku.selectedSkuComb.id }).then(res => {
-          this.$toast.success('添加成功');
+          this.$toast.success(this.$t('t_add_shopping_cart_successfully'));
           this.productShow.show = false;
         })
       }
