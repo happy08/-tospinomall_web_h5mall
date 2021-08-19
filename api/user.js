@@ -83,6 +83,7 @@ export function checkCurrentCode(data) {
 export function getLangList(type = 'sys_language_type') {
   return request({
     url: `/api/admin/dict/type/${type}`,
+    // url: `/api/basics/dict/type/${type}`,
     method: 'get'
   })
 }

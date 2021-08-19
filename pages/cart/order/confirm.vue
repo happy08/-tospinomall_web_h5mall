@@ -3,7 +3,7 @@
   <div class="vh-100 bg-grey">
     <div class="bg-green-linear">
       <van-sticky @scroll="stickyScroll" ref="headerStickyContainer">
-        <BmHeaderNav :left="{ isShow: true, isEmit: true }" :title="isScrollShow ? '' : '你可能还喜欢'" :border="false" :color="isScrollShow ? 'white' : 'black'" :bg_color="isScrollShow ? 'bg-green-linear' : 'white'"  @leftClick="leftClick" />
+        <BmHeaderNav :left="{ isShow: true, isEmit: true }" :title="isScrollShow ? '' : $t('you_may_also_like')" :border="false" :color="isScrollShow ? 'white' : 'black'" :bg_color="isScrollShow ? 'bg-green-linear' : 'white'"  @leftClick="leftClick" />
       </van-sticky>
       
       <!-- 结果提示 -->
@@ -11,12 +11,12 @@
         <!-- 失败 -->
         <template v-if="$route.query.isSuccess && $route.query.isSuccess == 0">
           <BmIcon :name="'guanbi2'" :width="'0.4rem'" :height="'0.4rem'" :color="'#fff'" />
-          <span class="ml-4 white fs-18">Payment failed</span>
+          <span class="ml-4 white fs-18">{{ $t('payment_failed') }}</span>
         </template>
         <!-- 成功 -->
         <template v-else>
           <BmIcon :name="'wancheng1'" :width="'0.4rem'" :height="'0.4rem'" :color="'#fff'" />
-          <span class="ml-4 white fs-18">Payment successful</span>
+          <span class="ml-4 white fs-18">{{ $t('payment_successful') }}</span>
         </template>
         
       </div>
@@ -24,9 +24,9 @@
       <!-- 按钮 -->
       <div class="flex center pb-33 pt-35">
         <!-- 返回首页 -->
-        <van-button plain class="round-8 h-32 custom-home-btn" @click="goHome">Return to home page</van-button>
+        <van-button plain class="round-8 h-32 custom-home-btn" @click="goHome">{{ $t('return_to_home_page') }}</van-button>
         <!-- 查看订单 -->
-        <van-button plain color="#42B7AE" class="round-8 h-32 ml-18" @click="goViewOrder">View Order</van-button>
+        <van-button plain color="#42B7AE" class="round-8 h-32 ml-18" @click="goViewOrder">{{ $t('view_order') }}</van-button>
       </div>
     </div>
     
@@ -35,7 +35,7 @@
     <div>
       <van-divider class="plr-30 mt-24 fw fs-14 clr-black-85">
         <BmIcon :name="'xinaixin'" :width="'0.4rem'" :height="'0.4rem'" :color="'#000'" class="mr-8" />
-        {{ $t('common.mayLike') }}
+        {{ $t('you_may_also_like') }}
       </van-divider>
       <van-list
         v-model="loading"

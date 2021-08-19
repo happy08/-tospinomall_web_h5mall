@@ -1,7 +1,7 @@
 <template>
   <!-- 购物车-确认订单 -->
   <div class="vh-100 bg-grey pb-68 pb-46" v-if="detail.storeSaleInfoList">
-    <BmHeaderNav :left="{ isShow: true }" :fixed="true" title="Confirm the Order" />
+    <BmHeaderNav :left="{ isShow: true }" :fixed="true" :title="$t('confirm_the_order')" />
 
     <div v-if="codeData.code == 0">
       <!-- 个人信息 -->
@@ -56,7 +56,7 @@
 
               <div class="border-b mt-20 w-80 fr"></div>
               <!-- 配送 -->
-              <van-cell title="Distribution" class="plr-0 ptb-12" title-class="color-black-85" value-class="flex-2" is-link center @click="onChangeDelivery(productMapItem.sendTypeEstimateVoList, productMapItem.choiceSendType, item.storeId)">
+              <van-cell :title="$t('distribution')" class="plr-0 ptb-12" title-class="color-black-85" value-class="flex-2" is-link center @click="onChangeDelivery(productMapItem.sendTypeEstimateVoList, productMapItem.choiceSendType, item.storeId)">
                 <template #default>
                   <div class="fs-14 light-grey lh-12" v-if="productMapItem.sendTypeEstimateVoList.length">
                     {{ productMapItem.sendTypeEstimateVoList[productMapItem.choiceSendType - 1].sendType | deliveryFormat }}<br />
@@ -68,7 +68,7 @@
             
           </div>
           <!-- 留言 -->
-          <van-field class="plr-20 mt-12 mb-12" v-model="item.message" label="Leave message" input-align="right" label-class="fs-14 color-black-85" label-width="2rem" />
+          <van-field class="plr-20 mt-12 mb-12" v-model="item.message" :label="$t('leave_message')" input-align="right" label-class="fs-14 color-black-85" label-width="2rem" />
         </div>
       </div>
 
@@ -76,25 +76,25 @@
       <!-- 合计 -->
       <van-cell-group>
         <!-- 小计 -->
-        <van-cell title="Subtotal" :value="$store.state.rate.currency + detail.totalProductAmount" title-class="color-black-85" value-class="color-black-85" />
+        <van-cell :title="$t('subtotal')" :value="$store.state.rate.currency + detail.totalProductAmount" title-class="color-black-85" value-class="color-black-85" />
         <!-- 运费 -->
-        <van-cell title="Total Freight" :value="$store.state.rate.currency + detail.totalBuyerFreightAmount" title-class="color-black-85" value-class="color-black-85" :border="false" />
+        <van-cell :title="$t('total_freight')" :value="$store.state.rate.currency + detail.totalBuyerFreightAmount" title-class="color-black-85" value-class="color-black-85" :border="false" />
         <!-- 总计 -->
         <van-cell :border="false">
           <template #default>
             <div class="color-black-85 tr">
-              Total: <span class="red">{{ $store.state.rate.currency }}{{ detail.totalPayAmount }}</span>
+              {{ $t('total') }}<span class="red">{{ $store.state.rate.currency }}{{ detail.totalPayAmount }}</span>
             </div>
           </template>
         </van-cell>
         <!-- 支付方式 -->
-        <van-cell title="Pay(by)" value="Online" title-class="color-black-85" value-class="color-black-85" is-link @click="onChangePayment" />
+        <van-cell :title="$t('pay_by')" :value="$t('online')" title-class="color-black-85" value-class="color-black-85" is-link @click="onChangePayment" />
       </van-cell-group>
 
       <!-- 提交 -->
       <div class="flex between vcenter pl-20 w-100 bg-white submit-container">
         <span class="fs-18 red fw">{{ $store.state.rate.currency }}{{ detail.totalPayAmount }}</span>
-        <BmButton class="round-0 w-120 h-56" @click="goPay">{{ $t('common.submit') }}</BmButton>
+        <BmButton class="round-0 w-120 h-56" @click="goPay">{{ $t('submit') }}</BmButton>
       </div>
     </div>
 
@@ -105,7 +105,7 @@
 
     <!-- 配送方式 -->
     <van-popup v-model="distributionShow" position="bottom" closeable class="pb-20">
-      <h4 class="fs-18 black fw p-20 border-b">Method of distribution</h4>
+      <h4 class="fs-18 black fw p-20 border-b">{{ $t('distribution') }}</h4>
       <!-- 选择方式 -->
       <van-radio-group v-model="distributionRadio">
         <van-radio :name="deliveryItem.sendType" shape="square" class="iblock lh-12 plr-24 mt-30" v-for="(deliveryItem, deliveyIndex) in deliveryList" :key="'delivery-item-' + deliveyIndex">
@@ -117,7 +117,7 @@
       </van-radio-group>
 
       <div class="mt-30 plr-20">
-        <BmButton class="round-8 w-100 h-48" @click="onChangeDistribution">{{ $t('common.confirm') }}</BmButton>
+        <BmButton class="round-8 w-100 h-48" @click="onChangeDistribution">{{ $t('confirm') }}</BmButton>
       </div>
     </van-popup>
 
@@ -141,7 +141,7 @@
       </van-radio-group>
 
       <div class="mt-30 plr-20">
-        <BmButton class="round-8 w-100 h-48" @click="onChangePayment">{{ $t('common.confirm') }}</BmButton>
+        <BmButton class="round-8 w-100 h-48" @click="onChangePayment">{{ $t('confirm') }}</BmButton>
       </div>
     </van-popup>
 
@@ -336,12 +336,12 @@ export default {
           })
         };
 
-        // this.confirmTransportModes = res.data.storeSaleInfoList.map(item => {
-        //   return {
-        //     storeId: item.storeId,
-        //     sendType: Object.values(item.deliveryTypeSkuItemMap)[0].sendTypeEstimateVoList.length > 0 ? Object.values(item.deliveryTypeSkuItemMap)[0].sendTypeEstimateVoList[Object.values(item.deliveryTypeSkuItemMap)[0].choiceSendType - 1].sendType : ''
-        //   }
-        // })
+        this.confirmTransportModes = res.data.storeSaleInfoList.map(item => {
+          return {
+            storeId: item.storeId,
+            sendType: Object.values(item.deliveryTypeSkuItemMap)[0].sendTypeEstimateVoList.length > 0 ? Object.values(item.deliveryTypeSkuItemMap)[0].sendTypeEstimateVoList[Object.values(item.deliveryTypeSkuItemMap)[0].choiceSendType - 1].sendType : ''
+          }
+        })
       }).catch(error => {
         console.log(error)
         this.codeData = {

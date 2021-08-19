@@ -181,9 +181,9 @@ export default {
       
       let _axios;
       if (this.$route.query.changeWay === 'email') { // 获取邮箱验证码
-        _axios = getEmailCode({ email: this.account, userType: 'buyer' });
+        _axios = getEmailCode({ email: this.account, userType: 'buyer', type: 3 });
       } else { // 默认是获取手机验证码
-        _axios = getPhoneCode({ phone: this.account, phonePrefix: this.prefixCode.split('+')[1], userType: 'buyer' });
+        _axios = getPhoneCode({ phone: this.account, phonePrefix: this.prefixCode.split('+')[1], userType: 'buyer', type: 3 });
       }
       // 接口返回操作
       _axios.then(res => {

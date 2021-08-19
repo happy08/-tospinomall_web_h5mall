@@ -155,7 +155,7 @@
     <!-- 购物车编辑 -->
     <div :class="{'bg-white pl-16 pr-12 flex vcenter between custom-submit-bar': true, 'isBar': $route.query.isBar}" v-if="$store.state.user.authToken">
       <van-checkbox v-model="checked" @click="checkAll">
-        全选
+        {{ $t('select_all') }}
         <template #icon="props">
           <div>
             <BmImage
@@ -171,7 +171,7 @@
       <!-- 结算 -->
       <div v-show="!isEdit" class="flex vcenter">
         <div>
-          <span class="black fs-14 mr-4">{{ $t('total2') }}:</span>
+          <span class="black fs-14 mr-4">{{ $t('total2') }}</span>
           <span class="red fs-14 fw">{{ $store.state.rate.currency }}{{ totalAmount }}</span>
         </div>
         <BmButton class="round-8 h-40 ml-12" @click="onCheckOut">{{ $t('check_out') }}</BmButton>

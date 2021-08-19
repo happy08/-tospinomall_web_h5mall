@@ -63,12 +63,12 @@
     <!-- 底部金额以及支付按钮 -->
     <div class="w-100 bg-white flex between pl-20 vcenter pay-content__btn">
       <div class="red fs-18 fw">{{ $store.state.rate.currency }}{{ $route.query.amount }}</div>
-      <BmButton class="fs-16 round-0 pay-content__btn--pay" :disabled="account.length === 0 && payRadio !== 'balance'" @click="onPay">{{ $t('pay') }}</BmButton>
+      <BmButton class="fs-16 round-0 pay-content__btn--pay" :disabled="account.length === 0 && payRadio !== 'balance'" @click="onPay">{{ $t('payment') }}</BmButton>
     </div>
 
     <!-- 余额支付点击支付按钮，需要输入支付密码 -->
     <van-popup v-model="balanceShow" position="bottom" class="w-100 pb-244" closeable close-icon-position="top-left" close-icon="arrow-left">
-      <h3 class="black fs-16 tc mt-16">输入支付密码</h3>
+      <h3 class="black fs-16 tc mt-16">{{ $t('enter_payment_password') }}</h3>
       <!-- 密码输入框 -->
       <div class="plr-10 mt-20">
         <van-password-input
@@ -76,7 +76,7 @@
         />
       </div>
       
-      <nuxt-link :to="{ name: 'me-account-verifymethod', query: { type: 'payForget', from: 'order' } }" class="tc grey fs-12 block mtb-10">忘记密码</nuxt-link>
+      <nuxt-link :to="{ name: 'me-account-verifymethod', query: { type: 'payForget', from: 'order' } }" class="tc grey fs-12 block mtb-10">{{ $t('forgot_password') }}</nuxt-link>
       <!-- 数字键盘 -->
       <van-number-keyboard
         v-model="payPwd"
@@ -126,6 +126,7 @@ export default {
         vm.account = '';
         vm.isBackDialog = false;
         vm.balanceShow = false;
+        vm.payPwd = '';
       } else if (from.name === 'me-pay-wait') { // 从确认订单页面回来
         vm.isBackDialog = true;
       }
@@ -133,7 +134,13 @@ export default {
   },
   activated() {
     this.getPhonePrefix();
+    this.$toast.loading({
+      forbidClick: true,
+      loadingType: 'spinner',
+      duration: 0
+    });
     getAvailable().then(res => {
+      this.$toast.clear();
       if (res.code != 0) return false;
 
       this.list = res.data;

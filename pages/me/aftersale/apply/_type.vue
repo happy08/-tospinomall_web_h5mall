@@ -51,7 +51,7 @@
       <van-uploader v-model="fileList" multiple :max-count="6" preview-size="1.62rem" :after-read="afterRead" @delete="onDeleteFile">
         <div class="custom-proof-upload tc">
           <van-icon name="plus" size="0.32rem" />
-          <div class="mt-10 fs-12 lh-1">Up to 6 Pics</div>
+          <div class="mt-10 fs-12 lh-1">{{ $t('add_picture_6') }}</div>
         </div>
       </van-uploader>
       <p class="fs-14 orange mt-10">{{ $t('apply_after_sale_upload_tips') }}</p>
@@ -62,7 +62,7 @@
 
     <!-- 退货方法 退货退款才展示 -->
     <div class="p-20 bg-white mt-12" v-if="$route.params.type == 2">
-      <van-cell class="pb-20 pt-0 plr-0" :title="$t('me.afterSale.returnMethod')" title-class="fs-14 black" :value="returnMethodTitle" is-link :border="false" @click="returnMethod = true" />
+      <van-cell class="pb-20 pt-0 plr-0" :title="$t('return_method')" title-class="fs-14 black" :value="returnMethodTitle" is-link :border="false" @click="returnMethod = true" />
       <!-- 上门取件,服务协议 -->
       <van-checkbox class="flex vcenter" @click="isGreenment = !isGreenment" v-if="returnMethodRadio == 0">
         <template #icon>
@@ -98,7 +98,7 @@
       <van-field
         v-model="concatName"
         :label="$t('contacts')"
-        placeholder="请输入联系人"
+        :placeholder="$t('please_enter_contact')"
         v-if="returnMethodRadio == 1"
         class="plr-0 ptb-10"
         :border="false"
@@ -106,7 +106,7 @@
       <van-field
         v-model="concatCell"
         :label="$t('contact_phone')"
-        placeholder="请输入联系电话"
+        :placeholder="$t('please_enter_phone_number')"
         v-if="returnMethodRadio == 1"
         class="plr-0 ptb-10"
         :border="false"
@@ -337,11 +337,12 @@ export default {
         })
         return false;
       }
-
+      console.log(type === 'type' ? this.detail.status == 1 ? [this.$t('selectReason')[0]] : this.$t('returnMethodList') : type === 'status' ? this.$t('stateGoodsList') : this.$t('selectReason'))
       this.currentSelect = {
         type: type,
         title: type === 'type' ? this.$t('returnMethodTitle') : type === 'status' ? this.$t('state_of_the_goods') : type === 'reason' ? this.$t('applyReason') : '',
-        list: type === 'type' ? this.detail.status == 1 ? [this.$t('selectReason')[0]] : this.$t('returnMethodList') : type === 'status' ? this.$t('stateGoodsList') : ''
+        // list: type === 'type' ? this.detail.status == 1 ? [this.$t('selectReason')[0]] : this.$t('returnMethodList') : type === 'status' ? this.$t('stateGoodsList') : this.$t('selectReason')
+        list: type === 'type' ? this.$t('selectReason') : type === 'status' ? this.$t('stateGoodsList') : this.$t('selectReason')
       }
       this.isSelectType = true;
     },
@@ -378,28 +379,28 @@ export default {
     applyAfterSale() { // 申请售后/修改售后申请
       // 选择申请原因
       if (this.applyReasonLabel == '') {
-        this.$toast('请选择申请原因');
+        this.$toast(this.$t('apply_reason'));
         return false;
       }
       // 输入申请信息
       if (this.applyMessage == '') {
-        this.$toast(this.$t('me.afterSale.applyIntructionsDesc'));
+        this.$toast(this.$t('apply_for_instructions_tips'));
         return false;
       }
       if (this.$route.params.type == 2) { // 退货退款
         // 上门取件-未勾选服务协议
         if (this.returnMethodRadio == 0 && this.isGreenment == false) {
-          this.$toast('请勾选同意上门取件服务协议');
+          this.$toast(this.$t('t_agree_pick_up_service_agreement'));
           return false;
         }
         // 自行寄回
         if (this.returnMethodRadio == 1) {
           if (this.concatName == '') {
-            this.$toast('请输入联系人');
+            this.$toast(this.$t('please_enter_contact'));
             return false;
           }
           if (this.concatCell == '') {
-            this.$toast('请输入联系电话');
+            this.$toast(this.$t('please_enter_phone_number'));
             return false;
           }
         }
@@ -480,7 +481,7 @@ export default {
       })
     },
     onReturnConfirm() { // 选择退货方式
-      this.returnMethodTitle = this.$t('me.order.returnMethodList')[this.returnMethodRadio].title;
+      this.returnMethodTitle = this.$t('returnMethodList')[this.returnMethodRadio].title;
       this.returnMethod = false;
     }
   },

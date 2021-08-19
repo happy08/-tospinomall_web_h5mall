@@ -7,8 +7,8 @@
     <div class="bg-white plr-16 pt-16 pb-30">
       <!-- 倒计时 -->
       <div class="red fs-14 flex flex-wrap vcenter fw" v-if="detail.surplusTime > 0">
-        <span>{{ $t('me.afterSale.countdown') }}</span>
-        <van-count-down :time="detail.surplusTime" format="DD 天 HH 时 mm 分 ss 秒" class="ml-4 red" />
+        <span>{{ $t('refund_countdown') }}</span>
+        <van-count-down :time="detail.surplusTime" :format="$t('count_down_format_label')" class="ml-4 red" />
       </div>
 
       <!-- 申诉原因 -->
@@ -39,7 +39,7 @@
         <van-uploader class="mt-18" v-model="fileList" multiple :max-count="5" preview-size="1.58rem" :after-read="requireProof" @delete="onDeleteFile">
           <div class="custom-proof-upload tc">
             <van-icon name="plus" size="0.32rem" />
-            <div class="mt-10 fs-12 lh-1">Up to 5 Pics</div>
+            <div class="mt-10 fs-12 lh-1">{{ $t('add_picture_5') }}</div>
           </div>
         </van-uploader>
       </div>
@@ -50,14 +50,14 @@
         <van-uploader class="mt-18" v-model="fileChangeList" multiple :max-count="5" preview-size="1.58rem" :after-read="chooseProof" @delete="onDeleteChangeFile">
           <div class="custom-proof-upload tc">
             <van-icon name="plus" size="0.32rem" />
-            <div class="mt-10 fs-12 lh-1">Up to 5 Pics</div>
+            <div class="mt-10 fs-12 lh-1">{{ $t('add_picture_5') }}</div>
           </div>
         </van-uploader>
       </div>
     </div>
 
     <div class="mlr-20 mt-16">
-      <BmButton class="round-8 w-100" @btnClick="onConfirm">{{ $t('me.order.continueShop') }}</BmButton>
+      <BmButton class="round-8 w-100" @btnClick="onConfirm">{{ $t('submit') }}</BmButton>
     </div>
 
     <!-- 举证原因选择 -->
@@ -135,15 +135,15 @@ export default {
     },
     onConfirm() { // 提交举证
       if (!this.currentReason) {
-        this.$toast('请选择举证原因');
+        this.$toast(this.$t('choose_proof_reason'));
         return false;
       }
       if (this.question == '') {
-        this.$toast('请输入问题描述');
+        this.$toast(this.$t('proof_input_question'));
         return false;
       }
       if (this.fileList.length == 0) {
-        this.$toast('请选择必须凭证');
+        this.$toast(this.$t('choose_proof_voucher'));
         return false;
       }
 

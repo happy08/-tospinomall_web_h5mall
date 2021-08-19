@@ -10,9 +10,9 @@
       <div class="min-h-95">
         <!-- 待付款0倒计时，在线支付 -->
         <div class="mt-14 tc white fs-14 pb-40 flex center plr-20" v-if="detail.status == 0 && detail.paymentType == 1 && detail.remainCloseMills > 0">
-          {{ $t('me.order.remaining') }}:
-          <van-count-down :time="detail.remainCloseMills" format="mm:ss" class="white" /> 
-          {{ $t('me.order.orderClosed') }}
+          {{ $t('refund_countdown') }}:
+          <van-count-down :time="detail.remainCloseMills" format="HH:mm:ss" class="white" /> 
+          {{ $t('automatically_closed') }}
         </div>
         <!-- 待发货 -->
         <div class="fs-14 white mt-14 pb-40 plr-30 tc lh-20" v-else-if="detail.status == 1">
@@ -158,12 +158,9 @@
     <van-popup v-model="isCancelShow" position="bottom" closeable style="height: 80%">
       <van-cell-group>
         <!-- 取消原因 -->
-        <van-cell class="plr-20" title="Reason for Cancel Order">
+        <van-cell class="plr-20" :title="$t('reason_for_cancel_order')">
           <template #label>
-            <ul class="fs-14 light-grey">
-              <li>1. Order offer may be cancelled altogether</li>
-              <li>2. Once the order is cancelled, it cannot be reco-vered</li>
-            </ul>
+            <div class="fs-14 light-grey pre-wrap" v-html="$t('cancel_order_tip_header')"></div>
           </template>
         </van-cell>
       </van-cell-group>
@@ -190,12 +187,12 @@
         </van-radio-group>
 
         <!-- 取消之后将订单放入购物车 -->
-        <van-cell class="p-20" title-class="light-grey" title="After submission, put this item back into the shopping cart" />
+        <van-cell class="p-20" title-class="light-grey" :title="$t('cancel_order_tip_footer')" />
       </div>
       
       <div class="w-100 plr-12 flex between mt-12 pb-10">
-        <BmButton :type="'info'" class="black round-8 w-168 h-48 cancel-btn" @click="isCancelShow = false">Cancel</BmButton>
-        <BmButton class="fs-16 round-8 w-168 h-48" @click="cancelConfirm">Confirm</BmButton>
+        <BmButton :type="'info'" class="black round-8 w-168 h-48 cancel-btn" @click="isCancelShow = false">{{ $t('cancel') }}</BmButton>
+        <BmButton class="fs-16 round-8 w-168 h-48" @click="cancelConfirm">{{ $t('confirm') }}</BmButton>
       </div>
     </van-popup>
   </div>
@@ -273,14 +270,14 @@ export default {
         }
       })
       clipboard.on('success', () => {
-        let msg = this.$t('common.copySuccess');
+        let msg = this.$t('t_copied_to_clipboard');
         this.$toast({
           message: msg
         })
         clipboard.destroy()
       })
       clipboard.on('error', () => {
-        let msg = this.$t('common.copyError');
+        let msg = this.$t('fail_copied_to_clipboard');
         this.$toast({
           message: msg,
           type: 'fail'
@@ -290,10 +287,10 @@ export default {
     },
     onReceipt(orderItem) { // 确认收货
       this.$dialog.confirm({
-        message: `确认收货后，您的订单将开始履行售后条款，请再次确认您已经收到货品`,
-        onfirmButtonText: '确认收货',
+        message: this.$t('confirm_receipt_tips'),
+        onfirmButtonText: this.$t('confirm_receipt'),
         confirmButtonColor: '#42B7AE',
-        cancelButtonText: this.$t('common.cancel'),
+        cancelButtonText: this.$t('cancel'),
         cancelButtonColor: '#383838'
       }).then(() => {
         confirmReceiptOrder(orderItem.id).then(res => {
@@ -339,7 +336,7 @@ export default {
       addCart({ quantity: item.goodQuantity, skuId: item.skuId }).then(res => {
         if (res.code != 0) return false;
 
-        this.$toast('success');
+        this.$toast(this.$t('t_add_shopping_cart_successfully'));
       })
     },
     onCancel() { // 获取取消订单原因
