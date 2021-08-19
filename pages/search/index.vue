@@ -91,11 +91,11 @@
                   </div>
                   <div class="ml-14 w-230 hidden-1">
                     <p class="fs-14 black hidden-1" v-html="searchItem.productTitle"></p>
-                    <p class="mt-8 fs-14 light-grey">{{ $t('ship_from') }}{{ searchItem.supplyCountryName }} </p>
+                    <p class="mt-8 fs-14 light-grey">{{ $t('ship_from_', { replace_tip: searchItem.supplyCountryName }) }}</p>
                     <div class="mt-16 flex vcenter between">
                       <div>
                         <span class="red fs-18">{{ $store.state.rate.currency }}{{ searchItem.productPrice }}</span>
-                        <span class="fs-10 line-through bg-grey ml-8">{{ $store.state.rate.currency }}{{ searchItem.promotionPrice }}</span>
+                        <!-- <span class="fs-10 line-through bg-grey ml-8">{{ $store.state.rate.currency }}{{ searchItem.promotionPrice }}</span> -->
                       </div>
                       <div class="fs-14 black">{{ searchItem.saleCount }}{{ $t('add_sold') }}</div>
                     </div>
@@ -134,21 +134,11 @@
           </div>
           <!-- 品牌 -->
           <div class="mt-32">
-            <h3 class="fs-16 black fw">{{ $t('service_discount') }}</h3>
+            <h3 class="fs-16 black fw">{{ $t('brand') }}</h3>
             <div class="mt-6 flex flex-wrap">
               <span class="ptb-6 black fs-14 lh-20 tc w-84 mt-14 ml-10 odd-3 plr-4 hidden-1 bg-grey-f5 round-8" v-for="(brandItem, brandIndex) in brandList" :key="'brand-item-' + brandIndex">{{ brandItem.value }}</span>
             </div>
           </div>
-          <!-- 所有类别 -->
-          <!-- <div class="mt-32">
-            <h3 class="fs-16 black fw">品牌</h3>
-            <div class="mt-6 flex flex-wrap">
-              <span class="ptb-6 black fs-14 lh-20 tc w-84 mt-14 ml-10 odd-3 plr-4 hidden-1 bg-grey-f5 round-8">Tospino</span>
-              <span class="ptb-6 black fs-14 lh-20 tc w-84 mt-14 ml-10 odd-3 plr-4 hidden-1 bg-grey-f5 round-8">Only see stock</span>
-              <span class="ptb-6 black fs-14 lh-20 tc w-84 mt-14 ml-10 odd-3 plr-4 hidden-1 bg-grey-f5 round-8">logistics</span>
-              <span class="ptb-6 black fs-14 lh-20 tc w-84 mt-14 ml-10 odd-3 plr-4 hidden-1 bg-grey-f5 round-8">logistics</span>
-            </div>
-          </div> -->
           <!-- 所有类别 -->
           <div class="mt-32">
             <h3 class="fs-16 black fw">{{ $t('all_categories') }}</h3>

@@ -1,12 +1,12 @@
 <template>
   <!-- 我的-设置-支付设置-设置/修改支付密码 -->
   <div class="bg-grey vh-100">
-    <BmHeaderNav :left="{ isShow: true }" :title="$t('me.pay.paymentPwd')" />
+    <BmHeaderNav :left="{ isShow: true }" :title="$t('payment_password')" />
 
     <!-- 设置密码 -->
     <div class="mlr-12 payment-container">
       <!-- 首次设置输入密码提示 -->
-      <p class="fs-18 black tc">{{ $t('me.pay.firstSetPwd') }}</p>
+      <p class="fs-18 black tc">{{ $t('payment_password_limit_tips') }}</p>
       <!-- 密码输入框 -->
       <van-password-input
         :value="value"
@@ -26,9 +26,7 @@
       />
 
       <!-- 首次设置支付密码的提示语 -->
-      <ul class="mt-20">
-        <li class="fs-14 light-grey" v-for="(tipItem, tipIndex) in $t('me.pay.firstSetPwdTip')" :key="tipIndex" v-html="tipItem"></li>
-      </ul>
+      <div class="fs-14 light-grey pre-wrap mt-20" v-html="$t('warm_input_password')"></div>
       
     </div>
   </div>

@@ -57,7 +57,7 @@ export default {
   },
   computed: {
     title() {
-      return this.$route.query.changeType === 'phone' || !this.$route.query.type ? this.$route.query.changeWay === 'email' ? this.$t('email_verification') : this.$t('mobile_phone_verification') : this.$t('me.authentication.emailTitle');
+      return this.$route.query.changeWay === 'email' ? this.$t('email_verification') : this.$t('mobile_phone_verification');
     }
   },
   beforeRouteEnter(to, from, next) { // 从绑定或修改页面进入重置值为空

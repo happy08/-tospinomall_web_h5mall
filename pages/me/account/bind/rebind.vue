@@ -8,7 +8,7 @@
       <!-- 邮箱绑定 -->
       <van-field
         v-model="account"
-        :placeholder="$t('login.enterEmail')"
+        :placeholder="$t('e_mail_address')"
         class="field-container phone-code-field"
         type="email"
         v-if="$route.query.changeWay === 'email'" 
@@ -44,7 +44,7 @@
         v-model="code"
         center
         clearable
-        :placeholder="$t('login.enterCode')"
+        :placeholder="$t('enter_verification_code')"
         class="field-container"
       >
         <template #button>
@@ -92,10 +92,10 @@ export default {
   },
   computed: {
     rebindTip() {
-      return this.$route.query.changeWay === 'email' ? this.$t('me.authentication.rebindEmail') : this.$t('bind_mobile_phone_number')
+      return this.$route.query.changeWay === 'email' ? this.$t('bind_a_new_mailbox') : this.$t('bind_mobile_phone_number')
     },
     title() {
-      return this.$route.query.changeWay === 'email' ? this.$t('me.authentication.associatedEmail') : this.$t('associated_number')
+      return this.$route.query.changeWay === 'email' ? this.$t('associated_mailbox') : this.$t('associated_number')
     }
   },
   beforeRouteEnter(to, from, next) { // 从绑定或修改页面进入重置值为空
@@ -182,7 +182,10 @@ export default {
         _userinfoAjax.then(res => {
           this.$store.commit('user/SET_USERINFO', res.data); // 修改本地用户信息
           this.$router.push({
-            name: 'me-account-bind-result'
+            name: 'me-account-bind-result',
+            query: {
+              changeWay: this.$route.query.changeWay === 'email' ? 'email' : 'phone'
+            }
           })
         })
 

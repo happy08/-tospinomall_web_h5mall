@@ -61,16 +61,10 @@ export default {
   methods: {
     onInput() { // 点击按键时触发
       if (this.value.length >= 5) { // 输入密码长度等于6时说明该进行下一步校验支付密码
-        console.log(this.value)
-        
+      
         setTimeout(() => { // 得到数据有延迟
           checkPayPwd(this.value).then(res => {
             if (res.code != 0) return false;
-
-            if (!res.data) {
-              this.$toast.fail('支付密码错误');
-              return false;
-            }
 
             this.$router.push({ // 校验之后跳转到设置密码页面
               name: 'me-pay-changePwd',

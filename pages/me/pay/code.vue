@@ -1,10 +1,10 @@
 <template>
   <!-- 支付密码-修改支付密码-发送验证码 -->
   <div class="bg-grey vh-100">
-    <BmHeaderNav :left="{ isShow: true }" :title="$t('me.pay.paymentPwd')" />
+    <BmHeaderNav :left="{ isShow: true }" :title="$t('payment_password')" />
 
     <div class="mlr-20 code-container">
-      <p class="fs-18 black tc">请输入6位数字验证码</p>
+      <p class="fs-18 black tc">{{ $t('please_enter_6_number_verification_code') }}</p>
 
       <!-- 密码输入框 -->
       <van-password-input
@@ -26,18 +26,13 @@
       />
       <!-- 没有得到 重新发送 -->
       <div class="mt-12 flex between vcenter">
-        <span class="fs-14 black">{{ $t('common.dontGet') }}</span>
-        <span class="fs-14 resend-content" v-show="countdown > 0">{{ countdownTip }}</span>
-        <span class="fs-14 green" v-show="countdown == 0" @click="getCode">{{ $t('common.reagain') }}</span>
+        <span class="fs-14 black">{{ $t('dont_get_code') }}</span>
+        <span class="fs-14 resend-content" v-show="countdown > 0">{{ $t('resend_after', { replace_tip: countdown }) }}</span>
+        <span class="fs-14 green" v-show="countdown == 0" @click="getCode">{{ $t('resend') }}</span>
       </div>
       <!-- 使用当前支付密码进行身份验证 -->
       <!-- <p class="fs-14 green mt-20 tc">{{ $t('me.pay.useCurrentPayPwd') }}</p> -->
-      <div class="fs-14 light-grey mt-16">
-        <p>{{ $t('me.pay.warnTip') }}:</p>
-        <ul>
-          <li v-for="(tipItem, tipIndex) in $t('me.pay.warnTipsList')" :key="tipIndex" v-html="tipItem"></li>
-        </ul>
-      </div>
+      <p class="fs-14 light-grey mt-16 pre-wrap" v-html="$t('payment_password_sms_tips')"></p>
     </div>
   </div>
 </template>
@@ -57,11 +52,6 @@ export default {
       value: '',
       showKeyboard: false,
       countdown: 0
-    }
-  },
-  computed: {
-    countdownTip() {
-      return this.$t('common.resend').split('100s')[0] + ' ' + this.countdown + 's';
     }
   },
   beforeRouteEnter(to, from, next) { // 从绑定或修改页面进入重置值为空

@@ -1,12 +1,12 @@
 <template>
   <!-- 我的-设置-支付方式-设置/修改支付 确认密码 -->
   <div class="bg-grey vh-100">
-    <BmHeaderNav :left="{ isShow: true }" :title="$t('me.pay.paymentPwd')" />
+    <BmHeaderNav :left="{ isShow: true }" :title="$t('payment_password')" />
     
     <!-- 设置密码 -->
     <div class="mlr-12 payment-container">
       <!-- 首次设置再次输入密码提示 -->
-      <p class="fs-18 black tc">{{ $t('me.pay.firstSetPwdAgain') }}</p>
+      <p class="fs-18 black tc">{{ $t('enter_password_again') }}</p>
       <!-- 密码输入框 -->
       <van-password-input
         :value="password"
@@ -26,20 +26,13 @@
         :maxlength="6"
       />
       <!-- 首次设置支付密码的提示语 -->
-      <ul class="mt-24" v-if="isFirstPwd === true">
-        <li class="fs-14 light-grey" v-for="(tipItem, tipIndex) in $t('me.pay.firstSetPwdTip')" :key="tipIndex" v-html="tipItem"></li>
-      </ul>
+      <div v-if="isFirstPwd === true" class="fs-14 light-grey pre-wrap mt-24" v-html="$t('warm_input_password')"></div>
       
       <!-- 修改密码提示语 -->
       <div v-else>
-        <p class="fs-14 green tc mt-24">{{ $t('me.pay.messageVerify') }}</p>
+        <p class="fs-14 green tc mt-24">{{ $t('message_authentication') }}</p>
         <!-- 温馨提示 -->
-        <div class="fs-14 light-grey mt-24">
-          <p>{{ $t('me.pay.warnTip') }}:</p>
-          <ul>
-            <li v-for="(tipItem, tipIndex) in $t('me.pay.warnTipsList')" :key="tipIndex" v-html="tipItem"></li>
-          </ul>
-        </div>
+        <p class="fs-14 light-grey mt-24 pre-wrap" v-html="$t('forgot_password_tips')"></p>
       </div>
     </div>
   </div>
@@ -107,7 +100,11 @@ export default {
             let _query = {};
             if (this.$route.query.from) { // 主要是为了订单页面的回退
               _query.from = this.$route.query.from;
+            } else {
+              this.$store.commit('SET_USERINFO', null);
+              this.$store.dispatch('user/GetUserInfo', this.$store.state.user.authToken);
             }
+
             // 密码正确提交成功跳转到成功结果页面
             this.$router.push({
               name: 'me-pay-result',
