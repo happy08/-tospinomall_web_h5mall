@@ -8,6 +8,7 @@
     @sku-selected="getSkuInfo"
     :initial-sku="initialSku"
     hide-selected-text
+    :disable-soldout-sku="false"
     hide-stock
     ref="productSku"
     class="custom-sku-container"
@@ -134,7 +135,7 @@ export default {
       }
     },
     onOutStock() { // 售空
-      this.productShow.show = false;
+      // this.productShow.show = false;
     },
     getSkuInfo(value, type) { // 获取选中的产品规格
       if (this.$refs.productSku) {
