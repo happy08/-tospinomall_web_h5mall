@@ -16,7 +16,7 @@
       />
       <!-- 分类 -->
       <div class="flex between vcenter plr-20 bg-white" v-show="!isShowTip">
-        <van-tabs swipeable animated color="#42B7AE"  @change="getSearchList" @disabled="filterPopup = true" class="customs-van-tabs" v-model="typeActive" line-height="0" :ellipsis="false">
+        <van-tabs swipeable animated color="#42B7AE"  @change="getSearchList" @disabled="filterPopup = true" class="customs-van-tabs underline" v-model="typeActive" line-height="0" line-width="0" :ellipsis="false">
           <van-tab v-for="(productItem, tabIndex) in tabs" :title="$t(productItem.name)" :key="'scroll-tab-' + tabIndex" title-class="p-0 pr-60" :name="productItem.type" :disabled="productItem.type == 2">
             <template #title="props" v-if="productItem.type === 0">
               {{ props }}
@@ -127,23 +127,23 @@
           <div class="mt-32">
             <h3 class="fs-16 black fw">{{ $t('service_discount') }}</h3>
             <div class="mt-6 flex flex-wrap">
-              <span class="ptb-6 black fs-14 lh-20 tc w-130 mt-14 ml-10 odd-0 plr-4 hidden-1 bg-grey-f5 round-8">{{ $t('tospino_logistics') }}</span>
-              <span class="ptb-6 black fs-14 lh-20 tc w-130 mt-14 ml-10 odd-0 plr-4 hidden-1 bg-grey-f5 round-8">{{ $t('only_see_stock') }}</span>
-              <span class="ptb-6 black fs-14 lh-20 tc w-130 mt-14 ml-10 odd-0 plr-4 hidden-1 bg-grey-f5 round-8">{{ $t('overseas_purchase') }}</span>
+              <span :class="{'ptb-6 black fs-14 lh-20 tc w-130 mt-14 ml-10 odd-0 plr-4 hidden-1 bg-grey-f5 round-8 border-transparent': true, 'is-active': deliveryType == true}" @click="deliveryType = !deliveryType">{{ $t('tospino_logistics') }}</span>
+              <span :class="{'ptb-6 black fs-14 lh-20 tc w-130 mt-14 ml-10 odd-0 plr-4 hidden-1 bg-grey-f5 round-8 border-transparent': true, 'is-active': available == true}" @click="available = !available">{{ $t('only_see_stock') }}</span>
+              <span :class="{'ptb-6 black fs-14 lh-20 tc w-130 mt-14 ml-10 odd-0 plr-4 hidden-1 bg-grey-f5 round-8 border-transparent': true, 'is-active': overseas == true}" @click="overseas = !overseas">{{ $t('overseas_purchase') }}</span>
             </div>
           </div>
           <!-- 品牌 -->
           <div class="mt-32">
             <h3 class="fs-16 black fw">{{ $t('brand') }}</h3>
             <div class="mt-6 flex flex-wrap">
-              <span class="ptb-6 black fs-14 lh-20 tc w-84 mt-14 ml-10 odd-3 plr-4 hidden-1 bg-grey-f5 round-8" v-for="(brandItem, brandIndex) in brandList" :key="'brand-item-' + brandIndex">{{ brandItem.value }}</span>
+              <span :class="{'ptb-6 black fs-14 lh-20 tc w-84 mt-14 ml-10 odd-3 plr-4 hidden-1 bg-grey-f5 round-8 border-transparent': true, 'is-active': brandName == brandItem.value}" v-for="(brandItem, brandIndex) in brandList" :key="'brand-item-' + brandIndex" @click="brandName = brandItem.value">{{ brandItem.value }}</span>
             </div>
           </div>
           <!-- 所有类别 -->
           <div class="mt-32">
             <h3 class="fs-16 black fw">{{ $t('all_categories') }}</h3>
             <div class="mt-6 flex flex-wrap">
-              <span class="ptb-6 black fs-14 lh-20 tc w-84 mt-14 ml-10 odd-3 plr-4 hidden-1 bg-grey-f5 round-8" v-for="(categoryItem, categoryIndex) in categoryList" :key="'category-index-' + categoryIndex">{{ categoryItem.value }}</span>
+              <span :class="{'ptb-6 black fs-14 lh-20 tc w-84 mt-14 ml-10 odd-3 plr-4 hidden-1 bg-grey-f5 round-8 border-transparent': true, 'is-active': categoryName == categoryItem.value}" v-for="(categoryItem, categoryIndex) in categoryList" :key="'category-index-' + categoryIndex" @click="categoryName = categoryItem.value">{{ categoryItem.value }}</span>
             </div>
           </div>
         </div>
@@ -213,7 +213,12 @@ export default {
       searchFindList: [],
       hintName: '',
       brandList: [],
-      categoryList: []
+      categoryList: [],
+      categoryName: '',
+      brandName: '',
+      overseas: false,
+      deliveryType: false,
+      available: false
     }
   },
   async fetch() {
@@ -319,10 +324,48 @@ export default {
       this.isShowTip = this.searchVal.length > 0 ? -1 : this.searchVal.length === 0;
     },
     onFilter() { // 筛选
-
+      let _data = {
+        searchKeyword: this.searchVal,
+        brandName: this.brandName,
+        categoryName: this.categoryName
+      }
+      if (this.available == true) { // 是否有货
+        _data.available = 1;
+      }
+      if (this.overseas == true) { // 是否海外购
+        _data.overseas = 1;
+      }
+      if (this.deliveryType == true) { // tospino物流
+        _data.deliveryType = 2;
+      }
+      if (this.minPrice != '') { // 最低价格
+        _data.queryMinPrice = this.minPrice;
+      }
+      if (this.maxPrice != '') { // 最高价格
+        _data.queryMaxPrice = this.maxPrice;
+      }
+      this.$api.getProductSearch(_data).then(res => {
+        this.list = res.data.items.map(item => {
+          return {
+            ...item,
+            starLevel: parseFloat(item.starLevel)
+          }
+        });
+        this.filterPopup = false;
+      })
     },
     onReset() { // 筛选重置
-
+      this.brandName = this.minPrice = this.maxPrice = this.categoryName = '';
+      this.available = this.overseas = this.deliveryType = false;
+      this.$api.getProductSearch({ searchKeyword: this.searchVal }).then(res => {
+        this.list = res.data.items.map(item => {
+          return {
+            ...item,
+            starLevel: parseFloat(item.starLevel)
+          }
+        });
+        this.filterPopup = false;
+      })
     },
     showMoreHistory() { // 展示更多的搜索历史
       this.historyNum = false;
@@ -417,6 +460,14 @@ export default {
 .v-100{
   height: 100%;
   overflow: scroll;
+}
+.border-transparent{
+  border: 1px solid transparent;
+}
+.is-active{
+  color: #42B7AE!important;
+  background-color: rgba(66, 183, 174, 0.05)!important;
+  border: 1px solid #42B7AE!important;
 }
 </style>
 <style lang="less">
