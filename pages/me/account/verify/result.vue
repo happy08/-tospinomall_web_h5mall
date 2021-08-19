@@ -7,7 +7,7 @@
       <van-icon name="checked" color="#52C41A" size="64" />
       <p class="fs-18 fw black result-page__container--title">{{ $t('success') }}</p>
       <!-- 修改成功提示语 -->
-      <p class="light-grey fs-14 mt-12 result-page__container--tip">{{ resultTip }}</p>
+      <p class="light-grey fs-14 mt-12 result-page__container--tip">{{ $t('login_password_set_successfully_tips', { replace_tip: countDown }) }}</p>
       <van-button
         class="mt-60 btn_h48 round-8 fw fs-16 w-100 result-page__btn"
         color="linear-gradient(270deg, #3EB5AE 0%, #70CEB6 100%)"
@@ -26,11 +26,6 @@ export default {
     return {
       countDown: 5
     }
-  },
-  computed: {
-    resultTip() {
-      return this.$t('login_password_set_successfully_tips').replace('%1$s', this.countDown);
-    } 
   },
   activated() {
     this.countDown = 5;

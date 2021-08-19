@@ -18,7 +18,7 @@
         <!-- 店铺名、关注数 -->
         <dl class="ml-12">
           <dt class="fs-14 fw color-23 max-w-160">{{ detailData.storeName }}</dt>
-          <dd class="fs-12 light-grey mt-4">{{ detailData.collectNum }} {{ $t('followers') }}</dd>
+          <dd class="fs-12 light-grey mt-4">{{ $t('shop_follower', { replace_tip: detailData.collectNum }) }}</dd>
         </dl>
       </div>
       <!-- 取消订阅 -->

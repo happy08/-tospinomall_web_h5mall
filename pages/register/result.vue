@@ -7,7 +7,8 @@
       <van-icon name="checked" color="#52C41A" size="54" />
       <p class="fs-18 fw black mt-30 result-page__container--title">{{ $t('congratulations') }}</p>
       <!-- 注册成功提示语 -->
-      <p class="light-grey fs-14 mt-12">{{ desc }}</p>
+      <p class="light-grey fs-14 mt-12" v-if="$route.query.type === 'forgot'">{{ $t('congratulations_you_have_successfully_set_the_password') }}</p>
+      <p class="light-grey fs-14 mt-12" v-else>{{ $t('register_success_tip', { replace_tip: countdown }) }}</p>
       <van-button
         class="mt-60 btn_h48 fw fs-16 round-8 w-100"
         color="linear-gradient(270deg, #3EB5AE 0%, #70CEB6 100%)"
@@ -30,9 +31,6 @@ export default {
   computed: {
     title() { // 头部标题
       return this.$route.query.type === 'forgot' ? this.$t('forgot.title') : this.$t('register');
-    },
-    desc() {
-      return this.$route.query.type === 'forgot' ? this.$t('congratulations_you_have_successfully_set_the_password') : this.$t('register_success_tip').replace('%1$s', this.countdown);
     }
   },
   activated() {

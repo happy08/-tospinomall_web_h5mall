@@ -61,7 +61,7 @@
                       />
                       <div class="ml-12 fs-14 fm-helvetica">
                         <p class="black hidden-2">{{ item.storeName }}</p>
-                        <p class="color_666 mt-8">{{ item.followers }} {{ $t('followers') }}</p>
+                        <p class="color_666 mt-8">{{ $t('shop_follower', { replace_tip: item.followers }) }}</p>
                       </div>
                     </div>
 

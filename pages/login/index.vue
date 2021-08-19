@@ -143,7 +143,7 @@ export default {
       this.$refs.dropdownLang.toggle();
     },
     login_service_privacy() {
-      return this.$t('login_service_privacy').replace('%1$s', `<a class="clr-blue" href="/service/serve?isH5=1">Tospino's ${this.$t('term_of_service')}</a>`).replace('%2$s', `<a class="clr-blue" href="/service/privacy?isH5=1">${this.$t('privacy_policy')}</a>`)
+      return this.$t('login_service_privacy', { replace_tip: `<a class="clr-blue" href="/service/serve?isH5=1">Tospino's ${this.$t('term_of_service')}</a>`, replace_tip2: `<a class="clr-blue" href="/service/privacy?isH5=1">${this.$t('privacy_policy')}</a>` });
     }
   },
 }

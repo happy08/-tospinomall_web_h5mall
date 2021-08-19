@@ -46,7 +46,7 @@ export default {
       return this.$route.query.network ? this.$route.query.network : 'ARTLTIGO';
     },
     paid_receive_prompt_tip() {
-      return this.$t('paid_receive_prompt_tip').replace('%1$s', `<span class="fs-18 red lh-20">${this.$route.query.phone}</span>`).replace('%2$s', `<span class="fs-18 red lh-20">${this.$store.state.rate.currency}${ this.$route.query.amount }</span>`)
+      return this.$t('paid_receive_prompt_tip', { replace_tip: `<span class="fs-18 red lh-20">${this.$route.query.phone}</span>`, replace_tip2: `<span class="fs-18 red lh-20">${this.$store.state.rate.currency}${ this.$route.query.amount }</span>` });
     }
   },
   methods: {

@@ -1,8 +1,8 @@
 <template>
   <!-- 我的-订单-评价-发表评价 -->
   <div class="vh-100 bg-grey pt-46">
-    <BmHeaderNav :left="{ isShow: true }" :title="$t('me.rate.evalution')" :fixed="true">
-      <div slot="header-right" class="green fs-14" @click="onConfirm">{{ $t('common.confirm') }}</div>
+    <BmHeaderNav :left="{ isShow: true }" :title="$t('evaluation')" :fixed="true">
+      <div slot="header-right" class="green fs-14" @click="onConfirm">{{ $t('submit') }}</div>
     </BmHeaderNav>
 
     <van-cell-group>
@@ -25,19 +25,19 @@
         </template>
       </van-cell>
       <!-- 评分 -->
-      <van-cell class="plr-20 ptb-20" :title="$t('me.rate.productEvaluation')" title-class="black fs-14">
+      <van-cell class="plr-20 ptb-20" :title="$t('product_evaluation')" title-class="black fs-14">
         <template #label>
           <van-rate class="mt-10" v-model="goodsScores" allow-half size="14" color="#F7B500" void-color="#DDDDDD" void-icon="star" />
         </template>
       </van-cell>
-      <van-field class="p-20" v-model="content" placeholder="输入评论~" :border="false" type="textarea" rows="1" :autosize="{maxHeight: 60}" />
+      <van-field class="p-20" v-model="content" :placeholder="$t('comment_upload_photo_tip')" :border="false" type="textarea" rows="1" :autosize="{maxHeight: 60}" />
       <!-- 添加图片 -->
       <van-cell class="plr-20 pb-20 pt-0" title="" title-class="black fs-14">
         <template #label>
           <van-uploader v-model="fileList" multiple :max-count="4" preview-size="1.48rem" :after-read="afterRead" @delete="onDeleteFile">
             <div class="custom-proof-upload tc">
               <van-icon name="plus" size="0.32rem" />
-              <div class="mt-10 fs-12 lh-1">{{ $t('me.rate.addPicture') }}</div>
+              <div class="mt-10 fs-12 lh-1">{{ $t('add_picture') }}</div>
             </div>
           </van-uploader>
         </template>
@@ -53,26 +53,26 @@
             :isShow="false"
           />
         </template>
-        <span class="fs-14 lh-20 grey-666">Read and agree to the Door-to-Door Pick-up Service Agreement</span>
+        <span class="fs-14 lh-20 grey-666">{{ $t('anonymous_buyer') }}</span>
       </van-checkbox>
     </van-cell-group>
 
     <!-- 其他评分 -->
     <van-cell-group class="mt-12" v-if="!$route.query.isAddId">
       <!-- 包装 -->
-      <van-cell class="plr-20 ptb-20" :title="$t('me.rate.fedexPacking')" title-class="black fs-14">
+      <van-cell class="plr-20 ptb-20" :title="$t('fedex_packing')" title-class="black fs-14">
         <template #label>
           <van-rate class="mt-10" v-model="expressPackingScores" allow-half size="14" color="#F7B500" void-color="#DDDDDD" void-icon="star" />
         </template>
       </van-cell>
       <!-- 送货速度 -->
-      <van-cell class="plr-20 ptb-20" :title="$t('me.rate.deliverySpeed')" title-class="black fs-14">
+      <van-cell class="plr-20 ptb-20" :title="$t('delivery_speed')" title-class="black fs-14">
         <template #label>
           <van-rate class="mt-10" v-model="logisticsScores" allow-half size="14" color="#F7B500" void-color="#DDDDDD" void-icon="star" />
         </template>
       </van-cell>
       <!-- 快递人员服务 -->
-      <van-cell class="plr-20 ptb-20" :title="$t('me.rate.deliveryPersonnelService')" title-class="black fs-14">
+      <van-cell class="plr-20 ptb-20" :title="$t('delivery_personnel_service')" title-class="black fs-14">
         <template #label>
           <van-rate class="mt-10" v-model="distServiceScores" allow-half size="14" color="#F7B500" void-color="#DDDDDD" void-icon="star" />
         </template>

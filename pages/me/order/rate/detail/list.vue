@@ -20,7 +20,7 @@
             </template>
             <span class="ml-8 fs-14 lh-20 black">{{ $t('current_commodity') }}</span>
           </van-checkbox>
-          <div class="fs-14 lh-20 light-grey">{{ $t('rating_num').replace('%1$s', '94%') }}</div>
+          <div class="fs-14 lh-20 light-grey">{{ $t('rating_num', { replace_tip: '94%' }) }}</div>
         </div>
 
         <!-- 标签 -->

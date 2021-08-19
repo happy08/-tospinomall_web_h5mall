@@ -29,7 +29,7 @@
       </van-uploader>
       <p class="fs-14 orange mt-12">{{ $t('apply_after_sale_upload_tips') }}</p>
 
-      <BmButton class="round-8 w-100 mt-100" :disabled="trackingNumber == '' || message == ''" @btnClick="onConfirm">提交</BmButton>
+      <BmButton class="round-8 w-100 mt-100" :disabled="trackingNumber == '' || message == ''" @btnClick="onConfirm">{{ $t('submit') }}</BmButton>
     </div>
   </div>
 </template>

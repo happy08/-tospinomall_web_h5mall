@@ -1,26 +1,26 @@
 <template>
   <!-- 举证详情 -->
   <div class="pt-46">
-    <BmHeaderNav :left="{ isShow: true }" title="举证详情" :fixed="true"/>
+    <BmHeaderNav :left="{ isShow: true }" :title="$t('details_of_proof')" :fixed="true"/>
 
     <div class="plr-16 pt-16 pb-30">
       <!-- 申诉原因 -->
       <div class="fs-14 flex">
-        <div class="black">申诉原因：</div>
+        <div class="black">{{ $t('appeal_reason_') }}</div>
         <p class="ml-12">{{ detail.workName }}</p>
       </div>
 
       <div v-for="(workItem, workIndex) in detail.omsOrderReturnWorkAlleges" :key="workIndex">
         <!-- 补充问题描述 -->
         <div class="mt-30">
-          <p class="fs-14 black">补充问题描述：</p>
+          <p class="fs-14 black">{{ $t('question_desc') }}</p>
           <p class="mt-12">{{ workItem.workDesc }}</p>
         </div>
 
         <!-- 图片展示 -->
         <div class="mt-30">
-          <h3>上传图片（不多于5张）</h3>
-          <p class="mt-12 light-grey">*必须凭证：清晰退货内容物语牵手底单合同物流红章或者空包视频</p>
+          <h3>{{ $t('upload_image_limit') }}</h3>
+          <p class="mt-12 light-grey">{{ $t('necessary_certificate_tips') }}</p>
           <div class="flex flex-wrap">
             <BmImage
               v-for="(item, index) in workItem.workMustVoucher"
@@ -35,7 +35,7 @@
           </div>
 
           <template v-if="workItem.workOptionalVoucher.length > 0">
-            <p class="mt-12 light-grey">可选凭证：在换货前有损坏的商品的相关字迹的聊天截图</p>
+            <p class="mt-12 light-grey">{{ $t('upload_certificate_tips') }}</p>
             <div class="flex flex-wrap">
               <BmImage
                 v-for="(item, index) in workItem.workOptionalVoucher"
@@ -53,7 +53,7 @@
 
         <!-- 提交时间 -->
         <div class="fs-14 mt-20 flex">
-          <div class="black">提交时间：</div>
+          <div class="black">{{ $t('submit_time_') }}</div>
           <p class="ml-4 light-grey">{{ workItem.createTime }}</p>
         </div>
       </div>

@@ -43,7 +43,7 @@
 
                 <!-- 售后申请列表2/3 -->
                 <div v-else class="w-100">
-                  <OrderStoreSingle :name="orderitem.storeName" :status="orderitem.returnType | returnTypeFormat" />
+                  <OrderStoreSingle :name="orderitem.storeName" :status="orderitem.returnType == 0 ? $t('refund_no_return') : $t('return_refund')" />
                   <OrderSingle class="mt-20" 
                     :product_num="orderitem.returnQuantity" 
                     :product_desc="orderitem.productName" 
@@ -54,7 +54,7 @@
                   />
                   <div class="flex between mt-18">
                     <div class="fs-14 light-grey w-auto">
-                      <p>{{ orderitem.status | statusFormat(orderitem.deliveryType) }}</p>
+                      <p>{{ statusFormat(orderitem.status, orderitem.deliveryType, orderitem.orderType) }}</p>
                       <!-- 退款成功 -->
                       <p v-if="orderitem.status == 5">{{ $t('refund') }}{{ $store.state.rate.currency }}{{ orderitem.returnAmount }}</p>
                     </div>
@@ -158,14 +158,6 @@ export default {
     })
     this.$fetch();
   },
-  filters: {
-    statusFormat(val, deliveryType) {
-      return val == 1 ? '商家待处理' : val == 2 ? (deliveryType == 1 ? '待自行寄回':'待上门取件') : val == 3 ? '商家待收货' : val == 4 ? '待退款' : val == 5 ? '退款成功' : val == 6 ? '关闭售后单' : val == 7 ? '商家驳回申请' : val == 8 ? '商家拒收退货商品' : '';
-    },
-    returnTypeFormat(val) {
-      return val == 0 ? '退款' : val == 1 ? '退货退款' : '';
-    }
-  },
   methods: {
     titleFormat(val, titleIndex) {
       return `${val} (${titleIndex == 0 ? this.afterSalesCount : titleIndex == 1 ? this.untreatedCount : this.recordCount})`;
@@ -252,6 +244,9 @@ export default {
           }
         })
       })
+    },
+    statusFormat(val, deliveryType, orderType) { // 格式化状态文案
+      return val == 1 ? this.$t('wait_process', { replace_tip: orderType == 1 ? this.$t('merchant'): this.$t('platform') }) : val == 2 ? (deliveryType == 1 ? this.$t('wait_return_self') : this.$t('wait_pick_up')) : val == 3 ? this.$t('wait_receive', { replace_tip: orderType == 1 ? this.$t('merchant'): this.$t('platform') }) : val == 4 ? this.$t('wait_refund') : val == 5 ? this.$t('refund_successfully') : val == 6 ? this.$t('close_after_sale_order') : val == 7 ? this.$t('reject_apply', { replace_tip: orderType == 1 ? this.$t('merchant'): this.$t('platform') }) : val == 8 ? this.$t('rejection_goods', { replace_tip: orderType == 1 ? this.$t('merchant'): this.$t('platform') }) : '';
     }
   },
 }

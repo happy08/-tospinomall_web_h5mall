@@ -27,9 +27,9 @@
           {{ $t('to_be_evaluated') }}
         </div>
         <!-- 已完成 -->
-        <div class="fs-14 white mt-14 pb-40 plr-30 tc lh-20" v-else-if="detail.status == 4">
-          {{ $t('me.order.doneTip') }}
-        </div>
+        <!-- <div class="fs-14 white mt-14 pb-40 plr-30 tc lh-20" v-else-if="detail.status == 4">
+          {{ $t('completed') }}
+        </div> -->
         <!-- 已取消 -->
         <div class="fs-14 white mt-14 pb-40 plr-30 tc lh-20" v-else-if="detail.status == 5">
           {{ $t('cancelled') }}
@@ -364,9 +364,10 @@ export default {
         if (res.data.status == 1) title = 'to_be_delivered'; // 2  待发货
         if (res.data.status == 2) title = 'unreceived'; // 2  待收货
         if (res.data.status == 3) title = 'me.order.done'; // 3  已收货
-        if (res.data.status == 4) title = 'cancelled'; // 4  已取消
-        if (res.data.status == 5) title = 'trading_close'; // 5  交易关闭,超时取消
+        if (res.data.status == 4) title = 'completed'; // 4  已完成
+        if (res.data.status == 5) title = 'cancelled'; // 5  已取消
         if (res.data.status == 6) title = 'trading_close'; // 6  交易关闭,超时取消
+        if (res.data.status == 7) title = 'un_rejected'; // 7 已拒收
         this.title = title;
         this.detail = {
           ...res.data,

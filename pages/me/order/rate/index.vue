@@ -1,12 +1,12 @@
 <template>
   <!-- 我的-订单-评价列表 -->
-  <div class="vh-100 bg-grey">
-    <BmHeaderNav :left="{ isShow: true }" :title="$t('evalution_center')">
+  <div class="vh-100 bg-grey pt-46">
+    <BmHeaderNav :left="{ isShow: true }" :title="$t('evalution_center')" :fixed="true">
       <nuxt-link :to="{ name: 'service-type', params: { type: 'evaluation' }, query: { isH5: 1 } }" slot="header-right" class="green fs-14">{{ $t('rules') }}</nuxt-link>
     </BmHeaderNav>
 
     <!-- 评价类型tab切换 -->
-    <van-tabs sticky swipeable animated :offset-top="44" color="#42B7AE" class="customs-van-tabs" :ellipsis="false" @change="getList" v-model="tabActive">
+    <van-tabs sticky swipeable animated :offset-top="'0.92rem'" color="#42B7AE" class="customs-van-tabs" :ellipsis="false" @change="getList" v-model="tabActive">
       <van-tab v-for="(categoryItem, tabIndex) in $t('rate_tab')" :title="categoryItem + ' (' + (tabIndex == 1 ? hasCommentOrReview : notComment) + ')'" :key="'scroll-tab-' + tabIndex" title-class="border-b pb-0" :name="tabIndex">
         <PullRefresh :refreshing="refreshing" @refresh="onRefresh">
           <van-list
@@ -28,11 +28,15 @@
               <div class="mt-18 flex hend">
                 <!-- 待评价 -->
                 <nuxt-link :to="{ name: 'me-order-rate-evalution-id', params: { id: orderitem.id } }" v-if="orderitem.isComment == 0">
-                  <BmButton :type="'info'" class="h-32">{{ $t('me.rate.evaluation') }}</BmButton>
+                  <BmButton :type="'info'" class="h-32">{{ $t('evaluation') }}</BmButton>
                 </nuxt-link>
                 <!-- 已评价/追评 -->
-                <nuxt-link :to="{ name: 'me-order-rate-evalution-id', params: { id: orderitem.id }, query: { isAddId: orderitem.evaluateId } }" v-if="orderitem.isComment == 1">
-                  <BmButton :type="'info'" class="h-32" v-show="tabActive === 1">追评</BmButton>
+                <nuxt-link :to="{ name: 'me-order-rate-evalution-id', params: { id: orderitem.id }, query: { isAddId: orderitem.evaluateId } }" v-if="orderitem.isComment == 1" class="mr-10">
+                  <BmButton :type="'info'" class="h-32" v-show="tabActive === 1">{{ $t('follow_up_evaluation') }}</BmButton>
+                </nuxt-link>
+                <!-- 详情 -->
+                <nuxt-link :to="{ name: 'me-order-rate-detail-id', params: { id: orderitem.evaluateId } }" v-if="orderitem.isComment == 1 || orderitem.isComment == 2">
+                  <BmButton :type="'info'" class="h-32" v-show="tabActive === 1">{{ $t('review') }}</BmButton>
                 </nuxt-link>
               </div>
             </div>

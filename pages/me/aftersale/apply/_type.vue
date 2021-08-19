@@ -11,7 +11,7 @@
       <OrderSingle class="bg-white" :image="detail.goodImg" :product_num="detail.goodQuantity" :product_desc="detail.goodName" :product_size="detail.goodAttr" :price="detail.goodPrice" />
 
       <!-- 换货的话可以选择换货数量 仅换货时展示 -->
-      <van-cell v-if="$route.params.type == 3" class="mt-14 vcenter plr-0 ptb-0" :title="$t('me.afterSale.applicationNumber')" title-class="fs-14 light-grey">
+      <van-cell v-if="$route.params.type == 3" class="mt-14 vcenter plr-0 ptb-0" :title="$t('number_of_applications')" title-class="fs-14 light-grey">
         <template #default>
           <van-stepper v-model="stepNumber" input-width="0.796rem" button-size="0.42rem" :integer="true" class="custom-stepper" />
         </template>
@@ -35,7 +35,7 @@
         <van-field v-model="detail.realAmount" type="number" input-align="right" :formatter="onFormatter" />
       </template>
     </van-cell>
-    <div class="p-20 fs-14 black">On successful refund, you will be returned with {{ detail.realAmount }} cash</div>
+    <div class="p-20 fs-14 black">{{ $t('refund_price_tip', { replace_tip: detail.realAmount }) }}</div>
 
     <!-- 申请指令 -->
     <div class="plr-20 pt-20 pb-24 bg-white">
@@ -74,7 +74,7 @@
             :isShow="false"
           />
         </template>
-        <span class="fs-14 lh-20 grey-666">Read and agree to the Door-to-Door Pick-up Service Agreement</span>
+        <span class="fs-14 lh-20 grey-666">{{ $t('pick_up_service_agreement') }}</span>
       </van-checkbox>
 
       <!-- 上门取件-选择地址 -->

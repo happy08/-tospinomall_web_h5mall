@@ -1,8 +1,8 @@
 <template>
   <!-- 我的-售后详情-举证 -->
   <div class="vh-100 pt-46 pb-20">
-    <BmHeaderNav :left="{ isShow: true }" :title="$t('me.afterSale.negotiationHistory')" :fixed="true" />
-    <van-notice-bar text="超时未举证平台将根据现有证据判定" background="#FACE91" color="#fff" />
+    <BmHeaderNav :left="{ isShow: true }" :title="$t('adducing_evidence')" :fixed="true" />
+    <van-notice-bar :text="$t('provide_proof_overtime_tips')" background="#FACE91" color="#fff" />
 
     <div class="bg-white plr-16 pt-16 pb-30">
       <!-- 倒计时 -->
@@ -13,7 +13,7 @@
 
       <!-- 申诉原因 -->
       <div class="fs-14 mt-30 flex">
-        <div class="black">申诉原因：</div>
+        <div class="black">{{ $t('appeal_reason_') }}</div>
         <p class="ml-12" v-if="$route.query.add">{{ detail.workName }}</p>
         <div class="ml-12 flex-1 flex between" v-else @click="isChooseReason = true">
           <p>{{ currentReason.label }}</p>
@@ -23,19 +23,19 @@
 
       <!-- 补充问题描述 -->
       <div class="mt-30">
-        <p class="fs-14 black">补充问题描述：</p>
+        <p class="fs-14 black">{{ $t('question_desc') }}</p>
         <van-field
           v-model="question"
           rows="6"
           type="textarea"
-          placeholder="请输入..."
+          :placeholder="$t('please_enter_')"
           class="mt-10 bg-f8 fs-14"
         />
       </div>
 
       <!-- 必须凭证 -->
       <div class="mt-18">
-        <p class="mt-12 light-grey">*必须凭证：清晰退货内容物语牵手底单合同物流红章</p>
+        <p class="mt-12 light-grey">{{ $t('necessary_certificate_tips') }}</p>
         <van-uploader class="mt-18" v-model="fileList" multiple :max-count="5" preview-size="1.58rem" :after-read="requireProof" @delete="onDeleteFile">
           <div class="custom-proof-upload tc">
             <van-icon name="plus" size="0.32rem" />
@@ -46,7 +46,7 @@
 
       <!-- 可选凭证 -->
       <div class="mt-18">
-        <p class="mt-12 light-grey">可选凭证：在换货前有损坏的商品的相关字迹的聊天截图</p>
+        <p class="mt-12 light-grey">{{ $t('upload_certificate_tips') }}</p>
         <van-uploader class="mt-18" v-model="fileChangeList" multiple :max-count="5" preview-size="1.58rem" :after-read="chooseProof" @delete="onDeleteChangeFile">
           <div class="custom-proof-upload tc">
             <van-icon name="plus" size="0.32rem" />
