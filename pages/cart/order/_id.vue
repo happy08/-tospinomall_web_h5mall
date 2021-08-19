@@ -59,7 +59,7 @@
               <van-cell :title="$t('distribution')" class="plr-0 ptb-12" title-class="color-black-85" value-class="flex-2" is-link center @click="onChangeDelivery(productMapItem.sendTypeEstimateVoList, productMapItem.choiceSendType, item.storeId)">
                 <template #default>
                   <div class="fs-14 light-grey lh-12" v-if="productMapItem.sendTypeEstimateVoList.length">
-                    {{ productMapItem.sendTypeEstimateVoList[productMapItem.choiceSendType - 1].sendType | deliveryFormat }}<br />
+                    {{ deliveryFormat(productMapItem.sendTypeEstimateVoList[productMapItem.choiceSendType - 1].sendType) }}<br />
                     <p class="hidden-1">{{ productMapItem.sendTypeEstimateVoList[productMapItem.choiceSendType - 1].estimeate }}</p>
                   </div>
                 </template>
@@ -110,7 +110,7 @@
       <van-radio-group v-model="distributionRadio">
         <van-radio :name="deliveryItem.sendType" shape="square" class="iblock lh-12 plr-24 mt-30" v-for="(deliveryItem, deliveyIndex) in deliveryList" :key="'delivery-item-' + deliveyIndex">
           <template #icon="props">
-            <BmButton :type="'info'" :class="{ 'round-8 h-30': true, 'unchecked-radio': !props.checked ? true: false }">{{ deliveryItem.sendType | deliveryFormat }}</BmButton>
+            <BmButton :type="'info'" :class="{ 'round-8 h-30': true, 'unchecked-radio': !props.checked ? true: false }">{{ deliveryFormat(deliveryItem.sendType) }}</BmButton>
           </template>
           <p class="light-grey fs-14 mt-10">{{ deliveryItem.estimeate }}</p>
         </van-radio>
@@ -196,7 +196,8 @@ export default {
       currentChangeModeStoreId: '',
       codeData: {
         code: 0
-      }
+      },
+      messageList: []
     }
   },
   async activated() {
@@ -206,10 +207,10 @@ export default {
 
     if (!addressData.data) { // 还没有设置地址
       this.$dialog.confirm({
-        message: `还没有收货地址，现在去设置`,
-        onfirmButtonText: '去设置',
+        message: this.$t('go_set_address'),
+        onfirmButtonText: this.$t('go_seeting'),
         confirmButtonColor: '#42B7AE',
-        cancelButtonText: this.$t('common.cancel'),
+        cancelButtonText: this.$t('cancel'),
         cancelButtonColor: '#383838'
       }).then(() => {
         this.$router.push({
@@ -226,14 +227,14 @@ export default {
     this.getSaleInfo();
   },
   filters: {
-    deliveryFormat(type) {
-      return type == 1 ? '空运' : type == 2 ? '海运' : type == 3 ? '陆运' : '';
-    },
     imageFormat(image) {
       return image == '' ? require('@/assets/images/product-bgd-90.png') : image;
     }
   },
   methods: {
+    deliveryFormat(type) {
+      return type == 1 ? this.$t('air_freight') : type == 2 ? this.$t('sea_transportation') : type == 3 ? this.$t('land_transportation') : '';
+    },
     onPay() { // 去支付前要先进行二次确认
       this.consolidatedShow = true;
     },
@@ -260,7 +261,14 @@ export default {
         return item.sendType;
       })
 
+      this.$toast.loading({
+        forbidClick: true,
+        loadingType: 'spinner',
+        duration: 0
+      });
+
       submitOrder({ addressId: this.address.id, sourceType: 4, skuItems: skuItems, isCart: this.$route.params.isCart ? 1 : 0, leaveMessages: leaveMessages, confirmTransportModes: confirmTransportModes }).then(res => {
+        this.$toast.clear();
         if (res.code != 0) return false;
 
         this.$router.push({
@@ -283,6 +291,13 @@ export default {
 
       let modes = this.confirmTransportModes.map(item => {
         return item.sendType;
+      })
+      // 修改之前先记录当前的留言信息
+      this.messageList = this.detail.storeSaleInfoList.map(item => {
+        return {
+          storeId: item.storeId,
+          message: item.message
+        }
       })
       // 确认修改配送方式之后重新获取信息
       this.getSaleInfo(modes);
@@ -335,6 +350,13 @@ export default {
             }
           })
         };
+        this.messageList.forEach(item => {
+          this.detail.storeSaleInfoList.forEach(storeItem => {
+            if (item.storeId == storeItem.storeId) {
+              storeItem.message = item.message;
+            }
+          })
+        })
 
         this.confirmTransportModes = res.data.storeSaleInfoList.map(item => {
           return {

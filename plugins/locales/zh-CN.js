@@ -249,7 +249,7 @@ const cn = {
   often_buy: '常买',
   follow: '关注',
   select_all: '全选',
-  move_to_favorites: 'Move to Favorites',
+  move_to_favorites: '移入收藏夹',
   all_details: 'All details',
   account_security: '账户安全',
   welcome_back_to_security: '欢迎回到安全中心',
@@ -326,8 +326,8 @@ const cn = {
   sold_out: '失效',
   often_buy2: '经常\n购买',
   t_operation_successful: '操作成功',
-  delete_cart_tips: 'Delete the %1$d Products?',
-  collect_cart_tips: '确认要将这%1$d件商品移入我的关注？',
+  delete_cart_tips: 'Delete the {replace_tip} Products?',
+  collect_cart_tips: '确认要将这{replace_tip}件商品移入我的关注？',
   cancel_often_buy: '取消\n常买',
   unpaid: '待付款',
   unreceived: '待收货',
@@ -711,7 +711,11 @@ const cn = {
   count_down_format_label: 'DD天HH小时mm分ss秒',
   choose_proof_reason: '请选择举证原因',
   proof_input_question: '请输入问题描述',
-  choose_proof_voucher: '请选择必须凭证'
+  choose_proof_voucher: '请选择必须凭证',
+  go_set_address: '还没有收货地址，现在去设置',
+  go_seeting: '去设置',
+  move_to_favorites_success: '移入收藏夹成功',
+  set_often_buy_success: '设置经常购买成功'
 }
 
 export default cn;

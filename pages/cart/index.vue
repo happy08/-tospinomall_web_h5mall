@@ -178,7 +178,7 @@
       </div>
       <!-- 编辑 -->
       <div v-show="isEdit">
-        <BmButton :type="'info'" class="round-8 h-32 orange bg-white orange-border" @click="onMove">{{ $t('cart.moveFavorite') }}</BmButton>
+        <BmButton :type="'info'" class="round-8 h-32 orange bg-white orange-border" @click="onMove">{{ $t('move_to_favorites') }}</BmButton>
         <BmButton :type="'info'" class="round-8 h-32 orange bg-white orange-border ml-12" @click="onEmitDelete">{{ $t('delete') }}</BmButton>
       </div>
     </div>
@@ -287,6 +287,7 @@ export default {
         })
       }
     });
+    this.totalAmount = listData.data.totalAmount;
     this.onCountPrice();
     this.refreshing.isFresh = false;
   },
@@ -353,10 +354,10 @@ export default {
     },
     onEmitDelete() { // 确认删除订单
       this.$dialog.confirm({
-        message: `Delete the ${this.productResult.length} Products`,
-        onfirmButtonText: this.$t('common.confirm'),
+        message: this.$t('delete_cart_tips', { replace_tip: this.productResult.length }),
+        onfirmButtonText: this.$t('confirm'),
         confirmButtonColor: '#42B7AE',
-        cancelButtonText: this.$t('common.cancel'),
+        cancelButtonText: this.$t('cancel'),
         cancelButtonColor: '#383838'
       }).then(() => {
         let skuIds = this.productResult.map(item => {
@@ -404,7 +405,7 @@ export default {
       setOftenBuy({ isOftenBuy: product.isOftenBuy == 1 ? 0 : 1, skuId: product.productSku }).then(res => {
         if (res.code != 0) return false;
 
-        this.$toast('设置经常购买成功');
+        this.$toast(this.$t('set_often_buy_success'));
         this.$fetch();
         this.getCartCount();
       })
@@ -420,7 +421,7 @@ export default {
       moveToFavorite({ skuIds: skuIds }).then(res => {
         if (res.code != 0) return false;
 
-        this.$toast('添加收藏夹成功')
+        this.$toast(this.$t('move_to_favorites_success'))
         this.$fetch();
         this.getCartCount();
       })
