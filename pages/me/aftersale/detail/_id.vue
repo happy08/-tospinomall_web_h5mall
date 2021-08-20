@@ -293,13 +293,22 @@
       <!-- 退货方式 -->
       <van-cell class="ptb-20 plr-20" :title="$t('return_method')" title-class="fs-14 black flex-2" value-class="tl flex-3 light-grey" :value="detail.deliveryType == 1 ? $t('self_return') : $t('pick_up')" v-if="detail.returnType == 1" />
       <!-- 姓名、电话、地址 -->
-      <van-cell class="ptb-20 plr-20" v-if="detail.returnType == 1 && detail.deliveryType == 2">
+      <van-cell class="ptb-20 plr-20" v-if="detail.returnType == 1">
         <template #default>
           <div class="flex between">
             <p class="fs-14 black">{{ detail.sendName }}  {{ detail.sendPhone }}</p>
-            <p class="light-grey fs-14">{{ $t('address') }}</p>
+            <p class="light-grey fs-14">{{ $t('take_address') }}</p>
           </div>
           <p class="black fs-14 mt-12">{{ $t('address') }}: {{ detail.sendCompleteAddress }}</p>
+        </template>
+      </van-cell>
+      <van-cell class="ptb-20 plr-20" v-if="detail.returnType == 1 && detail.deliveryType == 2 && detail.receiverName != ''">
+        <template #default>
+          <div class="flex between">
+            <p class="fs-14 black">{{ detail.receiverName }}  {{ detail.receiverPhone }}</p>
+            <p class="light-grey fs-14">{{ $t('return_address') }}</p>
+          </div>
+          <p class="black fs-14 mt-12">{{ $t('address') }}: {{ detail.receiverCompleteAddress }}</p>
         </template>
       </van-cell>
     </van-cell-group>

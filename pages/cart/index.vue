@@ -114,11 +114,11 @@
               <template #right>
                 <div class="v-100 flex">
                   <!-- 设置经常购买 -->
-                  <van-button v-if="singleItem.stock" @click="onOftenBy(singleItem)" square :text="singleItem.isOftenBuy ? '取消经常': 'Often Buy'" class="v-100 w-70 bg-f0 black plr-12 fs-14 border-no" />
+                  <van-button v-if="singleItem.stock" @click="onOftenBy(singleItem)" square :text="singleItem.isOftenBuy ? $t('cancel_often_buy'): $t('often_buy2')" class="v-100 w-70 bg-f0 black plr-12 fs-14 border-no pre-wrap" />
                   <!-- 移入收藏夹 -->
-                  <van-button v-if="singleItem.stock" @click="moveToFavorite(singleItem.productSku)" square text="Collect" class="v-100 w-70 bg-yellow white plr-12 fs-14 border-no" />
+                  <van-button v-if="singleItem.stock" @click="moveToFavorite(singleItem.productSku)" square :text="$t('goods_add_follow')" class="v-100 w-70 bg-yellow white plr-12 fs-14 border-no" />
                   <!-- 删除订单 -->
-                  <van-button square text="Delete" @click="onDelete(singleItem.productSku)" class="v-100 w-70 bg-red white plr-12 fs-14 border-no" />
+                  <van-button square :text="$t('delete')" @click="onDelete(singleItem.productSku)" class="v-100 w-70 bg-red white plr-12 fs-14 border-no" />
                 </div>
               </template>
             </van-swipe-cell>

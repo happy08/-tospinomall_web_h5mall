@@ -719,8 +719,10 @@ const cn = {
   set_often_buy_success: '设置经常购买成功',
   choose_product_sku: '请先选择产品规格',
   copyright: '版权信息',
-  take_address: '取件地址',
-  address: '地址'
+  take_address: '上门取件地址',
+  address: '地址',
+  take_info: '收货信息',
+  return_address: '退货地址'
 }
 
 export default cn;

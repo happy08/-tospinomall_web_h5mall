@@ -67,7 +67,7 @@
 
                     <!-- 商品的样式 -->
                     <div class="pt-26 pr-20" v-if="active == 0">
-                      <OrderSingle class="pl-30 pt-20" :isShowRight="false" :product_desc="item.productName" :image="item.productImg" :price="item.productPrice" @onClick="goProduct(item)" />
+                      <OrderSingle class="pl-30 pt-20" :isShowRight="false" :product_desc="item.productName" :image="item.productImg" :price="item.productPrice" @onClick="goProduct(item)" :stock="item.isValid == 1 ? 100 : 0" />
                       <div class="flex hend">
                         <!-- 看相似 -->
                         <BmButton type="default" plain class="plr-12 round-8 h-25 mt-0" @btnClick="goSimilar(item.productId)">{{ $t('look_similar') }}</BmButton>
@@ -88,7 +88,7 @@
 
                     <template #right>
                       <div class="flex hend h-100">
-                        <BmButton class="round-0 bg-yellow h-100 w-70" @click="onUnsubscribe(item)">{{ $t('unsubscribe') }}</BmButton>
+                        <BmButton class="round-0 bg-yellow h-100 w-70" @click="onUnsubscribe(item)">{{ $t('goods_remove_follow') }}</BmButton>
                         <BmButton class="round-0 bg-green h-100 w-70" @click="onTop(item)">{{ $t('top') }}</BmButton>
                       </div>
                     </template>
