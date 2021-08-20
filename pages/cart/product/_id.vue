@@ -221,7 +221,7 @@
             </template>
           </van-cell>
           <!-- 商品图片 -->
-          <div class="flex between pr-10">
+          <div class="flex pr-10">
             <BmImage
               :url="selectItem.attrPicture"
               :width="'2rem'"
@@ -231,7 +231,7 @@
               :fit="'cover'"
               v-for="(selectItem, selectIndex) in selectCarousel"
               :key="'select-' + selectIndex"
-              class="round-4 border"
+              :class="{'round-4 border': true, 'ml-12': selectIndex != 0}"
             />
           </div>
           <!-- 商品服务与承诺 -->
@@ -348,7 +348,7 @@
         <div class="mt-12 bg-white ptb-20">
           <h3 class="black flex between vcenter plr-20 fn fm-helvetica">
             <span class="fs-16">{{ $t("just_for_you") }}</span>
-            <nuxt-link class="fs-14" :to="{ }">{{ $t("more") }}</nuxt-link>
+            <nuxt-link class="fs-14" :to="{ name: 'cart-store-id', params: { id: storeInfo.storeId }, query: { sellerId: storeInfo.sellerId, hasAdornment: storeInfo.hasAdornment} }">{{ $t("more") }}</nuxt-link>
           </h3>
           <!-- 推荐商品 -->
           <swiper

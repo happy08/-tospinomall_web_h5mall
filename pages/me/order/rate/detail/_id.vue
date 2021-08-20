@@ -262,14 +262,11 @@ export default {
         this.detailData = res.data;
       })
     },
-    addGive(item) { // 点赞
+    addGive(item) { // 点赞取消点赞
       if (!this.$store.state.user.authToken) {
         this.$router.push({
           name: 'login'
         })
-        return false;
-      }
-      if (item.isGiveLike == 1) { // 已点赞，取消点赞
         return false;
       }
       addGive(item.id).then(res => {
