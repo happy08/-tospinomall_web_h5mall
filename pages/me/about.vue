@@ -8,7 +8,7 @@
       <!-- 隐私政策 -->
       <van-cell class="ptb-20 plr-0" :title="$t('privacy_policy')" is-link title-class="black" :to="{ name: 'service-type', params: { type: 'privacy' }, query: { isH5: 1 } }" />
       <!-- 版权信息 -->
-      <van-cell class="ptb-20 plr-0" :title="$t('user_agreement')" is-link title-class="black" :to="{ name: 'service-type', params: { type: 'copyright' }, query: { isH5: 1 } }" />
+      <van-cell class="ptb-20 plr-0" :title="$t('copyright')" is-link title-class="black" :to="{ name: 'service-type', params: { type: 'copyright' }, query: { isH5: 1 } }" />
     </div>
   </div>
 </template>

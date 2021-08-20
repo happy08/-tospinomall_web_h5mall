@@ -675,6 +675,7 @@ const cn = {
   after_sale_status: ['售后申请', '处理中', '申请记录'],
   watch_detail: '查看详情',
   processReturnShopStep: ['提交申请', '商家处理', '寄回商品', '商家退款', '退款成功'],
+  processplantformReturnShopStep: ['提交申请', '平台处理', '寄回商品', '平台退款', '退款成功'],
   processPlatformStep: ['申请平台介入', '等待举证', '平台仲裁'],
   processStep: ['提交申请', '处理中', '退款成功'],
   applyReason: '申请原因',
@@ -716,7 +717,10 @@ const cn = {
   go_seeting: '去设置',
   move_to_favorites_success: '移入收藏夹成功',
   set_often_buy_success: '设置经常购买成功',
-  choose_product_sku: '请先选择产品规格'
+  choose_product_sku: '请先选择产品规格',
+  copyright: '版权信息',
+  take_address: '取件地址',
+  address: '地址'
 }
 
 export default cn;

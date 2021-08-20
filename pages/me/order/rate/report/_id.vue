@@ -35,7 +35,7 @@
         v-model="message"
         rows="5"
         type="textarea"
-        :placeholder="$t('me.report.supplementTip')"
+        :placeholder="$t('can_supplement_your_complaint_content_optional')"
         class="border round-8"
       />
       <!-- 提交 -->

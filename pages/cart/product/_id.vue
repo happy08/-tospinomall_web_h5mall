@@ -52,7 +52,7 @@
       class="product-tab-content"
       ref="detailTabContainer"
     >
-      <van-tab title="Short" name="Short">
+      <van-tab :title="$t('shot')" name="Short">
         <!-- 商品轮播图 -->
         <swiper
           ref="swiperComponentRef"
@@ -202,7 +202,7 @@
           </template>
         </div>
       </van-tab>
-      <van-tab title="Param" name="Param">
+      <van-tab :title="$t('param')" name="Param">
         <!-- 选择产品规格 -->
         <div class="mt-12 bg-white plr-20 pb-24">
           <van-cell
@@ -343,7 +343,7 @@
           </div>
         </div>
       </van-tab>
-      <van-tab title="Similar" name="Similar">
+      <van-tab :title="$t('similar')" name="Similar">
         <!-- 同店商品 -->
         <div class="mt-12 bg-white ptb-20">
           <h3 class="black flex between vcenter plr-20 fn fm-helvetica">
@@ -375,7 +375,7 @@
           </swiper>
         </div>
       </van-tab>
-      <van-tab title="Details" name="Details" class="fs-0">
+      <van-tab :title="$t('details')" name="Details" class="fs-0">
         <!-- 产品说明信息 -->
         <div
           class="mt-12 bg-white ptb-12 plr-20 fs-14 black fm-helvetica word-break mb-12"

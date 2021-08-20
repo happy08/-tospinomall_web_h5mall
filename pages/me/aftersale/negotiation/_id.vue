@@ -43,6 +43,7 @@
 <script>
 import OrderStoreSingle from '@/components/OrderStoreSingle';
 import { getNegotiationHistory } from '@/api/order';
+import userIcon from '@/assets/images/icon/user-icon.png';
 
 export default {
   middleware: 'authenticated',
@@ -58,7 +59,12 @@ export default {
     getNegotiationHistory(this.$route.params.id).then(res => {
       if (res.code != 0) return false;
 
-      this.lists = res.data;
+      this.lists = res.data.map(item => {
+        return {
+          ...item,
+          headPortrait: item.headPortrait == '' ? userIcon : item.headPortrait
+        }
+      });
     })
   }
 }

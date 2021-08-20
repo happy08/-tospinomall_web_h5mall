@@ -15,9 +15,9 @@
           {{ $t('automatically_closed') }}
         </div>
         <!-- 待发货 -->
-        <div class="fs-14 white mt-14 pb-40 plr-30 tc lh-20" v-else-if="detail.status == 1">
+        <!-- <div class="fs-14 white mt-14 pb-40 plr-30 tc lh-20" v-else-if="detail.status == 1">
           {{ $t('to_be_delivered') }}
-        </div>
+        </div> -->
         <!-- 待收货 -->
         <!-- <div class="fs-14 white mt-14 pb-40 plr-30 tc lh-20" v-else-if="detail.status == 2">
           {{ $t('me.order.sending') }}

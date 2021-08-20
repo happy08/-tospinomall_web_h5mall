@@ -1,7 +1,7 @@
 <template>
   <!-- 我的-售后-售后详情 type: 1仅退款 2退货退款 3换货  -->
   <div class="vh-100 bg-grey pt-46 pb-56">
-    <BmHeaderNav :left="{ isShow: true, isEmit: true }" :title="detail.returnType == 0 ? $t('detail_of_the_refund') : $t('detail_of_the_return')" :fixed="true" @leftClick="leftClick" />
+    <BmHeaderNav :left="{ isShow: true, isEmit: true }" :title="detail.returnType === 0 ? $t('detail_of_the_refund') : $t('detail_of_the_return')" :fixed="true" @leftClick="leftClick" />
     
     <!-- 仅退款,退款中 -->
     <!-- 退款类型returnType：0->退款 1退款退货 -->
@@ -19,7 +19,7 @@
       <div class="bg-white pb-14 pt-20 plr-8 round-13">
         <!-- 等待处理 -->
         <h4 class="fs-14" v-if="detail.status == 1">{{ $t('refund_return_state_tip_1', { replace_tip: detail.orderType == 1 ? $t('merchant'): $t('platform') }) }}</h4>
-        
+
         <!-- 同意退货，请及时退货 -->
         <h4 class="fs-14" v-if="detail.status == 2">{{ $t('refund_return_state_tip_5', { replace_tip: detail.orderType == 1 ? $t('merchant'): $t('platform') }) }}</h4>
 
@@ -74,9 +74,10 @@
     </div>
 
     <!-- 退款成功/关闭售后单 样式有绿边框-->
-    <div class="mt-12 bg-green-linear ptb-12 plr-8" v-if="detail.status == 5 || detail.status == 6">
+    <div class="mt-12 bg-green-linear ptb-12 plr-8" v-if="detail.status == 5 || detail.status == 6 || detail.status == 8">
       <div class="bg-white ptb-20 plr-8 round-13">
         <p class="fw fs-14 black ml-10" v-if="detail.status == 5">{{ $t('refund_successfully') }}</p>
+
         <div v-if="detail.status == 6" class="ml-10">
           <!-- 超时未填写退货单号，退货单关闭 -->
           <h4 class="fs-14" v-if="detail.closeType == 1">{{ $t('refund_return_state_tip_14') }}</h4>
@@ -88,36 +89,40 @@
           <h4 class="fs-14" v-if="detail.closeType == 5">{{ $t('refund_return_state_tip_42') }}</h4>
 
           <!-- 买家撤销申请 -->
-          <h4 v-if="detail.closeType == 6" class="fs-14">{{ $t('refund_return_state_tip_14') }}</h4>
+          <h4 v-if="detail.closeType == 6" class="fs-14">{{ $t('refund_return_state_tip_35') }}</h4>
 
           <template v-if="detail.closeType == 8">
             <!-- 均无责任，无需退款 -->
-            <h4 class="fs-14" v-if="detail.responsJudage == 0 && detail.refundJudage == 0">{{ $t('refund_return_state_tip_38') }}</h4>
+            <h4 class="fs-14" v-if="detail.responsJudage === 0 && detail.refundJudage === 0">{{ $t('refund_return_state_tip_38') }}</h4>
 
             <!-- 均无责任，退款给买家 -->
-            <h4 class="fs-14" v-if="detail.responsJudage == 0 && detail.refundJudage == 1">{{ $t('refund_return_state_tip_40') }}</h4>
+            <h4 class="fs-14" v-if="detail.responsJudage === 0 && detail.refundJudage == 1">{{ $t('refund_return_state_tip_40') }}</h4>
 
             <!-- 买家胜诉，退款给买家 -->
             <h4 class="fs-14" v-if="detail.responsJudage == 1 && detail.refundJudage == 1">{{ $t('refund_return_state_tip_34') }}</h4>
 
             <!-- 买家胜诉，无需退款 -->
-            <h4 class="fs-14" v-if="detail.responsJudage == 1 && detail.refundJudage == 0">{{ $t('refund_return_state_tip_33') }}</h4>
+            <h4 class="fs-14" v-if="detail.responsJudage == 1 && detail.refundJudage === 0">{{ $t('refund_return_state_tip_33') }}</h4>
 
             <!-- 卖家胜诉，无需退款 -->
-            <h4 class="fs-14" v-if="detail.responsJudage == 2 && detail.refundJudage == 0">{{ $t('refund_return_state_tip_32') }}</h4>
+            <h4 class="fs-14" v-if="detail.responsJudage == 2 && detail.refundJudage === 0">{{ $t('refund_return_state_tip_32') }}</h4>
 
             <!-- 卖家胜诉，退款给买家 -->
             <h4 class="fs-14" v-if="detail.responsJudage == 2 && detail.refundJudage == 1">{{ $t('refund_return_state_tip_31') }}</h4>
           </template>
           
-          <h4 v-if="detail.closeType == 9" class="fs-14">{{ $t('refund_return_state_tip_14') }}</h4>
+          <h4 v-if="detail.closeType == 9" class="fs-14">{{ $t('refund_return_state_tip_35') }}</h4>
         </div>
+
+        <!-- 已拒收 -->
+        <h4 class="fs-14 ml-10" v-if="detail.status == 8">{{ $t('refund_return_state_tip_22', { replace_tip: detail.orderType == 1 ? $t('merchant'): $t('platform') }) }}</h4>
+        <!-- 时间 -->
         <p class="fs-12 light-grey mt-10 ml-10">{{ detail.updateTime }}</p>
       </div>
     </div>
 
     <!-- 7->商家/运营驳回申请 -->
-    <div class="mt-12 bg-green-linear ptb-12 plr-8" v-if="detail.status == 7 && detail.involvedStatus == 0">
+    <div class="mt-12 bg-green-linear ptb-12 plr-8" v-if="detail.status == 7 && detail.involvedStatus === 0">
       <div class="bg-white ptb-20 plr-8 round-13">
         <p class="fw fs-14 black ml-10" v-if="detail.involvedStatus == 0">{{ $t('refund_return_state_tip_16', { replace_tip: detail.orderType == 1 ? $t('merchant'): $t('platform') }) }}</p>
         <div class="light-grey fs-14 mt-8 ml-10 flex flex-wrap vcenter" v-if="detail.surplusTime > 0">
@@ -140,23 +145,22 @@
     </div>
 
     <!-- 商家同意退货申请 -->
-    <div class="bg-white plr-12 ptb-20" v-if="detail.status == 2 && detail.orderType == 1">
-      <!-- 退款 -->
-      <p class="mt-12 fs-12 black">{{ $t('refund_return_state_tip_7', { replace_tip: detail.orderType == 1 ? $t('merchant'): $t('platform') }) }}</p>
-    </div>
+    <!-- <div class="bg-white plr-12 ptb-20" v-if="detail.status == 2 && detail.orderType == 1">
+      <p class="fs-12 black">{{ $t('refund_return_state_tip_7', { replace_tip: detail.orderType == 1 ? $t('merchant'): $t('platform') }) }}</p>
+    </div> -->
 
     <!-- 已关闭工单 -->
     <div class="bg-white plr-12 ptb-20" v-if="detail.status == 6">
       <!-- 超时未填写退货单号，退货单关闭 -->
       <h4 class="fs-14" v-if="detail.closeType == 1">{{ $t('refund_return_state_tip_15') }}</h4>
-      <div class="flex red between mt-12" v-if="detail.closeType == 1">
+      <!-- <div class="flex red between mt-12" v-if="detail.closeType == 1">
         <span class="fs-12">{{ $t('total_refund') }}</span>
-        <span class="fs-14 fw">{{ $store.state.rate.currency }}{{ detail.returnAmount }}</span>
-      </div>
+        <span class="fs-14 fw">{{ $store.state.rate.currency }}{{ detail.realAmount }}</span>
+      </div> -->
 
       <!-- 仅退款驳回申请 -->
       <template v-if="detail.closeType == 4">
-        <h4 class="fs-14" >{{ $t('refund_return_state_tip_43') }}</h4>
+        <h4 class="fs-14" >{{ $t('refund_return_state_tip_43') }}{{ detail.reason }}</h4>
         <p class="mt-12 fs-12 light-grey pre-wrap" v-html="$t('refund_return_state_tip_18', { replace_tip: detail.orderType == 1 ? $t('merchant'): $t('platform') })"></p>
       </template>
       
@@ -169,34 +173,33 @@
       <!-- 买家撤销申请 -->
       <h4 v-if="detail.closeType == 6" class="fs-14">{{ $t('refund_return_state_tip_36') }}</h4>
       
-
       <template v-if="detail.closeType == 8">
         <!-- 均无责任，无需退款 -->
-        <div class="fs-14" v-if="detail.responsJudage == 0 && detail.refundJudage == 0">
+        <div class="fs-14" v-if="detail.responsJudage === 0 && detail.refundJudage === 0">
           <h4 class="black fs-14">{{ $t('refund_return_state_tip_39') }}</h4>
           <p class="light-grey mt-12 fs-12">{{ $t('refund_return_state_tip_29') }}</p>
         </div>
         
         <!-- 均无责任，退款给买家 -->
-        <div class="fs-14" v-if="detail.responsJudage == 0 && detail.refundJudage == 1">
+        <div class="fs-14" v-if="detail.responsJudage === 0 && detail.refundJudage == 1">
           <h4 class="black fs-14">{{ $t('refund_return_state_tip_41') }}</h4>
           <p class="light-grey mt-12 fs-12">{{ $t('refund_return_state_tip_28') }}</p>
         </div>
 
         <!-- 买家胜诉，无需退款 -->
-        <p class="fs-14 light-grey" v-if="detail.responsJudage == 1 && detail.refundJudage == 0">{{ $t('refund_return_state_tip_29') }}</p>
+        <p class="fs-14 light-grey" v-if="detail.responsJudage == 1 && detail.refundJudage === 0">{{ $t('refund_return_state_tip_29') }}</p>
 
         <!-- 买家胜诉，退款给买家 -->
         <p class="fs-12 light-grey" v-if="detail.responsJudage == 1 && detail.refundJudage == 1">{{ $t('refund_return_state_tip_28') }}</p>
 
         <!-- 卖家胜诉，无需退款 -->
-        <p class="fs-12 light-grey" v-if="detail.responsJudage == 2 && detail.refundJudage == 0">{{ $t('refund_return_state_tip_28') }}</p>
+        <p class="fs-12 light-grey" v-if="detail.responsJudage == 2 && detail.refundJudage === 0">{{ $t('refund_return_state_tip_28') }}</p>
 
         <!-- 买家胜诉，退款给买家 -->
         <p class="fs-12 light-grey" v-if="detail.responsJudage == 2 && detail.refundJudage == 1">{{ $t('refund_return_state_tip_28') }}</p>
 
         <!-- 工单违规，无需退款 -->
-        <p class="fs-12 light-grey" v-if="detail.responsJudage == 3 && detail.refundJudage == 0">{{ $t('refund_return_state_tip_51') }}</p>
+        <p class="fs-12 light-grey" v-if="detail.responsJudage == 3 && detail.refundJudage === 0">{{ $t('refund_return_state_tip_51') }}</p>
 
         <!-- 工单违规，退款给买家 -->
         <p class="fs-12 light-grey" v-if="detail.responsJudage == 3 && detail.refundJudage == 1">{{ $t('refund_return_state_tip_30') }}</p>
@@ -205,6 +208,12 @@
       <!-- 退货退款关闭-买家取消 -->
       <h4 v-if="detail.closeType == 9" class="fs-14">{{ $t('refund_return_state_tip_36') }}</h4>
     </div>
+
+    <!-- 已拒收 -->
+    <div class="bg-white plr-12 ptb-20" v-if="detail.status == 8">
+      <h4 class="fs-14">{{ $t('refund_return_state_tip_17') }}{{ detail.reason }}</h4>
+      <p class="fs-12 light-grey pre-wrap mt-12">{{ $t('refund_return_state_tip_19', { replace_tip: detail.orderType == 1 ? $t('merchant'): $t('platform') }) }}</p>
+    </div>
     
     <!-- 商家同意退款/退款成功[超时/未超时] -->
     <div class="bg-white plr-12 ptb-20" v-if="((detail.status == 4 || detail.status == 5) && detail.orderType == 1)">
@@ -212,23 +221,21 @@
       <h4 class="fs-14 fw" v-if="detail.status == 4 || detail.status == 3">{{ $t('refund_return_state_tip_10', { replace_tip: detail.orderType == 1 ? $t('merchant'): $t('platform') }) }}</h4>
 
       <!-- 系统已退款 -->
-      <h4 class="fs-14 fw" v-if="detail.status == 5 && detail.isAutoAudit == 0">{{ $t('refund_return_state_tip_13', { replace_tip: detail.orderType == 1 ? $t('merchant'): $t('platform') }) }}</h4>
+      <h4 class="fs-14 fw" v-if="detail.status == 5 && detail.isAutoAudit === 0">{{ $t('refund_return_state_tip_13', { replace_tip: detail.orderType == 1 ? $t('merchant'): $t('platform') }) }}</h4>
 
-      <!-- 超时未处理 -->
-      <h4 class="fs-14 fw" v-if="detail.status == 5 && detail.isAutoAudit == 1">{{ $t('refund_return_state_tip_12', { replace_tip: detail.orderType == 1 ? $t('merchant'): $t('platform') }) }}</h4>
+      <!-- 商家超时未处理 -->
+      <h4 class="fs-14 fw" v-if="detail.status == 5 && (detail.isAutoAudit == 1 || detail.isAutoReceiving == 1)">{{ $t('refund_return_state_tip_12', { replace_tip: detail.orderType == 1 ? $t('merchant'): $t('platform') }) }}</h4>
 
       <!-- 退款成功 -->
       <div class="flex red between mt-12" v-if="detail.status == 5">
         <span class="fs-12">{{ $t('total_refund') }}</span>
-        <span class="fs-14 fw">{{ $store.state.rate.currency }}{{ detail.returnAmount }}</span>
+        <span class="fs-14 fw">{{ $store.state.rate.currency }}{{ detail.realAmount }}</span>
       </div>
     </div>
 
-    
-
     <!-- 7->商家/运营驳回申请 -->
-    <div class="bg-white plr-12 ptb-20" v-if="detail.status == 7 && detail.involvedStatus == 0">
-      <h4 class="fs-14 fw">{{ $t('refund_return_state_tip_17') }}</h4>
+    <div class="bg-white plr-12 ptb-20" v-if="detail.status == 7 && detail.involvedStatus === 0">
+      <h4 class="fs-14 fw">{{ $t('refund_return_state_tip_17') }}{{ detail.reason }}</h4>
       <p class="mt-12 fs-12 light-grey pre-wrap" v-html="$t('refund_return_state_tip_19', { replace_tip: detail.orderType == 1 ? $t('merchant'): $t('platform') })"></p>
     </div>
 
@@ -265,9 +272,9 @@
     <!-- 具体明细 -->
     <van-cell-group class="mt-12">
       <!-- 售后类型 -->
-      <van-cell class="ptb-20 plr-20" :title="$t('after_type')" title-class="fs-14 black flex-2" value-class="tl flex-3 light-grey" :value="detail.returnType == 0 ? $t('refund_no_return') : $t('return_refund')"/>
+      <van-cell class="ptb-20 plr-20" :title="$t('after_type')" title-class="fs-14 black flex-2" value-class="tl flex-3 light-grey" :value="detail.returnType === 0 ? $t('refund_no_return') : $t('return_refund')"/>
       <!-- 货品状态 -->
-      <van-cell class="ptb-20 plr-20" :title="$t('goods_status')" title-class="fs-14 black flex-2" value-class="tl flex-3 light-grey" :value="detail.goodState == 0 ? $t('not_yet_received_the_goods') : $t('have_received_the_goods')"/>
+      <van-cell class="ptb-20 plr-20" :title="$t('goods_status')" title-class="fs-14 black flex-2" value-class="tl flex-3 light-grey" :value="detail.goodState === 0 ? $t('not_yet_received_the_goods') : $t('have_received_the_goods')"/>
       <!-- 申请原因 -->
       <van-cell class="ptb-20 plr-20" :title="$t('applyReason')" title-class="fs-14 black flex-2" value-class="tl flex-3 light-grey" :value="detail.applyReason"/>
       <!-- 退款金额 -->
@@ -286,15 +293,15 @@
       <!-- 退货方式 -->
       <van-cell class="ptb-20 plr-20" :title="$t('return_method')" title-class="fs-14 black flex-2" value-class="tl flex-3 light-grey" :value="detail.deliveryType == 1 ? $t('self_return') : $t('pick_up')" v-if="detail.returnType == 1" />
       <!-- 姓名、电话、地址 -->
-      <!-- <van-cell class="ptb-20 plr-20" v-if="detail.returnType == 1 && detail.status == 2">
+      <van-cell class="ptb-20 plr-20" v-if="detail.returnType == 1 && detail.deliveryType == 2">
         <template #default>
           <div class="flex between">
             <p class="fs-14 black">{{ detail.sendName }}  {{ detail.sendPhone }}</p>
-            <p class="light-grey fs-14">Shipping address</p>
+            <p class="light-grey fs-14">{{ $t('address') }}</p>
           </div>
-          <p class="black fs-14 mt-12">地址: {{ detail.sendCompleteAddress }}</p>
+          <p class="black fs-14 mt-12">{{ $t('address') }}: {{ detail.sendCompleteAddress }}</p>
         </template>
-      </van-cell> -->
+      </van-cell>
     </van-cell-group>
 
     <div class="w-100 bg-white btn-content flex hend vcenter">
@@ -303,9 +310,11 @@
       <!-- 订单类型orderType：1->FBM订单 2->FBT订单 -->
       <!-- <div class="mt-8 flex hend"> -->
         <!-- 客服介入 -->
-        <BmButton :type="'info'" class="h-32 mr-10 time-out" v-if="(detail.status == 7 || detail.status == 8) && detail.involvedStatus == 0 && detail.orderType == 1 && detail.surplusTime > 0" @btnClick="$router.push({ name: 'me-aftersale-proof-id', params: { id: detail.id } })">{{ $t('customer_service_intervention') }}</BmButton>
+        <BmButton :type="'info'" class="h-32 mr-10 time-out" v-if="(detail.status == 7 || detail.status == 8) && detail.involvedStatus === 0 && detail.orderType == 1 && detail.surplusTime > 0" @btnClick="$router.push({ name: 'me-aftersale-proof-id', params: { id: detail.id } })">{{ $t('customer_service_intervention') }}</BmButton>
+
         <!-- 修改申请 -->
-        <BmButton :type="'info'" class="h-32 mr-10 time-out" v-if="(detail.status == 1 || detail.status == 7) && detail.involvedStatus == 0" @btnClick="onEditApply">{{ $t('modify_the_application') }}</BmButton>
+        <BmButton :type="'info'" class="h-32 mr-10 time-out" v-if="(detail.status == 1 || detail.status == 7) && detail.involvedStatus === 0" @btnClick="onEditApply">{{ $t('modify_the_application') }}</BmButton>
+
         <!-- 填写运单号 -->
         <BmButton :type="'info'" class="h-32 time-out mr-10" v-if="detail.status == 2 && detail.deliveryType == 1" @btnClick="$router.push({ name: 'me-aftersale-tracking-id', params: { id: detail.id } })">{{ $t('fill_express_number2') }}</BmButton>
         
@@ -316,7 +325,8 @@
         <BmButton class="round-0 v-100" v-if="detail.status == 3 && detail.deliveryType == 1" @btnClick="$router.push({ name: 'me-aftersale-tracking-id', params: { id: detail.id }, query: { edit: 1 } })">{{ $t('modify_express_number') }}</BmButton>
 
         <!-- 撤销申请 -->
-        <BmButton class="round-0 v-100" v-if="detail.status == 1 || detail.status == 2 || (detail.status == 7 && detail.involvedStatus == 0) || (detail == 8 && detail.involvedStatus == 0)" @btnClick="onRevokeApply">{{ $t('cancel_the_application') }}</BmButton>
+        <BmButton class="round-0 v-100" v-if="detail.status == 1 || detail.status == 2 || (detail.status == 7 && detail.involvedStatus === 0) || (detail.status == 8 && detail.involvedStatus === 0)" @btnClick="onRevokeApply">{{ $t('cancel_the_application') }}</BmButton>
+
         <!-- 撤销工单 -->
         <BmButton class="round-0 v-100" v-if="(detail.status == 7 || detail.status == 8) && (detail.involvedStatus == 1 || detail.involvedStatus == 2)" @btnClick="onCancelApply(detail.workId)">{{ $t('cancel_the_application') }}</BmButton>
         
@@ -417,7 +427,7 @@ export default {
           }
         } else if (res.data.returnType == 1) { // 退货退款
           this.stepActive = res.data.status == 1 ? 1 : res.data.status == 2 ? 2 : (res.data.status == 4 || res.data.status == 3) ? 3 : res.data.status == 5 ? 4 : 0;
-          this.stepList = this.$t('processReturnShopStep');
+          this.stepList = res.data.orderType == 1 ? this.$t('processReturnShopStep') : this.$t('processplantformReturnShopStep');
         }
         
       })

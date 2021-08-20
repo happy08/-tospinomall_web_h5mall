@@ -32,10 +32,10 @@
     <!-- 退款金额 -->
     <van-cell class="ptb-20 plr-20 mt-12" center :title="$t('refund_amount')" title-class="fs-14 black" :label="$t('modify_the_amount')" value-class="black fw fs-18" >
       <template #default>
-        <van-field v-model="detail.realAmount" type="number" input-align="right" :formatter="onFormatter" />
+        <van-field v-model="detail.returnAmount" type="number" input-align="right" :formatter="onFormatter" />
       </template>
     </van-cell>
-    <div class="p-20 fs-14 black">{{ $t('refund_price_tip', { replace_tip: detail.realAmount }) }}</div>
+    <div class="p-20 fs-14 black">{{ $t('refund_price_tip', { replace_tip: detail.returnAmount }) }}</div>
 
     <!-- 申请指令 -->
     <div class="plr-20 pt-20 pb-24 bg-white">
@@ -78,18 +78,18 @@
       </van-checkbox>
 
       <!-- 上门取件-选择地址 -->
-      <van-cell class="mt-20 plr-0 ptb-0" title-class="black ml-12" is-link :to="{ name: 'me-address' }" v-if="returnMethodRadio == 0">
+      <van-cell class="mt-20 plr-0 ptb-0" title-class="black ml-12" is-link replace :to="{ name: 'me-address', query: { back: JSON.stringify($route.query), applyType: $route.params.type } }" v-if="returnMethodRadio == 0">
         <!-- 左侧图标 -->
         <template #icon>
           <van-icon :name="require('@/assets/images/icon/address-icon.png')" size="0.48rem" />
         </template>
         <!-- 左侧内容 -->
         <template #title>
-          <p class="fs-14 fw lh-20" v-if="detail.order && detail.order.receiverName">
-            <span>{{ detail.order.receiverName }}</span>
-            <span class="ml-10">{{ detail.order.receiverPhone }}</span>
+          <p class="fs-14 fw lh-20" v-if="address">
+            <span>{{ address.name }}</span>
+            <span class="ml-10">{{ address.phone }}</span>
           </p>
-          <p class="mt-8 lh-20 grey" v-if="detail.order && detail.order.receiverCompleteAddress">{{ detail.order.receiverCompleteAddress }}</p>
+          <p class="mt-8 lh-20 grey" v-if="address">{{ address.completeAddress }}</p>
         </template>
       </van-cell>
 
@@ -237,7 +237,8 @@ export default {
       returnMethodTitle: '',
       applyMessage: '',
       concatName: '',
-      concatCell: ''
+      concatCell: '',
+      address: {}
     }
   },
   activated() {
@@ -272,8 +273,19 @@ export default {
         this.applyMessage = res.data.applyDesc;
         if (res.data.returnType == 1) { // 退货退款
           this.returnMethodRadio = res.data.deliveryType == 1 ? 1 : 0;
-          this.concatName = res.data.receiverName;
-          this.concatCell = res.data.receiverPhone;
+          this.returnMethodTitle = this.$t('returnMethodList')[this.returnMethodRadio].title;
+          this.concatName = res.data.contactPerson;
+          this.concatCell = res.data.contactPhone;
+          if (this.$route.query.address) {
+            this.address = this.$route.query.address;
+          } else {
+            this.address = {
+              name: res.data.sendName,
+              phone: res.data.sendPhone,
+              completeAddress: res.data.sendCompleteAddress,
+              id: res.data.sendAddressId
+            }
+          }
         }
         // 凭证图片
         let pics = res.data.proofPics != '' ? res.data.proofPics.split(',') : [];
@@ -287,6 +299,16 @@ export default {
         return false;
       }
       this.detail = res.data;
+      if (this.$route.query.address) {
+        this.address = this.$route.query.address;
+      } else{
+        this.address = {
+          name: res.data.order.receiverName,
+          phone: res.data.order.receiverPhone,
+          completeAddress: res.data.order.receiverCompleteAddress,
+          id: res.data.order.receiverAddressId
+        }
+      }
     })
   },
   methods: {
@@ -337,7 +359,7 @@ export default {
         })
         return false;
       }
-      console.log(type === 'type' ? this.detail.status == 1 ? [this.$t('selectReason')[0]] : this.$t('returnMethodList') : type === 'status' ? this.$t('stateGoodsList') : this.$t('selectReason'))
+
       this.currentSelect = {
         type: type,
         title: type === 'type' ? this.$t('returnMethodTitle') : type === 'status' ? this.$t('state_of_the_goods') : type === 'reason' ? this.$t('applyReason') : '',
@@ -347,7 +369,7 @@ export default {
       this.isSelectType = true;
     },
     onFormatter(value) { // 输入金额格式化
-      return this.$store.state.rate.currency + value;
+      return this.$store.state.rate.currency + '' + value;
     },
     async afterRead(file) { // 上传图片
       if (Array.isArray(file)) { // 多张图片
@@ -420,7 +442,7 @@ export default {
       
       if (this.$route.params.type == 2) { // 退货退款
         if (this.returnMethodRadio == 0) { // 上门取件
-          _data.sendAddressId = this.detail.order.receiverAddressId;
+          _data.sendAddressId = this.address.id;
         }
         if (this.returnMethodRadio == 1) { // 自行寄件
           _data.contactPerson = this.concatName;
@@ -464,15 +486,16 @@ export default {
         this.concatName = '';
         this.concatCell = '';
 
-        this.$router.push({
-          name: 'me-aftersale-detail-id',
-          params: {
-            id: res.data.orderReturnId
-          },
-          query: {
-            back: this.$route.query.edit ? 'me-aftersale': ''
-          }
-        })
+        this.$router.go(-1);
+        // this.$router.replace({
+        //   name: 'me-aftersale-detail-id',
+        //   params: {
+        //     id: res.data.orderReturnId
+        //   },
+        //   // query: {
+        //   //   back: this.$route.query.edit ? 'me-aftersale': ''
+        //   // }
+        // })
       })
     },
     onDeleteFile() { // 删除选择的图片

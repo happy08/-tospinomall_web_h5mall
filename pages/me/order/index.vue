@@ -551,7 +551,7 @@ export default {
       })
     },
     statusFormat(val, item) {
-      return val == 0 ? this.$t('unpaid') : val == 1 ? this.$t('to_be_delivered') : val == 2 ? this.$t('unreceived') : val == 3 || (val == 4 && item.hasComment == 0) ? this.$t('to_be_evaluated') : val == 4 && item.hasComment == 1 ? this.$t('completed') : val == 5 ? this.$t('cancelled') : val == 6 ? this.$t('trading_close') : val == 7 ? this.$t('un_rejected') : this.$t('other');
+      return val == 0 ? this.$t('unpaid') : val == 1 ? this.$t('to_be_delivered') : val == 2 ? this.$t('unreceived') : val == 3 || val == 4 ? this.$t('completed') : val == 5 ? this.$t('cancelled') : val == 6 ? this.$t('trading_close') : val == 7 ? this.$t('un_rejected') : this.$t('other');
     }
   },
 } 

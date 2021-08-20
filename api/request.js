@@ -4,7 +4,7 @@
 import * as axios from 'axios';
 import { Toast } from 'vant';
 import { url } from './config'; // 导入配置域名
-import { getCookie, setCookie } from './utils';
+import { getCookie } from './utils';
 
 const service = axios.create({
   baseURL: url,

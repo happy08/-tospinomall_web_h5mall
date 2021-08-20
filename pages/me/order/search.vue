@@ -8,7 +8,7 @@
       <van-search
         v-model="searchVal"
         shape="round"
-        placeholder="请输入搜索关键词"
+        :placeholder="$t('enter_key_words')"
         class="plr-20 bg-white ptb-12"
         @search="onSearch"
         @focus="onFocus"
@@ -22,7 +22,7 @@
       <div class="mlr-20 mt-12" v-show="isShowTip">
         <!-- 搜索历史 -->
         <h2 class="fs-14 black flex between vcenter" v-if="searchHistoryList.length > 0">
-          <span>{{ $t('search.history') }}</span>
+          <span>{{ $t('search_for_history') }}</span>
           <BmIcon :name="'shanchu'" :width="'0.32rem'" :height="'0.32rem'" @iconClick="deleteFn" />
         </h2>
         <div class="mt-12 flex flex-wrap">
@@ -36,7 +36,7 @@
         <!-- 订单列表 -->
         <div v-else v-for="(item,index) in lists" :key="'order-' + index" class="w-100 plr-12 mb-12 bg-white pb-20 pt-24">
           <!-- 订单店铺 -->
-          <OrderStoreSingle :name="item.storeName" :status="item.status | statusFormat" @goStoreDetail="goOrderDetail(item.items[0].orderId)">
+          <OrderStoreSingle :name="item.storeName" :status="statusFormat(item.status)" @goStoreDetail="goOrderDetail(item.items[0].orderId)">
             <!-- 如果是取消状态，则该订单可删除，添加操作展示  -->
             <div slot="other-deal" class="flex vcenter" v-if="item.status == 5 || item.status == 6">
               <span class="block line-style"></span>
@@ -98,17 +98,17 @@
             <!-- 售后状态showAfterSale：0->不可售后 1->可以售后 -->
 
             <!-- 取消订单：在线支付[待付款0]；货到付款[待发货1且未支付0] -->
-            <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" v-if="(item.paymentType == 1 && item.status == 0) || (item.paymentType == 0 && item.status == 1 && item.payState == 0)" @btnClick="onCancel(item)">取消订单</BmButton>
+            <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" v-if="(item.paymentType == 1 && item.status == 0) || (item.paymentType == 0 && item.status == 1 && item.payState == 0)" @btnClick="onCancel(item)">{{ $t('cancel_order') }}</BmButton>
             <!-- 去支付：在线支付[待付款0] -->
-            <BmButton class="fs-14 ml-10 round-8 plr-12 h-32" :type="'info'" v-if="item.paymentType == 1 && item.status == 0" @btnClick="onPay(item)">去支付</BmButton>
+            <BmButton class="fs-14 ml-10 round-8 plr-12 h-32" :type="'info'" v-if="item.paymentType == 1 && item.status == 0" @btnClick="onPay(item)">{{ $t('payment') }}</BmButton>
             <!-- 去评价：在线支付[已完成4且未评价0]；货到付款[已完成4且未评价0] -->
-            <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" v-if="item.hasComment == 0 && item.status == 4">去评价</BmButton>
+            <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" v-if="item.hasComment == 0 && item.status == 4" @btnClick="onEvaluate(item)">{{ $t('evaluation') }}</BmButton>
             <!-- 退款/售后：在线支付[待发货1且已支付1且可售后1,待收货2且已支付1且可售后1,已完成4且可售后1]；货到付款[待发货1且已支付1且可售后1,待收货2且可售后1,已完成4且可售后1] -->
-            <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" v-if="(item.paymentType == 1 && (((item.status == 1 || item.status == 2) && item.payState == 1) || item.status == 4)  && item.showAfterSale == 1) || (item.paymentType == 0 && ((item.status == 1 && item.payState == 1) || item.status == 2 || item.status == 4) && item.showAfterSale == 1)">退款/售后</BmButton>
+            <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" v-if="(item.paymentType == 1 && (((item.status == 1 || item.status == 2) && item.payState == 1) || item.status == 4)  && item.showAfterSale == 1) || (item.paymentType == 0 && ((item.status == 1 && item.payState == 1) || item.status == 2 || item.status == 4) && item.showAfterSale == 1)">{{ $t('refund_after_sale') }}</BmButton>
             <!-- 确认收货：在线支付[待收货2且已支付1]；货到付款[待收货2] -->
-            <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" v-if="(item.paymentType == 1 && item.status == 2 && item.payState == 1) || (item.paymentType == 0 && item.status == 2)">确认收货</BmButton>
+            <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" v-if="(item.paymentType == 1 && item.status == 2 && item.payState == 1) || (item.paymentType == 0 && item.status == 2)">{{ $t('confirm_receipt') }}</BmButton>
             <!-- 去购买：待发货1,待收货2,待评价3,已完成4,已取消5,超时未付款6,已拒收7,其他8 -->
-            <BmButton class="fs-14 ml-10 round-8 plr-12 h-32" :type="'info'" v-if="item.status != 0" @btnClick="onBuy(item)">{{ $t('me.order.buyAgain') }}</BmButton>
+            <BmButton class="fs-14 ml-10 round-8 plr-12 h-32" :type="'info'" v-if="item.status != 0" @btnClick="onBuy(item)">{{ $t('buy_again') }}</BmButton>
           </div>
         </div>
       </div>
@@ -118,12 +118,9 @@
     <van-popup v-model="isCancelShow" position="bottom" closeable style="height: 80%">
       <van-cell-group>
         <!-- 取消原因 -->
-        <van-cell class="plr-20" title="Reason for Cancel Order">
+        <van-cell class="plr-20" :title="$t('reason_for_cancel_order')">
           <template #label>
-            <ul class="fs-14 light-grey">
-              <li>1. Order offer may be cancelled altogether</li>
-              <li>2. Once the order is cancelled, it cannot be reco-vered</li>
-            </ul>
+            <div class="fs-14 light-grey pre-wrap" v-html="$t('cancel_order_tip_header')"></div>
           </template>
         </van-cell>
       </van-cell-group>
@@ -154,8 +151,8 @@
       </div>
       
       <div class="w-100 plr-12 flex between mt-12 pb-10">
-        <BmButton :type="'info'" class="black round-8 w-168 h-48 cancel-btn" @click="isCancelShow = false">Cancel</BmButton>
-        <BmButton class="fs-16 round-8 w-168 h-48" @click="cancelConfirm">Confirm</BmButton>
+        <BmButton :type="'info'" class="black round-8 w-168 h-48 cancel-btn" @click="isCancelShow = false">{{ $t('cancel') }}</BmButton>
+        <BmButton class="fs-16 round-8 w-168 h-48" @click="cancelConfirm">{{ $t('confirm') }}</BmButton>
       </div>
     </van-popup>
   </div>
@@ -243,7 +240,7 @@ export default {
   activated() {
     this.$fetch();
     if (this.searchVal == '') { // 没有带参数进来的时候，搜索输入框需要自动聚焦
-      this.title = this.$t('common.search');
+      this.title = this.$t('search');
       this.$nextTick(() => {
         this.$refs.searchContainer.querySelector('input').focus();
       })
@@ -257,11 +254,6 @@ export default {
       this.isShowTip = true;
       // this.getSearchList();
     }, 300);
-  },
-  filters: {
-    statusFormat(val) {
-      return val == 0 ? '待付款' : val == 1 ? '待发货' : val == 2 ? '待收货' : val == 3 ? '待评价' : val == 4 ? '已完成' : val == 5 ? '已取消' : val == 6 ? '交易关闭' : val == 7 ? '已拒收' : '其他';
-    }
   },
   methods: {
     deleteFn() { // 删除历史记录
@@ -283,7 +275,7 @@ export default {
       });
       this.searchVal = value;
       this.pageNum = 1;
-      this.title = this.$t('me.wallet.bill');
+      this.title = this.$t('bill');
       this.isShowTip = false;
       this.lists = [];
       // 获取搜索列表
@@ -326,7 +318,7 @@ export default {
       })
     },
     onRefresh() { // 下拉刷新
-      this.params.pageNum = 1;
+      this.pageNum = 1;
       this.getSearchList();
     },
     onLoad() {
@@ -335,7 +327,7 @@ export default {
         this.finished = true;
         return false;
       }
-      this.params.pageNum += 1;
+      this.pageNum += 1;
       this.getSearchList();
     },
     onBuy(orderItem) { // 再次购买,跳转到确认订单页面
@@ -378,16 +370,33 @@ export default {
       })
     },
     getSearchList() {
+      this.$toast.loading({
+        forbidClick: true,
+        loadingType: 'spinner',
+        duration: 0
+      });
+
       if (this.searchVal == '') {
         this.isShowTip = true;
         return false;
       }
       this.$api.getOrderList({ pageNum: this.pageNum, pageSize: this.pageSize, keyword: this.searchVal }).then(res => {
-        if (res.code != 0) return false;
-        this.lists = res.data.records;
+        this.$toast.clear();
+        this.lists = this.pageNum == 1 ? res.data.records : this.lists.concat(res.data.records);
         this.isShowTip = false;
         this.loading = false;
         this.refreshing = false;
+      })
+    },
+    statusFormat(val) {
+      return val == 0 ? this.$t('to_pay') : val == 1 ? this.$t('to_be_delivered') : val == 2 ? this.$t('unreceived') : val == 3 ? this.$t('to_be_evaluated') : val == 4 ? this.$t('completed') : val == 5 ? this.$t('cancelled') : val == 6 ? this.$t('trading_close') : val == 7 ? this.$t('un_rejected') : '';
+    },
+    onEvaluate(orderItem) { // 去评价
+      this.$router.push({
+        name: 'me-order-rate',
+        query: {
+          orderId: orderItem.id
+        }
       })
     }
   },
@@ -409,5 +418,13 @@ export default {
   border-color: #eee!important;
   color: #383838!important;
   background-color: transparent!important;
+}
+.more-order-content{
+  position: relative;
+  .more-order-content__info{
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
 }
 </style>

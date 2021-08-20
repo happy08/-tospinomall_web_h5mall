@@ -47,7 +47,7 @@
         </nuxt-link>
         <nuxt-link :to="$store.state.user.authToken ? { name: 'me-wallet' }: { name: 'login' }" v-slot="{ navigate }" class="tc">
           <dl @click="navigate" role="link">
-            <dt class="fs-24 black fw">{{ $store.state.user.userInfo ? $store.state.user.userInfo.balance : 0 }}</dt>
+            <dt class="fs-24 black fw">{{ $store.state.user.userInfo ? $store.state.rate.currency + $store.state.user.userInfo.balance : 0 }}</dt>
             <dd class="fs-12 grey mt-4">{{ $t('wallet') }}</dd>
           </dl>
         </nuxt-link>

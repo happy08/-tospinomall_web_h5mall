@@ -3,7 +3,7 @@
   <div>
     <BmHeaderNav :left="{ isShow: true }" :title="$t('harvest_address')" />
     <!-- 地址列表 -->
-    <div class="p-20 address-single" v-for="(item, index) in lists" :key="index">
+    <div class="p-20 address-single" v-for="(item, index) in lists" :key="index" @click="onClick(item)">
       <div class="flex between vcenter address-single__top">
         <div class="flex vcenter fm-helvetica">
           <!-- 标签 -->
@@ -90,6 +90,23 @@ export default {
     onSetDeafult(id) { // 设置默认地址
       updateDefaultAddress(id).then(() => {
         this.getAddressList();
+      })
+    },
+    onClick(item) { // 主要是为了点击跳转返回售后申请页面
+      this.$router.replace({
+        name: 'me-aftersale-apply-type',
+        params: {
+          type: this.$route.query.applyType
+        },
+        query: {
+          ...JSON.parse(this.$route.query.back),
+          address: {
+            name: item.name,
+            phone: item.phone,
+            completeAddress: item.completeAddress,
+            id: item.id
+          }
+        }
       })
     }
   },

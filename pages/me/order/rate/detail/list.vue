@@ -5,9 +5,9 @@
 
     <PullRefresh :refreshing="refreshing" @refresh="onRefresh">
       <!-- 评价列表分类 -->
-      <div class="plr-20 pt-20 bg-white">
-        <div class="flex between vcenter">
-          <!-- 是否只看当前商品的评价 -->
+      <div class="plr-20 bg-white">
+        <!-- 是否只看当前商品的评价 -->
+        <!-- <div class="flex between vcenter">
           <van-checkbox class="flex" @click="isCurrent = !isCurrent">
             <template #icon>
               <BmImage
@@ -21,7 +21,7 @@
             <span class="ml-8 fs-14 lh-20 black">{{ $t('current_commodity') }}</span>
           </van-checkbox>
           <div class="fs-14 lh-20 light-grey">{{ $t('rating_num', { replace_tip: '94%' }) }}</div>
-        </div>
+        </div> -->
 
         <!-- 标签 -->
         <!-- <div class="mt-20 flex flex-wrap between">
@@ -31,7 +31,7 @@
         </div> -->
 
         <!-- 评价分类 -->
-        <van-tabs sticky swipeable animated :offset-top="44" color="#42B7AE" class="mt-20 customs-van-tabs" :ellipsis="false" @change="getList" v-model="tabActive">
+        <van-tabs sticky swipeable animated :offset-top="44" color="#42B7AE" class="customs-van-tabs" :ellipsis="false" @change="getList" v-model="tabActive">
           <van-tab v-for="(categoryItem, tabIndex) in $t('product_rate_tab')" :title="categoryItem" :key="'scroll-tab-' + tabIndex" title-class="pb-0" :name="tabIndex">
           </van-tab>
         </van-tabs>
@@ -189,8 +189,20 @@ export default {
       if (this.tabActive == 1) {
         _params.sortType = 1; // 最新创建时间排序
       }
-      if (this.tabActive == 2) {
-        _params.hasType = 8; // 有视频/图片
+      if (this.tabActive == 2) { // 有图片
+        _params.hasType = 1;
+      }
+      if (this.tabActive == 3) { // 追评 todo
+        _params.hasType = 5;
+      }
+      if (this.tabActive == 4) { // 好评
+        _params.explainType = 1;
+      }
+      if (this.tabActive == 5) { // 中评
+        _params.explainType = 2;
+      }
+      if (this.tabActive == 6) { // 差评
+        _params.explainType = 3;
       }
       getRateList(_params).then(res => {
         if (res.code != 0) return false;
@@ -231,11 +243,13 @@ export default {
         })
         return false;
       }
-      if (item.isGiveLike == 1) { // 已点赞，取消点赞
-        return false;
-      }
+      
       addGive(item.id).then(res => {
-        if (res.code != 0) return false;
+        if (item.isGiveLike == 1) { // 已点赞，取消点赞
+          item.isGiveLike = 0;
+          item.glike -= 1;
+          return false;
+        }
         item.isGiveLike = 1;
         item.glike += 1;
       })
