@@ -133,14 +133,14 @@
             </div>
           </div>
           <!-- 品牌 -->
-          <div class="mt-32">
+          <div class="mt-32" v-if="brandList.length > 0">
             <h3 class="fs-16 black fw">{{ $t('brand') }}</h3>
             <div class="mt-6 flex flex-wrap">
               <span :class="{'ptb-6 black fs-14 lh-20 tc w-84 mt-14 ml-10 odd-3 plr-4 hidden-1 bg-grey-f5 round-8 border-transparent': true, 'is-active': brandName == brandItem.value}" v-for="(brandItem, brandIndex) in brandList" :key="'brand-item-' + brandIndex" @click="brandName = brandItem.value">{{ brandItem.value }}</span>
             </div>
           </div>
           <!-- 所有类别 -->
-          <div class="mt-32">
+          <div class="mt-32" v-if="categoryList.length > 0">
             <h3 class="fs-16 black fw">{{ $t('all_categories') }}</h3>
             <div class="mt-6 flex flex-wrap">
               <span :class="{'ptb-6 black fs-14 lh-20 tc w-84 mt-14 ml-10 odd-3 plr-4 hidden-1 bg-grey-f5 round-8 border-transparent': true, 'is-active': categoryName == categoryItem.value}" v-for="(categoryItem, categoryIndex) in categoryList" :key="'category-index-' + categoryIndex" @click="categoryName = categoryItem.value">{{ categoryItem.value }}</span>

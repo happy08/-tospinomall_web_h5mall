@@ -14,7 +14,7 @@
           v-if="isType === 'email'" 
         />
         <!-- 手机号 --> 
-        <div v-else>
+        <div v-else class="border-b">
           <van-field
             v-model="account"
             :placeholder="$t('phone_number')"
@@ -56,7 +56,19 @@
         <van-button class="mt-60 btn_h48 fw fs-16 w-100" color="linear-gradient(270deg, #3EB5AE 0%, #70CEB6 100%)" :disabled="account.length === 0 || code.length === 0" @click="jumpPwd">
           {{ $t('next') }}
         </van-button> 
-      </div>
+        <van-checkbox v-model="checked" class="mt-20">
+          <template #icon="props">
+            <BmImage
+              :url="props.checked ? require('@/assets/images/icon/choose-icon.png') : require('@/assets/images/icon/choose-default-icon.png')"
+              :width="'0.32rem'" 
+              :height="'0.32rem'"
+              :isLazy="false"
+              :isShow="false"
+            />
+          </template>
+          <div v-html="login_service_privacy()"></div>
+        </van-checkbox>
+      </div> 
   
       <!-- 忘记密码时 可以切换手机和邮箱两种方式 -->
       <!-- <div class="login-page__btm" v-if="$route.query.type === 'forgot'"> -->
@@ -102,7 +114,7 @@
 </template>
 
 <script>
-import { Field, Divider, Picker, Popup } from 'vant';
+import { Field, Divider, Picker, Popup, Checkbox } from 'vant';
 import { getPhonePrefix, getPhoneCode, checkPhoneCode, getEmailCode, checkEmailCode } from '@/api/login';
 
 export default {
@@ -110,7 +122,8 @@ export default {
     vanField: Field,
     vanDivider: Divider,
     vanPicker: Picker,
-    vanPopup: Popup
+    vanPopup: Popup,
+    vanCheckbox: Checkbox
   },
   data() {
     return {
@@ -122,7 +135,8 @@ export default {
       countdown: 0, // 120
       isCodeFlag: false,
       isNextFlag: false,
-      isType: ''
+      isType: '',
+      checked: false
     }
   },
   watch: {
@@ -198,6 +212,12 @@ export default {
       })
     },
     jumpPwd() { // 验证手机/邮箱号码，成功后跳转到设置密码页面 userType: 'buyer' 买家 seller 卖家 operator 运营
+      if (!this.checked) {
+        this.$toast({
+          message: this.$t('please_read_checked')
+        })
+        return false;
+      }
       if (this.isNextFlag) {
         return false;
       }
@@ -241,7 +261,7 @@ export default {
       })
     },
     login_service_privacy() {
-      return this.$t('login_service_privacy', { replace_tip: `<a class="clr-blue" href="/service/serve?isH5=1">Tospino's ${this.$t('term_of_service')}</a>`, replace_tip2: `<a class="clr-blue" href="/service/privacy?isH5=1">${this.$t('privacy_policy')}</a>` });
+      return this.$t('me_read_and_agreen_server', { replace_tip: `<a class="clr-blue" href="/service/serve?isH5=1">Tospino's ${this.$t('term_of_service')}</a>`, replace_tip2: `<a class="clr-blue" href="/service/privacy?isH5=1">${this.$t('privacy_policy')}</a>` });
     }
   },
 }

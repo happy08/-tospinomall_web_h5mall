@@ -1,5 +1,5 @@
 <template>
-  <van-tabbar route active-color="#43B7AF" inactive-color="#B6B6B6">
+  <van-tabbar route active-color="#43B7AF" inactive-color="#B6B6B6" safe-area-inset-bottom>
     <van-tabbar-item replace :to="{ name: tabItem.name }" v-for="(tabItem, index) in tabs" :key="'tab-' + index">
       <template #icon="props">
         <img :src="props.active ? require('@/assets/images/icon/tab-' + tabItem.icon + '-active.png') : require('@/assets/images/icon/tab-' + tabItem.icon + '-normal.png')" />

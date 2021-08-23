@@ -60,6 +60,7 @@ export const mutations = {
   },
   SET_ISNEWMESSAGE(state, isNewMessage) {
     state.isNewMessage = isNewMessage;
+    this.$cookies.set('isNewWebsocketMsg', isNewMessage);
   },
   SET_ACCOUNT(state, account) {
     state.account = account;

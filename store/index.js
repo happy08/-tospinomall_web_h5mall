@@ -37,6 +37,7 @@ export const actions = {
     console.log(authToken)
     // 如果有token获取用户信息
     if (authToken) { // 如果已经登录，每次刷新页面时先重新获取token
+      console.log('jinqulai')
       const authTokenData = await $api.refreshToken();
       if (authTokenData.code != 0) {
         commit('user/SET_TOKEN', null);
@@ -55,6 +56,9 @@ export const actions = {
       // 当前账户名
       commit('user/SET_ACCOUNT', $cookies.get('account'));
     }
+
+    // 是否有未读消息
+    commit('user/SET_ISNEWMESSAGE', $cookies.get('isNewWebsocketMsg'));
 
     const searchList = $cookies.get('searchList'); // 商品搜索历史
     commit('user/SET_SEARCHLIST', searchList);

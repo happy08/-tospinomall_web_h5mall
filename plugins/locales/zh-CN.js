@@ -703,7 +703,9 @@ const cn = {
   copyright: '版权信息',
   take_address: '上门取件地址',
   address: '地址',
-  return_address: '退货地址'
+  return_address: '退货地址',
+  me_read_and_agreen_server: '我已阅读并同意{replace_tip}和{replace_tip2}',
+  please_read_checked: '请阅读并勾选协议'
 }
 
 export default cn;

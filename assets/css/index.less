@@ -589,7 +589,7 @@ svg {
   border: solid 1px #E5E5E5!important;
 }
 .border-b{
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid #ebedf0;
 }
 .pre-wrap{
   white-space: pre-wrap;
@@ -824,5 +824,13 @@ svg {
   height: 80%;
   .van-hairline--bottom::after{
     border-bottom-width: 0!important;
+  }
+}
+
+// 适配
+@supports (bottom: env(safe-area-inset-bottom)) {
+  body {
+    padding-bottom: constant(safe-area-inset-bottom);
+    padding-bottom: env(safe-area-inset-bottom);
   }
 }

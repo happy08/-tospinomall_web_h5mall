@@ -703,7 +703,8 @@ const en = {
   copyright: 'Copyright information',
   take_address: 'Door to door pick-up address',
   address: 'Address',
-  return_address: 'Return address'
+  return_address: 'Return address',
+  me_read_and_agreen_server: '我已阅读并同意{replace_tip}和{replace_tip2}'
 }
 
 export default en;

@@ -37,7 +37,7 @@
 
 <script>
 import { List, Cell, CellGroup, Badge } from 'vant';
-import { getMsgCategory } from '@/api/message';
+import { getMsgCategory, markedAsRead } from '@/api/message';
 import PullRefresh from '@/components/PullRefresh';
 
 export default {
@@ -73,6 +73,12 @@ export default {
           ...stickArr,
           ...list
         ];
+        let msgArr = this.messageList.filters(msgItem => {
+          return parseFloat(msgItem.msgCount) > 0
+        })
+        if (msgArr.length > 0) {
+          this.$store.commit('user/SET_ISNEWMESSAGE', false);
+        }
         this.refreshing.isFresh = false;
       })
     },
@@ -88,7 +94,14 @@ export default {
       this.getMsgCategory();
     },
     deleteFn() { // 清除未读消息
-      
+      console.log('----')
+      this.messageList.forEach(item => {
+        if (parseFloat(item.msgCount) > 0) {
+          markedAsRead(item.id).then(() => {
+            this.getMsgCategory();
+          })
+        }
+      })
     }
   },
 }

@@ -25,7 +25,7 @@
           <div v-else class="ml-10 fs-16" @click="goLogin">{{ $t('login_register') }}</div>
         </div>
         <nuxt-link :to="{ name: $store.state.user.authToken ? 'me-message' : 'login' }">
-          <van-badge :dot="$store.state.user.isNewMessage">
+          <van-badge :dot="$store.state.user.isNewMessage" class="custom-me-dot">
             <BmImage
               :url="require('@/assets/images/message-icon.png')"
               :width="'.64rem'" 
@@ -246,5 +246,8 @@ export default {
     border-color: transparent;
   }
 }
-
+.custom-me-dot .van-badge--fixed{
+  top: 6px;
+  right: 6px;
+}
 </style>

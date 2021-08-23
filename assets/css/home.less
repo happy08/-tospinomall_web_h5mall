@@ -89,6 +89,10 @@
         position: absolute;
         right: 12px;
         top: 2px;
+        .van-badge--fixed{
+          right: 6px;
+          top: 6px;
+        }
       }
     }
     // 吸顶时滚动加载后搜索框的处理样式
@@ -101,6 +105,9 @@
         .home-page-nav__search{
           flex: 1;
           margin-right: 6px!important;
+          input{
+            height: 30px;
+          }
         }
         .van-button{
           display: none;
@@ -109,6 +116,10 @@
         .home-page-nav__message{
           position: static;
           animation: all 1s;
+          .van-badge--fixed{
+            right: 18px;
+            top: 13px;
+          }
         }
       }
     }

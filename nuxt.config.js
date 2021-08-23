@@ -11,7 +11,7 @@ export default {
     title: "Tospino",
     meta: [
       { charset: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" },
+      { name: "viewport", content: "width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, viewport-fit=cover" },
       { hid: "description", name: "description", content: "Tospino Ghana online shopping" },
       { hid: 'keywords', name: 'keywords', content: 'Tospino Ghana online shopping' }
     ],
@@ -120,7 +120,7 @@ export default {
       })
     ],
     vendor: ['vant', 'axios'],
-    analyze: true,
+    analyze: false,
     productionSourceMap: false,
     productionGzip: true,
     productionGzipExtensions: ['js', 'css', 'svg'],

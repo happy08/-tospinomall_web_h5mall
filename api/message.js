@@ -1,3 +1,4 @@
+import qs from 'qs';
 import request from './request';
 
 /**
@@ -18,5 +19,21 @@ export function getMsgCategory() {
   return request({
     url: '/api/sock/message/buyer/msgCategory',
     method: 'get'
+  })
+}
+
+/**
+ * 标记消息为已读
+ */
+export function markedAsRead(categoryId) {
+  return request({
+    url: '/api/sock/message/buyer/markedAsRead',
+    method: 'post',
+    data: {
+      categoryId
+    },
+    headers: {
+      'Content-Type': 'application/json'
+    }
   })
 }

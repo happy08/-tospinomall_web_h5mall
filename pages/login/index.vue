@@ -35,7 +35,7 @@
             @click="login">
             {{ $t('log_in') }}
           </van-button>
-          <nuxt-link class="green iblock mt-10 lh-20 login-page__container--register" :to="{ name: 'register' }">立即注册</nuxt-link>
+          <nuxt-link class="green iblock mt-10 lh-20 fs-14 login-page__container--register" :to="{ name: 'register' }">立即注册</nuxt-link>
         </div>
       </div>
 

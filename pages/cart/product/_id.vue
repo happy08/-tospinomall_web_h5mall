@@ -638,6 +638,7 @@ export default {
     };
     let _skuList = [];
     let _selectCarousel = [];
+    let _initSku = [];
     detailData.data.saleAttr.forEach((item, itemInxdex) => { // 规格种类
       this.sku.tree.push({
         k: item.attrName, // 规格类目名称
@@ -646,7 +647,10 @@ export default {
         v: [],
         largeImageMode: false
       })
-      item.attrValues.forEach(attrItem => { // 种类属性
+      item.attrValues.forEach((attrItem, attrIndex) => { // 种类属性
+        // if (attrIndex == 0) {
+        //   _initSku.push(attrItem);
+        // }
         if (_selectCarousel.length < 3) { // 商品选择的图片集展示
           _selectCarousel.push(attrItem);
         }
@@ -655,7 +659,19 @@ export default {
           name: attrItem.attrValue
         })
 
-        attrItem.skuList.forEach(skuItem => { // 商品组合列表
+        attrItem.skuList.forEach((skuItem, skuIndex) => { // 商品组合列表
+          if (attrIndex == 0 && skuIndex == 0) {
+            if (_initSku.findIndex(initItem => initItem.attrValueId != attrItem.attrValueId) <= 0) {
+              _initSku.push({
+                id: skuItem.skuId,
+                [this.sku.tree[itemInxdex].k_s]: attrItem.attrValueId,
+                price: skuItem.skuPrice * 100, // list中的价格单位是分，所以需要乘以100
+                stock_num: skuItem.stockNum,
+                picture: skuItem.skuPicture,
+                name: attrItem.attrValue
+              });
+            }
+          }
           _skuList.push({ // sku 组合列表
             id: skuItem.skuId,
             [this.sku.tree[itemInxdex].k_s]: attrItem.attrValueId,
@@ -669,51 +685,64 @@ export default {
     })
 
     // 数组合并去重
-    console.log(_skuList)
     let arr = [];
     _skuList.forEach((item) => {
       let flag = true;
       let obj = item;
       arr.forEach((newItem, index) => {
         if (item.id === newItem.id) { // id一直合并对象属性
-          console.log(newItem)
-          console.log('-------------')
           newItem.stock_num = newItem.stock_num < item.stock_num ? newItem.stock_num : item.stock_num; // 库存选择相比较小的那一个
           obj = {
             ...item,
             ...newItem
           }
           arr[index] = obj;
-          console.log(obj)
-          console.log('+++++++++++++')
           flag = false;
         }
       })
       if (flag) {
-        console.log(obj)
-        console.log('=============')
         arr.push(obj);
       }
     })
 
-    console.log(arr)
     this.selectCarousel = _selectCarousel;
-  
     this.sku.list = arr;
-    // this.initialSku = this.selectSku = {
-    //   ...arr[0],
-    //   selectedNum: 1,
-    //   selectedSkuComb: {
-    //     stock_num: arr[0].stock_num
-    //   }
-    // }
+
+    // 初始化默认选中的商品sku, 不从上面数组中拿是因为没办法保证数组中的第一个是所选属性的第一个选项
+    let initArr = [];
+    _initSku.forEach(item => {
+      let flag = true;
+      let obj = item;
+      initArr.forEach((newItem, index) => {
+        newItem.stock_num = newItem.stock_num < item.stock_num ? newItem.stock_num : item.stock_num; // 库存选择相比较小的那一个
+        obj = {
+          ...newItem,
+          ...item
+        }
+        initArr[index] = obj;
+        flag = false;
+      })
+      if (flag) {
+        initArr.push(obj);
+      }
+    })
+    this.initialSku = this.selectSku = {
+      ...initArr[0],
+      selectedNum: 1,
+      selectedSkuComb: {
+        stock_num: initArr[0].stock_num
+      }
+    }
+    this.selectedSkuCombId = this.initialSku.id;
+    // 获取运费模板
+    this.getDeliveryInfo();
+
     this.likeList = [];
     // 获取商品推荐列表
     if (this.storeInfo.storeId) {
       const recommendData = await this.$api.getRecommendList({ shopId: this.storeInfo.storeId, categoryId: 7 }); // 465085110123757568
       this.likeList = recommendData.data;
     }
-    
   },
   activated() {
     if (this.$store.state.user.authToken) {
@@ -737,8 +766,6 @@ export default {
         // this.completeAddress = res.data.completeAddress; // 完整地址
         // 获取地址的时候默认是最后一级
         this.getNextArea(res.data.areaList[res.data.areaList.length - 2], false, true);
-        // 获取运费模板
-        // this.getDeliveryInfo(); // 每次进入不获取运费模板，因为默认不选中商品规格
       })
     } else {
       this.getNextArea({ id: 0 });
@@ -965,7 +992,8 @@ export default {
   bottom: 38px;
   left: auto;
   right: 16px;
-  width: fit-content;
+  width: auto;
+  white-space: nowrap;
   background-color: rgba(0, 0, 0, 0.45);
   border-radius: 12px;
   color: #fff;
