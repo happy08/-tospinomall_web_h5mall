@@ -69,8 +69,8 @@ export default {
     "/api": {
       // target: "http://192.168.2.34:9999", //120.78.145.142
       // target: "http://192.168.2.70:9999",
-      // target: "https://tospinomallapi.fyynet.com",
-      target: "http://192.168.2.35:9999",
+      target: "https://tospinomallapi.fyynet.com",
+      // target: "http://192.168.2.35:9999",
       //target: "http://120.78.145.142:9999",
       pathRewrite: {
         "^/api": "/"
@@ -115,7 +115,11 @@ export default {
       require("postcss-px2rem")({
         remUnit: 50
       })
-    ]
+    ],
+    analyze: true,
+    productionSourceMap: false,
+    productionGzip: true,
+    productionGzipExtensions: ['js', 'css', 'svg']
   },
   loading: false, // 加载进度条
   resourceHints: false, // 资源提示,加快初始页面加载时间
