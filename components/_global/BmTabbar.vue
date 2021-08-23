@@ -22,7 +22,7 @@ export default {
       tabs: [
         {
           name: 'home',
-          text: 'title_home',
+          text: 'home',
           icon: 'home'
         },
         {

@@ -41,7 +41,7 @@
         color="linear-gradient(270deg, #3EB5AE 0%, #70CEB6 100%)"
         :disabled="pwd.length < 6 || confirmPwd.length < 6"
         @click="submit">
-        {{ $t('111confirm') }}
+        {{ $t('confirm') }}
       </van-button>
     </div>
   </div>

@@ -30,7 +30,7 @@ export default {
   },
   computed: {
     title() { // 头部标题
-      return this.$route.query.type === 'forgot' ? this.$t('forgot.title') : this.$t('register');
+      return this.$route.query.type === 'forgot' ? this.$t('forgot_password') : this.$t('register');
     }
   },
   activated() {

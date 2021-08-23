@@ -127,7 +127,7 @@
       </template>
 
       <!-- 可能喜欢的推荐列表展示 -->
-      <div>
+      <div v-if="recommendList.length > 0">
         <van-divider class="plr-30 mt-24 fw fs-14 clr-black-85">
           <BmIcon :name="'xinaixin'" :width="'0.26rem'" :height="'0.22rem'" :color="'#FA2022'" class="mr-8" />
           {{ $t('you_may_also_like') }}

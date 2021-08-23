@@ -78,9 +78,9 @@
         <van-divider>{{ $t('or') }}</van-divider>
         <div class="flex login-page__btm--concat">
           <!-- facebook -->
-          <a href="#">
+          <!-- <a href="#">
             <BmIcon :name="'facebook-icon'" :width="'0.64rem'" :height="'0.64rem'" />
-          </a>
+          </a> -->
           <!-- 电话 -->
           <!-- <a href="#">
             <BmIcon :name="'phone-icon'" :width="'0.64rem'" :height="'0.64rem'" />
@@ -90,9 +90,9 @@
             <BmIcon :name="'twitter-icon'" :width="'0.64rem'" :height="'0.64rem'" />
           </a> -->
           <!-- google -->
-          <a href="#">
+          <!-- <a href="#">
             <BmIcon :name="'google-icon'" :width="'0.64rem'" :height="'0.64rem'" />
-          </a>
+          </a> -->
           <!-- 微信 -->
           <!-- <a href="#">
             <BmIcon :name="'wechat-icon'" :width="'0.64rem'" :height="'0.64rem'" />
