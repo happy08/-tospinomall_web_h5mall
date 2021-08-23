@@ -2,7 +2,7 @@ const cn = {
   collect: '收藏',
   open_by_browser: '用浏览器打开',
   refresh: '刷新',
-  menu_setting: '设置',
+  // menu_setting: '设置',
   // hello_blank_fragment: 'Hello blank fragment',
   // to_wrap_activity: 'wrap Activity',
   // to_wrap_fragment: 'Wrap Fragment',
@@ -25,7 +25,7 @@ const cn = {
   harvest_address: '收货地址',
   payment_settings: '支付设置',
   about_tospino: '关于Tospino',
-  clear_cache: '清理缓存',
+  // clear_cache: '清理缓存',
   feedback: '反馈',
   account_and_security: '账户与安全',
   log_out: '退出登录',
@@ -72,7 +72,7 @@ const cn = {
   my_shop: '我的店铺',
   settings: '设置',
   about: '关于Tospino',
-  check_for_update: '检查更新',
+  // check_for_update: '检查更新',
   term_of_service: '服务条款',
   privacy_policy: '隐私政策',
   user_agreement: '用户协议',
@@ -703,7 +703,6 @@ const cn = {
   copyright: '版权信息',
   take_address: '上门取件地址',
   address: '地址',
-  take_info: '收货信息',
   return_address: '退货地址'
 }
 
