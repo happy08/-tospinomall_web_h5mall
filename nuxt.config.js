@@ -1,3 +1,6 @@
+const webpack = require('webpack');
+const CompressionPlugin = require('compression-webpack-plugin');
+
 export default {
   server: {
     host: '0.0.0.0',
@@ -116,10 +119,25 @@ export default {
         remUnit: 50
       })
     ],
+    vendor: ['vant', 'axios'],
     analyze: true,
     productionSourceMap: false,
     productionGzip: true,
-    productionGzipExtensions: ['js', 'css', 'svg']
+    productionGzipExtensions: ['js', 'css', 'svg'],
+    plugins: [
+      new webpack.ContextReplacementPlugin(/moment[/\\]locale$/, /en-gb/), // 只打包英文語言
+      new CompressionPlugin({
+        test: /\.js$|\.html$|\.css/, // 匹配文件名
+        threshold: 10240, // 对超过10kb的数据进行压缩
+        deleteOriginalAssets: false // 是否删除原文件
+      })
+    ],
+    optimization: {
+      splitChunks: {
+        minSize: 10000,
+        maxSize: 2500000
+      }
+    }
   },
   loading: false, // 加载进度条
   resourceHints: false, // 资源提示,加快初始页面加载时间
