@@ -220,9 +220,9 @@
         </div>
       </div> -->
       <!-- 滚动标签栏部分 -->
-      <van-tabs sticky swipeable animated :offset-top="'0.88rem'" color="#42B7AE" v-model="tabCategoryActive" @change="getSearchList" class="mt-20 mh-83 custom-home-tab" :ellipsis="false">
+      <van-tabs sticky swipeable animated :offset-top="'0.88rem'" color="#42B7AE" v-model="tabCategoryActive" @change="getSearchList" class="mt-20 mh-60 custom-home-tab" :ellipsis="false">
         <van-tab v-for="(categoryItem, tabIndex) in categoryList" :title="categoryItem.name" :key="'scroll-tab-' + tabIndex" :name="categoryItem.name">
-          <empty-status v-if="searchList.length === 0" :image="require('@/assets/images/empty/order.png')" class="mlr-12 mh-83" />
+          <empty-status v-if="searchList.length === 0" :image="require('@/assets/images/empty/order.png')" class="mh-60" />
           <van-list
             v-else
             v-model="loading"
@@ -511,8 +511,8 @@ export default {
     position: absolute;
   }
 }
-.mh-83{
-  min-height: 83vh;
+.mh-60{
+  min-height: 60vh;
 }
 </style>
 
