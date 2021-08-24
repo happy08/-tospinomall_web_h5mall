@@ -43,7 +43,8 @@ export default {
     { src: "@/plugins/utils", ssr: false },
     "@/plugins/routeguard.js",
     "@/plugins/swiper.js",
-    { src: '@/plugins/vconsole', ssr: false }
+    { src: '@/plugins/vconsole', ssr: false },
+    { src: '@/plugins/algolia', ssr: false }
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
