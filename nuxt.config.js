@@ -42,7 +42,7 @@ export default {
     "@/plugins/vue-i18n",
     { src: "@/plugins/utils", ssr: false },
     "@/plugins/routeguard.js",
-    {src: "@/plugins/swiper.js", ssr: false},
+    { src: "@/plugins/swiper.js", ssr: false },
     { src: '@/plugins/vconsole', ssr: false }
   ],
 
