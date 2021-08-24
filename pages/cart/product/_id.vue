@@ -661,7 +661,8 @@ export default {
 
         attrItem.skuList.forEach((skuItem, skuIndex) => { // 商品组合列表
           if (attrIndex == 0 && skuIndex == 0) {
-            if (_initSku.findIndex(initItem => initItem.attrValueId != attrItem.attrValueId) <= 0) {
+            console.log(_initSku.findIndex(initItem => initItem.attrValueId != attrItem.attrValueId))
+            if (_initSku.findIndex(initItem => initItem.attrValueId != attrItem.attrValueId) < item.attrValues.length) {
               _initSku.push({
                 id: skuItem.skuId,
                 [this.sku.tree[itemInxdex].k_s]: attrItem.attrValueId,
@@ -710,6 +711,7 @@ export default {
 
     // 初始化默认选中的商品sku, 不从上面数组中拿是因为没办法保证数组中的第一个是所选属性的第一个选项
     let initArr = [];
+    console.log(_initSku)
     _initSku.forEach(item => {
       let flag = true;
       let obj = item;
@@ -726,6 +728,7 @@ export default {
         initArr.push(obj);
       }
     })
+    console.log(initArr)
     this.initialSku = this.selectSku = {
       ...initArr[0],
       selectedNum: 1,

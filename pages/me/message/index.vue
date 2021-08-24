@@ -4,7 +4,7 @@
     <BmHeaderNav :left="{ isShow: true }" :title="$t('message')" :fixed="true">
       <div slot="header-right">
         <BmImage 
-          :url="require('@/assets/images/icon/delete-icon.svg')"
+          :url="require('@/assets/images/icon/clear-icon.png')"
           :width="'0.48rem'" 
           :height="'0.48rem'"
           :isLazy="false"
@@ -37,7 +37,7 @@
 
 <script>
 import { List, Cell, CellGroup, Badge } from 'vant';
-import { getMsgCategory, markedAsRead } from '@/api/message';
+import { getMsgCategory, markedAsReadAll } from '@/api/message';
 import PullRefresh from '@/components/PullRefresh';
 
 export default {
@@ -73,10 +73,10 @@ export default {
           ...stickArr,
           ...list
         ];
-        let msgArr = this.messageList.filters(msgItem => {
+        let msgArr = this.messageList.filter(msgItem => {
           return parseFloat(msgItem.msgCount) > 0
         })
-        if (msgArr.length > 0) {
+        if (msgArr.length == 0) {
           this.$store.commit('user/SET_ISNEWMESSAGE', false);
         }
         this.refreshing.isFresh = false;
@@ -94,13 +94,9 @@ export default {
       this.getMsgCategory();
     },
     deleteFn() { // 清除未读消息
-      console.log('----')
-      this.messageList.forEach(item => {
-        if (parseFloat(item.msgCount) > 0) {
-          markedAsRead(item.id).then(() => {
-            this.getMsgCategory();
-          })
-        }
+      markedAsReadAll().then(() => {
+        this.getMsgCategory();
+        this.$store.commit('user/SET_ISNEWMESSAGE', false);
       })
     }
   },

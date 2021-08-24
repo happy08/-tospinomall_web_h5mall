@@ -25,15 +25,9 @@ export function getMsgCategory() {
 /**
  * 标记消息为已读
  */
-export function markedAsRead(categoryId) {
+export function markedAsReadAll() {
   return request({
-    url: '/api/sock/message/buyer/markedAsRead',
-    method: 'post',
-    data: {
-      categoryId
-    },
-    headers: {
-      'Content-Type': 'application/json'
-    }
+    url: '/api/sock/message/buyer/markedAsReadAll',
+    method: 'post'
   })
 }
