@@ -44,9 +44,9 @@
         <van-divider>{{ $t('or') }}</van-divider>
         <div class="flex login-page__btm--concat">
           <!-- facebook -->
-          <!-- <a href="#">
-            <BmIcon :name="'facebook-icon'" :width="'0.64rem'" :height="'0.64rem'" />
-          </a> -->
+          <!-- <a href="#"> -->
+            <!-- <BmIcon :name="'facebook-icon'" :width="'0.64rem'" :height="'0.64rem'" @iconClick="fLogin" /> -->
+          <!-- </a> -->
           <!-- 电话 -->
           <!-- <a href="#">
             <BmIcon :name="'phone-icon'" :width="'0.64rem'" :height="'0.64rem'" />
@@ -56,7 +56,7 @@
             <BmIcon :name="'twitter-icon'" :width="'0.64rem'" :height="'0.64rem'" />
           </a> -->
           <!-- google -->
-          <BmIcon :name="'google-icon'" :width="'0.64rem'" :height="'0.64rem'" @iconClick="gLogin" />
+          <BmIcon :name="'google-icon'" :width="'0.64rem'" :height="'0.64rem'" class="ml-18" @iconClick="gLogin" />
           
           <!-- <div class="g-signin2" data-onsuccess="gLogin"></div> -->
           <!-- 微信 -->
@@ -111,6 +111,10 @@ export default {
     let gScript = document.createElement('script');
     gScript.src = 'https://apis.google.com/js/platform.js';
     document.head.appendChild(gScript);
+
+    let fScript = document.createElement('script');
+    fScript.src = 'https://connect.facebook.net/en_US/sdk.js';
+    document.head.append(fScript);
   },
   methods: {
     login() {
@@ -193,6 +197,26 @@ export default {
           console.log('err: ' + err);
         })
       })
+    },
+    fLogin() { // facebook登录
+      console.log(FB)
+      FB.init({
+        appId: '231779648840263',
+        scope: 'public_profile, email',
+        version: 'v11.0'
+      })
+
+      FB.login(function(response){
+        console.log(response)
+      });
+
+      // FB.getLoginStatus(function (response) {
+      //   console.log(response)
+      // })
+
+      // FB.api('/me', function(response) {
+      //   console.log(response);
+      // });
     }
   },
 }
@@ -228,5 +252,8 @@ export default {
 }
 .login-btn{
   margin-top: 28px;
+}
+.ml-18{
+  margin-left: 18px;
 }
 </style>
