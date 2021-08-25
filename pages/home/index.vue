@@ -353,7 +353,7 @@ export default {
 
     const searchList = await this.$api.getProductSearch({ categoryName: '', pageSize: this.pageSize, pageIndex: this.pageIndex }); // 搜索商品列表
     
-    this.searchList = searchList.data.items.map(item => { // 搜索商品列表
+    let list = searchList.data.items.map(item => { // 搜索商品列表
       return {
         ...item,
         starLevel: parseFloat(item.starLevel),
@@ -361,6 +361,7 @@ export default {
         productPrice: parseFloat(item.productPrice)
       }
     })
+    this.searchList = this.pageIndex == 1 ? list : this.searchList.concat(list);
     this.tabTotal = searchList.data.total; // 搜索商品列表商品总数目
   },
   head() { // 头部设置，方便seo
