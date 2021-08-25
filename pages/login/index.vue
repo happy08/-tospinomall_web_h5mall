@@ -56,9 +56,9 @@
             <BmIcon :name="'twitter-icon'" :width="'0.64rem'" :height="'0.64rem'" />
           </a> -->
           <!-- google -->
-          <!-- <a href="#">
-            <BmIcon :name="'google-icon'" :width="'0.64rem'" :height="'0.64rem'" />
-          </a> -->
+          <BmIcon :name="'google-icon'" :width="'0.64rem'" :height="'0.64rem'" @iconClick="gLogin" />
+          
+          <!-- <div class="g-signin2" data-onsuccess="gLogin"></div> -->
           <!-- 微信 -->
           <!-- <a href="#">
             <BmIcon :name="'wechat-icon'" :width="'0.64rem'" :height="'0.64rem'" />
@@ -80,7 +80,7 @@
 
 <script>
 import { Divider, Field, DropdownMenu, DropdownItem, Cell } from 'vant';
-import { authLogin } from '@/api/login';
+import { authLogin, googleLogin } from '@/api/login';
 
 export default {
   components: {
@@ -106,6 +106,11 @@ export default {
         return lang.value === this.$store.state.locale;
       })[0].text;
     }
+  },
+  mounted() {
+    let gScript = document.createElement('script');
+    gScript.src = 'https://apis.google.com/js/platform.js';
+    document.head.appendChild(gScript);
   },
   methods: {
     login() {
@@ -144,6 +149,50 @@ export default {
     },
     login_service_privacy() {
       return this.$t('login_service_privacy', { replace_tip: `<a class="clr-blue" href="/service/serve?isH5=1">Tospino's ${this.$t('term_of_service')}</a>`, replace_tip2: `<a class="clr-blue" href="/service/privacy?isH5=1">${this.$t('privacy_policy')}</a>` });
+    },
+    gLogin() { // 谷歌登录
+      gapi.load('auth2', () => {
+        gapi.auth2.init({
+          // apiKey: 'xfIsWReVnZcSWj97q4O_7wWf',
+          // clientId: '425005141716-dq4s09u0iumv6trvrhu9nku71a297rsj.apps.googleusercontent.com',
+          apiKey: 'Wfrc034S1dNn-nqPmLLbEGRG',
+          clientId: '75328792168-dhmjntibom2p54u87gvg5qdekaaicuii.apps.googleusercontent.com',
+          scope: 'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/plus.me'
+        })
+        const getAuthInstance = gapi.auth2.getAuthInstance();
+        getAuthInstance.signIn().then(success => {
+          console.log('success');
+          // console.log(success);
+          console.log(success.getAuthResponse())
+          this.$toast.loading({
+            forbidClick: true,
+            loadingType: 'spinner',
+            duration: 0
+          });
+          googleLogin({ mobile: success.getAuthResponse().id_token, grant_type: 'google' }).then(res => {
+            this.$store.commit('user/SET_TOKEN', res.data.token_type + ' ' + res.data.access_token);
+            this.$store.commit('user/SET_REFRESHTOKEN', res.data.refresh_token);
+            this.$store.commit('user/SET_SCOPE', res.data.scope);
+            // 获取用户信息
+            this.$store.dispatch('user/GetUserInfo', res.data.token_type + ' ' + res.data.access_token);
+            // 获取消息信息
+            this.$store.commit('user/SET_WEBSOCKET', res.data.user_info.passUrl);
+            // 当前登录账号
+            this.$store.commit('user/SET_ACCOUNT', res.data.user_info.email);
+            this.$toast.clear();
+            // 登录成功跳转到首页
+            setTimeout(() => {
+              this.account = '';
+              this.password = '';
+              this.$router.push({
+                name: 'home'
+              })
+            }, 300);
+          })
+        }, err => {
+          console.log('err: ' + err);
+        })
+      })
     }
   },
 }

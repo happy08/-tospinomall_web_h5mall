@@ -81,13 +81,12 @@ export function buyerRegister(params) { // 买家用户注册
  * 账号登录
  */
 export function authLogin(params) { // 账号登录
-  console.log(params)
   return request({
     url: '/auth/oauth/token',
     method: 'post',
     data: qs.stringify({ ...params, password: encrypt(params.password) }),
     headers: {
-      clientType: 'web',
+      clientType: 'h5',
       version: '1.0.0',
       language: getCookie('lang'),
       Authorization: 'Basic YnV5ZXI6YnV5ZXI='
@@ -104,7 +103,7 @@ export function authCodeLogin(params) {
     method: 'post',
     data: qs.stringify({ grant_type: 'mobile', ...params }),
     headers: {
-      clientType: 'web',
+      clientType: 'h5',
       version: '1.0.0',
       language: getCookie('lang')
     }
@@ -131,6 +130,22 @@ export function logout() {
     method: 'delete',
     headers: {
       Authorization: getCookie('authToken')
+    }
+  })
+}
+
+/**
+ * 谷歌登录
+ */
+export function googleLogin(data) {
+  return request({
+    url: '/auth/mobile/token/social',
+    method: 'post',
+    data: qs.stringify(data),
+    headers: {
+      clientType: 'h5',
+      version: '1.0.0',
+      language: getCookie('lang')
     }
   })
 }
