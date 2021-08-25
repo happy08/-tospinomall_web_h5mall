@@ -6,7 +6,7 @@ import qs from 'qs';
  */
 export function submitOrder(data) {
   return request({
-    url: '/api/order/omsorder/submitOrder',
+    url: '/order/omsorder/submitOrder',
     method: 'post',
     data: data,
     headers: {
@@ -20,7 +20,7 @@ export function submitOrder(data) {
  */
 export function getOrderDetail(orderId) {
   return request({
-    url: `/api/order/omsorder/buyer/detail/${orderId}`,
+    url: `/order/omsorder/buyer/detail/${orderId}`,
     method: 'get'
   })
 }
@@ -30,7 +30,7 @@ export function getOrderDetail(orderId) {
  */
 export function deleteOrder(id) {
   return request({
-    url: `/api/order/omsorder/buyer/delete/${id}`,
+    url: `/order/omsorder/buyer/delete/${id}`,
     method: 'delete'
   })
 }
@@ -40,7 +40,7 @@ export function deleteOrder(id) {
  */
 export function cancelOrder(data) {
   return request({
-    url: '/api/order/omsorder/buyer/cancel',
+    url: '/order/omsorder/buyer/cancel',
     method: 'post',
     data: qs.stringify(data)
   })
@@ -51,8 +51,8 @@ export function cancelOrder(data) {
  */
 export function getOrderReasonList(params) {
   return request({
-    // url: '/api/basics/base/trade/orderReason/findByConditions',
-    url: '/api/basics/base/trade/orderReason/findReasonByApplyTypeAndGoodsStatus',
+    // url: '/basics/base/trade/orderReason/findByConditions',
+    url: '/basics/base/trade/orderReason/findReasonByApplyTypeAndGoodsStatus',
     method: 'get',
     params
   })
@@ -63,7 +63,7 @@ export function getOrderReasonList(params) {
  */
 export function getOrderRateCount() {
   return request({
-    url: '/api/order/omsorder/buyer/orderItem/commentCount',
+    url: '/order/omsorder/buyer/orderItem/commentCount',
     method: 'get'
   })
 }
@@ -73,7 +73,7 @@ export function getOrderRateCount() {
  */
 export function getOrderAfterSalesCount() {
   return request({
-    url: '/api/order/orderReturn/buyer/findAfterSalesCount',
+    url: '/order/orderReturn/buyer/findAfterSalesCount',
     method: 'get'
   })
 }
@@ -83,7 +83,7 @@ export function getOrderAfterSalesCount() {
  */
 export function getOrderItem(itemId) {
   return request({
-    url: `/api/order/omsorder/buyer/getItemById/${itemId}`,
+    url: `/order/omsorder/buyer/getItemById/${itemId}`,
     method: 'get'
   })
 }
@@ -93,7 +93,7 @@ export function getOrderItem(itemId) {
  */
 export function applyAfterSale(data) {
   return request({
-    url: '/api/order/orderReturn/buyer/applyAfterSale',
+    url: '/order/orderReturn/buyer/applyAfterSale',
     method: 'post',
     data: data,
     headers: {
@@ -107,7 +107,7 @@ export function applyAfterSale(data) {
  */
 export function updateApply(data) {
   return request({
-    url: '/api/order/orderReturn/buyer/updateApply',
+    url: '/order/orderReturn/buyer/updateApply',
     method: 'post',
     data: data,
     headers: {
@@ -121,7 +121,7 @@ export function updateApply(data) {
  */
 export function getReturnDetail(returnId) {
   return request({
-    url: `/api/order/orderReturn/buyer/returnDetail/${returnId}`,
+    url: `/order/orderReturn/buyer/returnDetail/${returnId}`,
     method: 'get'
   })
 }
@@ -131,7 +131,7 @@ export function getReturnDetail(returnId) {
  */
 export function getUpdateReturnDetail(returnId) {
   return request({
-    url: `/api/order/orderReturn/buyer/returnDetail/update/${returnId}`,
+    url: `/order/orderReturn/buyer/returnDetail/update/${returnId}`,
     method: 'get'
   })
 }
@@ -141,7 +141,7 @@ export function getUpdateReturnDetail(returnId) {
  */
 export function getNegotiationHistory(orderReturnId) {
   return request({
-    url: `/api/order/orderReturn/buyer/findNegotiationHistory/${orderReturnId}`,
+    url: `/order/orderReturn/buyer/findNegotiationHistory/${orderReturnId}`,
     method: 'get'
   })
 }
@@ -151,7 +151,7 @@ export function getNegotiationHistory(orderReturnId) {
  */
 export function revokeApply(orderReturnId) {
   return request({
-    url: '/api/order/orderReturn/buyer/revokeApply',
+    url: '/order/orderReturn/buyer/revokeApply',
     method: 'post',
     data: qs.stringify({ orderReturnId })
   })
@@ -162,7 +162,7 @@ export function revokeApply(orderReturnId) {
  */
 export function getOrderCount() {
   return request({
-    url: '/api/order/omsorder/buyer/get/count',
+    url: '/order/omsorder/buyer/get/count',
     method: 'get'
   })
 }
@@ -172,7 +172,7 @@ export function getOrderCount() {
  */
 export function confirmReceiptOrder(orderId) {
   return request({
-    url: `/api/order/omsorder/buyer/take/${orderId}`,
+    url: `/order/omsorder/buyer/take/${orderId}`,
     method: 'get'
   })
 }
@@ -182,7 +182,7 @@ export function confirmReceiptOrder(orderId) {
  */
 export function getLogisticsInfo(no) {
   return request({
-    url: `/api/order/omsorder/buyer/getLogisticsInfo/${no}`,
+    url: `/order/omsorder/buyer/getLogisticsInfo/${no}`,
     method: 'get'
   })
 }
@@ -192,7 +192,7 @@ export function getLogisticsInfo(no) {
  */
 export function removeOrder(id) {
   return request({
-    url: '/api/order/orderReturn/buyer/removeOrder',
+    url: '/order/orderReturn/buyer/removeOrder',
     method: 'post',
     data: qs.stringify({ id })
   })
@@ -203,7 +203,7 @@ export function removeOrder(id) {
  */
 export function applyMallIntervene(data) {
   return request({
-    url: '/api/order/order/return/work/buyer/applyMallIntervene',
+    url: '/order/order/return/work/buyer/applyMallIntervene',
     method: 'post',
     data: qs.stringify(data)
   })
@@ -214,7 +214,7 @@ export function applyMallIntervene(data) {
  */
 export function returnWorkDetail(workId) {
   return request({
-    url: '/api/order/order/return/work/info/findReturnWorkAllegeList',
+    url: '/order/order/return/work/info/findReturnWorkAllegeList',
     method: 'get',
     params: {
       workId
@@ -227,7 +227,7 @@ export function returnWorkDetail(workId) {
  */
 export function cancelApply(workId) {
   return request({
-    url: '/api/order/order/return/work/buyer/cancel/apply',
+    url: '/order/order/return/work/buyer/cancel/apply',
     method: 'get',
     params: {
       workId
@@ -240,7 +240,7 @@ export function cancelApply(workId) {
  */
 export function addToProof(params) {
   return request({
-    url: '/api/order/order/return/work/buyer/addto/proof',
+    url: '/order/order/return/work/buyer/addto/proof',
     method: 'get',
     params
   })
@@ -251,7 +251,7 @@ export function addToProof(params) {
  */
 export function writeReturnOrder(data) {
   return request({
-    url: '/api/order/orderReturn/buyer/writeRefundOrder',
+    url: '/order/orderReturn/buyer/writeRefundOrder',
     method: 'post',
     data: data,
     headers: {
@@ -265,7 +265,7 @@ export function writeReturnOrder(data) {
  */
 export function updateLogisticsOrder(data) {
   return request({
-    url: '/api/order/orderReturn/buyer/updateLogisticsOrder',
+    url: '/order/orderReturn/buyer/updateLogisticsOrder',
     method: 'post',
     data: data,
     headers: {

@@ -7,7 +7,7 @@ const development = {
 
 //线上配置
 const production = {
-  DOMAIN_API: "https://api.test.net", //请求地址
+  DOMAIN_API: "https://tospinomallapi.fyynet.com", //请求地址
   PATH_API: "", //接口路径  api/
   VERSION_API: "" //版本
 };

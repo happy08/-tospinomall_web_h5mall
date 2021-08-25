@@ -6,7 +6,7 @@ import request from './request';
  */
 export function getDeliveryInfo(data) {
   return request({
-    url: '/api/product/goods/client/get/delivery/info',
+    url: '/product/goods/client/get/delivery/info',
     method: 'post',
     data: data,
     headers: {
@@ -20,7 +20,7 @@ export function getDeliveryInfo(data) {
  */
  export function getSkuStock(skuId) {
   return request({
-    url: `/api/product/goods/get/stock/${skuId}`,
+    url: `/product/goods/get/stock/${skuId}`,
     method: 'get'
   })
 }
@@ -30,7 +30,7 @@ export function getDeliveryInfo(data) {
  */
 export function attentionProduct(params) {
   return request({
-    url: `/api/admin/buyerAttention/attention/good`,
+    url: `/admin/buyerAttention/attention/good`,
     method: 'get',
     params
   })
@@ -41,7 +41,7 @@ export function attentionProduct(params) {
  */
 export function addCart(data) {
   return request({
-    url: '/api/carts/shoppingCart/addCart',
+    url: '/carts/shoppingCart/addCart',
     method: 'post',
     data: qs.stringify(data)
   })
@@ -52,7 +52,7 @@ export function addCart(data) {
  */
 export function removeCart(data) {
   return request({
-    url: '/api/carts/shoppingCart/removeCart',
+    url: '/carts/shoppingCart/removeCart',
     method: 'delete',
     data: qs.stringify(data),
     headers: {
@@ -66,7 +66,7 @@ export function removeCart(data) {
  */
 export function setOftenBuy(data) {
   return request({
-    url: '/api/carts/shoppingCart/setOftenBuy',
+    url: '/carts/shoppingCart/setOftenBuy',
     method: 'put',
     data: qs.stringify(data),
     headers: {
@@ -80,7 +80,7 @@ export function setOftenBuy(data) {
  */
 export function getCartCount() {
   return request({
-    url: '/api/carts/shoppingCart/findCount',
+    url: '/carts/shoppingCart/findCount',
     method: 'get'
   })
 }
@@ -90,7 +90,7 @@ export function getCartCount() {
  */
 export function moveToFavorite(data) {
   return request({
-    url: '/api/carts/shoppingCart/moveToFavorites',
+    url: '/carts/shoppingCart/moveToFavorites',
     method: 'delete',
     data: qs.stringify(data),
     headers: {
@@ -104,7 +104,7 @@ export function moveToFavorite(data) {
  */
 export function getCalculatePrice(data) {
   return request({
-    url: '/api/carts/shoppingCart/calculatePrice',
+    url: '/carts/shoppingCart/calculatePrice',
     method: 'put',
     data: data,
     headers: {
@@ -118,7 +118,7 @@ export function getCalculatePrice(data) {
  */
 export function updateCartNum(data) {
   return request({
-    url: '/api/carts/shoppingCart/updateCartNumById',
+    url: '/carts/shoppingCart/updateCartNumById',
     method: 'put',
     data
   })
@@ -129,7 +129,7 @@ export function updateCartNum(data) {
  */
 export function getSaleInfo(data) {
   return request({
-    url: '/api/product/goods/get/saleInfo',
+    url: '/product/goods/get/saleInfo',
     method: 'post',
     data: data,
     headers: {
@@ -143,7 +143,7 @@ export function getSaleInfo(data) {
  */
 export function modifySku(data) {
   return request({
-    url: '/api/carts/shoppingCart/modifySku',
+    url: '/carts/shoppingCart/modifySku',
     method: 'put',
     data: qs.stringify(data),
     headers: {

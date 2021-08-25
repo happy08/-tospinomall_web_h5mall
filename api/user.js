@@ -7,7 +7,7 @@ import { encrypt } from './cryptoAES'; // 加密解密
  */
 export function updateUserInfo(data) {
   return request({
-    url: '/api/admin/ums/buyer/updateUserinfo',
+    url: '/admin/ums/buyer/updateUserinfo',
     method: 'post',
     data: qs.stringify(data)
   })
@@ -18,7 +18,7 @@ export function updateUserInfo(data) {
  */
 export function getPicUrl(data) {
   return request({
-    url: '/api/admin/oss/create/object/product-pic-bucket/user_pic',
+    url: '/admin/oss/create/object/product-pic-bucket/user_pic',
     method: 'post',
     data: data,
     headers: {
@@ -32,7 +32,7 @@ export function getPicUrl(data) {
  */
 export function updatePassword(data) {
   return request({
-    url: '/api/admin/ums/buyer/updatePassword',
+    url: '/admin/ums/buyer/updatePassword',
     method: 'post',
     data: qs.stringify({ ...data, newPassword: encrypt(data.newPassword), oldPassword: encrypt(data.oldPassword) })
   })
@@ -43,7 +43,7 @@ export function updatePassword(data) {
  */
 export function checkPassword(password) {
   return request({
-    url: '/api/admin/ums/buyer/checkPassword',
+    url: '/admin/ums/buyer/checkPassword',
     method: 'post',
     data: qs.stringify({ password: encrypt(password) })
   })
@@ -54,7 +54,7 @@ export function checkPassword(password) {
  */
 export function getCurrentCode(type) {
   return request({
-    url: '/api/admin/ums/checkcode/getCurrentPhoneCode',
+    url: '/admin/ums/checkcode/getCurrentPhoneCode',
     method: 'get',
     params: {
       type: type,
@@ -68,7 +68,7 @@ export function getCurrentCode(type) {
  */
 export function checkCurrentCode(data) {
   return request({
-    url: '/api/admin/ums/checkcode/checkCurrentPhoneOrEmail',
+    url: '/admin/ums/checkcode/checkCurrentPhoneOrEmail',
     method: 'post',
     data: qs.stringify({
       ...data,
@@ -82,8 +82,8 @@ export function checkCurrentCode(data) {
  */
 export function getLangList(type = 'sys_language_type') {
   return request({
-    // url: `/api/admin/dict/type/${type}`,
-    url: `/api/basics/dict/type/${type}`,
+    // url: `/admin/dict/type/${type}`,
+    url: `/basics/dict/type/${type}`,
     method: 'get'
   })
 }
@@ -93,7 +93,7 @@ export function getLangList(type = 'sys_language_type') {
  */
 export function getFeedbackTypeList() {
   return request({
-    url: '/api/basics/operateFeedbackCategory/findList',
+    url: '/basics/operateFeedbackCategory/findList',
     method: 'get'
   })
 }
@@ -103,7 +103,7 @@ export function getFeedbackTypeList() {
  */
 export function operateFeedback(data) {
   return request({
-    url: '/api/basics/operateFeedbackMsg/buyer/save',
+    url: '/basics/operateFeedbackMsg/buyer/save',
     method: 'post',
     data: data,
     headers: {
@@ -117,7 +117,7 @@ export function operateFeedback(data) {
  */
 export function getService(params) {
   return request({
-    url: '/api/basics/operateSinglePage/findByQuery',
+    url: '/basics/operateSinglePage/findByQuery',
     method: 'get',
     params
   })

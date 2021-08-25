@@ -11,7 +11,7 @@ import { getCookie } from './utils';
  */
 export function getPhonePrefix() {
   return request({
-    url: '/api/basics/base/phonePrefix/find/0',
+    url: '/basics/base/phonePrefix/find/0',
     method: 'get',
     headers: {
       'Content-Type': 'application/json'
@@ -24,7 +24,7 @@ export function getPhonePrefix() {
  */
 export function getPhoneCode(params) {
   return request({
-    url: '/api/admin/ums/checkcode/getPhoneCode',
+    url: '/admin/ums/checkcode/getPhoneCode',
     method: 'get',
     params,
     headers: {
@@ -38,7 +38,7 @@ export function getPhoneCode(params) {
  */
  export function checkPhoneCode(data) { // 校验用户手机号码
   return request({
-    url: '/api/admin/ums/checkcode/checkPhone',
+    url: '/admin/ums/checkcode/checkPhone',
     method: 'post',
     data: qs.stringify(data)
   })
@@ -49,7 +49,7 @@ export function getPhoneCode(params) {
  */
  export function getEmailCode(params) { // 获取邮箱验证码
   return request({
-    url: '/api/admin/ums/checkcode/getEmailCode',
+    url: '/admin/ums/checkcode/getEmailCode',
     method: 'get',
     params
   })
@@ -60,7 +60,7 @@ export function getPhoneCode(params) {
  */
 export function checkEmailCode(params) { // 校验用户邮箱验证码
   return request({
-    url: '/api/admin/ums/checkcode/checkEmailCode',
+    url: '/admin/ums/checkcode/checkEmailCode',
     method: 'post',
     data: qs.stringify(params)
   })
@@ -71,7 +71,7 @@ export function checkEmailCode(params) { // 校验用户邮箱验证码
  */
 export function buyerRegister(params) { // 买家用户注册
   return request({
-    url: '/api/admin/ums/buyer/register',
+    url: '/admin/ums/buyer/register',
     method: 'post',
     data: qs.stringify({ ...params, password: encrypt(params.password), repeatPassword: encrypt(params.repeatPassword) })
   })
@@ -83,7 +83,7 @@ export function buyerRegister(params) { // 买家用户注册
 export function authLogin(params) { // 账号登录
   console.log(params)
   return request({
-    url: '/api/auth/oauth/token',
+    url: '/auth/oauth/token',
     method: 'post',
     data: qs.stringify({ ...params, password: encrypt(params.password) }),
     headers: {
@@ -100,7 +100,7 @@ export function authLogin(params) { // 账号登录
  */
 export function authCodeLogin(params) {
   return request({
-    url: '/api/auth/mobile/token/sms',
+    url: '/auth/mobile/token/sms',
     method: 'post',
     data: qs.stringify({ grant_type: 'mobile', ...params }),
     headers: {
@@ -116,7 +116,7 @@ export function authCodeLogin(params) {
  */
 export function forgetPwd(params) {
   return request({
-    url: '/api/admin/ums/buyer/forgetPassword',
+    url: '/admin/ums/buyer/forgetPassword',
     method: 'post',
     data: qs.stringify({ ...params, password: encrypt(params.password), repeatPassword: encrypt(params.repeatPassword) })
   })
@@ -127,7 +127,7 @@ export function forgetPwd(params) {
  */
 export function logout() {
   return request({
-    url: '/api/auth/token/logout',
+    url: '/auth/token/logout',
     method: 'delete',
     headers: {
       Authorization: getCookie('authToken')
