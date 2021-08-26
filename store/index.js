@@ -58,7 +58,7 @@ export const actions = {
     }
 
     // 是否有未读消息
-    commit('user/SET_ISNEWMESSAGE', $cookies.get('isNewWebsocketMsg'));
+    commit('user/SET_ISNEWMESSAGE', Boolean($cookies.get('isNewWebsocketMsg')));
 
     const searchList = decodeURI($cookies.get('searchList')); // 商品搜索历史
     if (searchList != 'undefined') {
