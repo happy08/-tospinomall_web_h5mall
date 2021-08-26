@@ -1,4 +1,4 @@
-import { setCookie } from '/api/utils';
+// import { setCookie } from '/api/utils';
 
 export const state = () => ({
   authToken: null,
@@ -39,7 +39,7 @@ export const mutations = {
       }
       state.searchList = [...new Set(state.searchList)]; // 去重
     }
-    setCookie('searchList', encodeURI(state.searchList));
+    this.$cookies.set('searchList', encodeURI(state.searchList));
   },
   SET_ORDERSEARCHLIST(state, searchItem) {
     if (searchItem == null) {
@@ -52,7 +52,7 @@ export const mutations = {
       }
       state.orderSearchList = [...new Set(state.orderSearchList)]; // 去重
     }
-    setCookie('orderSearchList', encodeURI(state.orderSearchList));
+    this.$cookies.set('orderSearchList', encodeURI(state.orderSearchList));
   },
   SET_WEBSOCKET(state, websocketMsg) {
     state.websocketMsg = websocketMsg;

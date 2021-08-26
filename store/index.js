@@ -62,12 +62,12 @@ export const actions = {
 
     const searchList = decodeURI($cookies.get('searchList')); // 商品搜索历史
     if (searchList != 'undefined') {
-      commit('user/SET_SEARCHLIST', searchList);
+      commit('user/SET_SEARCHLIST', searchList.split(','));
     }
 
     const orderSearchList = decodeURI($cookies.get('orderSearchList')); // 订单搜索历史
     if (orderSearchList != 'undefined') {
-      commit('user/SET_ORDERSEARCHLIST', orderSearchList);
+      commit('user/SET_ORDERSEARCHLIST', orderSearchList.split(','));
     }
     
 

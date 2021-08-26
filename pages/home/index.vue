@@ -65,7 +65,7 @@
       <div v-for="(moduleItem, moduleIndex) in moduleData" :key="'module-data-' + moduleIndex">
         <h2 class="fs-18 mlr-12 fw black pt-20 lh-20 fm-din-alternate" v-if="moduleItem.moduleTitleDisplay">{{ moduleItem.moduleTitle }}</h2>
         <!-- 整屏轮播图 -->
-        <template v-if="moduleItem.type === 1">
+        <div v-if="moduleItem.type === 1">
           <swiper
             ref="swiperFullScreenRef"
             class="mt-12 swiper home-banner-swiper"
@@ -88,7 +88,7 @@
             </swiper-slide>
             <div class="swiper-pagination swiper-full-pagination" slot="pagination"></div>
           </swiper>
-        </template>
+        </div>
 
         <!-- 热区图片 -->
         <template v-if="moduleItem.type === 2">
