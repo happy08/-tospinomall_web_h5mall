@@ -149,3 +149,19 @@ export function googleLogin(data) {
     }
   })
 }
+
+/**
+ * facebook登录
+ */
+export function facebookLogin(data) {
+  return request({
+    url: '/auth/mobile/token/social',
+    method: 'post',
+    data: qs.stringify(data),
+    headers: {
+      clientType: 'h5',
+      version: '1.0.0',
+      language: getCookie('lang')
+    }
+  })
+}

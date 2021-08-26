@@ -80,7 +80,7 @@
 
 <script>
 import { Divider, Field, DropdownMenu, DropdownItem, Cell } from 'vant';
-import { authLogin, googleLogin } from '@/api/login';
+import { authLogin, googleLogin, facebookLogin } from '@/api/login';
 
 export default {
   components: {
@@ -194,7 +194,8 @@ export default {
             }, 300);
           })
         }, err => {
-          console.log('err: ' + err);
+          console.log('err: ');
+          console.log(err);
         })
       })
     },
@@ -208,15 +209,14 @@ export default {
 
       FB.login(function(response){
         console.log(response)
+        if (response.status == 'connected') { // 连接成功
+          FB.api('/me', user => { // 获取用户信息
+            console.log(user);
+          })
+          // facebookLogin({ mobile: { userId: response.authResponse.userID, email:  } })
+        }
+        console.log(response)
       });
-
-      // FB.getLoginStatus(function (response) {
-      //   console.log(response)
-      // })
-
-      // FB.api('/me', function(response) {
-      //   console.log(response);
-      // });
     }
   },
 }
