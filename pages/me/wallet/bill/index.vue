@@ -8,7 +8,7 @@
       <div class="bg-white plr-12 pt-4 pb-10 border-b" v-if="list.length > 0">
         <van-search 
           v-model="searchVal" 
-          :placeholder="$t('me.wallet.searchBillPlaceholder')"
+          :placeholder="$t('bill_search_placeholder')"
           shape="round"
           @focus="isHeader = true"
           :show-action="isHeader"
@@ -23,7 +23,7 @@
       <van-list
         v-model="loading"
         :finished="finished"
-        finished-text="没有更多了"
+        finished-text=""
         @load="onLoad"
       >
         <div v-for="(item, index) in list" :key="index">
@@ -118,7 +118,7 @@ export default {
               return {
                 ...infoItem,
                 payTypeLabel: infoItem.payType == 2 ? 'MTN.png' : infoItem.payType == 3 ? 'VODAFONE.png' : infoItem.payType == 4 ? 'ARTLTIGO.png' : 'MTN.png',
-                statusLabel: infoItem.status == 1 ? '成功' : infoItem.status == 2 ? '待支付' : infoItem.status == 3 ? '已取消' : '失败',
+                statusLabel: infoItem.status == 1 ? this.$t('bill_success') : infoItem.status == 2 ? this.$t('bill_to_pay') : infoItem.status == 3 ? this.$t('cancelled') : this.$t('bill_fail'),
               }
             })
           }

@@ -25,6 +25,7 @@
           v-model="message"
           rows="2"
           type="textarea"
+          maxlength="500"
           :placeholder="$t('feedback_input_hint')"
         />
         <!-- 上传图片 -->

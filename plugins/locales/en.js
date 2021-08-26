@@ -706,7 +706,11 @@ const en = {
   return_address: 'Return address',
   me_read_and_agreen_server: 'I have read and agree to the {replace_tip} and the {replace_tip2}',
   reply: 'Reply',
-  please_choose_address: 'Please select the delivery address'
+  please_choose_address: 'Please select the delivery address',
+  bill_search_placeholder: 'Enter bill-related information',
+  bill_success: 'Success',
+  bill_to_pay: 'To pay',
+  bill_fail: 'Fail'
 }
 
 export default en;

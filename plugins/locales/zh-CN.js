@@ -707,7 +707,11 @@ const cn = {
   me_read_and_agreen_server: '我已阅读并同意{replace_tip}和{replace_tip2}',
   please_read_checked: '请阅读并勾选协议',
   reply: '回复',
-  please_choose_address: '请选择收货地址'
+  please_choose_address: '请选择收货地址',
+  bill_search_placeholder: '输入账单相关信息',
+  bill_success: '成功',
+  bill_to_pay: '待支付',
+  bill_fail: '失败'
 }
 
 export default cn;
