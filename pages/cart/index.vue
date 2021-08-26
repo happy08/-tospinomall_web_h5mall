@@ -286,6 +286,11 @@ export default {
         })
       }
     });
+
+    this.checked = this.list.filter(item => {
+      return item.isAll == false;
+    }).length == 0 ? true : false;
+
     this.totalAmount = listData.data.totalAmount;
     this.onCountPrice();
     this.refreshing.isFresh = false;
@@ -571,7 +576,6 @@ export default {
       })
     },
     onLoad() { // 加载更多推荐商品
-      console.log('-------------加载')
       if (this.total == this.recommendList.length) { // 没有下一页了
         this.finished = true;
         this.loading = false;
