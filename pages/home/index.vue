@@ -126,7 +126,7 @@
                 />
               </nuxt-link>
             </swiper-slide>
-            <div class="swiper-pagination swiper-group-pagination" v-if="moduleItem.effect" slot="pagination"></div>
+            <div class="swiper-pagination swiper-group-pagination" v-show="moduleItem.effect" slot="pagination"></div>
           </swiper>
         </div>
 
