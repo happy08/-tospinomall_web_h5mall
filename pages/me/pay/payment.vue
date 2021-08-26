@@ -10,7 +10,7 @@
           <!-- 左侧图标 -->
           <template #icon>
             <BmImage
-              :url="require('@/assets/images/icon/'+ item.label +'.png')"
+              :url="require('@/assets/images/icon/'+ (item.label) +'.png')"
               :width="'0.48rem'" 
               :height="'0.48rem'"
               :isLazy="false"
@@ -149,7 +149,10 @@ export default {
       });
 
       if (this.$route.query.type == 'order') { // 说明是从订单结算页面跳转过来的，支付方式就有余额
-        this.list.push('balance');
+        this.list.push({
+          label: 'balance',
+          phone: ''
+        });
       }
     })
   },
@@ -162,6 +165,15 @@ export default {
     },
     onPay() { // 提交支付,成功跳转到确认订单页面
       if (this.payRadio == 'balance') { // 余额支付
+        if (this.$store.state.user.userInfo.payPassword == '') { // 未设置支付密码
+          this.$router.push({
+            name: 'me-pay-changePwd',
+            query: { 
+              from: 'me-pay-payment',
+            }
+          })
+          return false;
+        }
         this.balanceShow = true;
         return false;
       }

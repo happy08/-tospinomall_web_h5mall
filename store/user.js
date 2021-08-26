@@ -109,12 +109,14 @@ export const actions = {
     return new Promise((resolve, reject) => {
       this.$api.logout().then(res => {
         commit('SET_TOKEN', null);
+        commit('SET_USERINFO', null);
         this.$router.push({
           name: 'login'
         })
         resolve(res);
       }).catch(error => {
         commit('SET_TOKEN', null);
+        commit('SET_USERINFO', null);
         reject(error);
       })
     })
