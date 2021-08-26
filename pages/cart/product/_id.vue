@@ -18,7 +18,7 @@
             size="0.64rem"
             v-show="!isScroll"
             @click="leftBack"
-          ></van-icon>
+          />
           <nuxt-link
             :to="{ name: 'search' }"
             class="sticky-opacity ml-14"
@@ -53,36 +53,30 @@
       ref="detailTabContainer"
     >
       <van-tab :title="$t('shot')" name="Short">
-        <!-- 商品轮播图 -->
-        <swiper
-          ref="swiperComponentRef"
-          :options="swiperOption"
-          class="swiper-container"
-        >
-          <swiper-slide
-            v-for="(productItem, productIndex) in carouselMapUrls"
-            :key="productIndex"
-            @click.native="onPreviewPic(productIndex)"
-          >
-            <BmImage
-              :url="productItem.imgUrl"
-              :width="'7.5rem'"
-              :height="'7.5rem'"
-              :isLazy="false"
-              :isShow="false"
-              :fit="'cover'"
-            />
-          </swiper-slide>
-          <div class="swiper-pagination" slot="pagination"></div>
-        </swiper>
+        <div>
+          <!-- 商品轮播图 -->
+          <swiper ref="swiperComponentRef" :options="swiperOption" class="swiper-container">
+            <swiper-slide v-for="(productItem, productIndex) in carouselMapUrls" :key="productIndex" @click.native="onPreviewPic(productIndex)">
+              <BmImage
+                :url="productItem.imgUrl"
+                :width="'7.5rem'"
+                :height="'7.5rem'"
+                :isLazy="false"
+                :isShow="false"
+                :fit="'cover'"
+              />
+            </swiper-slide>
+            <div class="swiper-pagination" slot="pagination"></div>
+          </swiper>
+        </div>
 
         <!-- 商品介绍 -->
         <div class="mt-12 bg-white plr-20 ptb-14">
           <div>
-            <span class="fs-16 red fw"
-              ><span class="fm-menlo">{{ $store.state.rate.currency }}</span
-              ><span class="fm-din">{{ goodSpuVo.minPrice }}</span></span
-            >
+            <span class="fs-16 red fw">
+              <span class="fm-menlo">{{ $store.state.rate.currency }}</span>
+              <span class="fm-din">{{ goodSpuVo.minPrice }}</span>
+            </span>
             <!-- 促销价 -->
             <!-- <span class="ml-8 grey line-through">{{ $store.state.rate.currency }}260.00</span> -->
           </div>
@@ -92,9 +86,7 @@
             <span class="plr-12 ptb-4 round-8 tag-bgd mt-8 iblock fm-helvetica">Sold: 20PCS</span>
           </div> -->
           <!-- 商品标题 -->
-          <p class="fs-14 block mt-12 fm-helvetica">
-            {{ goodSpuVo.goodTitle }}
-          </p>
+          <h2 class="fs-14 block mt-12 fm-helvetica">{{ goodSpuVo.goodTitle }}</h2>
         </div>
 
         <!-- 运费 -->
@@ -113,7 +105,7 @@
                   @click="deliveryShow = true"
                   >{{ $t("cart.delivery") }}: CHY0.00</span
                 > -->
-                <span class="ml-12 fs-12 grey fm-helvetica">{{ completeAddress ? completeAddress : '请选择收货地址'}}</span>
+                <span class="ml-12 fs-12 grey fm-helvetica">{{ completeAddress ? completeAddress : $t('please_choose_address')}}</span>
               </div>
             </template>
           </van-cell>
@@ -302,43 +294,41 @@
               {{ reviewItem.content }}
             </p>
             <!-- 图片 -->
-            <swiper
-              ref="swiperReviewRef"
-              :options="reviewOption"
-              class="mt-12 pl-20 review-swiper"
-              v-if="reviewItem.pictures.length"
-            >
-              <swiper-slide
-                v-for="(reviewPicItem, reviewPicIndex) in reviewItem.pictures"
-                :key="'review-picture-' + reviewPicIndex"
+            <div>
+              <swiper
+                ref="swiperReviewRef"
+                :options="reviewOption"
+                class="mt-12 pl-20 review-swiper"
+                v-if="reviewItem.pictures.length"
               >
-                <BmImage
-                  :url="reviewPicItem.imgUrl"
-                  :width="'2rem'"
-                  :height="'2rem'"
-                  :isLazy="false"
-                  :isShow="false"
-                  :fit="'cover'"
-                  class="border round-4"
-                />
-              </swiper-slide>
-            </swiper>
+                <swiper-slide
+                  v-for="(reviewPicItem, reviewPicIndex) in reviewItem.pictures"
+                  :key="'review-picture-' + reviewPicIndex"
+                >
+                  <BmImage
+                    :url="reviewPicItem.imgUrl"
+                    :width="'2rem'"
+                    :height="'2rem'"
+                    :isLazy="false"
+                    :isShow="false"
+                    :fit="'cover'"
+                    class="border round-4"
+                  />
+                </swiper-slide>
+              </swiper>
+            </div>
             <!-- 回复 -->
             <div
               class="p-12 round-4 mt-12 fs-14 bgd-f8 mlr-20 fm-helvetica"
               v-for="(replyItem, replyIndex) in reviewItem.replys"
               :key="'reply-' + replyIndex"
             >
-              <span class="red"
-                >{{ replyItem.replyName }} {{ $t("cart.reply") }}:</span
-              >
+              <span class="red">{{ replyItem.replyName }} {{ $t("reply") }}:</span>
               <span class="black">{{ replyItem.replyContent }}</span>
             </div>
             <!-- 规格 -->
             <div class="mt-12 plr-20">
-              <span class="grey fs-14 ptb-2 plr-10 bgd-f8 round-4 fm-helvetica"
-                >{{ $t("cart.specification") }}:{{ reviewItem.saleAttr }}</span
-              >
+              <span class="grey fs-14 ptb-2 plr-10 bgd-f8 round-4 fm-helvetica">{{ $t("specification") }}{{ reviewItem.saleAttr }}</span>
             </div>
           </div>
         </div>
@@ -351,28 +341,30 @@
             <nuxt-link class="fs-14" :to="{ name: 'cart-store-id', params: { id: storeInfo.storeId }, query: { sellerId: storeInfo.sellerId, hasAdornment: storeInfo.hasAdornment} }">{{ $t("more") }}</nuxt-link>
           </h3>
           <!-- 推荐商品 -->
-          <swiper
-            ref="swiperRecommendRef"
-            :options="recommendOption"
-            class="mt-12 pl-20 review-swiper"
-            v-if="likeList.length"
-          >
-            <swiper-slide
-              v-for="(productItem, productIndex) in likeList"
-              :key="'like-index-' + productIndex"
+          <div>
+            <swiper
+              ref="swiperRecommendRef"
+              :options="recommendOption"
+              class="mt-12 pl-20 review-swiper"
+              v-if="likeList.length"
             >
-              <BmImage
-                :url="productItem.mainPictureUrl"
-                :width="'2rem'"
-                :height="'2rem'"
-                :isLazy="false"
-                :isShow="false"
-                :fit="'cover'"
-                class="border round-4 hidden"
-                @onClick="onClick(productItem.productId)"
-              />
-            </swiper-slide>
-          </swiper>
+              <swiper-slide
+                v-for="(productItem, productIndex) in likeList"
+                :key="'like-index-' + productIndex"
+              >
+                <BmImage
+                  :url="productItem.mainPictureUrl"
+                  :width="'2rem'"
+                  :height="'2rem'"
+                  :isLazy="false"
+                  :isShow="false"
+                  :fit="'cover'"
+                  class="border round-4 hidden"
+                  @onClick="onClick(productItem.productId)"
+                />
+              </swiper-slide>
+            </swiper>
+          </div>
         </div>
       </van-tab>
       <van-tab :title="$t('details')" name="Details" class="fs-0">
@@ -435,8 +427,8 @@
       </div>
       <!-- 按钮 -->
       <div class="plr-12 flex between">
-        <BmButton :type="'info'" class="fs-16 round-8 w-169 h-48 add-cart-btn" @click="onAddCart" >Add to cart</BmButton>
-        <BmButton class="fs-16 round-8 w-169 h-48" @click="onBuyNow">Buy Now</BmButton>
+        <BmButton :type="'info'" class="fs-16 round-8 w-169 h-48 add-cart-btn" @click="onAddCart">{{ $t('add_to_cart') }}</BmButton>
+        <BmButton class="fs-16 round-8 w-169 h-48" @click="onBuyNow">{{ $t('buy_now') }}</BmButton>
       </div>
     </van-popup>
 
@@ -447,25 +439,25 @@
       <van-steps direction="vertical" :active="stepActive" class="mt-24" @click-step="stepClick">
         <van-step v-for="item, stepIndex in stepArr" :key="'step-' + stepIndex">
           <template #active-icon>
-            <BmIcon :name="'dot1'" :color="'#42b7ae'"></BmIcon>
+            <BmIcon :name="'dot1'" :color="'#42b7ae'" />
           </template>
           <template #inactive-icon>
-            <BmIcon :name="'dot1'" :color="'#eee'"></BmIcon>
+            <BmIcon :name="'dot1'" :color="'#eee'" />
           </template>
           <template #finish-icon>
-            <BmIcon :name="'dot1'" :color="'#42b7ae'"></BmIcon>
+            <BmIcon :name="'dot1'" :color="'#42b7ae'" />
           </template>
           <p class="fs-16 black">{{ item.name ? item.name : chooseTitle }}</p>
         </van-step>
         <van-step v-if="isShowChooseTitle">
           <template #active-icon>
-            <BmIcon :name="'dot1'" :color="'#42b7ae'"></BmIcon>
+            <BmIcon :name="'dot1'" :color="'#42b7ae'" />
           </template>
           <template #inactive-icon>
-            <BmIcon :name="'dot1'" :color="'#eee'"></BmIcon>
+            <BmIcon :name="'dot1'" :color="'#eee'" />
           </template>
           <template #finish-icon>
-            <BmIcon :name="'dot1'" :color="'#42b7ae'"></BmIcon>
+            <BmIcon :name="'dot1'" :color="'#42b7ae'" />
           </template>
           <p class="fs-16 black">{{ chooseTitle }}</p>
         </van-step>
@@ -497,16 +489,9 @@
       </div>
       <div class="flex">
         <!-- 加入购物车 -->
-        <BmButton
-          :type="'info'"
-          class="fs-16 round-0 w-130 h-56 add-cart-btn border-no"
-          @click="onAddCart"
-          >{{ $t('add_to_cart') }}</BmButton
-        >
+        <BmButton :type="'info'" class="fs-16 round-0 w-130 h-56 add-cart-btn border-no" @click="onAddCart">{{ $t('add_to_cart') }}</BmButton>
         <!-- 立即购买 -->
-        <BmButton class="fs-16 round-0 w-130 h-56" @click="onBuySku"
-          >{{ $t('buy_now') }}</BmButton
-        >
+        <BmButton class="fs-16 round-0 w-130 h-56" @click="onBuySku">{{ $t('buy_now') }}</BmButton>
       </div>
     </div>
 
