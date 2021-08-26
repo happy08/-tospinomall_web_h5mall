@@ -705,7 +705,9 @@ const cn = {
   address: '地址',
   return_address: '退货地址',
   me_read_and_agreen_server: '我已阅读并同意{replace_tip}和{replace_tip2}',
-  please_read_checked: '请阅读并勾选协议'
+  please_read_checked: '请阅读并勾选协议',
+  reply: '回复',
+  please_choose_address: '请选择收货地址'
 }
 
 export default cn;

@@ -704,7 +704,9 @@ const en = {
   take_address: 'Door to door pick-up address',
   address: 'Address',
   return_address: 'Return address',
-  me_read_and_agreen_server: '我已阅读并同意{replace_tip}和{replace_tip2}'
+  me_read_and_agreen_server: 'I have read and agree to the {replace_tip} and the {replace_tip2}',
+  reply: 'Reply',
+  please_choose_address: 'Please select the delivery address'
 }
 
 export default en;
