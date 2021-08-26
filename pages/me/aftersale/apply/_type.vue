@@ -30,12 +30,12 @@
     </van-cell-group>
 
     <!-- 退款金额 -->
-    <van-cell class="ptb-20 plr-20 mt-12" center :title="$t('refund_amount')" title-class="fs-14 black" :label="$t('modify_the_amount')" value-class="black fw fs-18" >
+    <!-- <van-cell class="ptb-20 plr-20 mt-12" center :title="$t('refund_amount')" title-class="fs-14 black" :label="$t('modify_the_amount')" value-class="black fw fs-18" >
       <template #default>
         <van-field v-model="detail.returnAmount" type="number" input-align="right" :formatter="onFormatter" />
       </template>
-    </van-cell>
-    <div class="p-20 fs-14 black">{{ $t('refund_price_tip', { replace_tip: detail.returnAmount }) }}</div>
+    </van-cell> -->
+    <div class="p-20 fs-14 mt-12 black">{{ $t('refund_price_tip', { replace_tip: detail.returnAmount }) }}</div>
 
     <!-- 申请指令 -->
     <div class="plr-20 pt-20 pb-24 bg-white">

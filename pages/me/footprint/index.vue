@@ -182,10 +182,10 @@ export default {
     },
     onDelete() { // 删除
       this.$dialog.confirm({
-        message: this.$t('me.order.clearBrowingRecords'),
-        onfirmButtonText: this.$t('common.confirm'),
+        message: this.$t('clear_all_browing_records'),
+        onfirmButtonText: this.$t('confirm'),
         confirmButtonColor: '#42B7AE',
-        cancelButtonText: this.$t('common.cancel'),
+        cancelButtonText: this.$t('cancel'),
         cancelButtonColor: '#383838'
       }).then(() => {
         // 格式化参数
@@ -210,6 +210,7 @@ export default {
             }
           })
           this.checkResult = [];
+          this.edit = false;
         })
       }).catch(() => {
 
