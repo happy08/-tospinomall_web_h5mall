@@ -1,0 +1,38 @@
+{
+  "EmptyStatus": {
+    "description": "Auto imported from components/EmptyStatus.vue"
+  },
+  "OrderSingle": {
+    "description": "Auto imported from components/OrderSingle.vue"
+  },
+  "OrderStoreSingle": {
+    "description": "Auto imported from components/OrderStoreSingle.vue"
+  },
+  "ProductSku": {
+    "description": "Auto imported from components/ProductSku.vue"
+  },
+  "ProductTopBtmSingle": {
+    "description": "Auto imported from components/ProductTopBtmSingle.vue"
+  },
+  "PullRefresh": {
+    "description": "Auto imported from components/PullRefresh.vue"
+  },
+  "SoldOut": {
+    "description": "Auto imported from components/SoldOut.vue"
+  },
+  "GlobalBmButton": {
+    "description": "Auto imported from components/_global/BmButton.vue"
+  },
+  "GlobalBmHeaderNav": {
+    "description": "Auto imported from components/_global/BmHeaderNav.vue"
+  },
+  "GlobalBmIcon": {
+    "description": "Auto imported from components/_global/BmIcon.vue"
+  },
+  "GlobalBmImage": {
+    "description": "Auto imported from components/_global/BmImage.vue"
+  },
+  "GlobalBmTabbar": {
+    "description": "Auto imported from components/_global/BmTabbar.vue"
+  }
+}

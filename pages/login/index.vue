@@ -45,7 +45,7 @@
         <div class="flex login-page__btm--concat">
           <!-- facebook -->
           <!-- <a href="#"> -->
-            <!-- <BmIcon :name="'facebook-icon'" :width="'0.64rem'" :height="'0.64rem'" @iconClick="fLogin" /> -->
+            <BmIcon :name="'facebook-icon'" :width="'0.64rem'" :height="'0.64rem'" @iconClick="fLogin" />
           <!-- </a> -->
           <!-- 电话 -->
           <!-- <a href="#">
@@ -201,7 +201,7 @@ export default {
     fLogin() { // facebook登录
       console.log(FB)
       FB.init({
-        appId: '231779648840263',
+        appId: '2133044930182541',  // 231779648840263
         scope: 'public_profile, email',
         version: 'v11.0'
       })
