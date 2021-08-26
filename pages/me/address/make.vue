@@ -398,7 +398,7 @@ export default {
   }
 }
 .save-btn{
-  margin-top: 116px;
+  margin-top: 70px;
 }
 .border-green{
   border: 1px solid #42B7AE!important;

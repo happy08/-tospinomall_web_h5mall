@@ -6,11 +6,11 @@
     <!-- 选择-单选 -->
     <van-radio-group v-model="payRadio" v-if="list.length > 0">
       <van-cell-group v-for="(item, index) in list" :key="index" class="bg-white">
-        <van-cell :title="item" title-class="ml-12" class="ptb-20" clickable @click="payRadio = item" :border="false">
+        <van-cell :title="item.label" title-class="ml-12" class="ptb-20" clickable @click="payRadio = item.label" :border="false">
           <!-- 左侧图标 -->
           <template #icon>
             <BmImage
-              :url="require('@/assets/images/icon/'+ item +'.png')"
+              :url="require('@/assets/images/icon/'+ item.label +'.png')"
               :width="'0.48rem'" 
               :height="'0.48rem'"
               :isLazy="false"
@@ -19,7 +19,7 @@
           </template>
           <!-- 右侧图标-单选图标 -->
           <template #right-icon>
-            <van-radio :name="item" icon-size="0.48rem">
+            <van-radio :name="item.label" icon-size="0.48rem">
               <template #icon="props">
                 <BmImage
                   :url="props.checked ? require('@/assets/images/icon/choose-icon.png') : require('@/assets/images/icon/choose-default-icon.png')"
@@ -34,11 +34,11 @@
         </van-cell>
         <!-- 支持输入手机号 -->
         <van-field
-          v-model="account"
+          v-model="item.phone"
           :placeholder="$t('phone_number')"
-          :class="{'field-container phone-code-field pt-0 pb-20': true, 'is-active': payRadio == item}"
+          :class="{'field-container phone-code-field pt-0 pb-20': true, 'is-active': payRadio == item.label}"
           type="tel"
-          v-if="item != 'balance'"
+          v-if="item.label != 'balance'"
         >
           <template #label>
             <span @click="showPicker = true" class="iblock fs-14 black lh-20 pl-4">
@@ -63,7 +63,7 @@
     <!-- 底部金额以及支付按钮 -->
     <div class="w-100 bg-white flex between pl-20 vcenter pay-content__btn">
       <div class="red fs-18 fw">{{ $store.state.rate.currency }}{{ $route.query.amount }}</div>
-      <BmButton class="fs-16 round-0 pay-content__btn--pay" :disabled="account.length === 0 && payRadio !== 'balance'" @click="onPay">{{ $t('payment') }}</BmButton>
+      <BmButton class="fs-16 round-0 pay-content__btn--pay" @click="onPay">{{ $t('payment') }}</BmButton>
     </div>
 
     <!-- 余额支付点击支付按钮，需要输入支付密码 -->
@@ -112,7 +112,6 @@ export default {
       list: [],
       showPicker: false,
       prefixCode: '',
-      account: '',
       phonePrefixs: [],
       isBackDialog: false,
       balanceShow: false,
@@ -123,7 +122,6 @@ export default {
     next(vm => {
       if (from.name === 'me-wallet' || from.name == 'me-order') {
         vm.payRadio = 100;
-        vm.account = '';
         vm.isBackDialog = false;
         vm.balanceShow = false;
         vm.payPwd = '';
@@ -143,7 +141,12 @@ export default {
       this.$toast.clear();
       if (res.code != 0) return false;
 
-      this.list = res.data;
+      this.list = res.data.map(item => {
+        return {
+          label: item,
+          phone: ''
+        }
+      });
 
       if (this.$route.query.type == 'order') { // 说明是从订单结算页面跳转过来的，支付方式就有余额
         this.list.push('balance');
@@ -163,20 +166,28 @@ export default {
         return false;
       }
 
+      let phone = this.list.filter(item => {
+        return item.label === this.payRadio;
+      })[0].phone;
+      
+      if (phone.length == 0) {
+        return false;
+      }
+
       // 订单支付
       if (this.$route.query.orderIds) {
-        this.payOrder({ payType: 2, network: this.payRadio, phone: this.account, phonePrefix: this.prefixCode, sourceType: 4, orderIds: JSON.parse(this.$route.query.orderIds).orderIds });
+        this.payOrder({ payType: 2, network: this.payRadio, phone: phone, phonePrefix: this.prefixCode, sourceType: 4, orderIds: JSON.parse(this.$route.query.orderIds).orderIds });
         return false;
       }
 
       // 买家充值
-      buyerRecharge({ amount: parseFloat(this.$route.query.amount), msisdn: this.account, network: this.payRadio, type: this.$route.query.type }).then(res => {
+      buyerRecharge({ amount: parseFloat(this.$route.query.amount), msisdn: phone, network: this.payRadio, type: this.$route.query.type }).then(res => {
         if (res.code != 0) return false;
         this.$router.push({
           name: 'me-pay-wait',
           query: {
             network: this.payRadio,
-            phone: this.account,
+            phone: phone,
             amount: this.$route.query.amount,
             refNo: res.data.refNo
           }
@@ -236,6 +247,14 @@ export default {
       }
     },
     payOrder(params) { // 订单支付 payType: 1余额支付 2UniwalletPay 0系统支付, sourceType订单来源4->h5
+      let phone = this.list.filter(item => {
+        return item.label === this.payRadio;
+      })[0].phone;
+      
+      if (phone.length == 0) {
+        return false;
+      }
+
       // 加载图标
       this.$toast.loading({
         forbidClick: true,
@@ -261,7 +280,7 @@ export default {
           name: 'me-pay-wait',
           query: {
             network: this.payRadio,
-            phone: this.account,
+            phone: phone,
             amount: this.$route.query.amount,
             refNo: res.data.refNo,
             orderId: JSON.stringify({orderId: res.data.orderIds})

@@ -208,7 +208,7 @@ export default {
     if (!addressData.data) { // 还没有设置地址
       this.$dialog.confirm({
         message: this.$t('go_set_address'),
-        onfirmButtonText: this.$t('go_seeting'),
+        confirmButtonText: this.$t('go_seeting'),
         confirmButtonColor: '#42B7AE',
         cancelButtonText: this.$t('cancel'),
         cancelButtonColor: '#383838'

@@ -334,6 +334,12 @@ export default {
       })
     },
     onCheckOut() { // 结算
+      if (this.productResult.length == 0) {
+        this.$toast({
+          message: this.$t('no_item_selected')
+        })
+        return false;
+      }
       this.$router.push({
         name: 'cart-order-id',
         params: {

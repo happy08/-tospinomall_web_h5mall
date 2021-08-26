@@ -93,6 +93,10 @@ export default {
       })
     },
     onClick(item) { // 主要是为了点击跳转返回售后申请页面
+      if (!this.$route.query.back) {
+        return false;
+      }
+      
       this.$router.replace({
         name: 'me-aftersale-apply-type',
         params: {
