@@ -39,7 +39,7 @@ export const mutations = {
       }
       state.searchList = [...new Set(state.searchList)]; // 去重
     }
-    setCookie('searchList', state.searchList);
+    setCookie('searchList', encodeURI(state.searchList));
   },
   SET_ORDERSEARCHLIST(state, searchItem) {
     if (searchItem == null) {
@@ -52,7 +52,7 @@ export const mutations = {
       }
       state.orderSearchList = [...new Set(state.orderSearchList)]; // 去重
     }
-    setCookie('orderSearchList', state.orderSearchList);
+    setCookie('orderSearchList', encodeURI(state.orderSearchList));
   },
   SET_WEBSOCKET(state, websocketMsg) {
     state.websocketMsg = websocketMsg;
