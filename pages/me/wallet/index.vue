@@ -30,7 +30,7 @@
         </li>
       </ul>
       <!-- 自定义金额 -->
-      <van-field class="mt-24 border round-8" v-model="amount" type="number" :placeholder="$t('enter_a_custom_amount')" />
+      <van-field class="mt-24 border round-8" v-model="amount" type="number" :placeholder="$t('enter_a_custom_amount')" :formatter="formatter" />
     </div>
     
     <!-- 充值按钮 -->
@@ -94,6 +94,9 @@ export default {
           type: type // 1固定卡 2自由充值卡 
         }
       })
+    },
+    formatter(value) {
+      return value.match(/^\d*(\.?\d{0,2})/g)[0];
     }
   },
 }

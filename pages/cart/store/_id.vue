@@ -203,7 +203,7 @@
       <van-list
         v-model="loading"
         :finished="finished"
-        finished-text="Not More…"
+        finished-text=""
         @load="onLoad"
         v-else
       >

@@ -306,7 +306,7 @@ export default {
   beforeRouteEnter(to, from, next) { // 从绑定或修改页面进入重置值为空
     next(vm => {
       if (from.name === 'me' || from.name == null) {
-        vm.typeActive = vm.$route.query.type ? parseFloat(vm.tabs[vm.$route.query.type].type) : vm.typeActive;
+        vm.typeActive = vm.$route.query.type ? parseFloat(vm.tabs[vm.$route.query.type].type) : 100;
       }
     });
   },

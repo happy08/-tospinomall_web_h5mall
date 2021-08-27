@@ -636,7 +636,7 @@ export default {
         // if (attrIndex == 0) {
         //   _initSku.push(attrItem);
         // }
-        if (_selectCarousel.length < 3) { // 商品选择的图片集展示
+        if (_selectCarousel.length < 3 && _selectCarousel.length < item.attrValues.length) { // 商品选择的图片集展示
           _selectCarousel.push(attrItem);
         }
         this.sku.tree[itemInxdex].v.push({
