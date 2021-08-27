@@ -71,8 +71,10 @@ service.interceptors.request.use(config => {
   config.headers['clientType'] = 'h5';
   if (config.headers.Authorization) {
     config.headers['Authorization'] = config.headers.Authorization;
-  } else if (getCookie('authToken') && getCookie('authToken') != 'null' && getCookie('authToken').length > 10) {
+  // } else if (getCookie('authToken') && getCookie('authToken') != 'null' && getCookie('authToken').length > 10) {
+  } else if ($nuxt.$store.state.user.authToken) {
     config.headers['Authorization'] = getCookie('authToken');
+    config.headers['Authorization'] = $nuxt.$store.state.user.authToken;
   } else {
     config.headers['Authorization'] = 'Basic YnV5ZXI6YnV5ZXI=';
   }
