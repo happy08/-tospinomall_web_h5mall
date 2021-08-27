@@ -210,10 +210,16 @@ export default {
       FB.login(function(response){
         console.log(response)
         if (response.status == 'connected') { // 连接成功
-          FB.api('/me', user => { // 获取用户信息
+          FB.api('/me?fields=name,email', user => { // 获取用户信息
+            console.log('user')
             console.log(user);
+            // facebookLogin({ mobile: { userId: response.authResponse.userID, email: '', name: user.name }, grant_type: 'facebook' })
           })
-          // facebookLogin({ mobile: { userId: response.authResponse.userID, email:  } })
+          
+          FB.api({ method: 'fql.query', query: "SELECT uid, email, name FROM user WHERE uid=" + response.authResponse.userID}, userResponse => {
+            console.log('other user')
+            console.log(userResponse);
+          })
         }
         console.log(response)
       });
