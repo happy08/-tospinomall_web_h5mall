@@ -138,6 +138,9 @@ export default {
         minSize: 10000,
         maxSize: 2500000
       }
+    },
+    extractCSS: {
+      allChunks: true
     }
   },
   loading: false, // 加载进度条
