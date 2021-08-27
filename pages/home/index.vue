@@ -221,7 +221,7 @@
       </div> -->
       <!-- 滚动标签栏部分 -->
       <van-tabs sticky swipeable animated :offset-top="'0.88rem'" color="#42B7AE" v-model="tabCategoryActive" @change="getSearchList" class="mt-20 mh-60 custom-home-tab" :ellipsis="false">
-        <van-tab v-for="(categoryItem, tabIndex) in categoryList" :title="categoryItem.name" :key="'scroll-tab-' + tabIndex" :name="categoryItem.name">
+        <van-tab v-for="(categoryItem, tabIndex) in categoryList" :title="categoryItem.name" :key="'scroll-tab-' + tabIndex" :name="categoryItem.id">
           <empty-status v-if="searchList.length === 0" :image="require('@/assets/images/empty/order.png')" class="mh-60" />
           <van-list
             v-else
@@ -351,7 +351,7 @@ export default {
       ...categoryList.data
     ];
 
-    const searchList = await this.$api.getProductSearch({ categoryName: '', pageSize: this.pageSize, pageIndex: this.pageIndex }); // 搜索商品列表
+    const searchList = await this.$api.getProductSearch({ pageSize: this.pageSize, pageIndex: this.pageIndex }); // 搜索商品列表
     
     let list = searchList.data.items.map(item => { // 搜索商品列表
       return {
@@ -389,9 +389,14 @@ export default {
         }
       }
     },
-    getSearchList(name) { // 获取搜索商品列表
-      const categoryName = name === '全部' ? '' : name;
-      this.$api.getProductSearch({ categoryName: categoryName, pageIndex: 1, pageSize: this.pageSize }).then(res => {
+    getSearchList(name, title) { // 获取搜索商品列表
+      let categoryIds = {};
+      if (name > 0) {
+        categoryIds.navCategoryIds = [name];
+      }
+      this.finished = false;
+      this.pageIndex = 1;
+      this.$api.getProductSearch({ ...categoryIds, pageIndex: this.pageIndex, pageSize: this.pageSize }).then(res => {
         this.searchList = res.data.items.map(item => {
           return {
             ...item,
@@ -400,6 +405,7 @@ export default {
             productPrice: parseFloat(item.productPrice)
           }
         })
+        this.tabTotal = res.data.total;
       })
     },
     onHotDetail(hotDetail) { // 点击热区图进行跳转 imageLinkType: 0:商品链接(商品详情页)，跳转到搜索页(1:前端分类id，2:后端分类id，3:品牌，4:FBT，5:FBM，) 6:外部链接(直接打开)
@@ -480,7 +486,11 @@ export default {
         return false;
       }
       this.pageIndex += 1;
-      this.$api.getProductSearch({ categoryName: this.tabCategoryActive === this.$t('all') ? '' : this.tabCategoryActive, pageSize: this.pageSize, pageIndex: this.pageIndex }).then(res => { // 搜索商品列表
+      let categoryIds = {};
+      if (parseFloat(this.tabCategoryActive) > 0) {
+        categoryIds.navCategoryIds = [this.tabCategoryActive];
+      }
+      this.$api.getProductSearch({ ...categoryIds, pageSize: this.pageSize, pageIndex: this.pageIndex }).then(res => { // 搜索商品列表
         
         this.tabTotal = res.data.total;
         let list = res.data.items.map(item => { // 搜索商品列表

@@ -191,7 +191,7 @@ export default {
       arrangeType: 1,
       tabs: [
         {
-          name: 'search_filter_overall',
+          name: 'all',
           type: 0,
           key: ''
         },
@@ -472,6 +472,7 @@ export default {
         this.total = res.data.total;
         this.isShowTip = false;
         this.filterPopup = false; // 筛选窗口隐藏
+        this.refreshing.isFresh = false;
       })
     },
     onRefresh() { // 刷新

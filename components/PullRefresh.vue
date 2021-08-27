@@ -1,5 +1,5 @@
 <template>
-  <van-pull-refresh v-model="refreshing.isFresh" @refresh="onRefresh" class="vh-100">
+  <van-pull-refresh v-model="refreshing.isFresh" @refresh="onRefresh" class="vh-60">
     <!-- 下拉提示 -->
     <template #pulling>
       <van-loading color="#42b7ae" />
@@ -45,3 +45,9 @@ export default {
   },
 }
 </script>
+
+<style lang="less" scoped>
+.vh-60{
+  min-height: 60vh;
+}
+</style>

@@ -16,7 +16,7 @@
       <div class="flex between plr-12 bg-white ptb-10 vcenter">
         <div class="flex vcenter">
           <!-- 店铺详情 -->
-          <nuxt-link :to="{ name: 'cart-store-detail-id', params: { id: $route.params.id }, query: { sellerId: this.$route.query.sellerId} }" v-slot="{ navigate }" class="flex vcenter">
+          <nuxt-link :to="{ name: 'cart-store-detail-id', params: { id: $route.params.id }, query: $route.query }" v-slot="{ navigate }" class="flex vcenter">
             <div @click="navigate" role="link">
               <!-- 店铺logo -->
               <BmImage
@@ -243,7 +243,7 @@
     </template>
 
     <!-- 底部标签栏 -->
-    <van-tabbar v-model="tabbarActive" active-color="#FA2A32" inactive-color="#DBDBDB" v-if="$route.query.hasAdornment == true">
+    <van-tabbar v-model="tabbarActive" active-color="#FA2A32" inactive-color="#DBDBDB" v-if="isTabbarShow">
       <van-tabbar-item>
         <template #icon="props">
           <img :src="props.active ? require('@/assets/images/icon/store-tab-1-active.png') : require('@/assets/images/icon/store-tab-1.png')" alt="store-tab" />
@@ -323,19 +323,20 @@ export default {
       finished: false,
       total: 0,
       priceSortType: 0, // 价格筛选类型 0 默认未选中，1选中升序，2选中降序
-      sort: {}
+      sort: {},
+      isTabbarShow: false
     }
   },
   async fetch() {
     // 获取店铺详情
-    const detailData = await this.$api.getStoreInfo({ sellerId: this.$route.query.sellerId, storeId: this.$route.params.id, userId: this.$store.state.user.userInfo.id });
+    const detailData = await this.$api.getStoreInfo({ sellerId: this.$route.query.sellerId, storeId: this.$route.params.id });
     if (detailData.code != 0) return false;
     this.detailData = {
       ...detailData.data,
       collectNum: detailData.data.collectNum == '' ? 0 : detailData.data.collectNum
     };
     // 店铺组件数据,店铺有装修才可看
-    if (this.$route.query.hasAdornment == true) {
+    if (Boolean(this.$route.query.hasAdornment) == true) {
       const moduleData = await this.$api.getStoreIndex({shopId: this.$route.params.id});
       if (moduleData.code != 0) return false;
       this.moduleData = moduleData.data.components;
@@ -355,12 +356,22 @@ export default {
     });
   },
   activated() {
+    this.tabbarActive = 0;
+    this.isTabbarShow = false;
     if (this.$route.query.tabbarActive) this.tabbarActive = this.$route.query.tabbarActive;
-    if (this.$route.query.hasAdornment == false || this.$route.query.hasAdornment == 'false') this.tabbarActive = 1;
+    if (Boolean(this.$route.query.hasAdornment) == false) this.tabbarActive = 1;
+    this.isTabbarShow = Boolean(this.$route.query.hasAdornment);
     this.$fetch();
   },
   methods: {
     onSubscribe(flag) { // 订阅/取消订阅 flag: true 订阅 false 取消订阅
+      if (!this.$store.state.user.authToken) {
+        this.$router.push({
+          name: 'login'
+        })
+        return false;
+      }
+
       let _axios = flag ? storeFollow({ sellerId: this.$route.query.sellerId, storeId: this.$route.params.id }) : storeCancelFollow([this.$route.params.id]);
       _axios.then(res => {
         this.$fetch();
