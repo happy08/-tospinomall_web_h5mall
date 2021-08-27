@@ -42,7 +42,7 @@
         <nuxt-link :to="$store.state.user.authToken ? { name: 'me-likes' } : { name: 'login' }" v-slot="{ navigate }" class="tc">
           <dl @click="navigate" role="link">
             <dt class="fs-24 black fw">{{ $store.state.user.userInfo ? $store.state.user.userInfo.attentionProductNum : 0 }}</dt>
-            <dd class="fs-12 grey mt-4">{{ $t('collection') }}</dd>
+            <dd class="fs-12 grey mt-4">{{ $t('collect') }}</dd>
           </dl>
         </nuxt-link>
         <nuxt-link :to="$store.state.user.authToken ? { name: 'me-wallet' }: { name: 'login' }" v-slot="{ navigate }" class="tc">

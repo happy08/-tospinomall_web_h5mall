@@ -231,17 +231,17 @@
             class="mlr-12"
           >
             <!-- 加载中提示 -->
-            <template #loading>
+            <!-- <template #loading>
               <div class="hcenter">
                 <van-loading color="#42B7AE" />loading...
               </div>
-            </template>
-            <template #finished>
+            </template> -->
+            <!-- <template #finished>
               <div class="hcenter">没有多余数据了</div>
-            </template>
-            <template #error>
+            </template> -->
+            <!-- <template #error>
               <div class="hcenter">加载失败</div>
-            </template>
+            </template> -->
 
             <!-- 瀑布流 -->
             <div class="flex between flex-wrap">
@@ -316,7 +316,7 @@ export default {
           disableOnInteraction: false,
         },
       },
-      tabCategoryActive: '全部',
+      tabCategoryActive: this.$t('all'),
       refreshing: {
         isFresh: false
       },
@@ -346,7 +346,7 @@ export default {
     const categoryList = await this.$api.getCategoryList(); // 分类列表
     this.categoryList = [ // 分类列表
       {
-        name: '全部'
+        name: this.$t('all')
       },
       ...categoryList.data
     ];
@@ -480,7 +480,7 @@ export default {
         return false;
       }
       this.pageIndex += 1;
-      this.$api.getProductSearch({ categoryName: this.tabCategoryActive === '全部' ? '' : this.tabCategoryActive, pageSize: this.pageSize, pageIndex: this.pageIndex }).then(res => { // 搜索商品列表
+      this.$api.getProductSearch({ categoryName: this.tabCategoryActive === this.$t('all') ? '' : this.tabCategoryActive, pageSize: this.pageSize, pageIndex: this.pageIndex }).then(res => { // 搜索商品列表
         
         this.tabTotal = res.data.total;
         let list = res.data.items.map(item => { // 搜索商品列表

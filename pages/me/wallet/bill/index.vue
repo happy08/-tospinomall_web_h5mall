@@ -5,7 +5,7 @@
       <BmHeaderNav :left="{ isShow: true }" :border="false" :title="$t('bill')" :class="{'is-show': isHeader}" />
 
       <!-- 搜索框 -->
-      <div class="bg-white plr-12 pt-4 pb-10 border-b" v-if="list.length > 0">
+      <div class="bg-white plr-12 pt-4 pb-10 border-b">
         <van-search 
           v-model="searchVal" 
           :placeholder="$t('bill_search_placeholder')"
@@ -100,6 +100,7 @@ export default {
     }
   },
   activated() {
+    this.searchVal = '';
     this.getBillList();
   },
   methods: {

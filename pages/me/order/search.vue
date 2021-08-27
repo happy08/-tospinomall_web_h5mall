@@ -32,7 +32,7 @@
       </div>
       <div v-show="!isShowTip">
         <!-- 空状态  -->
-        <empty-status v-if="lists.length === 0" :image="require('@/assets/images/empty/order.png')" :description="$t('common.noRecord')" />
+        <empty-status v-if="lists.length === 0" :image="require('@/assets/images/empty/order.png')" />
         <!-- 订单列表 -->
         <div v-else v-for="(item,index) in lists" :key="'order-' + index" class="w-100 plr-12 mb-12 bg-white pb-20 pt-24">
           <!-- 订单店铺 -->
@@ -275,7 +275,7 @@ export default {
       });
       this.searchVal = value;
       this.pageNum = 1;
-      this.title = this.$t('bill');
+      // this.title = this.$t('bill');
       this.isShowTip = false;
       this.lists = [];
       // 获取搜索列表

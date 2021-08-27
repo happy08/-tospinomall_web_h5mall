@@ -87,7 +87,7 @@
 
     <!-- 修改地址 -->
     <van-popup v-model="addressShow" position="bottom" closeable class="ptb-20" style="min-height: 80%;" @close="closePopup">
-      <h4 class="fs-18 black lh-20 tc plr-20">Choose a country or region</h4>
+      <h4 class="fs-18 black lh-20 tc plr-20">{{ $t('choose_a_country_or_region') }}</h4>
       <!-- 地址选择步骤条 -->
       <van-steps direction="vertical" :active="stepActive" class="mt-24" @click-step="stepClick">
         <van-step v-for="item, stepIndex in stepArr" :key="stepIndex">
