@@ -195,6 +195,11 @@ export default {
         this.orderList[2].count = res.data.await_comment; // 待评价
         this.orderList[3].count = res.data.order_refund_await_deal; // 售后
       })
+    } else {
+      this.orderList[0].count = 0; // 待支付订单数
+      this.orderList[1].count = 0; // 待收货订单数
+      this.orderList[2].count = 0; // 待评价
+      this.orderList[3].count = 0; // 售后
     }
   },
   methods: {

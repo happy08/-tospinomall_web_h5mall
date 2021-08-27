@@ -479,6 +479,7 @@ export default {
     beforeChange(index) { // 根据条件展示排序
       this.productTabActive = index;
       this.pageIndex = 1;
+      this.finished = false;
       if (index == 0) { // 推荐列表
         this.sort = {
           shopId: this.$route.params.id, pageIndex: this.pageIndex, pageSize: this.pageSize, recommend: 1

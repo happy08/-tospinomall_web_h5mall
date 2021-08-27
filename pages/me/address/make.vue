@@ -283,7 +283,7 @@ export default {
     getPhonePrefix() { // 获取手机号前缀
       getPhonePrefix().then(res => {
         this.phonePrefixs = res.data;
-        this.form.phonePrefix = res.data[0].phonePrefix;
+        this.form.phonePrefix = this.$t('prefix_tip');
       })
     },
     getAddressDetail() { // 查看地址信息

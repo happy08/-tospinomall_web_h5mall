@@ -321,6 +321,7 @@ export default {
     },
     getSearchList(index, title) { // 获取分类列表
       this.pageIndex = 1;
+      this.finished = false;
       this.params = { pageIndex: this.pageIndex, pageSize: this.pageSize, searchKeyword: this.searchVal };
       if (index == 1) { // 销量
         this.params = {

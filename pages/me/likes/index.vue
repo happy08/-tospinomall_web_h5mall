@@ -253,6 +253,7 @@ export default {
     },
     getList() { // 切换tab时数据要初始化
       this.pageNum = 1;
+      this.finished = false;
       this.$fetch();
     },
     onTop(item) { // 置顶

@@ -110,6 +110,7 @@ export default {
     getList() {
       this.pageNum = 1;
       this.lists = [];
+      this.finished = false;
       this.$fetch();
     },
     onRefresh() { // 下拉刷新

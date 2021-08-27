@@ -195,6 +195,7 @@ export default {
         duration: 0
       });
       this.pageNum = 1;
+      this.finished = false;
       let _params = { goodsId: this.$route.query.id, pageNum: this.pageNum, pageSize: this.pageSize }
       if (this.tabActive == 1) {
         _params.sortType = 1; // 最新创建时间排序

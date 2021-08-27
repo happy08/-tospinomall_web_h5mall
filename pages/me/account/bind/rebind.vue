@@ -119,7 +119,7 @@ export default {
     getPhonePrefix() { // 获取手机号前缀
       getPhonePrefix().then(res => {
         this.phonePrefixs = res.data;
-        this.prefixCode = res.data[0].phonePrefix;
+        this.prefixCode = this.$t('prefix_tip');
       })
     },
     onConfirm(event) { // 选择手机号前缀

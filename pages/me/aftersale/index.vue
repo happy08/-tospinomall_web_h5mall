@@ -165,6 +165,7 @@ export default {
     getSearchList() { // 获取列表数据
       this.lists = [];
       this.pageNum = 1;
+      this.finished = false;
       this.$fetch();
     },
     goProduct(productId) { // 跳转到商品详情页

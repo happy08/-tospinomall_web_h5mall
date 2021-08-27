@@ -161,7 +161,7 @@ export default {
     getPhonePrefix() {
       getPhonePrefix().then(res => {
         this.phonePrefixs = res.data;
-        this.prefixCode = res.data[0].phonePrefix;
+        this.prefixCode = this.$t('prefix_tip');
       })
     },
     onPay() { // 提交支付,成功跳转到确认订单页面

@@ -711,7 +711,8 @@ const cn = {
   bill_search_placeholder: '输入账单相关信息',
   bill_success: '成功',
   bill_to_pay: '待支付',
-  bill_fail: '失败'
+  bill_fail: '失败',
+  prefix_tip: '+233'
 }
 
 export default cn;

@@ -358,6 +358,7 @@ export default {
   methods: {
     async getSearchList(index) { // 获取分类列表
       this.params.pageNum = 1;
+      this.finished = false;
       this.$fetch();
     },
     onConfirmFilter() { // 过滤
