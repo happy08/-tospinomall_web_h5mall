@@ -36,9 +36,11 @@
           </van-tab>
         </van-tabs>
       </div>
-
+      <!-- 无数据时展示 -->
+      <empty-status v-if="list.length === 0" :image="require('@/assets/images/empty/order.png')" />
       <!-- 评价列表 -->
       <van-list
+        v-else
         v-model="loading"
         :finished="finished"
         @load="onLoad"
@@ -152,6 +154,7 @@
 import { Checkbox, Cell, Tab, Tabs, Rate, CellGroup, List, ImagePreview } from 'vant';
 import { getRateList, addGive } from '@/api/product';
 import PullRefresh from '@/components/PullRefresh';
+import EmptyStatus from '@/components/EmptyStatus';
 
 export default {
   components: {
@@ -162,7 +165,8 @@ export default {
     vanRate: Rate,
     vanCellGroup: CellGroup,
     vanList: List,
-    PullRefresh
+    PullRefresh,
+    EmptyStatus
   },
   data() {
     return {
@@ -185,6 +189,12 @@ export default {
   },
   methods: {
     getList() { // 获取数据
+      this.$toast.loading({
+        forbidClick: true,
+        loadingType: 'spinner',
+        duration: 0
+      });
+      this.pageNum = 1;
       let _params = { goodsId: this.$route.query.id, pageNum: this.pageNum, pageSize: this.pageSize }
       if (this.tabActive == 1) {
         _params.sortType = 1; // 最新创建时间排序
@@ -205,7 +215,7 @@ export default {
         _params.explainType = 3;
       }
       getRateList(_params).then(res => {
-        if (res.code != 0) return false;
+        this.$toast.clear();
 
         let list = res.data.records.map(item => {
           return {
@@ -220,6 +230,8 @@ export default {
         this.total = res.data.total;
         this.loading = false;
         this.refreshing.isFresh = false;
+      }).catch(() => {
+        this.list = [];
       })
     },
     onReport(id) { // 举报
