@@ -276,7 +276,8 @@ export default {
           query: {
             type: 'order',
             amount: this.detail.totalPayAmount,
-            orderIds: JSON.stringify({orderIds: res.data.orderIds})
+            orderIds: JSON.stringify({orderIds: res.data.orderIds}),
+            comfirmOrder: 1
           }
         })
       })
