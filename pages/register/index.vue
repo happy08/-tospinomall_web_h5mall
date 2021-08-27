@@ -46,6 +46,8 @@
           clearable
           :placeholder="$t('enter_verification_code')"
           class="field-container"
+          type="digit"
+          maxlength="6"
         >
           <template #button>
             <van-button class="fs-14 green lh-20 round-8 verification-btn" v-show="countdown === 0" @click="sendCode" :disabled="account.length === 0">{{ $t('get_it') }}</van-button>
