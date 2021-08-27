@@ -170,6 +170,7 @@ export default {
     });
   },
   activated() {
+    this.$fetch();
   },
   methods: {
     isTrue(val, list) { // 判断是否选中

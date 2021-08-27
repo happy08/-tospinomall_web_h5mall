@@ -47,9 +47,9 @@ const utils = {
   },
   //标准时间转 yy-MM-dd
   formatStandardDate(val) {
-    if ((val + '').indexOf('T') === -1) {
-        return val;
-    }
+    // if ((val + '').indexOf('T') === -1) {
+    //   return val;
+    // }
     const date = new Date(val);
     const y = date.getFullYear();
     const m = utils.preZero(date.getMonth() + 1);

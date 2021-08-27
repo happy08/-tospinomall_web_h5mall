@@ -291,4 +291,7 @@ export default {
   background-color: #eee;
   border: none;
 }
+.login-page__container{
+  margin-top: 50px;
+}
 </style>
