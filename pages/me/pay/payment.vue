@@ -263,7 +263,7 @@ export default {
         return item.label === this.payRadio;
       })[0].phone;
       
-      if (phone.length == 0) {
+      if (phone.length == 0 && this.payRadio !== 'balance') {
         return false;
       }
 
