@@ -1,6 +1,6 @@
 <template>
   <!-- 首页-头部-搜索页面 -->
-  <div :class="{'vh-100': true, 'bg-grey': !isShowTip}">
+  <div :class="{'bg-grey': !isShowTip}">
     <van-sticky :offset-top="0">
       <BmHeaderNav :left="{ isShow: true }" :title="$t('search')" :border="false" />
       <!-- 搜索 -->
@@ -60,7 +60,7 @@
         <PullRefresh :refreshing="refreshing" @refresh="onRefresh">
           <div :class="{'w-100': true, 'plr-20 bg-white': arrangeType == 1 && list.length > 0, 'plr-12': arrangeType == 2} ">
             <!-- 空状态  -->
-            <empty-status v-if="list.length === 0" :image="require('@/assets/images/empty/order.png')" :description="$t('out_of_stock')"/>
+            <empty-status v-if="list.length === 0" :image="require('@/assets/images/empty/order.png')" />
             <van-list
               v-else
               v-model="loading"

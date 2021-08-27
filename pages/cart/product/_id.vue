@@ -19,15 +19,9 @@
             v-show="!isScroll"
             @click="leftBack"
           />
-          <nuxt-link
-            :to="{ name: 'search' }"
-            class="sticky-opacity ml-14"
-            v-slot="{ navigate }"
-          >
-            <div @click="navigate" role="link">
-              <van-search v-model="searchVal" disabled class="round-20 hidden" />
-            </div>
-          </nuxt-link>
+          <div class="sticky-opacity ml-14 w-260" @click="$router.push({ name: 'search' })">
+            <van-search v-model="searchVal" disabled class="round-20 hidden" />
+          </div>
         </div>
 
         <div slot="header-right" @click="$router.push({ name: 'cart', query: { isBar: 1 } })">
@@ -1054,6 +1048,9 @@ export default {
 }
 .word-break{
   word-break: break-all;
+}
+.w-260{
+  width: 260px;
 }
 </style>
 

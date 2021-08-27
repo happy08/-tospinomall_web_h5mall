@@ -48,6 +48,6 @@ export default {
 
 <style lang="less" scoped>
 .vh-60{
-  min-height: 60vh;
+  min-height: 65vh;
 }
 </style>

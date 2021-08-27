@@ -11,7 +11,7 @@ export default {
     title: 'Tospino',
     meta: [
       { charset: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, viewport-fit=cover' },
+      { name: 'viewport', content: 'width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, viewport-fit=cover, user-scalable=0' },
       { hid: 'description', name: 'description', content: 'Tospino Ghana online shopping' },
       { hid: 'keywords', name: 'keywords', content: 'Tospino Ghana online shopping' },
       { name: 'google-signin-scope', content: 'profile email' },

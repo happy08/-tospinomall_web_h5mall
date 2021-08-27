@@ -121,11 +121,15 @@
               <nuxt-link :to="{ name: 'cart-product-id', params: { id: productItem.goodsId } }" class="block">
                 <ProductTopBtmSingle
                   class="m-auto"
-                  :img="{ url: productItem.mainPictureUrl, width: '2.24rem', height: '1.9rem', loadImage: require('@/assets/images/product-bgd-90.png') }" 
+                  :img="{ url: productItem.mainPictureUrl, width: '2.24rem', height: '2.24rem', loadImage: require('@/assets/images/product-bgd-90.png') }" 
                   :detail="{ desc: productItem.goodTitle, price: productItem.price, ellipsis: 2 }"
                 />
               </nuxt-link>
             </swiper-slide>
+            <template v-if="moduleItem.componentDetails.length < 3">
+              <swiper-slide v-for="addItem in (3 - parseFloat(moduleItem.componentDetails.length))" :key="'self-add-' + addItem"></swiper-slide>
+            </template>
+            
             <div class="swiper-pagination swiper-group-pagination" v-show="moduleItem.effect" slot="pagination"></div>
           </swiper>
         </div>

@@ -110,7 +110,7 @@
                   :isShow="false"
                 />
               </template>
-              <span class="ml-14 fs-14 lh-20 black">{{ $t('common.all') }}</span>
+              <span class="ml-14 fs-14 lh-20 black">{{ $t('all') }}</span>
             </van-checkbox>
             <BmButton class="fs-16 round-0 v-100" @click="onUnsubscribe">{{ $t('unsubscribe') }}</BmButton>
           </div>
@@ -123,13 +123,18 @@
             {{ $t('you_may_also_like') }}
           </van-divider>
           <div class="mlr-12 flex between flex-wrap">
-            <ProductTopBtmSingle
-              :img="{ url: searchItem.mainPictureUrl, width: '3.4rem', height: '3.4rem', loadImage: require('@/assets/images/product-bgd-170.png') }" 
-              :detail="{ desc: searchItem.productTitle, price: searchItem.productPrice, rate: parseFloat(searchItem.starLevel), volumn: searchItem.saleCount, ellipsis: 2, country: searchItem.supplyCountryName, country_url: searchItem.supplyCountryIcon }"
+            <nuxt-link
+              :to="{ name: 'cart-product-id', params: { id: searchItem.productId } }" 
               v-for="(searchItem, searchIndex) in recommendList"
               :key="'search-list-' + searchIndex"
-              class="mb-12"
-            />
+            >
+              <ProductTopBtmSingle
+                :img="{ url: searchItem.mainPictureUrl, width: '3.4rem', height: '3.4rem', loadImage: require('@/assets/images/product-bgd-170.png') }" 
+                :detail="{ desc: searchItem.productTitle, price: searchItem.productPrice, rate: parseFloat(searchItem.starLevel), volumn: searchItem.saleCount, ellipsis: 2, country: searchItem.supplyCountryName, country_url: searchItem.supplyCountryIcon }"
+                class="mb-12"
+              />
+            </nuxt-link>
+            
           </div>
         </template>
       </van-list>
