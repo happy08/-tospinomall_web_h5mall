@@ -174,7 +174,7 @@ export default {
       this.$router.push({
         name: 'search',
         query: {
-          categoryName: data.name,
+          categoryIds: [data.id],
           val: data.name
         }
       })
