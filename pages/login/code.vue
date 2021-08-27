@@ -29,7 +29,7 @@
               v-model="account"
               :placeholder="$t('phone_number')"
               class="field-container phone-code-field"
-              type="tel"
+              type="digit"
             >
               <template #label>
                 <span @click="showPicker = true" class="iblock fs-14 black lh-20 prefix-container">
