@@ -144,7 +144,7 @@ export default {
           this.$router.push({
             name: 'home'
           })
-        }, 300);
+        }, 100);
       })
     },
     changeLang(lang) { // 切换语言
@@ -191,7 +191,7 @@ export default {
               this.$router.push({
                 name: 'home'
               })
-            }, 300);
+            }, 100);
           })
         }, err => {
           console.log('err: ');
@@ -213,12 +213,31 @@ export default {
           FB.api('/me?fields=name,email', user => { // 获取用户信息
             console.log('user')
             console.log(user);
-            // facebookLogin({ mobile: { userId: response.authResponse.userID, email: '', name: user.name }, grant_type: 'facebook' })
-          })
-          
-          FB.api({ method: 'fql.query', query: "SELECT uid, email, name FROM user WHERE uid=" + response.authResponse.userID}, userResponse => {
-            console.log('other user')
-            console.log(userResponse);
+            this.$toast.loading({
+              forbidClick: true,
+              loadingType: 'spinner',
+              duration: 0
+            });
+            facebookLogin({ mobile: { userId: user.id, email: user.email, name: user.name }, grant_type: 'facebook' }).then(res => {
+              this.$store.commit('user/SET_TOKEN', res.data.token_type + ' ' + res.data.access_token);
+              this.$store.commit('user/SET_REFRESHTOKEN', res.data.refresh_token);
+              this.$store.commit('user/SET_SCOPE', res.data.scope);
+              // 获取用户信息
+              this.$store.dispatch('user/GetUserInfo', res.data.token_type + ' ' + res.data.access_token);
+              // 获取消息信息
+              this.$store.commit('user/SET_WEBSOCKET', res.data.user_info.passUrl);
+              // 当前登录账号
+              this.$store.commit('user/SET_ACCOUNT', res.data.user_info.email);
+              this.$toast.clear();
+              // 登录成功跳转到首页
+              setTimeout(() => {
+                this.account = '';
+                this.password = '';
+                this.$router.push({
+                  name: 'home'
+                })
+              }, 100);
+            })
           })
         }
         console.log(response)
