@@ -12,7 +12,7 @@
           :width="'0.96rem'" 
           :height="'0.96rem'"
           :isLazy="false"
-          :isShow="false"
+          :isShow="true"
           class="round-8 hidden"
         />
         <!-- 店铺名、关注数 -->

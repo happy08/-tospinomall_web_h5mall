@@ -50,8 +50,8 @@
     <PullRefresh :refreshing="refreshing" @refresh="onRefresh">
       <!-- 热门搜索种类列表 -->
       <div class="flex popular-search-list">
-        <nuxt-link class="black round-10 fm-pf-r small-single-tag" v-for="(hotItem, index) in hotSearch" :key="'hot-search-' + index" :to="{ name: 'search', query: { val: hotItem.name, searchKeyword: hotItem.name } }" v-slot="{ navigate }">
-          <div @click="navigate" role="link">{{ hotItem.name }}</div>
+        <nuxt-link class="black round-10 fm-pf-r small-single-tag" v-for="(hotItem, index) in hotSearch" :key="'hot-search-' + index" :to="{ name: 'search', query: { val: hotItem.name, searchKeyword: hotItem.name } }">
+          {{ hotItem.name }}
         </nuxt-link>
       </div>
       <!-- 

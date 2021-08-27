@@ -21,7 +21,7 @@
       :items="catrgorieList" 
       :main-active-index.sync="treeActive"
       @click-nav="changeNavEvent"
-      height="90vh"
+      height="100vh"
     >
       <template #content>
         <div class="product-categories__box" v-for="(item, index) in leftLists" :key="index">
@@ -211,6 +211,7 @@ export default {
 
 <style lang="less">
 .categories-page{
+  // padding-bottom: 50px;
   .search-camera{
     width: 16px;
     height: 14px;
