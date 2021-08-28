@@ -98,7 +98,7 @@ import { Badge, Cell, CellGroup } from 'vant';
 import { getOrderCount } from '@/api/order';
 
 export default {
-  middleware: 'sockjs',
+  // middleware: 'sockjs',
   components: {
     vanBadge: Badge,
     vanCell: Cell,

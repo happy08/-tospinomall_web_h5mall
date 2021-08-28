@@ -57,7 +57,7 @@
       </div>
 
       <div v-show="!isShowTip">
-        <PullRefresh :refreshing="refreshing" @refresh="onRefresh">
+        <PullRefresh :refreshing="refreshing" @refresh="onRefresh" class="custom-min-height-174">
           <div :class="{'w-100': true, 'plr-20 bg-white': arrangeType == 1 && list.length > 0, 'plr-12': arrangeType == 2} ">
             <!-- 空状态  -->
             <empty-status v-if="list.length === 0" :image="require('@/assets/images/empty/order.png')" />

@@ -814,16 +814,28 @@ svg {
   }
 }
 
-.custom-empty-min-46{
-  min-height: ceil(100vh - 46px);
+.custom-min-height-46{
+  min-height: calc(100vh - 46px);
 }
 .custom-min-height-66{
-  min-height: ceil(100vh - 66px);
+  min-height: calc(100vh - 66px);
+}
+.custom-min-height-174{
+  min-height: calc(100vh - 174px);
 }
 
 // 适配
 @supports (bottom: constant(safe-area-inset-bottom)) or (bottom: env(safe-area-inset-bottom)) {
   .van-tabbar{
     padding-bottom: 0!important;
+  }
+  .custom-min-height-46{
+    min-height: calc(100vh - 46px - 34px - 44px - 30px);
+  }
+  .custom-min-height-66{
+    min-height: calc(100vh - 66px - 34px - 44px - 30px);
+  }
+  .custom-min-height-174{
+    min-height: calc(100vh - 174px - 34px - 44px - 30px);
   }
 }
