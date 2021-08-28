@@ -28,11 +28,10 @@ export function getDeliveryInfo(data) {
 /**
  * 关注商品
  */
-export function attentionProduct(params) {
+export function attentionProduct(goodId) {
   return request({
-    url: `/admin/buyerAttention/attention/good`,
-    method: 'get',
-    params
+    url: `/admin/buyerAttention/attention/good/${goodId}`,
+    method: 'get'
   })
 }
 

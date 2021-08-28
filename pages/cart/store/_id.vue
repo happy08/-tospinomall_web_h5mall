@@ -373,7 +373,7 @@ export default {
       }
 
       let _axios = flag ? storeFollow({ sellerId: this.$route.query.sellerId, storeId: this.$route.params.id }) : storeCancelFollow([this.$route.params.id]);
-      _axios.then(res => {
+      _axios.then(() => {
         this.$fetch();
       })
     },

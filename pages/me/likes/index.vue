@@ -211,10 +211,7 @@ export default {
   async fetch() {
     this.active = 0;
     if (parseFloat(this.$route.query.active) == 1 && this.isFirst == true) this.active = parseFloat(this.$route.query.active);
-    console.log(parseFloat(this.$route.query.active) == 1 && this.isFirst == true);
-    console.log(this.isFirst)
-    console.log(parseFloat(this.$route.query.active))
-    console.log(this.active)
+
     this.edit = false;
     this.checkResult = [];
     // 获取商品列表
@@ -253,7 +250,7 @@ export default {
         let _ajax = this.active == 1 ? storeCancelFollow(item ? [item.storeId] : this.checkResult) : cancelAttentionGood(item ? [item.productId] : this.checkResult);
       
         _ajax.then(res => {
-          this.$fetch();
+          this.getList();
         })
       }).catch(() => {
 
@@ -271,14 +268,14 @@ export default {
     getList() { // 切换tab时数据要初始化
       this.pageNum = 1;
       this.finished = false;
-      this.$fetch();
+      this.getList();
     },
     onTop(item) { // 置顶
       let _ajax = this.active == 1 ? attentionStoreTop({id: item.storeId , status: 1}) : attentionGoodTop({id: item.productId, status: 1});
       _ajax.then(res => {
         if (res.code != 0) return false;
-
-        this.$fetch();
+        this.pageNum = 1;
+        this.getList();
       })
     },
     onEdit() { // 右上角编辑
@@ -286,7 +283,7 @@ export default {
     },
     onRefresh() { // 下拉刷新
       this.pageNum = 1;
-      this.$fetch();
+      this.getList();
     },
     goStore(item) {
       this.$router.push({
@@ -424,6 +421,21 @@ export default {
           this.productShow.show = true;
         }, 100);
       })
+    },
+    async getList() {
+      this.edit = false;
+      this.checkResult = [];
+      // 获取商品列表
+      const listData = this.active == 0 ? await this.$api.getLikeProduct({ pageNum: this.pageNum, pageSize: this.pageSize }) : await this.$api.getLikeStoreList({ pageNum: this.pageNum, pageSize: this.pageSize }); // 获取关注商品/店铺列表
+      this.refreshing.isFresh = false;
+      if (listData.code != 0) return false;
+      
+      this.list = this.pageNum == 1 ? listData.data.records : this.list.concat(listData.data.records); // 关注商品/店铺列表
+      this.total = listData.data.total; // 商品/店铺总数
+      this.isFirst = false;
+      if (typeof this.$redrawVueMasonry === 'function') {
+        this.$redrawVueMasonry();
+      }
     }
   },
 }

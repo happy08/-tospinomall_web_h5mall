@@ -207,7 +207,7 @@ export default {
         version: 'v11.0'
       })
 
-      FB.login(function(response){
+      FB.login(response => {
         console.log(response)
         if (response.status == 'connected') { // 连接成功
           FB.api('/me?fields=name,email', user => { // 获取用户信息

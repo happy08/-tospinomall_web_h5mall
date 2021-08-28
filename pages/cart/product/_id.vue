@@ -943,7 +943,7 @@ export default {
         })
         return false;
       }
-      attentionProduct({ goodId: this.goodSpuVo.id}).then(res => {
+      attentionProduct(this.goodSpuVo.id).then(() => {
         this.goodSpuVo.isAttention = 1;
       })
     },
