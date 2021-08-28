@@ -290,7 +290,7 @@ import EmptyStatus from '@/components/EmptyStatus';
 import PullRefresh from '@/components/PullRefresh';
 
 export default {
-  // middleware: 'sockjs',
+  middleware: 'sockjs',
   components: {
     vanSearch: Search,
     vanSticky: Sticky,
@@ -378,6 +378,9 @@ export default {
     })
     this.searchList = this.pageIndex == 1 ? list : this.searchList.concat(list);
     this.tabTotal = searchList.data.total; // 搜索商品列表商品总数目
+    if (typeof this.$redrawVueMasonry === 'function') {
+      this.$redrawVueMasonry();
+    }
   },
   head() { // 头部设置，方便seo
     return {
@@ -389,11 +392,7 @@ export default {
     }
   },
   activated() {
-    // 如果上次请求超过一分钟了，就再次发起请求
     this.$fetch();
-    if (typeof this.$redrawVueMasonry === 'function') {
-      this.$redrawVueMasonry();
-    }
   },
   methods: {
     stickyScroll(scrollObj) { // 吸顶滚动事件

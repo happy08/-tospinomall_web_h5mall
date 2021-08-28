@@ -6,7 +6,7 @@ export default ({ app, store }) => {
     return false;
   }
   // 建立连接对象
-  let socket = new SockJS(process.env.NODE_ENV === "development" ? '/api' + store.state.user.websocketMsg.webSocketUrl : store.state.user.websocketMsg.webSocketUrl); // 连接服务端提供的通信接口，连接以后才可以订阅广播消息和个人消息
+  let socket = new SockJS(store.state.user.websocketMsg.address + store.state.user.websocketMsg.webSocketUrl); // 连接服务端提供的通信接口，连接以后才可以订阅广播消息和个人消息
   // 获取STOMP子协议的客户端对象
   console.log(socket)
   let stompClient = Stomp.over(socket);
