@@ -127,7 +127,7 @@
       </template>
 
       <!-- 可能喜欢的推荐列表展示 -->
-      <div v-if="recommendList.length > 0">
+      <div v-if="recommendList.length > 0" class="plr-12">
         <van-divider class="plr-30 mt-24 fw fs-14 clr-black-85">
           <BmIcon :name="'xinaixin'" :width="'0.26rem'" :height="'0.22rem'" :color="'#FA2022'" class="mr-8" />
           {{ $t('you_may_also_like') }}
@@ -138,8 +138,16 @@
           finished-text=""
           @load="onLoad"
         >
-          <div class="mlr-12 flex between flex-wrap">
-            <nuxt-link :to="{ name: 'cart-product-id', params: { id: searchItem.productId } }" v-for="(searchItem, searchIndex) in recommendList" :key="'search-list-' + searchIndex" class="mb-12 bg-white">
+          <div 
+            class="mx-auto my-2"
+            v-masonry
+            item-selector=".custom-grid-item"
+            fit-width="true"
+            transition-duration="0s"
+            stagger="0.03s"
+            gutter="10"
+          >
+            <nuxt-link :to="{ name: 'cart-product-id', params: { id: searchItem.productId } }" v-for="(searchItem, searchIndex) in recommendList" :key="'search-list-' + searchIndex" class="mb-12 bg-white custom-grid-item" v-masonry-tile>
               <ProductTopBtmSingle
                 :img="{ url: searchItem.mainPictureUrl, width: '3.4rem', height: '3.4rem', loadImage: require('@/assets/images/product-bgd-170.png') }" 
                 :detail="{ desc: searchItem.productTitle, price: searchItem.productPrice, rate: parseFloat(searchItem.starLevel), volumn: searchItem.saleCount, ellipsis: 2, country: searchItem.supplyCountryName, country_url: searchItem.supplyCountryIcon }"
@@ -261,6 +269,9 @@ export default {
     if (recommendData.code != 0) return false;
     this.recommendList = recommendData.data.items;
     this.total = recommendData.data.total;
+    if (typeof this.$redrawVueMasonry === 'function') {
+      this.$redrawVueMasonry();
+    }
     // 未登录情况下不获取数据
     if (!this.$store.state.user.authToken) return false;
     this.listTotal = 0;
@@ -585,6 +596,7 @@ export default {
       this.$api.getRecommend({ type: 0, pageNum: this.pageNum, pageSize: this.pageSize}).then(res => { // 搜索商品列表
         
         this.recommendList = this.recommendList.concat(res.data.items);
+        this.$redrawVueMasonry();
         this.total = res.data.total;
         
         // 加载状态结束

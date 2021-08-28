@@ -248,16 +248,27 @@
             </template> -->
 
             <!-- 瀑布流 -->
-            <div class="flex between flex-wrap">
+            <div 
+              class="mx-auto my-2"
+              v-masonry
+              item-selector=".custom-grid-item"
+              fit-width="true"
+              transition-duration="0s"
+              stagger="0.03s"
+              gutter="10"
+            >
               <nuxt-link
                 v-for="(searchItem, searchIndex) in searchList"
                 :key="'search-list-' + searchIndex"
                 :to="{ name: 'cart-product-id', params: { id: searchItem.productId } }"
-                class="iblock mt-10">
-                <ProductTopBtmSingle
-                  :img="{ url: searchItem.mainPictureUrl, width: '3.4rem', height: '3.4rem', loadImage: require('@/assets/images/product-bgd-170.png') }" 
-                  :detail="{ desc: searchItem.productTitle, price: searchItem.productPrice, rate: searchItem.starLevel, volumn: searchItem.saleCount, ellipsis: 2 }"
-                />
+                class="iblock mt-10 custom-grid-item"
+                v-masonry-tile>
+                <client-only placeholder="">
+                  <ProductTopBtmSingle
+                    :img="{ url: searchItem.mainPictureUrl, width: '3.4rem', height: '3.4rem', loadImage: require('@/assets/images/product-bgd-170.png') }" 
+                    :detail="{ desc: searchItem.productTitle, price: searchItem.productPrice, rate: searchItem.starLevel, volumn: searchItem.saleCount, ellipsis: 2 }"
+                  />
+                </client-only>
               </nuxt-link>
             </div>
           </van-list>
@@ -279,7 +290,7 @@ import EmptyStatus from '@/components/EmptyStatus';
 import PullRefresh from '@/components/PullRefresh';
 
 export default {
-  middleware: 'sockjs',
+  // middleware: 'sockjs',
   components: {
     vanSearch: Search,
     vanSticky: Sticky,
@@ -380,6 +391,9 @@ export default {
   activated() {
     // 如果上次请求超过一分钟了，就再次发起请求
     this.$fetch();
+    if (typeof this.$redrawVueMasonry === 'function') {
+      this.$redrawVueMasonry();
+    }
   },
   methods: {
     stickyScroll(scrollObj) { // 吸顶滚动事件
@@ -409,6 +423,7 @@ export default {
             productPrice: parseFloat(item.productPrice)
           }
         })
+        this.$redrawVueMasonry();
         this.tabTotal = res.data.total;
       })
     },
@@ -507,6 +522,7 @@ export default {
         })
 
         this.searchList = this.searchList.concat(list);
+        this.$redrawVueMasonry();
         
         // 加载状态结束
         this.loading = false;

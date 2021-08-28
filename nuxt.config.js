@@ -44,7 +44,8 @@ export default {
     { src: '@/plugins/utils', ssr: false },
     '@/plugins/routeguard.js',
     { src: '@/plugins/swiper.js', ssr: false },
-    { src: '@/plugins/vconsole', ssr: false }
+    { src: '@/plugins/vconsole', ssr: false },
+    { src: '@/plugins/vue-masonry', ssr: false }
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -139,9 +140,7 @@ export default {
         maxSize: 2500000
       }
     },
-    extractCSS: {
-      allChunks: true
-    }
+    extractCSS: process.env.NODE_ENV === 'production'
   },
   loading: false, // 加载进度条
   resourceHints: false, // 资源提示,加快初始页面加载时间

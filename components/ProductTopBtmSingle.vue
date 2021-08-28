@@ -1,6 +1,6 @@
 <template>
   <!-- 商品列表，上面部分展示图片，下面部分展示信息 -->
-  <div class="flex column pb-20 bg-white" :style="'width: ' + img.width + ';'">
+  <div class="pb-20 bg-white hidden round-top-lr-8" :style="'width: ' + img.width + ';'">
     <!-- 商品的图片 -->
     <BmImage 
       :url="img.url"
@@ -9,7 +9,6 @@
       :isLazy="true"
       :loadUrl="img.loadImage"
       :errorUrl="img.loadImage"
-      class="hidden round-top-lr-8"
       :isShow="true"
     />
     <!-- 商品的信息 -->
@@ -28,7 +27,8 @@
         <span class="fs-10 color_666 ml-10">{{ detail.country }}</span>
       </div>
       <!-- 商品描述 -->
-      <div :class="{'h-40 flex vcenter': detail.ellipsis === 2 ? true : false}">
+      <!-- <div :class="{'h-40 flex vcenter': detail.ellipsis === 2 ? true : false}"> -->
+      <div>
         <p class="fs-14 black fm-pf-r lh-20" v-if="detail.desc" v-html="detail.desc" :class="{ 'hidden-1': detail.ellipsis === 1, 'hidden-2': detail.ellipsis === 2 }"></p>
       </div>
       <!-- 评分 -->

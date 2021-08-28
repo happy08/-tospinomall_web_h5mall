@@ -2,7 +2,7 @@
   <!-- 首页-头部-搜索页面 -->
   <div :class="{'vh-100': true, 'bg-grey': !isShowTip}">
     <van-sticky class="bg-white border-b">
-      <BmHeaderNav :left="{ isShow: true }" :title="title" />
+      <BmHeaderNav :left="{ isShow: true }" :title="title" :border="false" />
 
       <!-- 搜索 -->
       <van-search

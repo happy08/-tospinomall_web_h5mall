@@ -122,11 +122,21 @@
             <BmIcon :name="'xinaixin'" :width="'0.26rem'" :height="'0.22rem'" :color="'#FA2022'" class="mr-8" />
             {{ $t('you_may_also_like') }}
           </van-divider>
-          <div class="mlr-12 flex between flex-wrap">
+          <div
+            class="mx-auto my-2 plr-12"
+            v-masonry
+            item-selector=".custom-grid-item"
+            fit-width="true"
+            transition-duration="0s"
+            stagger="0.03s"
+            gutter="10"
+          >
             <nuxt-link
               :to="{ name: 'cart-product-id', params: { id: searchItem.productId } }" 
               v-for="(searchItem, searchIndex) in recommendList"
               :key="'search-list-' + searchIndex"
+              class="custom-grid-item"
+              v-masonry-tile
             >
               <ProductTopBtmSingle
                 :img="{ url: searchItem.mainPictureUrl, width: '3.4rem', height: '3.4rem', loadImage: require('@/assets/images/product-bgd-170.png') }" 
@@ -199,7 +209,12 @@ export default {
     }
   },
   async fetch() {
-    if (this.$route.query.active == 1 && this.isFirst) this.active = parseFloat(this.$route.query.active);
+    this.active = 0;
+    if (parseFloat(this.$route.query.active) == 1 && this.isFirst == true) this.active = parseFloat(this.$route.query.active);
+    console.log(parseFloat(this.$route.query.active) == 1 && this.isFirst == true);
+    console.log(this.isFirst)
+    console.log(parseFloat(this.$route.query.active))
+    console.log(this.active)
     this.edit = false;
     this.checkResult = [];
     // 获取商品列表
@@ -210,10 +225,12 @@ export default {
     this.list = listData.data.records; // 关注商品/店铺列表
     this.total = listData.data.total; // 商品/店铺总数
     this.isFirst = false;
+    if (typeof this.$redrawVueMasonry === 'function') {
+      this.$redrawVueMasonry();
+    }
   },
   activated() {
     this.isFirst = true;
-    this.active = 0;
     this.$fetch();
   },
   methods: {
@@ -323,6 +340,7 @@ export default {
       this.$api.getRecommend({ type: 1, pageNum: this.pageNum, pageSize: this.pageSize}).then(res => { // 搜索商品列表
         
         this.recommendList = this.pageNum == 1 ? res.data.items : this.recommendList.concat(res.data.items);
+        this.$redrawVueMasonry();
         this.recommendTotal = res.data.total;
         
         // 加载状态结束

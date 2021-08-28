@@ -1,6 +1,6 @@
 <template>
   <!-- 首页-头部-搜索页面 -->
-  <div :class="{'bg-grey': !isShowTip}">
+  <div :class="{'bg-grey': !isShowTip, 'pb-20': 'true'}">
     <van-sticky :offset-top="0">
       <BmHeaderNav :left="{ isShow: true }" :title="$t('search')" :border="false" />
       <!-- 搜索 -->
@@ -68,28 +68,47 @@
               finished-text=""
               @load="onLoad"
             >
-              <div :class="{'flex between flex-wrap w-100': arrangeType == 2}">
+              <!-- 商品展示两列 -->
+              <template v-if="arrangeType == 2">
+                <div 
+                  class="mx-auto my-2"
+                  v-masonry
+                  item-selector=".custom-grid-item"
+                  fit-width="true"
+                  transition-duration="0s"
+                  stagger="0.03s"
+                  gutter="10"
+                >
+                  <nuxt-link 
+                    v-for="(searchItem, searchIndex) in list" 
+                    :key="'search-list-' + searchIndex"
+                    :to="{ name: 'cart-product-id', params: { id: searchItem.productId } }"
+                    class="mt-12 custom-grid-item"
+                  >
+                    <ProductTopBtmSingle
+                      :img="{ url: searchItem.mainPictureUrl, width: '3.4rem', height: '3.4rem', loadImage: require('@/assets/images/product-bgd-170.png') }" 
+                      :detail="{ desc: searchItem.productTitle, price: searchItem.productPrice, rate: searchItem.starLevel, volumn: searchItem.saleCount, ellipsis: 2, country: searchItem.supplyCountryName, country_url: searchItem.supplyCountryIcon }"
+                      class="round-4 bg-white hidden v-100"
+                    ></ProductTopBtmSingle>
+                  </nuxt-link>
+                </div>
+              </template>
+              <!-- 商品展示一列 -->
+              <div v-else>
                 <nuxt-link 
                   v-for="(searchItem, searchIndex) in list" 
                   :key="'search-list-' + searchIndex"
                   :to="{ name: 'cart-product-id', params: { id: searchItem.productId } }"
                   class="mt-12"
                 >
-                  <!-- 商品展示两列 -->
-                  <ProductTopBtmSingle
-                    :img="{ url: searchItem.mainPictureUrl, width: '3.4rem', height: '3.4rem', loadImage: require('@/assets/images/product-bgd-170.png') }" 
-                    :detail="{ desc: searchItem.productTitle, price: searchItem.productPrice, rate: searchItem.starLevel, volumn: searchItem.saleCount, ellipsis: 2, country: searchItem.supplyCountryName, country_url: searchItem.supplyCountryIcon }"
-                    class="round-4 bg-white hidden v-100"
-                    v-if="arrangeType === 2"
-                  ></ProductTopBtmSingle>
-                  <!-- 商品展示一列 -->
-                  <div v-if="arrangeType === 1" :class="{'flex vcenter pt-20 pb-30 hidden bg-white': true, 'border-229': searchIndex !== list.length - 1} ">
+                  <div :class="{'flex vcenter pt-20 pb-30 hidden bg-white': true, 'border-229': searchIndex !== list.length - 1} ">
                     <div>
                       <BmImage 
                         :url="searchItem.mainPictureUrl"
                         :width="'1.8rem'" 
                         :height="'1.8rem'"
                         :fit="'cover'"
+                        :isShow="true"
                         class="border round-4"
                       />
                     </div>
@@ -318,6 +337,9 @@ export default {
     },
     changeArrange() { // 切换展示样式 1列 2列
       this.arrangeType = this.arrangeType === 1 ? 2 : 1;
+      if (this.arrangeType == 2) {
+        this.$redrawVueMasonry();
+      }
     },
     getSearchList(index, title) { // 获取分类列表
       this.pageIndex = 1;

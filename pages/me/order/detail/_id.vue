@@ -120,18 +120,35 @@
     </div>
 
     <!-- 可能喜欢的推荐列表展示 -->
-    <van-divider class="plr-30 mt-24 fw fs-14 clr-black-85">
-      <i class="iconfont icon-xinaixin linear-color mr-8"></i>
-      {{ $t('you_may_also_like') }}
-    </van-divider>
-    <div class="mlr-12 flex between flex-wrap">
-      <ProductTopBtmSingle
-        :img="{ url: '', width: '3.4rem', height: '3.4rem', loadImage: require('@/assets/images/product-bgd-170.png') }" 
-        :detail="{ desc: 'categoryItem.name', price: 49.92, rate: 2.5, volumn: 50, ellipsis: 2, country: 'Ghana' }"
-        v-for="(searchItem, searchIndex) in 6" 
-        :key="'search-list-' + searchIndex"
-      ></ProductTopBtmSingle>
-    </div>
+    <template v-if="recommendList.length > 0">
+      <van-divider class="plr-30 mt-24 fw fs-14 clr-black-85">
+        <BmIcon :name="'xinaixin'" :width="'0.26rem'" :height="'0.22rem'" :color="'#FA2022'" class="mr-8" />
+        {{ $t('you_may_also_like') }}
+      </van-divider>
+      <van-list
+        v-model="loading"
+        :finished="finished"
+        finished-text=""
+        @load="onLoad"
+      >
+        <div 
+          class="mx-auto my-2 plr-12"
+          v-masonry
+          item-selector=".custom-grid-item"
+          fit-width="true"
+          transition-duration="0s"
+          stagger="0.03s"
+          gutter="10"
+        >
+          <nuxt-link :to="{ name: 'cart-product-id', params: { id: searchItem.productId } }" v-for="(searchItem, searchIndex) in recommendList" :key="'search-list-' + searchIndex" class="mb-12 bg-white custom-grid-item" v-masonry-tile>
+            <ProductTopBtmSingle
+              :img="{ url: searchItem.mainPictureUrl, width: '3.4rem', height: '3.4rem', loadImage: require('@/assets/images/product-bgd-170.png') }" 
+              :detail="{ desc: searchItem.productTitle, price: searchItem.productPrice, rate: parseFloat(searchItem.starLevel), volumn: searchItem.saleCount, ellipsis: 2, country: searchItem.supplyCountryName, country_url: searchItem.supplyCountryIcon }"
+            />
+          </nuxt-link>
+        </div>
+      </van-list>
+    </template>
 
     <div class="w-100 bg-white btn-content flex hend vcenter">
       <!-- 订单状态status：0->待付款；1->待发货；2->待收货；3->待评价（可能废弃）；4->已完成 5->已取消；6->超时未付款（订单关闭）；7->已拒收；8->其他 -->
@@ -199,7 +216,7 @@
 </template>
 
 <script>
-import { Cell, CellGroup, Divider, Popup, RadioGroup, Radio, CountDown, Sticky } from 'vant';
+import { Cell, CellGroup, Divider, Popup, RadioGroup, Radio, CountDown, Sticky, List } from 'vant';
 import OrderSingle from '@/components/OrderSingle';
 import OrderStoreSingle from '@/components/OrderStoreSingle';
 import ClipboardJS from 'clipboard';
@@ -218,6 +235,7 @@ export default {
     vanRadio: Radio,
     vanCountDown: CountDown,
     vanSticky: Sticky,
+    vanList: List,
     OrderSingle,
     OrderStoreSingle,
     ProductTopBtmSingle
@@ -229,11 +247,31 @@ export default {
       cancelRadio: 0,
       detail: {},
       cancelReasonList: [],
-      isScrollShow: true
+      isScrollShow: true,
+      recommendList: [],
+      pageNum: 1,
+      pageSize: 10,
+      finished: false,
+      loading: false,
+      total: 0,
+      orderId: ''
     }
+  },
+  async fetch() {
+    const recommendData = await this.$api.getRecommend({type: 2, pageNum: this.pageNum, pageSize: this.pageSize});
+    if (recommendData.code != 0) return false;
+    this.recommendList = this.pageNum == 1 ? recommendData.data.items : this.recommendList.concat(recommendData.data.items);
+    this.total = recommendData.data.total;
+    this.loading = false;
+    this.orderId = this.$route.params.id;
   },
   activated() {
     this.getOrderDetail();
+    if (this.orderId != this.$route.params.id) {
+      this.pageNum = 1;
+      this.finished = false;
+      this.$fetch();
+    }
   },
   filters: {
     paymentTypeFormat(val) { // 支付方式
@@ -241,9 +279,6 @@ export default {
     }
   },
   methods: {
-    addCart() { // 添加购物车
-
-    },
     cancelConfirm() { // 提交取消订单
       const reason = this.cancelReasonList.filter(item => {
         return item.id === this.cancelRadio;
@@ -434,6 +469,15 @@ export default {
           itemId: orderItem.id
         }
       })
+    },
+    onLoad() { // 加载更多推荐商品
+      if (this.total == this.recommendList.length) { // 没有下一页了
+        this.finished = true;
+        this.loading = false;
+        return false;
+      }
+      this.pageNum += 1;
+      this.$fetch();
     }
   },
   beforeDestroy(){

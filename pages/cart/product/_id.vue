@@ -94,17 +94,13 @@
             <template #title>
               <div class="flex vcenter">
                 <span class="fw fs-12 block">{{ $t("freight") }}</span>
-                <!-- <span
-                  class="ml-12 fs-12 grey fm-helvetica"
-                  @click="deliveryShow = true"
-                  >{{ $t("cart.delivery") }}: CHY0.00</span
-                > -->
-                <span class="ml-12 fs-12 grey fm-helvetica">{{ completeAddress ? completeAddress : $t('please_choose_address')}}</span>
+                <span class="ml-12 fs-12 grey fm-helvetica" v-if="deliveryInfo.length > 0">{{ $t("freight") }}: {{ $store.state.rate.currency }}{{ deliveryInfo[0].freightPrice }}</span>
+                <span class="ml-12 fs-12 grey fm-helvetica" v-if="deliveryInfo.length == 0">{{ completeAddress ? completeAddress : $t('please_choose_address')}}</span>
               </div>
             </template>
           </van-cell>
           <!-- 货源地到收货地 -->
-          <template v-if="completeAddress">
+          <template v-if="deliveryInfo.length > 0">
             <!-- 步骤条 -->
             <van-steps :active="freightActive" class="mt-20 plr-0">
               <!-- 发货地址 -->
@@ -133,7 +129,7 @@
                 </template>
               </van-step>
               <!-- 配送类型( 1 FBM 2 FBT ) FBM不展示中转站 -->
-              <van-step v-if="goodSpuVo.deliveryType != 1">
+              <van-step v-if="goodSpuVo.deliveryType != 1 && form.countryCode != storeInfo.deliveryCountryCode">
                 Accra
                 <!-- 自定义未激活状态图标 -->
                 <template #inactive-icon>
@@ -577,7 +573,7 @@ export default {
       skuType: '', // cart 操作区按钮为确认，''操作区按钮为加入购物车/立即购买
       goodAttr: [], // 商品选中的属性规格展示
       selectedSkuCombId: null,
-      deliveryInfo: null
+      deliveryInfo: []
     }
   },
   async fetch() {
@@ -743,7 +739,7 @@ export default {
           cityCode: res.data.cityCode, // 市编码
           districtCode: res.data.districtCode //区编码
         }
-        // this.completeAddress = res.data.completeAddress; // 完整地址
+        this.completeAddress = res.data.completeAddress; // 完整地址
         // 获取地址的时候默认是最后一级
         this.getNextArea(res.data.areaList[res.data.areaList.length - 2], false, true);
       })
@@ -903,7 +899,7 @@ export default {
           this.assgnStepList.map(item => {
             _address += item.name;
           })
-          this.completeAddress = _address;
+          this.completeAddress = this.assgnStepList.length > 0 ? _address : this.completeAddress;
         }
       })
     },
