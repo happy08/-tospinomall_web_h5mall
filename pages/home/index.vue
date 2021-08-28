@@ -290,7 +290,7 @@ import EmptyStatus from '@/components/EmptyStatus';
 import PullRefresh from '@/components/PullRefresh';
 
 export default {
-  middleware: 'sockjs',
+  // middleware: 'sockjs',
   components: {
     vanSearch: Search,
     vanSticky: Sticky,

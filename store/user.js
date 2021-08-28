@@ -18,6 +18,9 @@ export const mutations = {
   },
   SET_TOKEN(state, token) { // 提交token
     state.authToken = token;
+    if (token == null) {
+      state.userInfo = null;
+    }
     this.$cookies.set('authToken', token);
   },
   SET_REFRESHTOKEN(state, refreshToken) {
