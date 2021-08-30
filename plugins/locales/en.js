@@ -711,7 +711,17 @@ const en = {
   bill_success: 'Success',
   bill_to_pay: 'To pay',
   bill_fail: 'Fail',
-  bill_detail: 'Bill'
+  bill_detail: 'Bill',
+  axios_tip_404: 'The requested resource does not exist',
+  axios_tip_connect: 'Connection error!',
+  axios_tip_408: 'Request timed out',
+  axios_tip_500: 'Server Error',
+  axios_tip_501: 'Service not implemented',
+  axios_tip_502: 'Network Error',
+  axios_tip_503: 'service is not available',
+  axios_tip_504: 'network timeout',
+  axios_tip_505: 'HTTP version is not supported',
+  axios_tip_10401: 'Login expired, please log in again'
 }
 
 export default en;

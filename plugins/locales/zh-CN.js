@@ -713,7 +713,17 @@ const cn = {
   bill_to_pay: '待支付',
   bill_fail: '失败',
   prefix_tip: '+233',
-  bill_detail: '账单详情'
+  bill_detail: '账单详情',
+  axios_tip_404: '请求的资源不存在',
+  axios_tip_connect: '连接出错!',
+  axios_tip_408: '请求超时',
+  axios_tip_500: '服务器错误',
+  axios_tip_501: '服务未实现',
+  axios_tip_502: '网络错误',
+  axios_tip_503: '服务不可用',
+  axios_tip_504: '网络超时',
+  axios_tip_505: 'HTTP版本不受支持',
+  axios_tip_10401: '登录过期，请重新登录'
 }
 
 export default cn;

@@ -20,49 +20,57 @@ const tip = msg => {
   });
 };
 
+
 /**
  * 请求失败后的错误统一处理
  * @param {Number} status 请求失败的状态码
  */
  const errorHandle = (status, redirect, store) => {
   switch (status) {
-    // 401: 未登录状态，跳转登录页
-    case 401:
-      // redirect('/login');
+    case 10401:
+      tip($nuxt._i18n.t('axios_tip_10401'));
+      // setTimeout(() => {
+      //   redirect('/login');
+      // }, 1000);
       break;
+    // 401: 未登录状态，跳转登录页
+    // case 401:
+    //   // redirect('/login');
+    //   break;
     case 403:
-      tip('登录过期，请重新登录');
-      store.commit('setToken', ''); // 清除token并跳转登录页
+      store.commit('user/SET_TOKEN', null);
+      // tip('登录过期，请重新登录');
+      // store.commit('setToken', ''); // 清除token并跳转登录页
       // setTimeout(() => {
       //   redirect('/login');
       // }, 1000);
       break;
     case 404:
-      tip('请求的资源不存在');
+      tip($nuxt._i18n.t('axios_tip_404'));
       break;
     case 408:
-      tip('请求超时');
+      tip($nuxt._i18n.t('axios_tip_408'));
       break;
     case 500:
-      tip('服务器错误');
+      tip($nuxt._i18n.t('axios_tip_500'));
       break;
     case 501:
-      tip('服务未实现');
+      tip($nuxt._i18n.t('axios_tip_501'));
       break;
     case 502:
-      tip('网络错误');
+      tip($nuxt._i18n.t('axios_tip_502'));
       break;
     case 503:
-      tip('服务不可用');
+      tip($nuxt._i18n.t('axios_tip_503'));
       break;
     case 504:
-      tip('网络超时');
+      tip($nuxt._i18n.t('axios_tip_504'));
       break;
     case 505:
-      tip('HTTP版本不受支持');
+      tip($nuxt._i18n.t('axios_tip_505'));
       break;
     default:
-      tip(`连接出错!`);
+      tip($nuxt._i18n.t('axios_tip_connect'));
   }
 };
 
