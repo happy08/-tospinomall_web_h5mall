@@ -3,7 +3,7 @@
   <div class="bg-grey vh-100 pt-46 pb-56">
     <BmHeaderNav :left="{ isShow: true }" :fixed="true">
       <!-- tab切换 -->
-      <van-tabs v-model="active" slot="header-title" class="customs-van-tabs likes-tabs" @click="getList">
+      <van-tabs v-model="active" slot="header-title" class="customs-van-tabs likes-tabs" @click="getTabList">
         <van-tab :title="$t('product')" />
         <van-tab :title="$t('store')" />
       </van-tabs>
@@ -55,13 +55,12 @@
                         :width="'1.12rem'" 
                         :height="'1.12rem'"
                         :isLazy="false"
-                        :isShow="false"
+                        :isShow="true"
                         :round="true"
-                        :errorUrl="require('@/assets/images/product-bgd-90.png')"
                       />
                       <div class="ml-12 fs-14 fm-helvetica">
                         <p class="black hidden-2">{{ item.storeName }}</p>
-                        <p class="color_666 mt-8">{{ $t('shop_follower', { replace_tip: item.followers }) }}</p>
+                        <p class="color_666 mt-8">{{ item.collectNum }}{{ $t('shop_follower', { replace_tip: item.followers }) }}</p>
                       </div>
                     </div>
 
@@ -265,9 +264,10 @@ export default {
         name: 'home'
       })
     },
-    getList() { // 切换tab时数据要初始化
+    getTabList() { // 切换tab时数据要初始化
       this.pageNum = 1;
       this.finished = false;
+      this.list = [];
       this.getList();
     },
     onTop(item) { // 置顶

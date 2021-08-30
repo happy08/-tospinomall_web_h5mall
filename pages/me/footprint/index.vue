@@ -240,7 +240,8 @@ export default {
       this.$fetch();
     },
     onLoad() {
-      if (this.total == this.list.length) { // 没有下一页了
+      this.finished = false;
+      if (parseFloat(this.total) == this.list.length) { // 没有下一页了
         this.finished = true;
         this.loading = false;
         return false;
