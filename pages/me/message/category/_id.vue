@@ -1,6 +1,6 @@
 <template>
   <!-- 消息列表查询 -->
-  <div class="pt-46 vh-100 bg-grey">
+  <div class="pt-46 v-percent-100 bg-grey">
     <BmHeaderNav :left="{ isShow: true }" :title="$t('message')" :fixed="true" />
 
     <PullRefresh :refreshing="refreshing" @refresh="onRefresh">

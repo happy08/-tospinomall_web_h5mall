@@ -1,6 +1,6 @@
 <template>
   <!-- 我的-订单 -->
-  <div class="vh-100 bg-grey">
+  <div :class="{'v-percent-100': true, 'bg-white': lists.length == 0, 'bg-grey': lists.length > 0}">
     <van-sticky class="bg-white">
       <BmHeaderNav :left="{ isShow: true, url: '/me' }" :title="$t('my_order')" :border="false" />
       <!-- 搜索 -->
@@ -27,7 +27,7 @@
     <!-- 分类 -->
     <van-tabs sticky swipeable animated color="#42B7AE" offset-top="1.6rem"  @change="getSearchList" class="customs-van-tabs" v-model="typeActive" :ellipsis="false" >
       <van-tab v-for="(tabItem, tabIndex) in tabs" :title="$t(tabItem.name)" :key="'scroll-tab-' + tabIndex" title-class="border-b" :name="tabItem.type">
-        <PullRefresh :refreshing="refreshing" @refresh="onRefresh" :class="{ 'bg-white': lists.length === 0 }">
+        <PullRefresh :refreshing="refreshing" @refresh="onRefresh" :class="{ 'custom-min-height-128': true }">
           <van-list
             v-model="loading"
             :finished="finished"
@@ -39,7 +39,7 @@
             </template>
             <div class="flex between flex-wrap">
               <!-- 空状态  -->
-              <empty-status v-if="lists.length === 0" :image="require('@/assets/images/empty/order.png')" :description="$t('empty')"/>
+              <empty-status v-if="lists.length === 0" :image="require('@/assets/images/empty/order.png')" />
               <!-- 订单列表 -->
               <div v-else v-for="(item,index) in lists" :key="index" class="w-100 plr-12 mb-12  pb-20 pt-24 bg-white">
                 <van-checkbox-group v-model="togetherResult">
@@ -153,7 +153,7 @@
           <span :class="{'fs-14 round-8 tc': true, 'is-active': filterTimeType == 1}" @click="filterTimeType = 1">{{ $t('within_a_week') }}</span>
           <span :class="{'fs-14 round-8 tc': true, 'is-active': filterTimeType == 2}" @click="filterTimeType = 2">{{ $t('within_a_month') }}</span>
           <span :class="{'fs-14 round-8 tc': true, 'is-active': filterTimeType == 3}" @click="filterTimeType = 3">{{ $t('within_3_month') }}</span>
-          <span :class="{'fs-14 round-8 tc': true, 'is-active': filterTimeType == 4}" @click="filterTimeType = 4">{{ $t('this_year') }}</span>
+          <span :class="{'fs-14 round-8 tc': true, 'is-active': filterTimeType == 4}" @click="filterTimeType = 4">{{ $t('within_this_year') }}</span>
           <span :class="{'fs-14 round-8 tc': true, 'is-active': filterTimeType == 5}" @click="filterTimeType = 5">In {{ beforeOneYear }}</span>
           <span :class="{'fs-14 round-8 tc': true, 'is-active': filterTimeType == 6}" @click="filterTimeType = 6">In {{ beforeTwoYear }}</span>
         </div>
@@ -323,7 +323,7 @@ export default {
         status: this.typeActive
       }
     }
-    if (this.params.pageNum == 1) { // 只有请求第一页数据的时候进行loading处理
+    if (this.params.pageNum == 1 && this.refreshing.isFresh == false) { // 只有请求第一页数据的时候进行loading处理
       // 加载图标
       this.$toast.loading({
         forbidClick: true,

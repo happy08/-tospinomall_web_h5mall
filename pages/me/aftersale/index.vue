@@ -1,6 +1,6 @@
 <template>
   <!-- 我的-售后列表 -->
-  <div class="vh-100 bg-grey pt-46">
+  <div class="v-percent-100 bg-grey pt-46">
     <BmHeaderNav :left="{ isShow: true }" :title="$t('refund_after_sale')" :fixed="true" />
     <!-- 售后列表 -->
     <van-tabs sticky swipeable animated :offset-top="46" color="#42B7AE" class="customs-van-tabs" :ellipsis="false" @change="getSearchList" v-model="tabActive">

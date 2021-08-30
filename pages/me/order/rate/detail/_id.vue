@@ -1,6 +1,6 @@
 <template>
   <!-- 商品-评价-评价详情/ 我的-评价-评价详情 -->
-  <div class="vh-100 bg-grey pb-80 pt-46">
+  <div class="v-percent-100 bg-grey pb-80 pt-46">
     <BmHeaderNav :left="{ isShow: true }" :title="$t('review_details')" :fixed="true" />
 
     <!-- 订单展示 -->

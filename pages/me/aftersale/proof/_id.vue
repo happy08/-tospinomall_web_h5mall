@@ -1,6 +1,6 @@
 <template>
   <!-- 我的-售后详情-举证 -->
-  <div class="vh-100 pt-46 pb-20">
+  <div class="v-percent-100 pt-46 pb-20">
     <BmHeaderNav :left="{ isShow: true }" :title="$t('adducing_evidence')" :fixed="true" />
     <van-notice-bar :text="$t('provide_proof_overtime_tips')" background="#FACE91" color="#fff" />
 

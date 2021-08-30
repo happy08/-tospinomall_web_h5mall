@@ -1,6 +1,6 @@
 <template>
   <!-- 我的-消息分类列表 -->
-  <div class="vh-100 bg-grey pt-46">
+  <div class="v-percent-100 bg-grey pt-46">
     <BmHeaderNav :left="{ isShow: true }" :title="$t('message')" :fixed="true">
       <div slot="header-right">
         <BmImage 
@@ -13,7 +13,7 @@
       </div>
     </BmHeaderNav>
 
-    <PullRefresh :refreshing="refreshing" @refresh="onRefresh">
+    <PullRefresh :refreshing="refreshing" @refresh="onRefresh" class="custom-min-height-46">
       <van-cell-group>
         <van-cell class="p-20" v-for="(messageItem, messageIndex) in messageList" :key="messageIndex" :value="messageItem.sendTime" :label="messageItem.title" label-class="light-grey fs-14 ml-36" @click="goCategoryList(messageItem.id)">
           <template #title>

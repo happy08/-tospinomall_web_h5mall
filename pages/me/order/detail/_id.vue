@@ -1,6 +1,6 @@
 <template>
   <!-- 我的-订单-订单详情  -->
-  <div class="vh-100 bg-grey pb-56">
+  <div class="v-percent-100 bg-grey pb-56">
     <!-- 头部 -->
     <div class="bg-green-linear">
       <van-sticky @scroll="stickyScroll" ref="headerStickyContainer">

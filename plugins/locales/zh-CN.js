@@ -712,7 +712,8 @@ const cn = {
   bill_success: '成功',
   bill_to_pay: '待支付',
   bill_fail: '失败',
-  prefix_tip: '+233'
+  prefix_tip: '+233',
+  bill_detail: '账单详情'
 }
 
 export default cn;

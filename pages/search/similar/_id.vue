@@ -1,10 +1,10 @@
 <template>
   <!-- 查看相似商品 -->
-  <div class="pt-46 bg-grey pb-20 custom-min-height-66">
+  <div class="pt-46 bg-grey pb-20 v-percent-100">
     <BmHeaderNav :left="{ isShow: true }" :title="$t('similar_goods')" :fixed="true" />
 
-    <PullRefresh :refreshing="refreshing" @refresh="onRefresh">
-      <empty-status v-if="lists.length === 0" :image="require('@/assets/images/empty/result.png')" class="custom-min-height-46" />
+    <PullRefresh :refreshing="refreshing" @refresh="onRefresh" class="custom-min-height-46">
+      <empty-status v-if="lists.length === 0" :image="require('@/assets/images/empty/result.png')" />
       <van-list
         v-else
         v-model="loading"
@@ -85,6 +85,7 @@ export default {
       this.$fetch();
     },
     onLoad() {
+      this.finished = false;
       if (this.total == this.lists.length) { // 没有下一页了
         this.finished = true;
         this.loading = false;

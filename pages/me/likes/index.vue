@@ -1,6 +1,6 @@
 <template>
   <!-- 我的-关注 -->
-  <div class="bg-grey vh-100 pt-46 pb-56">
+  <div class="bg-grey v-percent-100 pt-46 pb-56">
     <BmHeaderNav :left="{ isShow: true }" :fixed="true">
       <!-- tab切换 -->
       <van-tabs v-model="active" slot="header-title" class="customs-van-tabs likes-tabs" @click="getTabList">
@@ -28,7 +28,7 @@
           <!-- 无数据时展示 -->
           <empty-status v-if="list.length === 0" :image="require('@/assets/images/empty/result.png')" :btn="{ btn: $t('shop_now'), isEmit: true }" @emptyClick="emptyClick" />
           <!-- 已关注的店铺列表展示 -->
-          <van-checkbox-group v-model="checkResult" ref="checkboxStoreGroup">
+          <van-checkbox-group v-model="checkResult" ref="checkboxStoreGroup" v-else>
             <van-cell-group>
               <van-cell :border="active == 0 ? false : true" :class="{'ptb-0 plr-0': true, 'bg-f4': isTrue(item.id, checkResult) }" v-for="(item, index) in list" :key="index">
                 <!-- 选择 -->

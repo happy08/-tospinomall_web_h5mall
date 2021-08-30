@@ -1,6 +1,6 @@
 <template>
   <!-- 我的-订单-查看物流 -->
-  <div class="bg-grey vh-100 pt-46">
+  <div class="bg-grey v-percent-100 pt-46">
     <BmHeaderNav :left="{ isShow: true }" :title="$t('logistics_tracking')" :fixed="true" />
 
     <!-- 物流单号及运送者 -->

@@ -1,5 +1,5 @@
 <template>
-  <div class="vh-100 bg-grey pb-120 pt-46">
+  <div class="v-percent-100 bg-grey pb-120 pt-46">
     <BmHeaderNav :left="{ isShow: $route.query.isBar ? true: false }" :title="$t('cart')" :border="false" :fixed="true">
       <div slot="header-right" class="green fs-16" @click="onEdit">
         {{ isEdit ? $t('done') : $t('edit') }}

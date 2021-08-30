@@ -1,9 +1,9 @@
 <template>
-  <div>
+  <!-- <div> -->
     <!-- <Nuxt keep-alive :keep-alive-props="{ max: 3 }" /> -->
     <Nuxt keep-alive />
     <!-- <Nuxt /> -->
-  </div>
+  <!-- </div> -->
 </template>
 
 <script>

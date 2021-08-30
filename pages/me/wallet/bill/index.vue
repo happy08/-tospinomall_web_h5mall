@@ -28,7 +28,7 @@
       >
         <div v-for="(item, index) in list" :key="index">
           <p class="fs-14 black fw ptb-10 plr-20">{{ item.dateTime}}</p>
-          <p class="bg-white fs-14 light-grey ptb-14 plr-20 border-b">Expenses{{ $store.state.rate.currency }}{{ item.expenditureAmount }} Income {{ $store.state.rate.currency }}{{ item.incomeAmount }}</p>
+          <p class="bg-white fs-14 light-grey ptb-14 plr-20 border-b">{{ $t('expenses_income', { replace_tip: $store.state.rate.currency + item.expenditureAmount, replace_tip2: $store.state.rate.currency + item.incomeAmount }) }}</p>
           <nuxt-link :to="{ name: 'me-wallet-bill-id', params: { id: itemInfo.id } }" v-for="(itemInfo, itemInfoIndex) in item.infos" :key="'info-' + itemInfoIndex" class="bg-white plr-12 block">
             <div class="pb-12 pt-20 bg-white flex between vcenter border-b">
               <div class="flex">

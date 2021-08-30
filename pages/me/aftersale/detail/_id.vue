@@ -1,6 +1,6 @@
 <template>
   <!-- 我的-售后-售后详情 type: 1仅退款 2退货退款 3换货  -->
-  <div class="vh-100 bg-grey pt-46 pb-56">
+  <div class="v-percent-100 bg-grey pt-46 pb-56">
     <BmHeaderNav :left="{ isShow: true, isEmit: true }" :title="detail.returnType === 0 ? $t('detail_of_the_refund') : $t('detail_of_the_return')" :fixed="true" @leftClick="leftClick" />
     
     <!-- 仅退款,退款中 -->

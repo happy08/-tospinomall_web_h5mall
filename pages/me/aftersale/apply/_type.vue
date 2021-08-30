@@ -3,7 +3,7 @@
     我的-售后-售后申请-售后类型 type: 1仅退款 2退货退款 3换货 
     换货功能暂时不做，故暂时先把选择商品规格的弹窗删除了，之后可以从购物车页面copy一份 
   -->
-  <div class="bg-grey vh-100 pb-30 pt-46">
+  <div class="bg-grey v-percent-100 pb-30 pt-46">
     <BmHeaderNav :left="{ isShow: true }" :title="$t(title)" :fixed="true" />
 
     <!-- 订单详情 -->

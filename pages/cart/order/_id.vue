@@ -1,6 +1,6 @@
 <template>
   <!-- 购物车-确认订单 -->
-  <div class="vh-100 bg-grey pb-68 pb-46" v-if="detail.storeSaleInfoList">
+  <div class="v-percent-100 bg-grey pb-68 pb-46" v-if="detail.storeSaleInfoList">
     <BmHeaderNav :left="{ isShow: true }" :fixed="true" :title="$t('confirm_the_order')" />
 
     <div v-if="codeData.code == 0">

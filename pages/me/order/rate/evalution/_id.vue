@@ -1,6 +1,6 @@
 <template>
   <!-- 我的-订单-评价-发表评价 -->
-  <div class="vh-100 bg-grey pt-46">
+  <div class="v-percent-100 bg-grey pt-46">
     <BmHeaderNav :left="{ isShow: true }" :title="$t('evaluation')" :fixed="true">
       <div slot="header-right" class="green fs-14" @click="onConfirm">{{ $t('submit') }}</div>
     </BmHeaderNav>

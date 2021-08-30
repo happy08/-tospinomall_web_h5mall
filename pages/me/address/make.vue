@@ -1,6 +1,6 @@
 <template>
   <!-- 我的-设置-新建收货地址 -->
-  <div class="bg-grey vh-100 pt-46">
+  <div class="bg-grey v-percent-100 pt-46">
     <BmHeaderNav :left="{ isShow: true }" :title="$t('shipping_address')" :fixed="true">
       <div slot="header-right" class="green" @click="deleteFn" v-if="$route.query.id">
         {{ $t('delete') }}

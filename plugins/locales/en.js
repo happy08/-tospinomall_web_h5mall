@@ -710,7 +710,8 @@ const en = {
   bill_search_placeholder: 'Enter bill-related information',
   bill_success: 'Success',
   bill_to_pay: 'To pay',
-  bill_fail: 'Fail'
+  bill_fail: 'Fail',
+  bill_detail: 'Bill'
 }
 
 export default en;

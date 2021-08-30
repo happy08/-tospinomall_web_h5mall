@@ -1,6 +1,6 @@
 <template>
   <!-- 我的-订单-评价列表 -->
-  <div class="vh-100 bg-grey pt-46">
+  <div class="v-percent-100 bg-grey pt-46">
     <BmHeaderNav :left="{ isShow: true }" :title="$t('evalution_center')" :fixed="true">
       <nuxt-link :to="{ name: 'service-type', params: { type: 'evaluation' }, query: { isH5: 1 } }" slot="header-right" class="green fs-14">{{ $t('rules') }}</nuxt-link>
     </BmHeaderNav>

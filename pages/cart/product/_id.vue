@@ -1,6 +1,6 @@
 <template>
   <!-- 商品详情页面 -->
-  <div class="vh-100 bg-grey pb-56">
+  <div class="v-percent-100 bg-grey pb-56">
     <van-sticky
       ref="detailStickyContainer"
       @scroll="stickyScroll"

@@ -1,6 +1,6 @@
 <template>
   <!-- 订单评价列表/商品-商品详情-评价列表 -->
-  <div class="vh-100 bg-grey pt-46">
+  <div class="v-percent-100 bg-grey pt-46">
     <BmHeaderNav :left="{ isShow: true }" :title="$t('product_evaluation')" :fixed="true" />
 
     <PullRefresh :refreshing="refreshing" @refresh="onRefresh">
