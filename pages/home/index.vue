@@ -67,15 +67,16 @@
         <!-- 整屏轮播图 -->
         <div v-if="moduleItem.type === 1">
           <swiper
-            ref="swiperFullScreenRef"
+            :ref="'swiperFullScreenRef' + moduleIndex"
             class="mt-12 swiper home-banner-swiper"
             :options="swiperFullScreenOption"
             v-if="moduleItem.componentDetails.length > 0"
           >
             <swiper-slide 
-              class="plr-12" 
+              class="plr-12 hot-container" 
               v-for="(slideItem, slideIndex) in moduleItem.componentDetails"
               :key="'swiper-slide-image-' + slideIndex"
+              :ref="'swiperFullScreenRef' + moduleIndex + slideIndex"
             >
               <BmImage
                 :url="slideItem.imageUrl"
@@ -85,6 +86,8 @@
                 :height="'3.72rem'"
                 class="round-8 hidden"
               />
+              <!-- 图片坐标 -->
+              <div class="bg-white hot-container__position" :style="hotStyle(slideItem, 'swiperFullScreenRef' + moduleIndex + slideIndex, 'swiperFullScreenRef' + moduleIndex)" @click="onHotDetail(slideItem)"></div>
             </swiper-slide>
             <div class="swiper-pagination swiper-full-pagination" slot="pagination"></div>
           </swiper>
@@ -99,7 +102,7 @@
               :errorUrl="require('@/assets/images/product-bgd-375.png')"
             />
             <!-- 图片坐标 -->
-            <div v-for="hotItem, hotIndex in moduleItem.componentDetails" :key="'hot-picture-' + hotIndex" class="bg-white hot-container__position" :ref="'hotPosition' + moduleIndex + hotIndex" :style="hotStyle(hotItem, 'hotPosition' + moduleIndex + hotIndex, 'hotContainer' + moduleIndex)" @click="onHotDetail(hotItem)"></div>
+            <div v-for="hotItem, hotIndex in moduleItem.componentDetails" :key="'hot-picture-' + hotIndex" class="hot-container__position" :ref="'hotPosition' + moduleIndex + hotIndex" :style="hotStyle(hotItem, 'hotPosition' + moduleIndex + hotIndex, 'hotContainer' + moduleIndex)" @click="onHotDetail(hotItem)"></div>
           </div>
         </template>
         
