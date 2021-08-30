@@ -9,7 +9,7 @@
         class="mt-60 btn_h48 round-8 fw fs-16 w-100 result-page__btn"
         color="linear-gradient(270deg, #3EB5AE 0%, #70CEB6 100%)"
         @click="onConfirm"> 
-        {{ $t('me.authentication.iknow') }}
+        {{ $t('i_know') }}
       </van-button>
     </div>
   </div>
