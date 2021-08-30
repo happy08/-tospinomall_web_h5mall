@@ -12,9 +12,12 @@ export default {
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, viewport-fit=cover, user-scalable=0' },
-      { hid: 'description', name: 'description', content: 'Tospino Ghana online shopping' },
-      { hid: 'keywords', name: 'keywords', content: 'Tospino Ghana online shopping' },
+      { hid: 'description', name: 'description', content: 'Tospino online shopping' },
+      { hid: 'keywords', name: 'keywords', content: 'Tospino online shopping' },
       { name: 'google-signin-scope', content: 'profile email' },
+      { hid: 'og:title', property: 'og:title', content: 'Tospino online shopping' },
+      { hid: 'og:description', property: 'og:description', content: 'Tospino online shopping' },
+      { hid: 'og:image', property: 'og:image', content: '/favicon.ico' }
     ],
     link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
     script: [
@@ -144,4 +147,7 @@ export default {
   },
   loading: false, // 加载进度条
   resourceHints: false, // 资源提示,加快初始页面加载时间
+  render: { // 预加载
+    resourceHints: false
+  }
 };

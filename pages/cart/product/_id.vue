@@ -1,6 +1,6 @@
 <template>
   <!-- 商品详情页面 -->
-  <div class="v-percent-100 bg-grey pb-56">
+  <div class="v-percent-100 bg-grey pb-56 product-detail-content">
     <van-sticky
       ref="detailStickyContainer"
       @scroll="stickyScroll"
@@ -19,7 +19,7 @@
             v-show="!isScroll"
             @click="leftBack"
           />
-          <div class="sticky-opacity ml-14 w-260" @click="$router.push({ name: 'search' })">
+          <div class="sticky-opacity ml-14" @click="$router.push({ name: 'search' })">
             <van-search v-model="searchVal" disabled class="round-20 hidden" />
           </div>
         </div>
@@ -53,7 +53,6 @@
             <swiper-slide v-for="(productItem, productIndex) in carouselMapUrls" :key="productIndex" @click.native="onPreviewPic(productIndex)">
               <BmImage
                 :url="productItem.imgUrl"
-                :width="'7.5rem'"
                 :height="'7.5rem'"
                 :isLazy="false"
                 :isShow="false"
@@ -751,10 +750,12 @@ export default {
   },
   head() {
     return {
-      title: this.goodSpuVo.goodTitle + 'Tospino Ghana online shopping',
+      title: this.goodSpuVo.goodTitle + 'Tospino online shopping',
       meta: [
-        { hid: 'description', name: 'description', content: this.goodSpuVo.goodTitle || 'Tospino Ghana online shopping' },
-        { hid: 'keywords', name: 'keywords', content: this.goodSpuVo.goodTitle || 'Tospino Ghana online shopping' }
+        { hid: 'description', name: 'description', content: this.goodSpuVo.goodTitle || 'Tospino online shopping' },
+        { hid: 'keywords', name: 'keywords', content: this.goodSpuVo.goodTitle || 'Tospino online shopping' },
+        { hid: 'og:title', property: 'og:title', content: this.goodSpuVo.goodTitle || 'Tospino online shopping' },
+        { hid: 'og:description', property: 'og:description', content: this.goodSpuVo.goodTitle || 'Tospino online shopping' }
       ]
     }
   },
@@ -821,6 +822,10 @@ export default {
       }
     },
     leftBack() {
+      if (this.$route.query.isShare) { // 如果是分享出去的页面，点击回退按钮时跳转到首页
+        this.$router.replace('/home');
+        return false;
+      }
       if(window.history.length < 2){ //解决部分机型拿不到history
         this.$router.replace('/');
       }else{
@@ -1045,9 +1050,6 @@ export default {
 .word-break{
   word-break: break-all;
 }
-.w-260{
-  width: 260px;
-}
 </style>
 
 <style lang="less">
@@ -1077,6 +1079,17 @@ export default {
     .sticky-opacity {
       opacity: 1;
       animation: all 1s;
+    }
+  }
+}
+.product-detail-content{
+  .van-nav-bar__title{
+    display: none;
+  }
+  .van-nav-bar__left{
+    width: 88%;
+    &>div, .sticky-opacity{
+      width: 100%;
     }
   }
 }

@@ -12,7 +12,7 @@
           </template>
         </van-cell>
         <BmImage
-          :url="require('@/assets/images/line-icon.svg')"
+          :url="require('@/assets/images/line-icon.png')"
           :height="'0.1rem'"
           :isLazy="false"
           :isShow="false"

@@ -387,10 +387,10 @@ export default {
   },
   head() { // 头部设置，方便seo
     return {
-      title: this.meta.title || 'Tospino Ghana online shopping',
+      title: this.meta.title || 'Tospino online shopping',
       meta: [
-        { hid: 'description', name: 'description', content: this.meta.description || 'Tospino Ghana online shopping' },
-        { hid: 'keywords', name: 'keywords', content: this.meta.keywords || 'Tospino Ghana online shopping' }
+        { hid: 'description', name: 'description', content: this.meta.description || 'Tospino online shopping' },
+        { hid: 'keywords', name: 'keywords', content: this.meta.keywords || 'Tospino online shopping' }
       ]
     }
   },
@@ -430,7 +430,7 @@ export default {
       })
     },
     onHotDetail(hotDetail) { // 点击热区图进行跳转 imageLinkType: 0:商品链接(商品详情页)，跳转到搜索页(1:前端分类id，2:后端分类id，3:品牌，4:FBT，5:FBM，) 6:外部链接(直接打开)
-      if (hotDetail.imageLinkType == 6) {
+      if (hotDetail.imageLinkType == 6) { // 打开外部链接
         location.href = hotDetail.outerLink;
         return false;
       }
@@ -452,21 +452,21 @@ export default {
           val: hotDetail.brandIds
         }
       }
-      if (hotDetail.imageLinkType == 4) {
+      if (hotDetail.imageLinkType == 4) { // 搜索fbt
         _query = {
           deliveryType: 2,
           fbtStocks: hotDetail.fbtCountrys,
           val: 2
         }
       }
-      if (hotDetail.imageLinkType == 5) {
+      if (hotDetail.imageLinkType == 5) { // 搜索fbm
         _query = {
           deliveryType: 1,
           val: 1,
           fbmStocks: hotDetail.fbmCountrys
         }
       }
-      if (hotDetail.imageLinkType == 1 || hotDetail.imageLinkType == 2) { // 不论是前端分类还是后端分类，都传后端分类id进行搜索
+      if (hotDetail.imageLinkType == 1 || hotDetail.imageLinkType == 2) { // 搜索 1前端分类id 2后端分类id
         _query = {
           categoryId: hotDetail.imageLinkType == 2 ? hotDetail.serverMenuIds: hotDetail.frontMenuIds
         }
@@ -480,10 +480,13 @@ export default {
     hotStyle(hotItem, ele, container) { // 热区图位置计算 todo
       if (process.client) {
         this.$nextTick(() => {
-          let _w = this.$refs[container][0].clientWidth;
-          let _h = this.$refs[container][0].clientHeight;
+          let _w = 0;
+          let _h = 0;
           
           let timer = setInterval(() => { // 防止元素container的宽高获取不到，添加定时器，获取到定时器取消
+            if (!this.$refs[container][0]) {
+              return false;
+            }
             _w = this.$refs[container][0].clientWidth;
             _h = this.$refs[container][0].clientHeight;
             if (_w > 0 && _h > 0) {
