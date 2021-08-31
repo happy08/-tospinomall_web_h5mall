@@ -74,8 +74,8 @@ export const mutations = {
 export const actions = {
   GetUserInfo({ commit, state }, authToken) {
     return new Promise((resolve, reject) => {
-      if (state.userInfo) resolve();
-      else
+      // if (state.userInfo) resolve();
+      // else
         this.$api.getUserInfo(authToken).then(res => {
           if (res.code != 0) return false;
           

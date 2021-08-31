@@ -119,7 +119,10 @@ export function updateCartNum(data) {
   return request({
     url: '/carts/shoppingCart/updateCartNumById',
     method: 'put',
-    data
+    data: qs.stringify(data),
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
   })
 }
 

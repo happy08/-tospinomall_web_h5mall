@@ -35,7 +35,7 @@
         <van-field v-model="detail.returnAmount" type="number" input-align="right" :formatter="onFormatter" />
       </template>
     </van-cell> -->
-    <div class="p-20 fs-14 mt-12 black">{{ $t('refund_price_tip', { replace_tip: detail.returnAmount }) }}</div>
+    <div class="p-20 fs-14 mt-12 black">{{ $t('refund_price_tip', { replace_tip: $store.state.rate.currency + detail.realAmount }) }}</div>
 
     <!-- 申请指令 -->
     <div class="plr-20 pt-20 pb-24 bg-white">
@@ -354,7 +354,7 @@ export default {
           this.currentSelect = {
             type: type,
             title: this.$t('applyReason'),
-            list: res.data.map(item => {
+            list: res.data.map((item, index) => {
               return item.applyReason;
             })
           }
@@ -367,7 +367,7 @@ export default {
         type: type,
         title: type === 'type' ? this.$t('returnMethodTitle') : type === 'status' ? this.$t('state_of_the_goods') : type === 'reason' ? this.$t('applyReason') : '',
         // list: type === 'type' ? this.detail.status == 1 ? [this.$t('selectReason')[0]] : this.$t('returnMethodList') : type === 'status' ? this.$t('stateGoodsList') : this.$t('selectReason')
-        list: type === 'type' ? this.$t('selectReason') : type === 'status' ? this.$t('stateGoodsList') : this.$t('selectReason')
+        list: type === 'type' ? parseFloat(this.$route.params.type) == 1 ? [this.$t('selectReason')[0]] : this.$t('selectReason') : type === 'status' ? this.$t('stateGoodsList') : this.$t('selectReason')
       }
       this.isSelectType = true;
     },

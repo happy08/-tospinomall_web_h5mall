@@ -157,6 +157,13 @@ export default {
           phone: ''
         });
       }
+    }).catch(() => { // 接口报错，又是订单结算页面跳过来的话，要先展示余额
+      if (this.$route.query.type == 'order') { // 说明是从订单结算页面跳转过来的，支付方式就有余额
+        this.list = [{
+          label: 'balance',
+          phone: ''
+        }];
+      }
     })
   },
   methods: {

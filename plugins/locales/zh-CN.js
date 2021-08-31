@@ -487,7 +487,7 @@ const cn = {
   upload_certificate_tips: '可选凭证：在换货前有损坏的商品的相关字迹的聊天截图',
   please_enter_6_number_verification_code: '请输入6位数字验证码',
   dont_get_code: '收不到验证码',
-  resend: 'Resend',
+  resend: '重新发送',
   payment_password_sms_tips: '温馨提示:\n1、为保障您的账号安全,变更重要信息需要身份验证.\n2、验证过程中如有疑问请联系客服.\n3、更改绑定手机,如原手机停用无法获取验证码,请联系客服.',
   get_verification_code: '获取验证码',
   resend_after: '{replace_tip}s后重新发送',

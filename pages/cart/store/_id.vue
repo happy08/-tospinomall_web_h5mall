@@ -1,6 +1,6 @@
 <template>
   <!-- 店铺-店铺首页 -->
-  <div class="vh-100 bg-grey">
+  <div class="vh-100 bg-grey pb-70">
     <div class="flex vcenter plr-12 bg-white h-46">
       <van-icon name="arrow-left" color="#383838" size="18px" @click="leftBack"></van-icon>
       <van-search
@@ -568,5 +568,8 @@ export default {
 }
 .h-25{
   height: 25px!important;
+}
+.pb-70{
+  padding-bottom: 70px;
 }
 </style>

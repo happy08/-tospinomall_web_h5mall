@@ -27,12 +27,12 @@ const tip = msg => {
  */
  const errorHandle = (status, redirect, store) => {
   switch (status) {
-    case 10401:
-      tip($nuxt._i18n.t('axios_tip_10401'));
-      // setTimeout(() => {
-      //   redirect('/login');
-      // }, 1000);
-      break;
+    // case 10401:
+    //   tip($nuxt._i18n.t('axios_tip_10401'));
+    //   // setTimeout(() => {
+    //   //   redirect('/login');
+    //   // }, 1000);
+    //   break;
     // 401: 未登录状态，跳转登录页
     // case 401:
     //   // redirect('/login');

@@ -152,9 +152,9 @@ export default {
     getOrderAfterSalesCount().then(res => {
       if (res.code != 0) return false;
       
-      this.afterSalesCount = res.data.afterSalesCount; // 申请售后总数
-      this.recordCount = res.data.recordCount; // 申请记录总数
-      this.untreatedCount = res.data.untreatedCount; // 未处理总数
+      this.afterSalesCount = parseFloat(res.data.afterSalesCount); // 申请售后总数
+      this.recordCount = parseFloat(res.data.recordCount); // 申请记录总数
+      this.untreatedCount = parseFloat(res.data.untreatedCount); // 未处理总数
     })
     this.$fetch();
   },

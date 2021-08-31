@@ -116,12 +116,12 @@ const errorHandle = (status, redirect, store, app) => {
     // case 401:
     //   store.commit('user/SET_TOKEN', null);
     //   break;
-    case 10401:
-      tip(app.i18n.t('axios_tip_10401'));
-      // setTimeout(() => {
-      //   redirect('/login');
-      // }, 1000);
-      break;
+    // case 10401:
+    //   tip(app.i18n.t('axios_tip_10401'));
+    //   // setTimeout(() => {
+    //   //   redirect('/login');
+    //   // }, 1000);
+    //   break;
     case 404:
       tip(app.i18n.t('axios_tip_404'));
       break;

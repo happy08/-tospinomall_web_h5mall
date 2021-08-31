@@ -60,7 +60,7 @@
               <van-cell :title="$t('distribution')" class="plr-0 ptb-12" title-class="color-black-85" value-class="flex-2" is-link center @click="onChangeDelivery(productMapItem.sendTypeEstimateVoList, productMapItem.choiceSendType, item.storeId)">
                 <template #default>
                   <div class="fs-14 light-grey lh-12" v-if="productMapItem.sendTypeEstimateVoList.length">
-                    {{ deliveryFormat(productMapItem.sendTypeEstimateVoList[productMapItem.choiceSendType - 1].sendType) }}<br />
+                    {{ deliveryFormat(productMapItem, 'list') }}<br />
                     <p class="hidden-1">{{ productMapItem.sendTypeEstimateVoList[productMapItem.choiceSendType - 1].estimeate }}</p>
                   </div>
                 </template>
@@ -111,7 +111,7 @@
       <van-radio-group v-model="distributionRadio">
         <van-radio :name="deliveryItem.sendType" shape="square" class="iblock lh-12 plr-24 mt-30" v-for="(deliveryItem, deliveyIndex) in deliveryList" :key="'delivery-item-' + deliveyIndex">
           <template #icon="props">
-            <BmButton :type="'info'" :class="{ 'round-8 h-30': true, 'unchecked-radio': !props.checked ? true: false }">{{ deliveryFormat(deliveryItem.sendType) }}</BmButton>
+            <BmButton :type="'info'" :class="{ 'round-8 h-30': true, 'unchecked-radio': !props.checked ? true: false }">{{ deliveryFormat(deliveryItem.sendType, 'type') }}</BmButton>
           </template>
           <p class="light-grey fs-14 mt-10">{{ deliveryItem.estimeate }}</p>
         </van-radio>
@@ -233,8 +233,14 @@ export default {
     }
   },
   methods: {
-    deliveryFormat(type) {
-      return type == 1 ? this.$t('air_freight') : type == 2 ? this.$t('sea_transportation') : type == 3 ? this.$t('land_transportation') : '';
+    deliveryFormat(item, type) {
+      let _type = '';
+      if (type == 'list') {
+        _type = item.sendTypeEstimateVoList.filter(sendItem => sendItem.sendType == item.choiceSendType)[0].sendType;
+      } else {
+        _type = item;
+      }
+      return _type == 1 ? this.$t('air_freight') : _type == 2 ? this.$t('sea_transportation') : _type == 3 ? this.$t('land_transportation') : '';
     },
     onPay() { // 去支付前要先进行二次确认
       this.consolidatedShow = true;
@@ -268,9 +274,8 @@ export default {
         duration: 0
       });
 
-      submitOrder({ addressId: this.address.id, sourceType: 4, skuItems: skuItems, isCart: this.$route.params.isCart ? 1 : 0, leaveMessages: leaveMessages, confirmTransportModes: confirmTransportModes }).then(res => {
+      submitOrder({ addressId: this.address.id, sourceType: 4, skuItems: skuItems, isCart: this.$route.params.isCart ? 1 : 0, leaveMessages: leaveMessages, confirmTransportModes: confirmTransportModes, orderToken: this.detail.orderToken }).then(res => {
         this.$toast.clear();
-        if (res.code != 0) return false;
 
         this.$router.push({
           name: 'me-pay-payment',
@@ -281,6 +286,8 @@ export default {
             comfirmOrder: 1
           }
         })
+      }).catch(error => {
+        this.$toast.fail(error.msg);
       })
     },
     onChangeDistribution() { // 修改配送方式
@@ -327,7 +334,7 @@ export default {
         }
       });
       getSaleInfo({ skuItems: skuItems, addressId: this.address.id, confirmTransportModes: confirmTransportModes ? confirmTransportModes : [] }).then(res => {
-        if (res.code != 0) return false;
+        console.log(res)
         this.codeData = {
           code: res.code,
           msg: res.msg
@@ -359,11 +366,11 @@ export default {
             }
           })
         })
-
+        
         this.confirmTransportModes = res.data.storeSaleInfoList.map(item => {
           return {
             storeId: item.storeId,
-            sendType: Object.values(item.deliveryTypeSkuItemMap)[0].sendTypeEstimateVoList.length > 0 ? Object.values(item.deliveryTypeSkuItemMap)[0].sendTypeEstimateVoList[Object.values(item.deliveryTypeSkuItemMap)[0].choiceSendType - 1].sendType : ''
+            sendType: Object.values(item.deliveryTypeSkuItemMap)[0].sendTypeEstimateVoList.length > 0 ? Object.values(item.deliveryTypeSkuItemMap)[0].sendTypeEstimateVoList.filter(sendItem => sendItem.sendType === Object.values(item.deliveryTypeSkuItemMap)[0].choiceSendType)[0].sendType : ''
           }
         })
       }).catch(error => {

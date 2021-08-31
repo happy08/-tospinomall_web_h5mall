@@ -308,7 +308,7 @@ export default {
     }).length == 0 ? true : false;
 
     this.totalAmount = listData.data.totalAmount;
-    this.onCountPrice();
+    // this.onCountPrice();
     this.refreshing.isFresh = false;
   },
   activated() {
@@ -455,7 +455,10 @@ export default {
     getCalculatePrice(selectedData) { // 计算商品价格
       getCalculatePrice(selectedData).then(res => {
         this.totalAmount = res.data.totalAmount;
-      })
+        this.result = selectedData.selectedData.map(item => {
+          return item.skuId;
+        });
+      });
     },
     async onRefresh() { // 下拉刷新
       this.pageNum = 1;
