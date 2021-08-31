@@ -750,12 +750,12 @@ export default {
   },
   head() {
     return {
-      title: this.goodSpuVo.goodTitle + 'Tospino online shopping',
+      title: this.goodSpuVo.goodTitle + 'Tospino Ghana online shopping',
       meta: [
-        { hid: 'description', name: 'description', content: this.goodSpuVo.goodTitle || 'Tospino online shopping' },
-        { hid: 'keywords', name: 'keywords', content: this.goodSpuVo.goodTitle || 'Tospino online shopping' },
-        { hid: 'og:title', property: 'og:title', content: this.goodSpuVo.goodTitle || 'Tospino online shopping' },
-        { hid: 'og:description', property: 'og:description', content: this.goodSpuVo.goodTitle || 'Tospino online shopping' }
+        { hid: 'description', name: 'description', content: this.goodSpuVo.goodTitle || 'Tospino Ghana online shopping' },
+        { hid: 'keywords', name: 'keywords', content: this.goodSpuVo.goodTitle || 'Tospino Ghana online shopping' },
+        { hid: 'og:title', property: 'og:title', content: this.goodSpuVo.goodTitle || 'Tospino Ghana online shopping' },
+        { hid: 'og:description', property: 'og:description', content: this.goodSpuVo.goodTitle || 'Tospino Ghana online shopping' }
       ]
     }
   },

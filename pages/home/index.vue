@@ -387,10 +387,10 @@ export default {
   },
   head() { // 头部设置，方便seo
     return {
-      title: this.meta.title || 'Tospino online shopping',
+      title: this.meta.title || 'Tospino Ghana online shopping',
       meta: [
-        { hid: 'description', name: 'description', content: this.meta.description || 'Tospino online shopping' },
-        { hid: 'keywords', name: 'keywords', content: this.meta.keywords || 'Tospino online shopping' }
+        { hid: 'description', name: 'description', content: this.meta.description || 'Tospino Ghana online shopping' },
+        { hid: 'keywords', name: 'keywords', content: this.meta.keywords || 'Tospino Ghana online shopping' }
       ]
     }
   },
