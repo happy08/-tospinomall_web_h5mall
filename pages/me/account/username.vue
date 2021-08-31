@@ -27,7 +27,7 @@ export default {
       type: ''
     }
   },
-  created() {
+  activated() {
     this.name = this.$route.query.name;
     this.type = this.$route.query.type; // name nickname
   },
