@@ -38,6 +38,9 @@ const utils = {
     for (let i = 0; i < l.length; i++) {
       t += l[i] + ((i + 1) % 3 == 0 && (i + 1) != l.length ? ',' : '');
     }
+    if (parseFloat(r) == 0) {
+      return t.split('').reverse().join('');
+    }
     return t.split('').reverse().join('') + '.' + r;
   },
   //前置补0

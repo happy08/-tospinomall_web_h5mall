@@ -49,7 +49,7 @@
         </nuxt-link>
         <nuxt-link :to="$store.state.user.authToken ? { name: 'me-wallet' }: { name: 'login' }" v-slot="{ navigate }" class="tc">
           <dl @click="navigate" role="link">
-            <dt class="fs-24 black fw">{{ $store.state.user.userInfo ? $store.state.rate.currency + $store.state.user.userInfo.balance : 0 }}</dt>
+            <dt class="fs-24 black fw">{{ walletNum }}</dt>
             <dd class="fs-12 grey mt-4">{{ $t('wallet') }}</dd>
           </dl>
         </nuxt-link>
@@ -187,10 +187,14 @@ export default {
           name: 'me-about',
           icon: 'about-tospino'
         }
-      ]
+      ],
+      walletNum: 0
     }
   },
   activated() {
+    if (process.client) {
+      this.walletNum = this.$store.state.user.userInfo ? this.$store.state.rate.currency + this.$utils.numberFormat(this.$store.state.user.userInfo.balance) : 0;
+    }
     if (this.$store.state.user.authToken) {
       getOrderCount().then(res => {
         this.orderList[0].count = res.data.await_pay_count; // 待支付订单数
