@@ -209,6 +209,7 @@ export default {
   },
   async fetch() {
     this.active = 0;
+    this.pageNum = 1;
     if (parseFloat(this.$route.query.active) == 1 && this.isFirst == true) this.active = parseFloat(this.$route.query.active);
 
     this.edit = false;
