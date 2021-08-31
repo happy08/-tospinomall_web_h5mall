@@ -112,7 +112,7 @@ export default {
   activated() {
     // 手机号注册或者忘记密码时 需要先获取手机号前缀
     if (this.$route.query.changeWay !== 'email' || !this.$route.query.changeWay) {
-      this.getPhonePrefix()
+      this.getPhonePrefix();
     }
   },
   methods: {

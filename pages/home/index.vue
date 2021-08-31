@@ -291,6 +291,8 @@ import { Search, CountDown, Sticky, Tab, Tabs, Loading, List, Badge } from 'vant
 import ProductTopBtmSingle from '@/components/ProductTopBtmSingle';
 import EmptyStatus from '@/components/EmptyStatus';
 import PullRefresh from '@/components/PullRefresh';
+import 'swiper/css/swiper.css';
+import { Swiper, SwiperSlide } from 'vue-awesome-swiper';
 
 export default {
   // middleware: 'sockjs',
@@ -305,7 +307,9 @@ export default {
     vanBadge: Badge,
     ProductTopBtmSingle,
     EmptyStatus,
-    PullRefresh
+    PullRefresh,
+    swiper: Swiper,
+    swiperSlide: SwiperSlide
   },
   data() {
     return {

@@ -46,7 +46,6 @@ export default {
     '@/plugins/vue-i18n',
     { src: '@/plugins/utils', ssr: false },
     '@/plugins/routeguard.js',
-    { src: '@/plugins/swiper.js' },
     { src: '@/plugins/vconsole', ssr: false },
     { src: '@/plugins/vue-masonry', ssr: false }
   ],
@@ -140,10 +139,31 @@ export default {
     optimization: {
       splitChunks: {
         minSize: 10000,
-        maxSize: 2500000
+        maxSize: 450000,
+        cacheGroups: {
+          vendor: {
+            test: /[\\/]node_modules[\\/](swiper|vue-awesome-swiper)[\\/]/,
+            name: 'vendor-swiper',
+            chunks: 'all',
+          },
+          moment: {
+            test: /[\\/]node_modules[\\/](moment)[\\/]/,
+            name: 'vendor-moment',
+            chunks: 'all',
+          },
+          vant: {
+            test: /[\\/]node_modules[\\/](vant)[\\/]/,
+            name: 'vendor-vant',
+            chunks: 'all',
+          },
+          clipboard: {
+            test: /[\\/]node_modules[\\/](clipboard)[\\/]/,
+            name: 'vendor-clipboard',
+            chunks: 'all',
+          }
+        }
       }
-    },
-    extractCSS: process.env.NODE_ENV === 'production'
+    }
   },
   loading: false, // 加载进度条
   resourceHints: false, // 资源提示,加快初始页面加载时间

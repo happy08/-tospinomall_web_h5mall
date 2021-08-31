@@ -494,6 +494,8 @@ import { ImagePreview, Cell, Step, Steps, Rate, Sticky, Search, Tab, Tabs, Popup
 import { getDeliveryInfo, attentionProduct } from '@/api/cart';
 import { getCurrentDefaultAddress, getNextArea } from '@/api/address';
 import ProductSku from '@/components/ProductSku';
+import 'swiper/css/swiper.css';
+import { Swiper, SwiperSlide } from 'vue-awesome-swiper';
 
 export default {
   components: {
@@ -507,6 +509,8 @@ export default {
     vanTabs: Tabs,
     vanPopup: Popup,
     vanStepper: Stepper,
+    swiper: Swiper,
+    swiperSlide: SwiperSlide,
     ProductSku
   },
   data() {

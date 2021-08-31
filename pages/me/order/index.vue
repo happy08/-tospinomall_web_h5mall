@@ -223,6 +223,8 @@ import OrderStoreSingle from '@/components/OrderStoreSingle';
 import PullRefresh from '@/components/PullRefresh';
 import { cancelOrder, getOrderReasonList, deleteOrder, confirmReceiptOrder } from '@/api/order';
 import Moment from 'moment';
+import 'swiper/css/swiper.css';
+import { Swiper, SwiperSlide } from 'vue-awesome-swiper';
 
 export default {
   middleware: 'authenticated',
@@ -241,7 +243,9 @@ export default {
     vanCheckboxGroup: CheckboxGroup,
     OrderSingle: OrderSingle,
     OrderStoreSingle: OrderStoreSingle,
-    PullRefresh
+    PullRefresh,
+    swiper: Swiper,
+    swiperSlide: SwiperSlide
   },
   data() {
     return {

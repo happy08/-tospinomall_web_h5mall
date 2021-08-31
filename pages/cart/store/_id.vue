@@ -265,6 +265,8 @@ import { Tab, Tabs, Tabbar, TabbarItem, Cell, Search, Sticky, Rate, List } from 
 import { storeFollow, storeCancelFollow } from '@/api/store';
 import ProductTopBtmSingle from '@/components/ProductTopBtmSingle';
 import EmptyStatus from '@/components/EmptyStatus';
+import 'swiper/css/swiper.css';
+import { Swiper, SwiperSlide } from 'vue-awesome-swiper';
 
 export default {
   components: {
@@ -278,7 +280,9 @@ export default {
     vanRate: Rate,
     vanList: List,
     ProductTopBtmSingle,
-    EmptyStatus
+    EmptyStatus,
+    swiper: Swiper,
+    swiperSlide: SwiperSlide
   },
   data() {
     return {

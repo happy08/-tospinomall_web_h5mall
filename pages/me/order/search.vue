@@ -172,6 +172,8 @@ import OrderSingle from '@/components/OrderSingle';
 import OrderStoreSingle from '@/components/OrderStoreSingle';
 import { cancelOrder, getOrderReasonList, deleteOrder } from '@/api/order';
 import PullRefresh from '@/components/PullRefresh';
+import 'swiper/css/swiper.css';
+import { Swiper, SwiperSlide } from 'vue-awesome-swiper';
 
 export default {
   middleware: 'authenticated',
@@ -186,7 +188,9 @@ export default {
     vanSticky: Sticky,
     OrderSingle,
     OrderStoreSingle,
-    PullRefresh
+    PullRefresh,
+    swiper: Swiper,
+    swiperSlide: SwiperSlide
   },
   data() {
     return {
