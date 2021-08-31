@@ -61,7 +61,7 @@
                 <template #default>
                   <div class="fs-14 light-grey lh-12" v-if="productMapItem.sendTypeEstimateVoList.length">
                     {{ deliveryFormat(productMapItem, 'list') }}<br />
-                    <p class="hidden-1">{{ productMapItem.sendTypeEstimateVoList[productMapItem.choiceSendType - 1].estimeate }}</p>
+                    <p class="hidden-1">{{ deliveryFormat(productMapItem, 'estimeate') }}</p>
                   </div>
                 </template>
               </van-cell>
@@ -234,6 +234,9 @@ export default {
   },
   methods: {
     deliveryFormat(item, type) {
+      if (type == 'estimeate') {
+        return item.sendTypeEstimateVoList.filter(sendItem => sendItem.sendType == item.choiceSendType)[0].estimeate;
+      }
       let _type = '';
       if (type == 'list') {
         _type = item.sendTypeEstimateVoList.filter(sendItem => sendItem.sendType == item.choiceSendType)[0].sendType;
@@ -370,7 +373,7 @@ export default {
         this.confirmTransportModes = res.data.storeSaleInfoList.map(item => {
           return {
             storeId: item.storeId,
-            sendType: Object.values(item.deliveryTypeSkuItemMap)[0].sendTypeEstimateVoList.length > 0 ? Object.values(item.deliveryTypeSkuItemMap)[0].sendTypeEstimateVoList.filter(sendItem => sendItem.sendType === Object.values(item.deliveryTypeSkuItemMap)[0].choiceSendType)[0].sendType : ''
+            sendType:  Object.values(item.deliveryTypeSkuItemMap)[0].sendTypeEstimateVoList.length > 0 ? Object.values(item.deliveryTypeSkuItemMap)[0].sendTypeEstimateVoList.filter(sendItem => sendItem.sendType === Object.values(item.deliveryTypeSkuItemMap)[0].choiceSendType)[0].sendType : ''
           }
         })
       }).catch(error => {
