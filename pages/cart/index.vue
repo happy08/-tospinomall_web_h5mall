@@ -108,8 +108,8 @@
                   <!-- 自定义价格 -->
                   <template #price>
                     <div class="mt-8" @click="goProductDetail(singleItem.productId)">
-                      <span class="red fs-16 fw" v-if="$store.state.rate">{{ $store.state.rate.currency }}{{ singleItem.addCartPrice }}</span>
-                      <!-- <span class="grey fs-12 ml-10 line-through">{{ $store.state.rate.currency }}{{ item.cost }}</span> -->
+                      <span class="red fs-16 fw" v-if="$store.state.rate">{{ $store.state.rate.currency }}{{ tabActive == 1 ? singleItem.productPrice : singleItem.addCartPrice }}</span>
+                      <span class="grey fs-12 ml-4 line-through" v-if="tabActive == 1">{{ $store.state.rate.currency }}{{ singleItem.addCartPrice }}</span>
                     </div>
                   </template>
                 </van-card>
