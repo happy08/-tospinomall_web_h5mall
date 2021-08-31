@@ -31,6 +31,7 @@
               :isLazy="false"
               :isShow="false"
               :class="{'border mt-10 round-2': true, 'ml-8': index % 3 != 0}"
+              :alt="workItem.workDesc"
             />
           </div>
 
@@ -46,6 +47,7 @@
                 :isLazy="false"
                 :isShow="false"
                 :class="{'border mt-10 round-2': true, 'ml-8': index % 3 != 0}"
+                :alt="workItem.workDesc"
               />
             </div>
           </template>

@@ -109,6 +109,7 @@
                       :fit="'cover'"
                       :isShow="true"
                       class="border round-4"
+                      :alt="searchItem.productTitle"
                     />
                   </div>
                   <div class="ml-14 w-230 hidden-1">

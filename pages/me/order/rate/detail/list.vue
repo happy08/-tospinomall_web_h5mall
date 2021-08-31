@@ -59,6 +59,7 @@
                 :fit="'cover'"
                 :round="true"
                 :errorUrl="require('@/assets/images/icon/user-icon.png')"
+                :alt="'Tospino user icon'"
               />
               <p class="ml-14 fs-14 black fw">{{ item.buyerName }}</p>          
             </div>
@@ -84,6 +85,7 @@
                 :class="{'border round-2 hidden': true, 'ml-8': picIndex != 0}"
                 v-if="picItem.fileType == 1"
                 @onClick="onPreview(item.pictures, picIndex)"
+                :alt="item.goodTitle"
               />
             </div>
           </div>
@@ -106,6 +108,7 @@
                       :class="{'border round-2 hidden block mt-8': true, 'ml-8': addPicIndex % 3 != 0}"
                       v-if="addPicItem.fileType == 1"
                       @onClick="onPreview(addItem.pictures, addPicIndex)"
+                      :alt="item.goodTitle"
                     />
                   </div>
                 </div>
@@ -136,6 +139,7 @@
                 :isShow="false"
                 :fit="'cover'"
                 class="ml-4"
+                :alt="'Tospino message icon'"
               />
             </div>
             <div class="ml-12 flex vcenter black fs-14">

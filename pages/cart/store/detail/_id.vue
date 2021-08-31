@@ -14,6 +14,7 @@
           :isLazy="false"
           :isShow="true"
           class="round-8 hidden"
+          :alt="detailData.storeName"
         />
         <!-- 店铺名、关注数 -->
         <dl class="ml-12">

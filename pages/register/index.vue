@@ -66,6 +66,7 @@
               :height="'0.32rem'"
               :isLazy="false"
               :isShow="false"
+              :alt="'Tospino choose icon'"
             />
           </template>
           <div v-html="login_service_privacy()"></div>

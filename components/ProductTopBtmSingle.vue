@@ -10,6 +10,7 @@
       :loadUrl="img.loadImage"
       :errorUrl="img.loadImage"
       :isShow="true"
+      :alt="detail.desc"
     />
     <!-- 商品的信息 -->
     <div class="pt-12 plr-4" v-if="detail">
@@ -23,6 +24,7 @@
           :errorUrl="img.loadImage"
           :isShow="false"
           :round="true"
+          :alt="detail.desc"
         />
         <span class="fs-10 color_666 ml-10">{{ detail.country }}</span>
       </div>

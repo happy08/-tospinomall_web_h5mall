@@ -18,6 +18,7 @@
                 :isShow="true"
                 :fit="'cover'"
                 class="border"
+                :alt="detail.goodName"
               />
             </div>
             <p class="fs-14 black ml-12">{{ detail.goodName }}</p>
@@ -51,6 +52,7 @@
             :height="'0.32rem'"
             :isLazy="false"
             :isShow="false"
+            :alt="'Tospino choose icon'"
           />
         </template>
         <span class="fs-14 lh-20 grey-666">{{ $t('anonymous_buyer') }}</span>

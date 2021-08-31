@@ -33,6 +33,7 @@
                 :width="'1.4rem'"
                 :height="'1.28rem'"
                 :isShow="true"
+                :alt="childrenItem.name"
               />
               <h5 class="fs-12 mt-8 product-single__name" v-html="childrenItem.name"></h5>
             </div>

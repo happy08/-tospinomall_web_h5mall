@@ -9,6 +9,7 @@
           :height="'0.48rem'"
           :isLazy="false"
           @onClick="deleteFn"
+          :alt="'Tospino clear icon'"
         />
       </div>
     </BmHeaderNav>
@@ -24,6 +25,7 @@
                 :height="'0.48rem'"
                 :isLazy="false"
                 :isShow="true"
+                :alt="messageItem.categoryName"
               />
               <span class="ml-12 fs-16 black fw">{{ messageItem.categoryName }}</span>
               <van-badge :content="messageItem.msgCount" class="ml-12" v-if="messageItem.msgCount > 0"></van-badge>

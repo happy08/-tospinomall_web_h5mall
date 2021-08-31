@@ -24,29 +24,26 @@
 <script>
 export default {
   middleware: 'authenticated',
-  asyncData({isDev, route, store, env, params, query, req, res, redirect, error}) {
-    let title = ''; // 标题
-    let status = ''; // 状态语
-    let desc = ''; // 描述语
-    let btntext = ''; // 按钮文案
-    if (route.query.type == 'success' || !route.query.type) { // 成功结果展示
-      title = 'me.order.paymentSuccess';
-      status = 'me.order.success';
-      desc = 'me.order.paidSuccess';
-      btntext = 'me.order.continueShop';
-    }
-    if (route.query.type == 'failed') { // 失败结果展示
-      title = 'me.order.paymentFailed';
-      status = 'me.order.failed';
-      desc = 'me.order.paidSuccess';
-      btntext = 'me.order.viewOrder';
-    }
-
+  data() {
     return {
-      title: title,
-      status: status,
-      desc: desc,
-      btntext: btntext
+      title: '',
+      status: '',
+      desc: '',
+      btntext: ''
+    }
+  },
+  activated() {
+    if (this.$route.query.type == 'success' || !this.$route.query.type) { // 成功结果展示
+      this.title = 'me.order.paymentSuccess';
+      this.status = 'me.order.success';
+      this.desc = 'me.order.paidSuccess';
+      this.btntext = 'me.order.continueShop';
+    }
+    if (this.$route.query.type == 'failed') { // 失败结果展示
+      this.title = 'me.order.paymentFailed';
+      this.status = 'me.order.failed';
+      this.desc = 'me.order.paidSuccess';
+      this.btntext = 'me.order.viewOrder';
     }
   },
   methods: {

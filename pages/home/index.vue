@@ -9,6 +9,7 @@
         :width="'.54rem'" 
         :height="'.6rem'"
         :isShow="false"
+        :alt="'Tospino logo'"
       />
       <!-- 搜索框 -->
       <div class="mlr-12 home-page-nav__search" ref="homeSearch" @click="$router.push({ name: 'search' })">
@@ -41,6 +42,7 @@
             :height="'.64rem'"
             :isLazy="false"
             :isShow="false"
+            :alt="'Tospino message icon'"
           />
         </van-badge>
       </nuxt-link>
@@ -85,6 +87,7 @@
                 :fit="'cover'"
                 :height="'3.72rem'"
                 class="round-8 hidden"
+                :alt="slideItem.goodTitle"
               />
               <!-- 图片坐标 -->
               <div class="bg-white hot-container__position" :style="hotStyle(slideItem, 'swiperFullScreenRef' + moduleIndex + slideIndex, 'swiperFullScreenRef' + moduleIndex)" @click="onHotDetail(slideItem)"></div>
@@ -100,6 +103,7 @@
               :url="moduleItem.imageUrl"
               :loadUrl="require('@/assets/images/product-bgd-375.png')"
               :errorUrl="require('@/assets/images/product-bgd-375.png')"
+              :alt="'Tospino hot moduleItem'"
             />
             <!-- 图片坐标 -->
             <div v-for="hotItem, hotIndex in moduleItem.componentDetails" :key="'hot-picture-' + hotIndex" class="hot-container__position" :ref="'hotPosition' + moduleIndex + hotIndex" :style="hotStyle(hotItem, 'hotPosition' + moduleIndex + hotIndex, 'hotContainer' + moduleIndex)" @click="onHotDetail(hotItem)"></div>

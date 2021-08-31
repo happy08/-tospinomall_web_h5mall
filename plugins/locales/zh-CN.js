@@ -690,6 +690,7 @@ const cn = {
   automatically_closed: '订单自动关闭',
   add_picture_6: '最多6张图',
   add_picture_5: '最多5张图',
+  add_picture_9: '最多9张图',
   apply_reason: '请选择申请原因',
   count_down_format_label: 'DD天HH小时mm分ss秒',
   choose_proof_reason: '请选择举证原因',

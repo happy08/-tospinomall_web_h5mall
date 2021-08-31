@@ -17,6 +17,7 @@
           :isLazy="false"
           :isShow="false"
           class="block"
+          :alt="'Tospino line icon'"
         />
       </div>
 

@@ -690,6 +690,7 @@ const en = {
   automatically_closed: 'Auto close order',
   add_picture_6: 'Up to 6 pictures',
   add_picture_5: 'Up to 5 pictures',
+  add_picture_9: 'Up to 9 pictures',
   apply_reason: 'Please select application reason',
   count_down_format_label: 'DD days HH hours mm minutes ss seconds',
   choose_proof_reason: 'Please select the reason for proof',

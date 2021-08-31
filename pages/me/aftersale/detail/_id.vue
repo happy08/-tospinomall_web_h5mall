@@ -54,6 +54,7 @@
                 :isLazy="false"
                 :isShow="false"
                 :round="true"
+                :alt="'Tospino circle active icon'"
               />
             </template>
             <!-- 已完成状态图标 -->
@@ -65,6 +66,7 @@
                 :isLazy="false"
                 :isShow="false"
                 :round="true"
+                :alt="'Tospino circle finished icon'"
               />
             </template>
             {{ stepItem }}

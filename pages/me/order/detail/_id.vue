@@ -195,6 +195,7 @@
                       :height="'0.32rem'"
                       :isLazy="false"
                       :isShow="false"
+                      :alt="'Tospino choose icon'"
                     />
                   </template>
                 </van-radio>

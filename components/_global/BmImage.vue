@@ -9,6 +9,7 @@
     :round="round"
     :lazy-load="isLazy"
     @click="onClick"
+    :alt="alt"
   >
     <template v-slot:error>
       <van-image
@@ -16,6 +17,7 @@
         :width="width" 
         :height="height" 
         :fit="fit"
+        :alt="alt"
       />
     </template>
     <template v-slot:loading>
@@ -24,6 +26,7 @@
         :width="width" 
         :height="height" 
         :fit="fit"
+        :alt="alt"
       />
     </template>
   </van-image>
@@ -68,6 +71,10 @@ export default {
     fit: {
       type: String,
       default: 'cover'
+    },
+    alt: {
+      type: String,
+      default: ''
     }
   },
   methods: {

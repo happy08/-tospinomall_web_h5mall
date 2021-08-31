@@ -98,6 +98,9 @@ export default {
     // 加载状态结束
     this.loading = false;
   },
+  activated() {
+    this.$fetch();
+  },
   methods: {
     goHome() { // 返回首页
       this.$router.push({

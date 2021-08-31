@@ -57,6 +57,7 @@
                 :isLazy="false"
                 :isShow="false"
                 :fit="'cover'"
+                :alt="goodSpuVo.goodTitle"
               />
             </swiper-slide>
             <div class="swiper-pagination" slot="pagination"></div>
@@ -213,6 +214,7 @@
               v-for="(selectItem, selectIndex) in selectCarousel"
               :key="'select-' + selectIndex"
               :class="{'round-4 border': true, 'ml-12': selectIndex != 0}"
+              :alt="goodSpuVo.goodTitle + selectItem.attrValue"
             />
           </div>
           <!-- 商品服务与承诺 -->
@@ -257,6 +259,7 @@
                   :fit="'cover'"
                   :round="true"
                   :errorUrl="require('@/assets/images/icon/user-icon.png')"
+                  :alt="goodSpuVo.goodTitle + ' evaluates user icon'"
                 />
                 <div class="ml-8">
                   <p class="fs-14 black fm-helvetica">
@@ -302,6 +305,7 @@
                     :isShow="false"
                     :fit="'cover'"
                     class="border round-4"
+                    :alt="goodSpuVo.goodTitle + ' evaluates picture'"
                   />
                 </swiper-slide>
               </swiper>
@@ -350,6 +354,7 @@
                   :fit="'cover'"
                   class="border round-4 hidden"
                   @onClick="onClick(productItem.productId)"
+                  :alt="productItem.productTitle"
                 />
               </swiper-slide>
             </swiper>
@@ -369,6 +374,7 @@
           :url="detailItem.imgUrl"
           :isLazy="false"
           :isShow="false"
+          :alt="goodSpuVo.goodTitle"
         />
       </van-tab>
     </van-tabs>

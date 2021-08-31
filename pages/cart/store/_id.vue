@@ -26,6 +26,7 @@
                 :isLazy="false"
                 :isShow="true"
                 class="round-8 hidden"
+                :alt="detailData.storeName"
               />
               <!-- 店铺名、关注数 -->
               <dl class="ml-12 fm-helvetica">
@@ -58,7 +59,7 @@
 
     <!-- 导航栏 -->
     <!-- <div class="plr-12 bg-white flex vcenter">
-      <nuxt-link :to="{ name: 'cart-store-search' }">
+      <nuxt-link :to="{ name: 'search' }">
         <van-icon name="search" size="0.48rem" color="#383838" />
       </nuxt-link>
       <van-tabs v-model="tabActive" class="customs-van-tabs w-200"  @click="changeTab">
@@ -131,6 +132,7 @@
                 :fit="'cover'"
                 :height="'3.72rem'"
                 class="round-8 hidden"
+                :alt="slideItem.goodTitle"
               />
             </swiper-slide>
             <div class="swiper-pagination swiper-full-pagination" slot="pagination"></div>
@@ -144,6 +146,7 @@
               :url="moduleItem.imageUrl"
               :loadUrl="require('@/assets/images/product-bgd-375.png')"
               :errorUrl="require('@/assets/images/product-bgd-375.png')"
+              :alt="moduleItem.moduleTitle"
             />
             <!-- 图片坐标 -->
             <div v-for="hotItem, hotIndex in moduleItem.componentDetails" :key="'hot-picture-' + hotIndex" class="bg-white hot-container__position" :ref="'hotPosition' + moduleIndex + hotIndex" :style="hotStyle(hotItem, 'hotPosition' + moduleIndex + hotIndex, 'hotContainer' + moduleIndex)" @click="onHotDetail(hotItem)"></div>
@@ -219,6 +222,7 @@
             :height="'1.8rem'"
             :fit="'cover'"
             class="border round-4 hidden"
+            :alt="productItem.productTitle"
           />
           <!-- 商品详情 -->
           <div class="ml-14 w-230">
@@ -231,7 +235,7 @@
               </div>
               <!-- 购买 -->
               <nuxt-link :to="{ name: 'cart-product-id', params: { id: productItem.productId } }">
-                <van-button plain class="border round-8 h-25 black">Buy</van-button>
+                <van-button plain class="border round-8 h-25 black">{{ $t('buy') }}</van-button>
               </nuxt-link>
             </div>
             <!-- 商品服务与承诺因后台没有地方设置，暂时不展示 -->
@@ -248,13 +252,13 @@
         <template #icon="props">
           <img :src="props.active ? require('@/assets/images/icon/store-tab-1-active.png') : require('@/assets/images/icon/store-tab-1.png')" alt="store-tab" />
         </template>
-        Home
+        {{ $t('home_page') }}
       </van-tabbar-item>
       <van-tabbar-item>
         <template #icon="props">
           <img :src="props.active ? require('@/assets/images/icon/store-tab-2-active.png') : require('@/assets/images/icon/store-tab-2.png')" alt="store-tab" />
         </template>
-        Commondity
+        {{ $t('commodity') }}
       </van-tabbar-item>
     </van-tabbar>
   </div>

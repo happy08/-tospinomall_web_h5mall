@@ -37,6 +37,7 @@
             :isLazy="false"
             :isShow="false"
             class="ml-12"
+            :alt="'Tospino camera upload icon'"
           />
         </van-uploader>
       </div>

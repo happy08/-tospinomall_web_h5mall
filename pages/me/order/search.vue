@@ -53,6 +53,7 @@
                   :height="'0.48rem'"
                   :isLazy="false"
                   @onClick="onDeleteFn(item.id)"
+                  :alt="'Tospino delete icon'"
                 />
               </div>
             </OrderStoreSingle>
@@ -88,6 +89,7 @@
                     :height="'1.68rem'"
                     :isLazy="false"
                     class="flex-shrink border round-4 hidden"
+                    :alt="productItem.goodName"
                   />
                 </swiper-slide>
               </swiper>
@@ -146,6 +148,7 @@
                       :height="'0.32rem'"
                       :isLazy="false"
                       :isShow="false"
+                      :alt="'Tospino choose icon'"
                     />
                   </template>
                 </van-radio>

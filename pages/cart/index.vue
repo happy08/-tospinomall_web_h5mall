@@ -33,6 +33,7 @@
                 :isShow="false"
                 @onClick="storeCheckAll(item)"
                 class="flex-shrink"
+                :alt="'choose icon'"
               />
               <!-- 店铺 -->
               <OrderStoreSingle class="pl-16 pr-30" @goStoreDetail="goStoreDetail(item.storeId)" :logo="item.storeLogo" :name="item.storeName" />
@@ -49,6 +50,7 @@
                         :height="'0.32rem'"
                         :isLazy="false"
                         :isShow="false"
+                        :alt="'choose icon'"
                       />
                     </div>
                   </template>
@@ -66,6 +68,7 @@
                         :isLazy="false"
                         :isShow="true"
                         :fit="'cover'"
+                        :alt="singleItem.productName"
                       />
                     </SoldOut>
                   </template>
@@ -92,8 +95,9 @@
                         :isLazy="false"
                         :isShow="false"
                         :fit="'cover'"
+                        :alt="'Tospino ship from tag'"
                       />
-                      <span class="fs-10 plr-8">发货来自{{ singleItem.shipAddress }}</span>
+                      <span class="fs-10 plr-8">{{ $t('ship_from') }}{{ singleItem.shipAddress }}</span>
                     </div>
                   </template>
                   <!-- 自定义数量,有库存显示数量，没有去看相似物品 -->
@@ -171,6 +175,7 @@
               :height="'0.32rem'"
               :isLazy="false"
               :isShow="false"
+              :alt="'choose icon'"
             />
           </div>
         </template>

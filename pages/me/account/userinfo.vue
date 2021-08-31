@@ -16,6 +16,7 @@
             :isShow="false"
             class="mr-12"
             :round="true"
+            :alt="'Tospino user icon'"
           />
         </van-uploader>
         <!-- <input type="file" @change="uploadAvatar"> -->

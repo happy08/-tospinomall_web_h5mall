@@ -15,6 +15,7 @@
             :isShow="true"
             :fit="'cover'"
             class="border round-2 flex-shrink"
+            :alt="detailData.goodTitle"
           />
           <p class="fs-14 black ml-12 lh-20 hidden-2">{{ detailData.goodTitle }}</p>
         </div>
@@ -27,6 +28,7 @@
           :isShow="false"
           class="mt-8 flex-shrink"
           @onClick="goCart"
+          :alt="'Tospino add cart icon'"
         />
       </div>
     </van-sticky>
@@ -46,6 +48,7 @@
               :fit="'cover'"
               :round="true"
               :errorUrl="require('@/assets/images/icon/user-icon.png')"
+              :alt="'Tospino user icon'"
             />
           </div>
           <p class="ml-14 fs-14 black fw">{{ detailData.buyerName }}</p>          
@@ -71,6 +74,7 @@
           :class="{'border round-8 hidden': true}"
           v-if="picItem.fileType == 1"
           @onClick="onPreview(detailData.pictures, picIndex)"
+          :alt="detailData.goodTitle"
         />
       </div>
       <!-- 追加评论 -->
@@ -92,6 +96,7 @@
                 :class="{'border round-8 hidden mt-10 block': true}"
                 v-if="addPicItem.fileType == 1"
                 @onClick="onPreview(addItem.pictures, addPicIndex)"
+                :alt="detailData.goodTitle"
               />
             </div>
           </div>
@@ -116,6 +121,7 @@
                   :fit="'cover'"
                   :round="true"
                   :errorUrl="require('@/assets/images/icon/user-icon.png')"
+                  :alt="'Tospino user icon'"
                 />
                 <span class="black ml-10">{{ replyItem.replyName }} </span>
               </div>
@@ -143,6 +149,7 @@
           :isLazy="false"
           :isShow="false"
           :fit="'cover'"
+          :alt="'Tospino message icon'"
         />
       </div>
       <!-- 点赞 -->
