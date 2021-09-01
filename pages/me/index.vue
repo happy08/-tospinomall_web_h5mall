@@ -193,7 +193,7 @@ export default {
   },
   activated() {
     if (process.client) {
-      this.walletNum = this.$store.state.user.userInfo ? this.$store.state.rate.currency + this.$utils.numberFormat(this.$store.state.user.userInfo.balance) : 0;
+      this.walletNum = this.$store.state.user.userInfo && this.$store.state.rate ? this.$store.state.rate.currency + this.$utils.numberFormat(this.$store.state.user.userInfo.balance) : 0;
     }
     if (this.$store.state.user.authToken) {
       getOrderCount().then(res => {

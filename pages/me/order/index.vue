@@ -349,6 +349,7 @@ export default {
     this.loading = false;
     this.refreshing.isFresh = false;
     this.isFirst = false;
+    this.finished = false;
   },
   activated() {
     this.isFirst = true;
@@ -451,6 +452,7 @@ export default {
       this.$fetch();
     },
     onLoad() { // 加载更多
+      this.finished = false;
       if (this.total == this.lists.length) {
         this.loading = false;
         this.finished = true;
