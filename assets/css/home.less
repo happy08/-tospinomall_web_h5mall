@@ -83,8 +83,9 @@
       padding-left: 29px;
       padding-right: 12px;
       padding-top: 6px;
-      // padding-bottom: 6px;
+      padding-bottom: 6px;
       background-color: #fff;
+      transition: all 1s;
       .home-page-nav__message{
         position: absolute;
         right: 12px;
@@ -100,8 +101,7 @@
       .van-sticky{
         display: flex;
         align-items: center;
-        animation: all 2s;
-        padding-bottom: 6px;
+        // padding-bottom: 6px;
         .home-page-nav__search{
           flex: 1;
           margin-right: 6px!important;
@@ -111,22 +111,19 @@
         }
         .van-button{
           display: none;
-          animation: all 2s;
         }
         .home-page-nav__message{
           position: static;
-          animation: all 2s;
           .van-badge--fixed{
             right: 18px;
             top: 13px;
-            animation: all 2s;
           }
         }
       }
     }
   }
   .popular-search-list{
-    margin-top: 13px;
+    margin-top: 7px;
     padding-left: 6px;
     overflow-x: auto;
     scrollbar-width: none; /* firefox */
@@ -210,8 +207,13 @@
 }
 // 搜索框样式修改
 .search-container{
+  height: 32px!important;
+  .van-search__content, .van-field__right-icon{
+    height: 32px!important;
+  }
   .van-cell {
     padding: 0 !important;
     align-items: center;
+    height: 100%!important;
   }
 }

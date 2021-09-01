@@ -16,7 +16,7 @@
       </div>
     </BmHeaderNav>
 
-    <PullRefresh :refreshing="refreshing" @refresh="onRefresh">
+    <PullRefresh :refreshing="refreshing" @refresh="onRefresh" class="custom-min-height-46">
       <van-list
         v-model="loading"
         :finished="finished"
@@ -91,7 +91,7 @@
                     <template #right>
                       <div class="flex hend h-100">
                         <BmButton class="round-0 bg-yellow h-100 w-70" @click="onUnsubscribe(item)">{{ $t('goods_remove_follow') }}</BmButton>
-                        <BmButton class="round-0 bg-green h-100 w-70" @click="onTop(item)">{{ $t('top') }}</BmButton>
+                        <BmButton class="round-0 bg-green h-100 w-70" @click="onTop(item)">{{ item.isTop == 1 ? $t('cancel_top') : $t('top') }}</BmButton>
                       </div>
                     </template>
                   </van-swipe-cell>
@@ -208,7 +208,8 @@ export default {
         show: false
       },
       recommendList: [],
-      recommendTotal: 0
+      recommendTotal: 0,
+      isLoadRecommend: false
     }
   },
   async fetch() {
@@ -253,7 +254,7 @@ export default {
       }).then(() => {
         let _ajax = this.active == 1 ? storeCancelFollow(item ? [item.storeId] : this.checkResult) : cancelAttentionGood(item ? [item.productId] : this.checkResult);
       
-        _ajax.then(res => {
+        _ajax.then(() => {
           this.getList();
         })
       }).catch(() => {
@@ -272,11 +273,11 @@ export default {
     getTabList() { // 切换tab时数据要初始化
       this.pageNum = 1;
       this.finished = false;
-      this.list = [];
+      // this.list = [];
       this.getList();
     },
-    onTop(item) { // 置顶
-      let _ajax = this.active == 1 ? attentionStoreTop({id: item.storeId , status: 1}) : attentionGoodTop({id: item.productId, status: 1});
+    onTop(item) { // 置顶 取消置顶
+      let _ajax = this.active == 1 ? attentionStoreTop({id: item.storeId , status: item.isTop == 1 ? 0 : 1}) : attentionGoodTop({id: item.productId, status: item.isTop == 1 ? 0 : 1});
       _ajax.then(res => {
         if (res.code != 0) return false;
         this.pageNum = 1;
@@ -310,20 +311,24 @@ export default {
       })
     },
     async onLoad() { // 收藏商品加载下一页，加载最后一页时开始加载推荐商品列表，店铺没有推荐
-      if (this.total == this.list.length) { // 没有下一页了
+      if (parseFloat(this.total) == this.list.length) { // 没有下一页了
         if (this.active == 0 && !this.edit) {
           this.pageNum = this.recommendList.length > 0 && this.pageNum >= 1 ? this.pageNum : 0;
+          if (!this.isLoadRecommend && this.recommendList.length == parseFloat(this.recommendTotal)) {
+            this.finished = true;
+            this.loading = false;
+            return false;
+          }
           this.onRecommendLoad();
         } else {
           this.finished = true;
           this.loading = false;
         }
-        
         return false;
       }
       this.pageNum += 1;
       const listData = this.active == 0 ? await this.$api.getLikeProduct({ pageNum: this.pageNum, pageSize: this.pageSize }) : await this.$api.getLikeStoreList({ pageNum: this.pageNum, pageSize: this.pageSize }); // 获取关注商品/店铺列表
-      if (listData.code != 0) return false;
+      if (!listData.data) return false;
 
       this.total = listData.data.total;
       let list = listData.data.records;
@@ -339,15 +344,20 @@ export default {
         return false;
       }
       this.pageNum += 1;
-      this.$api.getRecommend({ type: 1, pageNum: this.pageNum, pageSize: this.pageSize}).then(res => { // 搜索商品列表
-        
-        this.recommendList = this.pageNum == 1 ? res.data.items : this.recommendList.concat(res.data.items);
-        this.$redrawVueMasonry();
-        this.recommendTotal = res.data.total;
-        
-        // 加载状态结束
-        this.loading = false;
-      });
+      const recommendData = await this.$api.getRecommend({ type: 1, pageNum: this.pageNum, pageSize: this.pageSize});
+      if (!recommendData.data) {
+        this.isLoadRecommend = true;
+        return false;
+      };
+
+      this.recommendList = this.pageNum == 1 ? recommendData.data.items : this.recommendList.concat(recommendData.data.items);
+      this.$redrawVueMasonry();
+      this.recommendTotal = recommendData.data.total;
+      // 加载状态结束
+      this.loading = false;
+      if (parseFloat(res.data.total) == this.recommendList.length) {
+        this.isLoadRecommend = true;
+      }
     },
     goSimilar(productId) { // 跳转到相似列表
       this.$router.push({
@@ -435,7 +445,7 @@ export default {
       this.refreshing.isFresh = false;
       if (listData.code != 0) return false;
       
-      this.list = this.pageNum == 1 ? listData.data.records : this.list.concat(listData.data.records); // 关注商品/店铺列表
+      this.list = this.pageNum <= 1 ? listData.data.records : this.list.concat(listData.data.records); // 关注商品/店铺列表
       this.total = listData.data.total; // 商品/店铺总数
       this.isFirst = false;
       if (typeof this.$redrawVueMasonry === 'function') {

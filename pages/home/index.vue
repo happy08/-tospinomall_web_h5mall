@@ -378,6 +378,7 @@ export default {
     ];
 
     const searchList = await this.$api.getProductSearch({ pageSize: this.pageSize, pageIndex: this.pageIndex }); // 搜索商品列表
+    if (!searchList.data) return false;
     
     let list = searchList.data.items.map(item => { // 搜索商品列表
       return {
