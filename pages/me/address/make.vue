@@ -47,6 +47,7 @@
         type="textarea"
         class="p-20"
         :placeholder="$t('detailde_address_such_as_road_building_number')"
+        maxlength="255"
       />
       <!-- 标签 -->
       <van-field v-model="form.tag" :label="$t('label')" label-width="0.72rem">
