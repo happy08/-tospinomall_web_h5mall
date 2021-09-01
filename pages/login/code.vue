@@ -230,7 +230,7 @@ export default {
           this.$router.push({
             name: 'home'
           })
-        }, 300);
+        }, 100);
       })
     },
     // changeLang(lang) { // 切换语言
