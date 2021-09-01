@@ -12,6 +12,7 @@
         :placeholder="$t('enter_the_current_login_password')"
         :type="pwdType"
         class="field-container"
+        maxlength="20"
       >
         <template #button>
           <!-- 睁眼 -->
@@ -27,6 +28,7 @@
         :placeholder="$t('_6_20_new_password')"
         :type="newPwdType"
         class="field-container"
+        maxlength="20"
       >
         <template #button>
           <!-- 睁眼 -->

@@ -12,6 +12,7 @@
         :placeholder="$t('enter_the_login_password')"
         :type="pwdType"
         class="field-container"
+        maxlength="20"
       >
         <template #button>
           <!-- 睁眼 -->
