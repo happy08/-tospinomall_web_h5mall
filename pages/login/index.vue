@@ -157,8 +157,6 @@ export default {
     gLogin() { // 谷歌登录
       gapi.load('auth2', () => {
         gapi.auth2.init({
-          // apiKey: 'xfIsWReVnZcSWj97q4O_7wWf',
-          // clientId: '425005141716-dq4s09u0iumv6trvrhu9nku71a297rsj.apps.googleusercontent.com',
           apiKey: 'Wfrc034S1dNn-nqPmLLbEGRG',
           clientId: '75328792168-dhmjntibom2p54u87gvg5qdekaaicuii.apps.googleusercontent.com',
           scope: 'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/plus.me'
@@ -202,7 +200,7 @@ export default {
     fLogin() { // facebook登录
       console.log(FB)
       FB.init({
-        appId: '2133044930182541',  // 231779648840263
+        appId: '231779648840263',
         scope: 'public_profile, email',
         version: 'v11.0'
       })
