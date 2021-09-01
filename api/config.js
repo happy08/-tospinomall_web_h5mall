@@ -1,13 +1,13 @@
 //测试配置
 const development = {
-  DOMAIN_API: "http://www.test.net", //请求地址
+  DOMAIN_API: "http://192.168.2.34:9999", //请求地址
   PATH_API: "", //接口路径  api/
   VERSION_API: "" //版本
 };
 
 //线上配置
 const production = {
-  DOMAIN_API: "https://api.test.net", //请求地址
+  DOMAIN_API: "https://tospinomallapi.fyynet.com", //请求地址
   PATH_API: "", //接口路径  api/
   VERSION_API: "" //版本
 };

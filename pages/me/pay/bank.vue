@@ -1,5 +1,5 @@
 <template>
-  <!-- 我的-设置-支付设置-我的银行卡 -->
+  <!-- 我的-设置-支付设置-我的银行卡, 1.0版本没有 -->
   <div>
     <BmHeaderNav :left="{ isShow: true }" :title="$t('me.pay.bankCard')" />
 

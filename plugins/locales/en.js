@@ -676,7 +676,7 @@ const en = {
   stateGoodsList: ['Goods not received', 'Received goods'],
   returnMethodTitle: 'Select application type',
   search_filter_overall: 'Comprehensive sorting',
-  search_filter_price: [{text: 'Comprehensive sorting', value: 0}, {text: 'Price ascending order', value: 1}, {text: 'Price descending order', value: 2}],
+  search_filter_price: [{text: 'all', value: 0}, {text: 'Price ascending order', value: 1}, {text: 'Price descending order', value: 2}],
   gander: ['Male', 'Female', 'Bisexuality', 'Secrecy'],
   marital_status_list: ['Unmarried', 'Married', 'Secrecy'],
   fail_copied_to_clipboard: 'copy failed',
@@ -690,6 +690,7 @@ const en = {
   automatically_closed: 'Auto close order',
   add_picture_6: 'Up to 6 pictures',
   add_picture_5: 'Up to 5 pictures',
+  add_picture_9: 'Up to 9 pictures',
   apply_reason: 'Please select application reason',
   count_down_format_label: 'DD days HH hours mm minutes ss seconds',
   choose_proof_reason: 'Please select the reason for proof',
@@ -704,7 +705,25 @@ const en = {
   take_address: 'Door to door pick-up address',
   address: 'Address',
   return_address: 'Return address',
-  me_read_and_agreen_server: '我已阅读并同意{replace_tip}和{replace_tip2}'
+  me_read_and_agreen_server: 'I have read and agree to the {replace_tip} and the {replace_tip2}',
+  reply: 'Reply',
+  please_choose_address: 'Please select the delivery address',
+  bill_search_placeholder: 'Enter bill-related information',
+  bill_success: 'Success',
+  bill_to_pay: 'To pay',
+  bill_fail: 'Fail',
+  bill_detail: 'Bill',
+  axios_tip_404: 'The requested resource does not exist',
+  axios_tip_connect: 'Connection error!',
+  axios_tip_408: 'Request timed out',
+  axios_tip_500: 'Server Error',
+  axios_tip_501: 'Service not implemented',
+  axios_tip_502: 'Network Error',
+  axios_tip_503: 'service is not available',
+  axios_tip_504: 'network timeout',
+  axios_tip_505: 'HTTP version is not supported',
+  axios_tip_10401: 'Login expired, please log in again',
+  email_format_error: 'Email format error'
 }
 
 export default en;

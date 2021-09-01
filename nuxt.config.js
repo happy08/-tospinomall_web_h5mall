@@ -8,29 +8,33 @@ export default {
   },
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    title: "Tospino",
+    title: 'Tospino',
     meta: [
-      { charset: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, viewport-fit=cover" },
-      { hid: "description", name: "description", content: "Tospino Ghana online shopping" },
-      { hid: 'keywords', name: 'keywords', content: 'Tospino Ghana online shopping' }
+      { charset: 'utf-8' },
+      { name: 'viewport', content: 'width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, viewport-fit=cover, user-scalable=0' },
+      { hid: 'description', name: 'description', content: 'Tospino Ghana online shopping' },
+      { hid: 'keywords', name: 'keywords', content: 'Tospino Ghana online shopping' },
+      { name: 'google-signin-scope', content: 'profile email' },
+      { hid: 'og:title', property: 'og:title', content: 'Tospino Ghana online shopping' },
+      { hid: 'og:description', property: 'og:description', content: 'Tospino Ghana online shopping' },
+      { hid: 'og:image', property: 'og:image', content: '/favicon.ico' }
     ],
-    link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }],
+    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
     script: [
-      { src: "/js/rem.js", type: "text/javascript", charset: "utf-8" },
-      { src: "/js/iconfont.js", type: "text/javascript", charset: "utf-8" }
+      { src: '/js/rem.js', type: 'text/javascript', charset: 'utf-8' },
+      { src: '/js/iconfont.js', type: 'text/javascript', charset: 'utf-8' }
     ]
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: [
-    "@/assets/css/index.less",
-    //"vant/lib/index.css"
+    '@/assets/css/index.less',
+    //'vant/lib/index.css'
   ],
 
   router: {
     //路由配置
-    middleware: ["vue-i18n"] //路由中间件
+    middleware: ['vue-i18n'] //路由中间件
   },
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
@@ -42,9 +46,9 @@ export default {
     "@/plugins/vue-i18n",
     { src: "@/plugins/utils", ssr: false },
     "@/plugins/routeguard.js",
-    "@/plugins/swiper.js",
     { src: '@/plugins/vconsole', ssr: false },
-    { src: '@/plugins/algolia', ssr: false }
+    { src: '@/plugins/algolia', ssr: false },
+    { src: '@/plugins/vue-masonry', ssr: false }
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -56,28 +60,28 @@ export default {
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
     // https://go.nuxtjs.dev/axios
-    "@nuxtjs/axios",
-    "cookie-universal-nuxt",
+    '@nuxtjs/axios',
+    'cookie-universal-nuxt',
     // https://go.nuxtjs.dev/pwa
-    "@nuxtjs/pwa"
+    '@nuxtjs/pwa'
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
     proxy: true, // 开启代理
-    prefix: "/api" // 请求url加个前缀 /api
+    prefix: '/api' // 请求url加个前缀 /api
     // credentials: true // 跨域请求时是否需要使用凭证
   },
 
   proxy: {
-    "/api": {
-      // target: "http://192.168.2.34:9999", //120.78.145.142
-      // target: "http://192.168.2.70:9999",
-      target: "https://tospinomallapi.fyynet.com",
-      // target: "http://192.168.2.35:9999",
-      //target: "http://120.78.145.142:9999",
+    '/api': {
+      // target: 'http://192.168.2.34:9999', //120.78.145.142
+      // target: 'http://192.168.2.70:9999',
+      // target: 'https://tospinomallapi.fyynet.com',
+      target: 'http://192.168.2.35:9999',
+      //target: 'http://120.78.145.142:9999',
       pathRewrite: {
-        "^/api": "/"
+        '^/api': '/'
       }
     }
   },
@@ -85,7 +89,7 @@ export default {
   // PWA module configuration: https://go.nuxtjs.dev/pwa
   pwa: {
     manifest: {
-      lang: "en"
+      lang: 'en'
     }
   },
 
@@ -96,14 +100,14 @@ export default {
     babel: {
       plugins: [
         [
-          "import",
+          'import',
           {
-            libraryName: "vant",
+            libraryName: 'vant',
             style: name => {
               return `${name}/style/less`;
             }
           },
-          "vant"
+          'vant'
         ]
       ]
     },
@@ -111,12 +115,12 @@ export default {
       less: {
         javascriptEnabled: true,
         modifyVars: {
-          hack: `true; @import "/assets/css/vant-variables.less";`
+          hack: `true; @import '/assets/css/vant-variables.less';`
         }
       }
     },
     postcss: [
-      require("postcss-px2rem")({
+      require('postcss-px2rem')({
         remUnit: 50
       })
     ],
@@ -136,10 +140,35 @@ export default {
     optimization: {
       splitChunks: {
         minSize: 10000,
-        maxSize: 2500000
+        maxSize: 450000,
+        cacheGroups: {
+          vendor: {
+            test: /[\\/]node_modules[\\/](swiper|vue-awesome-swiper)[\\/]/,
+            name: 'vendor-swiper',
+            chunks: 'all',
+          },
+          moment: {
+            test: /[\\/]node_modules[\\/](moment)[\\/]/,
+            name: 'vendor-moment',
+            chunks: 'all',
+          },
+          vant: {
+            test: /[\\/]node_modules[\\/](vant)[\\/]/,
+            name: 'vendor-vant',
+            chunks: 'all',
+          },
+          clipboard: {
+            test: /[\\/]node_modules[\\/](clipboard)[\\/]/,
+            name: 'vendor-clipboard',
+            chunks: 'all',
+          }
+        }
       }
     }
   },
   loading: false, // 加载进度条
   resourceHints: false, // 资源提示,加快初始页面加载时间
+  render: { // 预加载
+    resourceHints: false
+  }
 };

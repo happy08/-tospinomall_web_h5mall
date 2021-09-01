@@ -16,11 +16,12 @@
         </div>
         <div @click="onEdit(item)">
           <BmImage
-            :url="require('@/assets/images/icon/emit-icon.svg')"
+            :url="require('@/assets/images/icon/edit-icon.svg')"
             :width="'0.48rem'" 
             :height="'0.48rem'"
             :isLazy="false"
             :isShow="false"
+            :alt="'Tospino edit icon'"
           />
         </div>
       </div>
@@ -34,6 +35,7 @@
           :height="'0.32rem'"
           :isLazy="false"
           :isShow="false"
+          :alt="'Tospino choose icon'"
         />
         <span :class="{'fm-helvetica fs-14 ml-8': true, 'red': item.isDefault}">{{ item.isDefault ? $t('defaultText'): $t('set_as_default') }}</span>
       </div>
@@ -93,6 +95,10 @@ export default {
       })
     },
     onClick(item) { // 主要是为了点击跳转返回售后申请页面
+      if (!this.$route.query.back) {
+        return false;
+      }
+      
       this.$router.replace({
         name: 'me-aftersale-apply-type',
         params: {

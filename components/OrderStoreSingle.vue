@@ -8,6 +8,7 @@
         :height="'0.36rem'"
         :isLazy="false"
         :isShow="false"
+        :alt="name"
         v-if="logo"
       />
       <BmIcon v-else :name="'store-icon1'" :width="'0.40rem'" :height="'0.40rem'"></BmIcon>

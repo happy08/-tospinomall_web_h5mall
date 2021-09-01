@@ -24,7 +24,7 @@
       <van-uploader class="mt-18" v-model="fileList" multiple :max-count="9" preview-size="1.58rem" :after-read="afterRead" @delete="onDeleteFile">
         <div class="custom-proof-upload tc">
           <van-icon name="plus" size="0.32rem" />
-          <div class="mt-10 fs-12 lh-1">Up to 9 Pics</div>
+          <div class="mt-10 fs-12 lh-1">{{ $t('add_picture_9') }}</div>
         </div>
       </van-uploader>
       <p class="fs-14 orange mt-12">{{ $t('apply_after_sale_upload_tips') }}</p>

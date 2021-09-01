@@ -5,10 +5,10 @@
       <BmHeaderNav :left="{ isShow: true }" :border="false" :title="$t('bill')" :class="{'is-show': isHeader}" />
 
       <!-- 搜索框 -->
-      <div class="bg-white plr-12 pt-4 pb-10 border-b" v-if="list.length > 0">
+      <div class="bg-white plr-12 pt-4 pb-10 border-b">
         <van-search 
           v-model="searchVal" 
-          :placeholder="$t('me.wallet.searchBillPlaceholder')"
+          :placeholder="$t('bill_search_placeholder')"
           shape="round"
           @focus="isHeader = true"
           :show-action="isHeader"
@@ -23,12 +23,12 @@
       <van-list
         v-model="loading"
         :finished="finished"
-        finished-text="没有更多了"
+        finished-text=""
         @load="onLoad"
       >
         <div v-for="(item, index) in list" :key="index">
           <p class="fs-14 black fw ptb-10 plr-20">{{ item.dateTime}}</p>
-          <p class="bg-white fs-14 light-grey ptb-14 plr-20 border-b">Expenses{{ $store.state.rate.currency }}{{ item.expenditureAmount }} Income {{ $store.state.rate.currency }}{{ item.incomeAmount }}</p>
+          <p class="bg-white fs-14 light-grey ptb-14 plr-20 border-b">{{ $t('expenses_income', { replace_tip: $store.state.rate.currency + item.expenditureAmount, replace_tip2: $store.state.rate.currency + item.incomeAmount }) }}</p>
           <nuxt-link :to="{ name: 'me-wallet-bill-id', params: { id: itemInfo.id } }" v-for="(itemInfo, itemInfoIndex) in item.infos" :key="'info-' + itemInfoIndex" class="bg-white plr-12 block">
             <div class="pb-12 pt-20 bg-white flex between vcenter border-b">
               <div class="flex">
@@ -100,6 +100,7 @@ export default {
     }
   },
   activated() {
+    this.searchVal = '';
     this.getBillList();
   },
   methods: {
@@ -118,7 +119,7 @@ export default {
               return {
                 ...infoItem,
                 payTypeLabel: infoItem.payType == 2 ? 'MTN.png' : infoItem.payType == 3 ? 'VODAFONE.png' : infoItem.payType == 4 ? 'ARTLTIGO.png' : 'MTN.png',
-                statusLabel: infoItem.status == 1 ? '成功' : infoItem.status == 2 ? '待支付' : infoItem.status == 3 ? '已取消' : '失败',
+                statusLabel: infoItem.status == 1 ? this.$t('bill_success') : infoItem.status == 2 ? this.$t('bill_to_pay') : infoItem.status == 3 ? this.$t('cancelled') : this.$t('bill_fail'),
               }
             })
           }

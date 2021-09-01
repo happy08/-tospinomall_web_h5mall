@@ -162,7 +162,7 @@ export default ({ app }, inject) => {
         params
       })
     },
-    getRecommend(data) {
+    getRecommend(data) { // 商品推荐列表
       return app.$axios({
         url: `${url}/search/productsearch/recommend`,
         method: 'post',

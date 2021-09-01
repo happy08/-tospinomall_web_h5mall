@@ -6,7 +6,7 @@ import request from './request';
  */
 export function getMsgList(params) {
   return request({
-    url: '/api/sock/message/buyer/findMsgPage',
+    url: '/sock/message/buyer/findMsgPage',
     method: 'get',
     params
   })
@@ -17,7 +17,7 @@ export function getMsgList(params) {
  */
 export function getMsgCategory() {
   return request({
-    url: '/api/sock/message/buyer/msgCategory',
+    url: '/sock/message/buyer/msgCategory',
     method: 'get'
   })
 }
@@ -27,7 +27,7 @@ export function getMsgCategory() {
  */
 export function markedAsReadAll() {
   return request({
-    url: '/api/sock/message/buyer/markedAsReadAll',
+    url: '/sock/message/buyer/markedAsReadAll',
     method: 'post'
   })
 }

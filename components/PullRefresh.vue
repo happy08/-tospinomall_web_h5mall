@@ -1,5 +1,5 @@
 <template>
-  <van-pull-refresh v-model="refreshing.isFresh" @refresh="onRefresh" class="vh-100">
+  <van-pull-refresh v-model="refreshing.isFresh" @refresh="onRefresh">
     <!-- 下拉提示 -->
     <template #pulling>
       <van-loading color="#42b7ae" />

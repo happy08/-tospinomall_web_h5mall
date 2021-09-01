@@ -9,6 +9,7 @@
         :width="'.54rem'" 
         :height="'.6rem'"
         :isShow="false"
+        :alt="'Tospino logo'"
       />
       <!-- 搜索框 -->
       <div class="mlr-12 home-page-nav__search" ref="homeSearch" @click="$router.push({ name: 'search' })">
@@ -41,6 +42,7 @@
             :height="'.64rem'"
             :isLazy="false"
             :isShow="false"
+            :alt="'Tospino message icon'"
           />
         </van-badge>
       </nuxt-link>
@@ -50,8 +52,8 @@
     <PullRefresh :refreshing="refreshing" @refresh="onRefresh">
       <!-- 热门搜索种类列表 -->
       <div class="flex popular-search-list">
-        <nuxt-link class="black round-10 fm-pf-r small-single-tag" v-for="(hotItem, index) in hotSearch" :key="'hot-search-' + index" :to="{ name: 'search', query: { val: hotItem.name, searchKeyword: hotItem.name } }" v-slot="{ navigate }">
-          <div @click="navigate" role="link">{{ hotItem.name }}</div>
+        <nuxt-link class="black round-10 fm-pf-r small-single-tag" v-for="(hotItem, index) in hotSearch" :key="'hot-search-' + index" :to="{ name: 'search', query: { val: hotItem.name, searchKeyword: hotItem.name } }">
+          {{ hotItem.name }}
         </nuxt-link>
       </div>
       <!-- 
@@ -65,17 +67,18 @@
       <div v-for="(moduleItem, moduleIndex) in moduleData" :key="'module-data-' + moduleIndex">
         <h2 class="fs-18 mlr-12 fw black pt-20 lh-20 fm-din-alternate" v-if="moduleItem.moduleTitleDisplay">{{ moduleItem.moduleTitle }}</h2>
         <!-- 整屏轮播图 -->
-        <template v-if="moduleItem.type === 1">
+        <div v-if="moduleItem.type === 1">
           <swiper
-            ref="swiperFullScreenRef"
+            :ref="'swiperFullScreenRef' + moduleIndex"
             class="mt-12 swiper home-banner-swiper"
             :options="swiperFullScreenOption"
             v-if="moduleItem.componentDetails.length > 0"
           >
             <swiper-slide 
-              class="plr-12" 
+              class="plr-12 hot-container" 
               v-for="(slideItem, slideIndex) in moduleItem.componentDetails"
               :key="'swiper-slide-image-' + slideIndex"
+              :ref="'swiperFullScreenRef' + moduleIndex + slideIndex"
             >
               <BmImage
                 :url="slideItem.imageUrl"
@@ -84,11 +87,14 @@
                 :fit="'cover'"
                 :height="'3.72rem'"
                 class="round-8 hidden"
+                :alt="slideItem.goodTitle"
               />
+              <!-- 图片坐标 -->
+              <div class="bg-white hot-container__position" :style="hotStyle(slideItem, 'swiperFullScreenRef' + moduleIndex + slideIndex, 'swiperFullScreenRef' + moduleIndex)" @click="onHotDetail(slideItem)"></div>
             </swiper-slide>
             <div class="swiper-pagination swiper-full-pagination" slot="pagination"></div>
           </swiper>
-        </template>
+        </div>
 
         <!-- 热区图片 -->
         <template v-if="moduleItem.type === 2">
@@ -97,9 +103,10 @@
               :url="moduleItem.imageUrl"
               :loadUrl="require('@/assets/images/product-bgd-375.png')"
               :errorUrl="require('@/assets/images/product-bgd-375.png')"
+              :alt="'Tospino hot moduleItem'"
             />
             <!-- 图片坐标 -->
-            <div v-for="hotItem, hotIndex in moduleItem.componentDetails" :key="'hot-picture-' + hotIndex" class="bg-white hot-container__position" :ref="'hotPosition' + moduleIndex + hotIndex" :style="hotStyle(hotItem, 'hotPosition' + moduleIndex + hotIndex, 'hotContainer' + moduleIndex)" @click="onHotDetail(hotItem)"></div>
+            <div v-for="hotItem, hotIndex in moduleItem.componentDetails" :key="'hot-picture-' + hotIndex" class="hot-container__position" :ref="'hotPosition' + moduleIndex + hotIndex" :style="hotStyle(hotItem, 'hotPosition' + moduleIndex + hotIndex, 'hotContainer' + moduleIndex)" @click="onHotDetail(hotItem)"></div>
           </div>
         </template>
         
@@ -121,12 +128,16 @@
               <nuxt-link :to="{ name: 'cart-product-id', params: { id: productItem.goodsId } }" class="block">
                 <ProductTopBtmSingle
                   class="m-auto"
-                  :img="{ url: productItem.mainPictureUrl, width: '2.24rem', height: '1.9rem', loadImage: require('@/assets/images/product-bgd-90.png') }" 
+                  :img="{ url: productItem.mainPictureUrl, width: '2.24rem', height: '2.24rem', loadImage: require('@/assets/images/product-bgd-90.png') }" 
                   :detail="{ desc: productItem.goodTitle, price: productItem.price, ellipsis: 2 }"
                 />
               </nuxt-link>
             </swiper-slide>
-            <div class="swiper-pagination swiper-group-pagination" v-if="moduleItem.effect" slot="pagination"></div>
+            <template v-if="moduleItem.componentDetails.length < 3">
+              <swiper-slide v-for="addItem in (3 - parseFloat(moduleItem.componentDetails.length))" :key="'self-add-' + addItem"></swiper-slide>
+            </template>
+            
+            <div class="swiper-pagination swiper-group-pagination" v-show="moduleItem.effect" slot="pagination"></div>
           </swiper>
         </div>
 
@@ -221,7 +232,7 @@
       </div> -->
       <!-- 滚动标签栏部分 -->
       <van-tabs sticky swipeable animated :offset-top="'0.88rem'" color="#42B7AE" v-model="tabCategoryActive" @change="getSearchList" class="mt-20 mh-60 custom-home-tab" :ellipsis="false">
-        <van-tab v-for="(categoryItem, tabIndex) in categoryList" :title="categoryItem.name" :key="'scroll-tab-' + tabIndex" :name="categoryItem.name">
+        <van-tab v-for="(categoryItem, tabIndex) in categoryList" :title="categoryItem.name" :key="'scroll-tab-' + tabIndex" :name="categoryItem.id">
           <empty-status v-if="searchList.length === 0" :image="require('@/assets/images/empty/order.png')" class="mh-60" />
           <van-list
             v-else
@@ -231,29 +242,40 @@
             class="mlr-12"
           >
             <!-- 加载中提示 -->
-            <template #loading>
+            <!-- <template #loading>
               <div class="hcenter">
                 <van-loading color="#42B7AE" />loading...
               </div>
-            </template>
-            <template #finished>
+            </template> -->
+            <!-- <template #finished>
               <div class="hcenter">没有多余数据了</div>
-            </template>
-            <template #error>
+            </template> -->
+            <!-- <template #error>
               <div class="hcenter">加载失败</div>
-            </template>
+            </template> -->
 
             <!-- 瀑布流 -->
-            <div class="flex between flex-wrap">
+            <div 
+              class="mx-auto my-2"
+              v-masonry
+              item-selector=".custom-grid-item"
+              fit-width="true"
+              transition-duration="0s"
+              stagger="0.03s"
+              gutter="10"
+            >
               <nuxt-link
                 v-for="(searchItem, searchIndex) in searchList"
                 :key="'search-list-' + searchIndex"
                 :to="{ name: 'cart-product-id', params: { id: searchItem.productId } }"
-                class="iblock mt-10">
-                <ProductTopBtmSingle
-                  :img="{ url: searchItem.mainPictureUrl, width: '3.4rem', height: '3.4rem', loadImage: require('@/assets/images/product-bgd-170.png') }" 
-                  :detail="{ desc: searchItem.productTitle, price: searchItem.productPrice, rate: searchItem.starLevel, volumn: searchItem.saleCount, ellipsis: 2 }"
-                />
+                class="iblock mt-10 custom-grid-item"
+                v-masonry-tile>
+                <client-only placeholder="">
+                  <ProductTopBtmSingle
+                    :img="{ url: searchItem.mainPictureUrl, width: '3.4rem', height: '3.4rem', loadImage: require('@/assets/images/product-bgd-170.png') }" 
+                    :detail="{ desc: searchItem.productTitle, price: searchItem.productPrice, rate: searchItem.starLevel, volumn: searchItem.saleCount, ellipsis: 2 }"
+                  />
+                </client-only>
               </nuxt-link>
             </div>
           </van-list>
@@ -273,9 +295,11 @@ import { Search, CountDown, Sticky, Tab, Tabs, Loading, List, Badge } from 'vant
 import ProductTopBtmSingle from '@/components/ProductTopBtmSingle';
 import EmptyStatus from '@/components/EmptyStatus';
 import PullRefresh from '@/components/PullRefresh';
+import 'swiper/css/swiper.css';
+import { Swiper, SwiperSlide } from 'vue-awesome-swiper';
 
 export default {
-  middleware: 'sockjs',
+  // middleware: 'sockjs',
   components: {
     vanSearch: Search,
     vanSticky: Sticky,
@@ -287,7 +311,9 @@ export default {
     vanBadge: Badge,
     ProductTopBtmSingle,
     EmptyStatus,
-    PullRefresh
+    PullRefresh,
+    swiper: Swiper,
+    swiperSlide: SwiperSlide
   },
   data() {
     return {
@@ -316,7 +342,7 @@ export default {
           disableOnInteraction: false,
         },
       },
-      tabCategoryActive: '全部',
+      tabCategoryActive: this.$t('all'),
       refreshing: {
         isFresh: false
       },
@@ -346,14 +372,14 @@ export default {
     const categoryList = await this.$api.getCategoryList(); // 分类列表
     this.categoryList = [ // 分类列表
       {
-        name: '全部'
+        name: this.$t('all')
       },
       ...categoryList.data
     ];
 
-    const searchList = await this.$api.getProductSearch({ categoryName: '', pageSize: this.pageSize, pageIndex: this.pageIndex }); // 搜索商品列表
+    const searchList = await this.$api.getProductSearch({ pageSize: this.pageSize, pageIndex: this.pageIndex }); // 搜索商品列表
     
-    this.searchList = searchList.data.items.map(item => { // 搜索商品列表
+    let list = searchList.data.items.map(item => { // 搜索商品列表
       return {
         ...item,
         starLevel: parseFloat(item.starLevel),
@@ -361,7 +387,11 @@ export default {
         productPrice: parseFloat(item.productPrice)
       }
     })
+    this.searchList = this.pageIndex == 1 ? list : this.searchList.concat(list);
     this.tabTotal = searchList.data.total; // 搜索商品列表商品总数目
+    if (typeof this.$redrawVueMasonry === 'function') {
+      this.$redrawVueMasonry();
+    }
   },
   head() { // 头部设置，方便seo
     return {
@@ -373,7 +403,6 @@ export default {
     }
   },
   activated() {
-    // 如果上次请求超过一分钟了，就再次发起请求
     this.$fetch();
   },
   methods: {
@@ -388,9 +417,14 @@ export default {
         }
       }
     },
-    getSearchList(name) { // 获取搜索商品列表
-      const categoryName = name === '全部' ? '' : name;
-      this.$api.getProductSearch({ categoryName: categoryName, pageIndex: 1, pageSize: this.pageSize }).then(res => {
+    getSearchList(name, title) { // 获取搜索商品列表
+      let categoryIds = {};
+      if (name > 0) {
+        categoryIds.navCategoryIds = [name];
+      }
+      this.finished = false;
+      this.pageIndex = 1;
+      this.$api.getProductSearch({ ...categoryIds, pageIndex: this.pageIndex, pageSize: this.pageSize }).then(res => {
         this.searchList = res.data.items.map(item => {
           return {
             ...item,
@@ -399,10 +433,12 @@ export default {
             productPrice: parseFloat(item.productPrice)
           }
         })
+        this.$redrawVueMasonry();
+        this.tabTotal = res.data.total;
       })
     },
     onHotDetail(hotDetail) { // 点击热区图进行跳转 imageLinkType: 0:商品链接(商品详情页)，跳转到搜索页(1:前端分类id，2:后端分类id，3:品牌，4:FBT，5:FBM，) 6:外部链接(直接打开)
-      if (hotDetail.imageLinkType == 6) {
+      if (hotDetail.imageLinkType == 6) { // 打开外部链接
         location.href = hotDetail.outerLink;
         return false;
       }
@@ -424,21 +460,21 @@ export default {
           val: hotDetail.brandIds
         }
       }
-      if (hotDetail.imageLinkType == 4) {
+      if (hotDetail.imageLinkType == 4) { // 搜索fbt
         _query = {
           deliveryType: 2,
           fbtStocks: hotDetail.fbtCountrys,
           val: 2
         }
       }
-      if (hotDetail.imageLinkType == 5) {
+      if (hotDetail.imageLinkType == 5) { // 搜索fbm
         _query = {
           deliveryType: 1,
           val: 1,
           fbmStocks: hotDetail.fbmCountrys
         }
       }
-      if (hotDetail.imageLinkType == 1 || hotDetail.imageLinkType == 2) { // 不论是前端分类还是后端分类，都传后端分类id进行搜索
+      if (hotDetail.imageLinkType == 1 || hotDetail.imageLinkType == 2) { // 搜索 1前端分类id 2后端分类id
         _query = {
           categoryId: hotDetail.imageLinkType == 2 ? hotDetail.serverMenuIds: hotDetail.frontMenuIds
         }
@@ -452,10 +488,13 @@ export default {
     hotStyle(hotItem, ele, container) { // 热区图位置计算 todo
       if (process.client) {
         this.$nextTick(() => {
-          let _w = this.$refs[container][0].clientWidth;
-          let _h = this.$refs[container][0].clientHeight;
+          let _w = 0;
+          let _h = 0;
           
           let timer = setInterval(() => { // 防止元素container的宽高获取不到，添加定时器，获取到定时器取消
+            if (!this.$refs[container][0]) {
+              return false;
+            }
             _w = this.$refs[container][0].clientWidth;
             _h = this.$refs[container][0].clientHeight;
             if (_w > 0 && _h > 0) {
@@ -479,7 +518,11 @@ export default {
         return false;
       }
       this.pageIndex += 1;
-      this.$api.getProductSearch({ categoryName: this.tabCategoryActive === '全部' ? '' : this.tabCategoryActive, pageSize: this.pageSize, pageIndex: this.pageIndex }).then(res => { // 搜索商品列表
+      let categoryIds = {};
+      if (parseFloat(this.tabCategoryActive) > 0) {
+        categoryIds.navCategoryIds = [this.tabCategoryActive];
+      }
+      this.$api.getProductSearch({ ...categoryIds, pageSize: this.pageSize, pageIndex: this.pageIndex }).then(res => { // 搜索商品列表
         
         this.tabTotal = res.data.total;
         let list = res.data.items.map(item => { // 搜索商品列表
@@ -492,6 +535,7 @@ export default {
         })
 
         this.searchList = this.searchList.concat(list);
+        this.$redrawVueMasonry();
         
         // 加载状态结束
         this.loading = false;

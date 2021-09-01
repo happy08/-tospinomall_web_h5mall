@@ -16,11 +16,12 @@
               :isLazy="false"
               :isShow="false"
               :round="true"
+              :alt="'Tospino user icon'"
             />
             <!-- 姓名、id -->
             <dl class="ml-10">
               <dt class="fs-18 black fw" v-if="$store.state.user.userInfo">{{ $store.state.user.userInfo.nickname == '' ? '--': $store.state.user.userInfo.nickname }}</dt>
-              <dd class="fs-12 grey mt-8 lh-1">{{ $store.state.user.userInfo.phone }}</dd>
+              <dd class="fs-12 grey mt-8 lh-1" v-if="$store.state.user.userInfo">ID: {{ $store.state.user.userInfo.id }}</dd>
             </dl>
           </div>
         </template>

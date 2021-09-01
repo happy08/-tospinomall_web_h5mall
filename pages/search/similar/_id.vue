@@ -1,9 +1,9 @@
 <template>
   <!-- 查看相似商品 -->
-  <div class="pt-46 bg-grey">
-    <BmHeaderNav :left="{ isShow: true }" :title="'相似商品'" :fixed="true" />
+  <div class="pt-46 bg-grey pb-20 v-percent-100">
+    <BmHeaderNav :left="{ isShow: true }" :title="$t('similar_goods')" :fixed="true" />
 
-    <PullRefresh :refreshing="refreshing" @refresh="onRefresh">
+    <PullRefresh :refreshing="refreshing" @refresh="onRefresh" class="custom-min-height-46">
       <empty-status v-if="lists.length === 0" :image="require('@/assets/images/empty/result.png')" />
       <van-list
         v-else
@@ -12,13 +12,27 @@
         finished-text=""
         @load="onLoad"
       >
-        <div class="mlr-12 flex between flex-wrap">
-          <ProductTopBtmSingle 
-            v-for="(item, index) in lists" :key="'similar-' + index" 
-            :img="{ url: item.mainPictureUrl, width: '3.4rem', height: '3.4rem', loadImage: require('@/assets/images/product-bgd-170.png') }" 
-            :detail="{ desc: item.productTitle, price: parseFloat(item.productPrice), rate: parseFloat(item.starLevel), volumn: parseFloat(item.saleCount), ellipsis: 2, country: item.supplyCountryName, country_url: item.supplyCountryIcon }"
-            class="mt-12"
-          />
+        <div 
+          class="mx-auto my-2 plr-12"
+          v-masonry
+          item-selector=".custom-grid-item"
+          fit-width="true"
+          transition-duration="0s"
+          stagger="0.03s"
+          gutter="10"
+        >
+          <nuxt-link
+            :to="{ name: 'cart-product-id', params: { id: item.productId } }" 
+            v-for="(item, index) in lists" :key="'similar-' + index"
+            class="custom-grid-item"
+            v-masonry-tile
+          >
+            <ProductTopBtmSingle 
+              :img="{ url: item.mainPictureUrl, width: '3.4rem', height: '3.4rem', loadImage: require('@/assets/images/product-bgd-170.png') }" 
+              :detail="{ desc: item.productTitle, price: parseFloat(item.productPrice), rate: parseFloat(item.starLevel), volumn: parseFloat(item.saleCount), ellipsis: 2, country: item.supplyCountryName, country_url: item.supplyCountryIcon }"
+              class="mt-12"
+            />
+          </nuxt-link>
         </div>
         
       </van-list>
@@ -55,9 +69,15 @@ export default {
   async fetch() {
     const listData = await this.$api.getSimilarGood({ pageNum: this.pageNum, pageSize: this.pageSize, goodId: this.$route.params.id });
     this.lists = this.pageNum == 1 ? listData.data.items : this.lists.concat(listData.data.items);
+    if (typeof this.$redrawVueMasonry === 'function') {
+      this.$redrawVueMasonry();
+    }
     this.total = listData.data.total;
     this.refreshing.isFresh = false;
     this.loading = false;
+  },
+  activated() {
+    this.$fetch();
   },
   methods: {
     onRefresh() {
@@ -65,6 +85,7 @@ export default {
       this.$fetch();
     },
     onLoad() {
+      this.finished = false;
       if (this.total == this.lists.length) { // 没有下一页了
         this.finished = true;
         this.loading = false;

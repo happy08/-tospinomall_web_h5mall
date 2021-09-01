@@ -1,6 +1,6 @@
 <template>
   <!-- 店铺-店铺首页 -->
-  <div class="vh-100 bg-grey">
+  <div class="vh-100 bg-grey pb-70">
     <div class="flex vcenter plr-12 bg-white h-46">
       <van-icon name="arrow-left" color="#383838" size="18px" @click="leftBack"></van-icon>
       <van-search
@@ -16,7 +16,7 @@
       <div class="flex between plr-12 bg-white ptb-10 vcenter">
         <div class="flex vcenter">
           <!-- 店铺详情 -->
-          <nuxt-link :to="{ name: 'cart-store-detail-id', params: { id: $route.params.id }, query: { sellerId: this.$route.query.sellerId} }" v-slot="{ navigate }" class="flex vcenter">
+          <nuxt-link :to="{ name: 'cart-store-detail-id', params: { id: $route.params.id }, query: $route.query }" v-slot="{ navigate }" class="flex vcenter">
             <div @click="navigate" role="link">
               <!-- 店铺logo -->
               <BmImage
@@ -26,6 +26,7 @@
                 :isLazy="false"
                 :isShow="true"
                 class="round-8 hidden"
+                :alt="detailData.storeName"
               />
               <!-- 店铺名、关注数 -->
               <dl class="ml-12 fm-helvetica">
@@ -58,7 +59,7 @@
 
     <!-- 导航栏 -->
     <!-- <div class="plr-12 bg-white flex vcenter">
-      <nuxt-link :to="{ name: 'cart-store-search' }">
+      <nuxt-link :to="{ name: 'search' }">
         <van-icon name="search" size="0.48rem" color="#383838" />
       </nuxt-link>
       <van-tabs v-model="tabActive" class="customs-van-tabs w-200"  @click="changeTab">
@@ -131,6 +132,7 @@
                 :fit="'cover'"
                 :height="'3.72rem'"
                 class="round-8 hidden"
+                :alt="slideItem.goodTitle"
               />
             </swiper-slide>
             <div class="swiper-pagination swiper-full-pagination" slot="pagination"></div>
@@ -144,6 +146,7 @@
               :url="moduleItem.imageUrl"
               :loadUrl="require('@/assets/images/product-bgd-375.png')"
               :errorUrl="require('@/assets/images/product-bgd-375.png')"
+              :alt="moduleItem.moduleTitle"
             />
             <!-- 图片坐标 -->
             <div v-for="hotItem, hotIndex in moduleItem.componentDetails" :key="'hot-picture-' + hotIndex" class="bg-white hot-container__position" :ref="'hotPosition' + moduleIndex + hotIndex" :style="hotStyle(hotItem, 'hotPosition' + moduleIndex + hotIndex, 'hotContainer' + moduleIndex)" @click="onHotDetail(hotItem)"></div>
@@ -203,7 +206,7 @@
       <van-list
         v-model="loading"
         :finished="finished"
-        finished-text="Not More…"
+        finished-text=""
         @load="onLoad"
         v-else
       >
@@ -219,6 +222,7 @@
             :height="'1.8rem'"
             :fit="'cover'"
             class="border round-4 hidden"
+            :alt="productItem.productTitle"
           />
           <!-- 商品详情 -->
           <div class="ml-14 w-230">
@@ -231,7 +235,7 @@
               </div>
               <!-- 购买 -->
               <nuxt-link :to="{ name: 'cart-product-id', params: { id: productItem.productId } }">
-                <van-button plain class="border round-8 h-25 black">Buy</van-button>
+                <van-button plain class="border round-8 h-25 black">{{ $t('buy') }}</van-button>
               </nuxt-link>
             </div>
             <!-- 商品服务与承诺因后台没有地方设置，暂时不展示 -->
@@ -243,18 +247,18 @@
     </template>
 
     <!-- 底部标签栏 -->
-    <van-tabbar v-model="tabbarActive" active-color="#FA2A32" inactive-color="#DBDBDB" v-if="$route.query.hasAdornment == true">
+    <van-tabbar v-model="tabbarActive" active-color="#FA2A32" inactive-color="#DBDBDB" v-if="isTabbarShow">
       <van-tabbar-item>
         <template #icon="props">
           <img :src="props.active ? require('@/assets/images/icon/store-tab-1-active.png') : require('@/assets/images/icon/store-tab-1.png')" alt="store-tab" />
         </template>
-        Home
+        {{ $t('home_page') }}
       </van-tabbar-item>
       <van-tabbar-item>
         <template #icon="props">
           <img :src="props.active ? require('@/assets/images/icon/store-tab-2-active.png') : require('@/assets/images/icon/store-tab-2.png')" alt="store-tab" />
         </template>
-        Commondity
+        {{ $t('commodity') }}
       </van-tabbar-item>
     </van-tabbar>
   </div>
@@ -265,6 +269,8 @@ import { Tab, Tabs, Tabbar, TabbarItem, Cell, Search, Sticky, Rate, List } from 
 import { storeFollow, storeCancelFollow } from '@/api/store';
 import ProductTopBtmSingle from '@/components/ProductTopBtmSingle';
 import EmptyStatus from '@/components/EmptyStatus';
+import 'swiper/css/swiper.css';
+import { Swiper, SwiperSlide } from 'vue-awesome-swiper';
 
 export default {
   components: {
@@ -278,7 +284,9 @@ export default {
     vanRate: Rate,
     vanList: List,
     ProductTopBtmSingle,
-    EmptyStatus
+    EmptyStatus,
+    swiper: Swiper,
+    swiperSlide: SwiperSlide
   },
   data() {
     return {
@@ -323,19 +331,20 @@ export default {
       finished: false,
       total: 0,
       priceSortType: 0, // 价格筛选类型 0 默认未选中，1选中升序，2选中降序
-      sort: {}
+      sort: {},
+      isTabbarShow: false
     }
   },
   async fetch() {
     // 获取店铺详情
-    const detailData = await this.$api.getStoreInfo({ sellerId: this.$route.query.sellerId, storeId: this.$route.params.id, userId: this.$store.state.user.userInfo.id });
+    const detailData = await this.$api.getStoreInfo({ sellerId: this.$route.query.sellerId, storeId: this.$route.params.id });
     if (detailData.code != 0) return false;
     this.detailData = {
       ...detailData.data,
       collectNum: detailData.data.collectNum == '' ? 0 : detailData.data.collectNum
     };
     // 店铺组件数据,店铺有装修才可看
-    if (this.$route.query.hasAdornment == true) {
+    if (Boolean(this.$route.query.hasAdornment) == true) {
       const moduleData = await this.$api.getStoreIndex({shopId: this.$route.params.id});
       if (moduleData.code != 0) return false;
       this.moduleData = moduleData.data.components;
@@ -355,14 +364,24 @@ export default {
     });
   },
   activated() {
+    this.tabbarActive = 0;
+    this.isTabbarShow = false;
     if (this.$route.query.tabbarActive) this.tabbarActive = this.$route.query.tabbarActive;
-    if (this.$route.query.hasAdornment == false || this.$route.query.hasAdornment == 'false') this.tabbarActive = 1;
+    if (Boolean(this.$route.query.hasAdornment) == false) this.tabbarActive = 1;
+    this.isTabbarShow = Boolean(this.$route.query.hasAdornment);
     this.$fetch();
   },
   methods: {
     onSubscribe(flag) { // 订阅/取消订阅 flag: true 订阅 false 取消订阅
+      if (!this.$store.state.user.authToken) {
+        this.$router.push({
+          name: 'login'
+        })
+        return false;
+      }
+
       let _axios = flag ? storeFollow({ sellerId: this.$route.query.sellerId, storeId: this.$route.params.id }) : storeCancelFollow([this.$route.params.id]);
-      _axios.then(res => {
+      _axios.then(() => {
         this.$fetch();
       })
     },
@@ -468,6 +487,7 @@ export default {
     beforeChange(index) { // 根据条件展示排序
       this.productTabActive = index;
       this.pageIndex = 1;
+      this.finished = false;
       if (index == 0) { // 推荐列表
         this.sort = {
           shopId: this.$route.params.id, pageIndex: this.pageIndex, pageSize: this.pageSize, recommend: 1
@@ -548,5 +568,8 @@ export default {
 }
 .h-25{
   height: 25px!important;
+}
+.pb-70{
+  padding-bottom: 70px;
 }
 </style>

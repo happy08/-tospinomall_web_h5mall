@@ -25,8 +25,8 @@
         :maxlength="6"
       />
       <!-- 没有得到 重新发送 -->
-      <div class="mt-12 flex between vcenter">
-        <span class="fs-14 black">{{ $t('dont_get_code') }}</span>
+      <div class="mt-12 flex hend vcenter">
+        <!-- <span class="fs-14 black">{{ $t('dont_get_code') }}</span> -->
         <span class="fs-14 resend-content" v-show="countdown > 0">{{ $t('resend_after', { replace_tip: countdown }) }}</span>
         <span class="fs-14 green" v-show="countdown == 0" @click="getCode">{{ $t('resend') }}</span>
       </div>

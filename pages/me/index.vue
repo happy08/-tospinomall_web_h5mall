@@ -15,12 +15,13 @@
               :isLazy="false"
               :isShow="false"
               :round="true"
+              :alt="'Tospino user icon'"
             />
           </div>
           <!-- 姓名、id -->
           <dl class="ml-10" v-if="$store.state.user.authToken" @click="goAccount">
             <dt class="fs-18 green fw" v-if="$store.state.user.userInfo">{{ $store.state.user.userInfo.nickname == '' ? '--': $store.state.user.userInfo.nickname }}</dt>
-            <dd class="fs-12 grey mt-8" v-if="$store.state.user.userInfo">{{ $store.state.user.userInfo.phone }}</dd>
+            <dd class="fs-12 grey mt-8" v-if="$store.state.user.userInfo">ID: {{ $store.state.user.userInfo.id }}</dd>
           </dl>
           <div v-else class="ml-10 fs-16" @click="goLogin">{{ $t('login_register') }}</div>
         </div>
@@ -32,6 +33,7 @@
               :height="'.64rem'"
               :isLazy="false"
               :isShow="false"
+              :alt="'Tospino message icon'"
             />
           </van-badge>
         </nuxt-link>
@@ -42,12 +44,12 @@
         <nuxt-link :to="$store.state.user.authToken ? { name: 'me-likes' } : { name: 'login' }" v-slot="{ navigate }" class="tc">
           <dl @click="navigate" role="link">
             <dt class="fs-24 black fw">{{ $store.state.user.userInfo ? $store.state.user.userInfo.attentionProductNum : 0 }}</dt>
-            <dd class="fs-12 grey mt-4">{{ $t('collection') }}</dd>
+            <dd class="fs-12 grey mt-4">{{ $t('collect') }}</dd>
           </dl>
         </nuxt-link>
         <nuxt-link :to="$store.state.user.authToken ? { name: 'me-wallet' }: { name: 'login' }" v-slot="{ navigate }" class="tc">
           <dl @click="navigate" role="link">
-            <dt class="fs-24 black fw">{{ $store.state.user.userInfo ? $store.state.rate.currency + $store.state.user.userInfo.balance : 0 }}</dt>
+            <dt class="fs-24 black fw">{{ walletNum }}</dt>
             <dd class="fs-12 grey mt-4">{{ $t('wallet') }}</dd>
           </dl>
         </nuxt-link>
@@ -72,6 +74,7 @@
               :height="'0.8rem'"
               :isLazy="false"
               :isShow="false"
+              :alt="'Tospino '+ $t(orderItem.text) +' icon'"
             />
           </van-badge>
           <p>{{ $t(orderItem.text) }}</p>
@@ -98,7 +101,7 @@ import { Badge, Cell, CellGroup } from 'vant';
 import { getOrderCount } from '@/api/order';
 
 export default {
-  middleware: 'sockjs',
+  // middleware: 'sockjs',
   components: {
     vanBadge: Badge,
     vanCell: Cell,
@@ -184,10 +187,14 @@ export default {
           name: 'me-about',
           icon: 'about-tospino'
         }
-      ]
+      ],
+      walletNum: 0
     }
   },
   activated() {
+    if (process.client) {
+      this.walletNum = this.$store.state.user.userInfo && this.$store.state.rate ? this.$store.state.rate.currency + this.$utils.numberFormat(this.$store.state.user.userInfo.balance) : 0;
+    }
     if (this.$store.state.user.authToken) {
       getOrderCount().then(res => {
         this.orderList[0].count = res.data.await_pay_count; // 待支付订单数
@@ -195,6 +202,11 @@ export default {
         this.orderList[2].count = res.data.await_comment; // 待评价
         this.orderList[3].count = res.data.order_refund_await_deal; // 售后
       })
+    } else {
+      this.orderList[0].count = 0; // 待支付订单数
+      this.orderList[1].count = 0; // 待收货订单数
+      this.orderList[2].count = 0; // 待评价
+      this.orderList[3].count = 0; // 售后
     }
   },
   methods: {

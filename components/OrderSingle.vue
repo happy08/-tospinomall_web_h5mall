@@ -12,6 +12,7 @@
         :loadUrl="loadUrl"
         :errorUrl="errorUrl"
         :isShow="true"
+        :alt="product_desc"
         class="flex-shrink border round-4 hidden"
       />
     </SoldOut>

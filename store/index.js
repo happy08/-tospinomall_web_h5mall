@@ -58,13 +58,18 @@ export const actions = {
     }
 
     // 是否有未读消息
-    commit('user/SET_ISNEWMESSAGE', $cookies.get('isNewWebsocketMsg'));
+    commit('user/SET_ISNEWMESSAGE', Boolean($cookies.get('isNewWebsocketMsg')));
 
-    const searchList = $cookies.get('searchList'); // 商品搜索历史
-    commit('user/SET_SEARCHLIST', searchList);
+    const searchList = decodeURI($cookies.get('searchList')); // 商品搜索历史
+    if (searchList != 'undefined') {
+      commit('user/SET_SEARCHLIST', searchList.split(','));
+    }
 
-    const orderSearchList = $cookies.get('orderSearchList'); // 订单搜索历史
-    commit('user/SET_ORDERSEARCHLIST', orderSearchList);
+    const orderSearchList = decodeURI($cookies.get('orderSearchList')); // 订单搜索历史
+    if (orderSearchList != 'undefined') {
+      commit('user/SET_ORDERSEARCHLIST', orderSearchList.split(','));
+    }
+    
 
     // 获取当前语言货币汇率
     const rateData = await $api.getCurrentRate();

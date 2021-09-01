@@ -1,5 +1,5 @@
 {
-  "name": "B2CWebH5",
+  "name": "tospino",
   "version": "1.0.0",
   "private": true,
   "scripts": {
@@ -14,7 +14,6 @@
     "@nuxtjs/pwa": "^3.3.5",
     "algoliasearch": "^4.10.4",
     "clipboard": "^2.0.8",
-    "compression-webpack-plugin": "^5.0.1",
     "cookie-universal-nuxt": "^2.1.4",
     "core-js": "^3.9.1",
     "crypto-js": "^4.0.0",
@@ -28,10 +27,12 @@
     "vant": "^2.12.10",
     "vue-awesome-swiper": "^4.1.1",
     "vue-i18n": "^8.25.0",
-    "vue-instantsearch": "^4.0.0"
+    "vue-instantsearch": "^4.0.0",
+    "vue-masonry": "^0.13.0"
   },
   "devDependencies": {
     "babel-plugin-import": "^1.13.3",
+    "compression-webpack-plugin": "^5.0.1",
     "less": "^3.7.1",
     "less-loader": "^5.0.0",
     "postcss-px2rem": "^0.3.0",

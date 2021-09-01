@@ -1,5 +1,5 @@
 <template>
-  <div class="vh-100 bg-grey pb-120 pt-46">
+  <div class="v-percent-100 bg-grey pb-120 pt-46">
     <BmHeaderNav :left="{ isShow: $route.query.isBar ? true: false }" :title="$t('cart')" :border="false" :fixed="true">
       <div slot="header-right" class="green fs-16" @click="onEdit">
         {{ isEdit ? $t('done') : $t('edit') }}
@@ -7,7 +7,7 @@
     </BmHeaderNav>
 
     <div class="bg-white">
-      <!-- 购物车为空时展示 -->
+      <!-- 未登录,购物车为空时展示 -->
       <empty-status v-if="!$store.state.user.authToken" :image="require('@/assets/images/empty/cart.png')" :btn="{ btn: '去登录', isEmit: true }" @emptyClick="onLogin" />
       <!-- 分类TAB -->
       <van-sticky v-else :offset-top="'0.92rem'">
@@ -33,6 +33,7 @@
                 :isShow="false"
                 @onClick="storeCheckAll(item)"
                 class="flex-shrink"
+                :alt="'choose icon'"
               />
               <!-- 店铺 -->
               <OrderStoreSingle class="pl-16 pr-30" @goStoreDetail="goStoreDetail(item.storeId)" :logo="item.storeLogo" :name="item.storeName" />
@@ -49,6 +50,7 @@
                         :height="'0.32rem'"
                         :isLazy="false"
                         :isShow="false"
+                        :alt="'choose icon'"
                       />
                     </div>
                   </template>
@@ -66,6 +68,7 @@
                         :isLazy="false"
                         :isShow="true"
                         :fit="'cover'"
+                        :alt="singleItem.productName"
                       />
                     </SoldOut>
                   </template>
@@ -92,8 +95,9 @@
                         :isLazy="false"
                         :isShow="false"
                         :fit="'cover'"
+                        :alt="'Tospino ship from tag'"
                       />
-                      <span class="fs-10 plr-8">发货来自{{ singleItem.shipAddress }}</span>
+                      <span class="fs-10 plr-8">{{ $t('ship_from') }}{{ singleItem.shipAddress }}</span>
                     </div>
                   </template>
                   <!-- 自定义数量,有库存显示数量，没有去看相似物品 -->
@@ -104,8 +108,8 @@
                   <!-- 自定义价格 -->
                   <template #price>
                     <div class="mt-8" @click="goProductDetail(singleItem.productId)">
-                      <span class="red fs-16 fw" v-if="$store.state.rate">{{ $store.state.rate.currency }}{{ singleItem.addCartPrice }}</span>
-                      <!-- <span class="grey fs-12 ml-10 line-through">{{ $store.state.rate.currency }}{{ item.cost }}</span> -->
+                      <span class="red fs-16 fw" v-if="$store.state.rate">{{ $store.state.rate.currency }}{{ tabActive == 1 ? singleItem.productPrice : singleItem.addCartPrice }}</span>
+                      <span class="grey fs-12 ml-4 line-through" v-if="tabActive == 1">{{ $store.state.rate.currency }}{{ singleItem.addCartPrice }}</span>
                     </div>
                   </template>
                 </van-card>
@@ -127,7 +131,7 @@
       </template>
 
       <!-- 可能喜欢的推荐列表展示 -->
-      <div v-if="recommendList.length > 0">
+      <div v-if="recommendList.length > 0" class="plr-12">
         <van-divider class="plr-30 mt-24 fw fs-14 clr-black-85">
           <BmIcon :name="'xinaixin'" :width="'0.26rem'" :height="'0.22rem'" :color="'#FA2022'" class="mr-8" />
           {{ $t('you_may_also_like') }}
@@ -138,8 +142,16 @@
           finished-text=""
           @load="onLoad"
         >
-          <div class="mlr-12 flex between flex-wrap">
-            <nuxt-link :to="{ name: 'cart-product-id', params: { id: searchItem.productId } }" v-for="(searchItem, searchIndex) in recommendList" :key="'search-list-' + searchIndex" class="mb-12 bg-white">
+          <div 
+            class="mx-auto my-2"
+            v-masonry
+            item-selector=".custom-grid-item"
+            fit-width="true"
+            transition-duration="0s"
+            stagger="0.03s"
+            gutter="10"
+          >
+            <nuxt-link :to="{ name: 'cart-product-id', params: { id: searchItem.productId } }" v-for="(searchItem, searchIndex) in recommendList" :key="'search-list-' + searchIndex" class="mb-12 custom-grid-item" v-masonry-tile>
               <ProductTopBtmSingle
                 :img="{ url: searchItem.mainPictureUrl, width: '3.4rem', height: '3.4rem', loadImage: require('@/assets/images/product-bgd-170.png') }" 
                 :detail="{ desc: searchItem.productTitle, price: searchItem.productPrice, rate: parseFloat(searchItem.starLevel), volumn: searchItem.saleCount, ellipsis: 2, country: searchItem.supplyCountryName, country_url: searchItem.supplyCountryIcon }"
@@ -163,6 +175,7 @@
               :height="'0.32rem'"
               :isLazy="false"
               :isShow="false"
+              :alt="'choose icon'"
             />
           </div>
         </template>
@@ -261,6 +274,9 @@ export default {
     if (recommendData.code != 0) return false;
     this.recommendList = recommendData.data.items;
     this.total = recommendData.data.total;
+    if (typeof this.$redrawVueMasonry === 'function') {
+      this.$redrawVueMasonry();
+    }
     // 未登录情况下不获取数据
     if (!this.$store.state.user.authToken) return false;
     this.listTotal = 0;
@@ -286,8 +302,13 @@ export default {
         })
       }
     });
+
+    this.checked = this.list.filter(item => {
+      return item.isAll == false;
+    }).length == 0 ? true : false;
+
     this.totalAmount = listData.data.totalAmount;
-    this.onCountPrice();
+    // this.onCountPrice();
     this.refreshing.isFresh = false;
   },
   activated() {
@@ -334,6 +355,12 @@ export default {
       })
     },
     onCheckOut() { // 结算
+      if (this.productResult.length == 0) {
+        this.$toast({
+          message: this.$t('no_item_selected')
+        })
+        return false;
+      }
       this.$router.push({
         name: 'cart-order-id',
         params: {
@@ -428,7 +455,10 @@ export default {
     getCalculatePrice(selectedData) { // 计算商品价格
       getCalculatePrice(selectedData).then(res => {
         this.totalAmount = res.data.totalAmount;
-      })
+        this.result = selectedData.selectedData.map(item => {
+          return item.skuId;
+        });
+      });
     },
     async onRefresh() { // 下拉刷新
       this.pageNum = 1;
@@ -565,7 +595,6 @@ export default {
       })
     },
     onLoad() { // 加载更多推荐商品
-      console.log('-------------加载')
       if (this.total == this.recommendList.length) { // 没有下一页了
         this.finished = true;
         this.loading = false;
@@ -575,6 +604,7 @@ export default {
       this.$api.getRecommend({ type: 0, pageNum: this.pageNum, pageSize: this.pageSize}).then(res => { // 搜索商品列表
         
         this.recommendList = this.recommendList.concat(res.data.items);
+        this.$redrawVueMasonry();
         this.total = res.data.total;
         
         // 加载状态结束

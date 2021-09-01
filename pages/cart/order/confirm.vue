@@ -32,9 +32,9 @@
     
 
     <!-- 可能喜欢的推荐列表展示 -->
-    <div>
+    <div v-if="recommendList.length > 0">
       <van-divider class="plr-30 mt-24 fw fs-14 clr-black-85">
-        <BmIcon :name="'xinaixin'" :width="'0.4rem'" :height="'0.4rem'" :color="'#000'" class="mr-8" />
+        <BmIcon :name="'xinaixin'" :width="'0.26rem'" :height="'0.22rem'" :color="'#FA2022'" class="mr-8" />
         {{ $t('you_may_also_like') }}
       </van-divider>
       <van-list
@@ -43,8 +43,16 @@
         finished-text=""
         @load="onLoad"
       >
-        <div class="mlr-12 flex between flex-wrap">
-          <nuxt-link :to="{ name: 'cart-product-id', params: { id: searchItem.productId } }" v-for="(searchItem, searchIndex) in recommendList" :key="'search-list-' + searchIndex">
+        <div
+          class="mx-auto my-2 plr-12"
+          v-masonry
+          item-selector=".custom-grid-item"
+          fit-width="true"
+          transition-duration="0s"
+          stagger="0.03s"
+          gutter="10"
+        >
+          <nuxt-link :to="{ name: 'cart-product-id', params: { id: searchItem.productId } }" v-for="(searchItem, searchIndex) in recommendList" :key="'search-list-' + searchIndex" class="custom-grid-item" v-masonry-tile>
             <ProductTopBtmSingle
               :img="{ url: searchItem.mainPictureUrl, width: '3.4rem', height: '3.4rem', loadImage: require('@/assets/images/product-bgd-170.png') }" 
               :detail="{ desc: searchItem.productTitle, price: searchItem.productPrice, rate: parseFloat(searchItem.starLevel), volumn: searchItem.saleCount, ellipsis: 2, country: searchItem.supplyCountryName, country_url: searchItem.supplyCountryIcon }"
@@ -83,9 +91,15 @@ export default {
     const recommendData = await this.$api.getRecommend({ type: 2, pageNum: this.pageNum, pageSize: this.pageSize});
     this.recommendList = this.pageNum == 1 ? recommendData.data.items : this.recommendList.concat(recommendData.data.items);
     this.total = recommendData.data.total;
+    if (this.total > this.recommendList.length) {
+      this.finished = false;
+    }
     
     // 加载状态结束
     this.loading = false;
+  },
+  activated() {
+    this.$fetch();
   },
   methods: {
     goHome() { // 返回首页

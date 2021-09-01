@@ -5,7 +5,7 @@ import request from './request';
  */
 export function cancelAttentionGood(data) {
   return request({
-    url: '/api/admin/buyerAttention/cancel/attention/good',
+    url: '/admin/buyerAttention/cancel/attention/good',
     method: 'post',
     data: data,
     headers: {
@@ -19,7 +19,7 @@ export function cancelAttentionGood(data) {
  */
 export function deleteFootprintRecord(data) {
   return request({
-    url: '/api/product/goods/buyer/delete/browse/record',
+    url: '/product/goods/buyer/delete/browse/record',
     method: 'post',
     data: data,
     headers: {
@@ -33,7 +33,7 @@ export function deleteFootprintRecord(data) {
  */
 export function getRateList(params) {
   return request({
-    url: '/api/product/evaluate/goods/list',
+    url: '/product/evaluate/goods/list',
     method: 'get',
     params
   })
@@ -44,7 +44,7 @@ export function getRateList(params) {
  */
 export function addGive(id) {
   return request({
-    url: `/api/product/evaluate/give`,
+    url: `/product/evaluate/give`,
     method: 'get',
     params: {
       id
@@ -57,7 +57,7 @@ export function addGive(id) {
  */
 export function getRateDetail(id, userId) {
   return request({
-    url: `/api/product/evaluate/info/app`,
+    url: `/product/evaluate/info/app`,
     method: 'get',
     params: {
       id,
@@ -71,7 +71,7 @@ export function getRateDetail(id, userId) {
  */
 export function getGoodAttr(goodId) {
   return request({
-    url: `/api/product/goods/get/attrGroup/${goodId}`,
+    url: `/product/goods/get/attrGroup/${goodId}`,
     method: 'get'
   })
 }
@@ -81,7 +81,7 @@ export function getGoodAttr(goodId) {
  */
 export function attentionGoodTop(params) {
   return request({
-    url: '/api/admin/buyerAttention/top/good',
+    url: '/admin/buyerAttention/top/good',
     method: 'get',
     params
   })
@@ -92,7 +92,7 @@ export function attentionGoodTop(params) {
  */
 export function reportEvaluate(data) {
   return request({
-    url: '/api/product/evaluate/reports',
+    url: '/product/evaluate/reports',
     method: 'post',
     data: data,
     headers: {
@@ -106,7 +106,7 @@ export function reportEvaluate(data) {
  */
  export function addEvaluate(data) {
   return request({
-    url: '/api/product/evaluate/save',
+    url: '/product/evaluate/save',
     method: 'post',
     data: data,
     headers: {
@@ -120,7 +120,7 @@ export function reportEvaluate(data) {
  */
 export function replyEvaluate(data) {
   return request({
-    url: '/api/product/evaluate/reply',
+    url: '/product/evaluate/reply',
     method: 'post',
     data: data,
     headers: {

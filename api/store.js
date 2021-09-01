@@ -6,7 +6,7 @@ import request from './request';
  */
 export function storeFollow(params) {
   return request({
-    url: '/api/admin/attention/store/follow',
+    url: '/admin/attention/store/follow',
     method: 'get',
     params
   })
@@ -17,7 +17,7 @@ export function storeFollow(params) {
  */
 export function storeCancelFollow(data) {
   return request({
-    url: '/api/admin/attention/store/cancel',
+    url: '/admin/attention/store/cancel',
     method: 'post',
     data: data,
     headers: {
@@ -31,7 +31,7 @@ export function storeCancelFollow(data) {
  */
 export function attentionStoreTop(params) {
   return request({
-    url: '/api/admin/attention/store/top',
+    url: '/admin/attention/store/top',
     method: 'get',
     params
   })

@@ -1,6 +1,6 @@
 <template>
   <!-- 我的-设置-新建收货地址 -->
-  <div class="bg-grey vh-100 pt-46">
+  <div class="bg-grey v-percent-100 pt-46">
     <BmHeaderNav :left="{ isShow: true }" :title="$t('shipping_address')" :fixed="true">
       <div slot="header-right" class="green" @click="deleteFn" v-if="$route.query.id">
         {{ $t('delete') }}
@@ -87,7 +87,7 @@
 
     <!-- 修改地址 -->
     <van-popup v-model="addressShow" position="bottom" closeable class="ptb-20" style="min-height: 80%;" @close="closePopup">
-      <h4 class="fs-18 black lh-20 tc plr-20">Choose a country or region</h4>
+      <h4 class="fs-18 black lh-20 tc plr-20">{{ $t('choose_a_country_or_region') }}</h4>
       <!-- 地址选择步骤条 -->
       <van-steps direction="vertical" :active="stepActive" class="mt-24" @click-step="stepClick">
         <van-step v-for="item, stepIndex in stepArr" :key="stepIndex">
@@ -283,7 +283,7 @@ export default {
     getPhonePrefix() { // 获取手机号前缀
       getPhonePrefix().then(res => {
         this.phonePrefixs = res.data;
-        this.form.phonePrefix = res.data[0].phonePrefix;
+        this.form.phonePrefix = this.$t('prefix_tip');
       })
     },
     getAddressDetail() { // 查看地址信息
@@ -398,7 +398,7 @@ export default {
   }
 }
 .save-btn{
-  margin-top: 116px;
+  margin-top: 70px;
 }
 .border-green{
   border: 1px solid #42B7AE!important;

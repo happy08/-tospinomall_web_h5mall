@@ -44,9 +44,9 @@
         <van-divider>{{ $t('or') }}</van-divider>
         <div class="flex login-page__btm--concat">
           <!-- facebook -->
-          <!-- <a href="#">
-            <BmIcon :name="'facebook-icon'" :width="'0.64rem'" :height="'0.64rem'" />
-          </a> -->
+          <!-- <a href="#"> -->
+            <BmIcon :name="'facebook-icon'" :width="'0.64rem'" :height="'0.64rem'" @iconClick="fLogin" />
+          <!-- </a> -->
           <!-- 电话 -->
           <!-- <a href="#">
             <BmIcon :name="'phone-icon'" :width="'0.64rem'" :height="'0.64rem'" />
@@ -56,9 +56,9 @@
             <BmIcon :name="'twitter-icon'" :width="'0.64rem'" :height="'0.64rem'" />
           </a> -->
           <!-- google -->
-          <!-- <a href="#">
-            <BmIcon :name="'google-icon'" :width="'0.64rem'" :height="'0.64rem'" />
-          </a> -->
+          <BmIcon :name="'google-icon'" :width="'0.64rem'" :height="'0.64rem'" class="ml-18" @iconClick="gLogin" />
+          
+          <!-- <div class="g-signin2" data-onsuccess="gLogin"></div> -->
           <!-- 微信 -->
           <!-- <a href="#">
             <BmIcon :name="'wechat-icon'" :width="'0.64rem'" :height="'0.64rem'" />
@@ -80,7 +80,7 @@
 
 <script>
 import { Divider, Field, DropdownMenu, DropdownItem, Cell } from 'vant';
-import { authLogin } from '@/api/login';
+import { authLogin, googleLogin, facebookLogin } from '@/api/login';
 
 export default {
   components: {
@@ -106,6 +106,15 @@ export default {
         return lang.value === this.$store.state.locale;
       })[0].text;
     }
+  },
+  mounted() {
+    let gScript = document.createElement('script');
+    gScript.src = 'https://apis.google.com/js/platform.js';
+    document.head.appendChild(gScript);
+
+    let fScript = document.createElement('script');
+    fScript.src = 'https://connect.facebook.net/en_US/sdk.js';
+    document.head.append(fScript);
   },
   methods: {
     login() {
@@ -135,7 +144,7 @@ export default {
           this.$router.push({
             name: 'home'
           })
-        }, 300);
+        }, 100);
       })
     },
     changeLang(lang) { // 切换语言
@@ -144,6 +153,93 @@ export default {
     },
     login_service_privacy() {
       return this.$t('login_service_privacy', { replace_tip: `<a class="clr-blue" href="/service/serve?isH5=1">Tospino's ${this.$t('term_of_service')}</a>`, replace_tip2: `<a class="clr-blue" href="/service/privacy?isH5=1">${this.$t('privacy_policy')}</a>` });
+    },
+    gLogin() { // 谷歌登录
+      gapi.load('auth2', () => {
+        gapi.auth2.init({
+          apiKey: 'Wfrc034S1dNn-nqPmLLbEGRG',
+          clientId: '75328792168-dhmjntibom2p54u87gvg5qdekaaicuii.apps.googleusercontent.com',
+          scope: 'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/plus.me'
+        })
+        const getAuthInstance = gapi.auth2.getAuthInstance();
+        getAuthInstance.signIn().then(success => {
+          console.log('success');
+          // console.log(success);
+          console.log(success.getAuthResponse())
+          this.$toast.loading({
+            forbidClick: true,
+            loadingType: 'spinner',
+            duration: 0
+          });
+          googleLogin({ mobile: success.getAuthResponse().id_token, grant_type: 'google' }).then(res => {
+            this.$store.commit('user/SET_TOKEN', res.data.token_type + ' ' + res.data.access_token);
+            this.$store.commit('user/SET_REFRESHTOKEN', res.data.refresh_token);
+            this.$store.commit('user/SET_SCOPE', res.data.scope);
+            // 获取用户信息
+            this.$store.dispatch('user/GetUserInfo', res.data.token_type + ' ' + res.data.access_token);
+            // 获取消息信息
+            this.$store.commit('user/SET_WEBSOCKET', res.data.user_info.passUrl);
+            // 当前登录账号
+            this.$store.commit('user/SET_ACCOUNT', res.data.user_info.email);
+            this.$toast.clear();
+            // 登录成功跳转到首页
+            setTimeout(() => {
+              this.account = '';
+              this.password = '';
+              this.$router.push({
+                name: 'home'
+              })
+            }, 100);
+          })
+        }, err => {
+          console.log('err: ');
+          console.log(err);
+        })
+      })
+    },
+    fLogin() { // facebook登录
+      console.log(FB)
+      FB.init({
+        appId: '231779648840263',
+        scope: 'public_profile, email',
+        version: 'v11.0'
+      })
+
+      FB.login(response => {
+        console.log(response)
+        if (response.status == 'connected') { // 连接成功
+          FB.api('/me?fields=name,email', user => { // 获取用户信息
+            console.log('user')
+            console.log(user);
+            this.$toast.loading({
+              forbidClick: true,
+              loadingType: 'spinner',
+              duration: 0
+            });
+            facebookLogin({ mobile: { userId: user.id, email: user.email, name: user.name }, grant_type: 'facebook' }).then(res => {
+              this.$store.commit('user/SET_TOKEN', res.data.token_type + ' ' + res.data.access_token);
+              this.$store.commit('user/SET_REFRESHTOKEN', res.data.refresh_token);
+              this.$store.commit('user/SET_SCOPE', res.data.scope);
+              // 获取用户信息
+              this.$store.dispatch('user/GetUserInfo', res.data.token_type + ' ' + res.data.access_token);
+              // 获取消息信息
+              this.$store.commit('user/SET_WEBSOCKET', res.data.user_info.passUrl);
+              // 当前登录账号
+              this.$store.commit('user/SET_ACCOUNT', res.data.user_info.email);
+              this.$toast.clear();
+              // 登录成功跳转到首页
+              setTimeout(() => {
+                this.account = '';
+                this.password = '';
+                this.$router.push({
+                  name: 'home'
+                })
+              }, 100);
+            })
+          })
+        }
+        console.log(response)
+      });
     }
   },
 }
@@ -173,11 +269,17 @@ export default {
     }
   }
 }
+.login-page__container{
+  margin-top: 50px;
+}
 .login-page__container--forgot{
   color: #BFBFBF;
   padding-right: 2px;
 }
 .login-btn{
   margin-top: 28px;
+}
+.ml-18{
+  margin-left: 18px;
 }
 </style>

@@ -36,7 +36,10 @@ const utils = {
         r = num.split('.')[1],
         t = '';
     for (let i = 0; i < l.length; i++) {
-        t += l[i] + ((i + 1) % 3 == 0 && (i + 1) != l.length ? ',' : '');
+      t += l[i] + ((i + 1) % 3 == 0 && (i + 1) != l.length ? ',' : '');
+    }
+    if (parseFloat(r) == 0) {
+      return t.split('').reverse().join('');
     }
     return t.split('').reverse().join('') + '.' + r;
   },
@@ -47,9 +50,9 @@ const utils = {
   },
   //标准时间转 yy-MM-dd
   formatStandardDate(val) {
-    if ((val + '').indexOf('T') === -1) {
-        return val;
-    }
+    // if ((val + '').indexOf('T') === -1) {
+    //   return val;
+    // }
     const date = new Date(val);
     const y = date.getFullYear();
     const m = utils.preZero(date.getMonth() + 1);

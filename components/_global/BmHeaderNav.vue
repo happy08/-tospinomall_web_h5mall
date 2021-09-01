@@ -61,6 +61,10 @@ export default {
   },
   methods: {
     leftBack() {
+      if (this.$route.query.isShare) { // 如果是分享出去的页面，点击回退按钮时跳转到首页
+        this.$router.replace('/home');
+        return false;
+      }
       if(this.left.isEmit){
         this.$emit('leftClick');
         return;

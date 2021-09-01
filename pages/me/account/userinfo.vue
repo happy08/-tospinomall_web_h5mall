@@ -16,6 +16,7 @@
             :isShow="false"
             class="mr-12"
             :round="true"
+            :alt="'Tospino user icon'"
           />
         </van-uploader>
         <!-- <input type="file" @change="uploadAvatar"> -->
@@ -69,7 +70,6 @@
 <script>
 import { Cell, CellGroup, DatetimePicker, Popup, Picker, Uploader } from 'vant';
 import ClipboardJS from 'clipboard';
-import Moment from 'moment';
 import { updateUserInfo, getPicUrl } from '@/api/user';
 
 export default {
@@ -96,8 +96,8 @@ export default {
       ...this.$store.state.user.userInfo,
       sex: this.$t('gander')[this.$store.state.user.userInfo.sex-1],
       maritalStatus: this.$t('marital_status_list')[this.$store.state.user.userInfo.maritalStatus - 1],
-      birthday: this.$store.state.user.userInfo.birthday ? Moment(this.$store.state.user.userInfo.birthday).format('MMM-DD-YYYY') : '',
-      cellBirthday: this.$store.state.user.userInfo.birthday ? Moment(this.$store.state.user.userInfo.birthday).format('MMM-DD-YYYY') : ''
+      birthday: this.$store.state.user.userInfo.birthday ? this.$utils.formatStandardDate(this.$store.state.user.userInfo.birthday) : '',
+      cellBirthday: this.$store.state.user.userInfo.birthday ? this.$utils.formatStandardDate(this.$store.state.user.userInfo.birthday) : ''
     };
   },
   methods: {
@@ -117,8 +117,8 @@ export default {
       this.updateUserInfo({ maritalStatus: index+1 });
     },
     onBirthdayConfirm(val) { // 提交信息
-      this.userInfo.birthday = Moment(val).format('MMM-DD-YYYY');
-      this.updateUserInfo({ birthday: Moment(val).format('YYYY-MM-DD') });
+      this.userInfo.birthday = this.$utils.formatStandardDate(val);
+      this.updateUserInfo({ birthday: this.$utils.formatStandardDate(val) });
       this.isPickerShow = false;
     },
     uploadAvatar(file) { // 上传头像
@@ -159,8 +159,8 @@ export default {
           ...res.data,
           sex: this.$t('gander')[res.data.sex-1],
           maritalStatus: this.$t('marital_status_list')[res.data.maritalStatus - 1],
-          birthday: res.data.birthday ? Moment(res.data.birthday).format('MMM-DD-YYYY') : null,
-          cellBirthday: res.data.birthday ? Moment(res.data.birthday).format('MMM-DD-YYYY') : ''
+          birthday: res.data.birthday ? this.$utils.formatStandardDate(res.data.birthday) : null,
+          cellBirthday: res.data.birthday ? this.$utils.formatStandardDate(res.data.birthday) : ''
         };
         this.isPickerShow = false;
       })

@@ -1,6 +1,6 @@
 <template>
   <!-- 我的-售后列表 -->
-  <div class="vh-100 bg-grey pt-46">
+  <div class="v-percent-100 bg-grey pt-46">
     <BmHeaderNav :left="{ isShow: true }" :title="$t('refund_after_sale')" :fixed="true" />
     <!-- 售后列表 -->
     <van-tabs sticky swipeable animated :offset-top="46" color="#42B7AE" class="customs-van-tabs" :ellipsis="false" @change="getSearchList" v-model="tabActive">
@@ -152,9 +152,9 @@ export default {
     getOrderAfterSalesCount().then(res => {
       if (res.code != 0) return false;
       
-      this.afterSalesCount = res.data.afterSalesCount; // 申请售后总数
-      this.recordCount = res.data.recordCount; // 申请记录总数
-      this.untreatedCount = res.data.untreatedCount; // 未处理总数
+      this.afterSalesCount = parseFloat(res.data.afterSalesCount); // 申请售后总数
+      this.recordCount = parseFloat(res.data.recordCount); // 申请记录总数
+      this.untreatedCount = parseFloat(res.data.untreatedCount); // 未处理总数
     })
     this.$fetch();
   },
@@ -165,6 +165,7 @@ export default {
     getSearchList() { // 获取列表数据
       this.lists = [];
       this.pageNum = 1;
+      this.finished = false;
       this.$fetch();
     },
     goProduct(productId) { // 跳转到商品详情页

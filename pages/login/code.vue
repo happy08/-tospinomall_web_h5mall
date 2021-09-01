@@ -29,7 +29,7 @@
               v-model="account"
               :placeholder="$t('phone_number')"
               class="field-container phone-code-field"
-              type="tel"
+              type="digit"
             >
               <template #label>
                 <span @click="showPicker = true" class="iblock fs-14 black lh-20 prefix-container">
@@ -55,6 +55,8 @@
             clearable
             :placeholder="$t('enter_verification_code')"
             class="field-container"
+            type="digit"
+            maxlength="6"
           >
             <template #button>
               <van-button class="fs-14 green lh-20 verification-btn" v-show="countdown === 0" @click="sendCode" :disabled="account.length === 0">{{ $t('get_it') }}</van-button>
@@ -166,7 +168,7 @@ export default {
     getPhonePrefix() {
       getPhonePrefix().then(res => {
         this.phonePrefixs = res.data;
-        this.prefixCode = res.data[0].phonePrefix;
+        this.prefixCode = this.$t('prefix_tip');
       })
     },
     onConfirm(event) { // 选择手机号前缀
@@ -228,7 +230,7 @@ export default {
           this.$router.push({
             name: 'home'
           })
-        }, 300);
+        }, 100);
       })
     },
     // changeLang(lang) { // 切换语言
@@ -288,5 +290,8 @@ export default {
   color: #BFBFBF;
   background-color: #eee;
   border: none;
+}
+.login-page__container{
+  margin-top: 50px;
 }
 </style>

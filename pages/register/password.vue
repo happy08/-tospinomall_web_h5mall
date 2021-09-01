@@ -10,6 +10,7 @@
         :placeholder="$t('enter_password_6_20')"
         class="field-container phone-code-field"
         :type="pwdType"
+        maxlength="20"
       >
         <template #button>
           <!-- 睁眼 -->
@@ -46,6 +47,13 @@ export default {
       pwdType: 'password'
     }
   },
+  beforeRouteEnter (to, from, next) {
+    next(vm => {
+      if (from.name === 'register') {
+        vm.password = '';
+      }
+    });
+  },
   methods: {
     registerClick() { // 买家用户注册
       const reg = /^(?![\d]+$)(?![a-zA-Z]+$)(?![-=+_.,]+$)[\da-zA-Z-=+_.,]{6,18}$/;
@@ -53,6 +61,11 @@ export default {
         this.$toast(this.$t('t_format_error'));
         return false;
       }
+      this.$toast.loading({
+        forbidClick: true,
+        loadingType: 'spinner',
+        duration: 0
+      });
       // 通过路由获取上一步输入的信息
       const _params = {
         ...this.$route.query,
@@ -60,7 +73,8 @@ export default {
         repeatPassword: this.password
       }
       
-      buyerRegister(_params).then(res => {
+      buyerRegister(_params).then(() => {
+        this.$toast.clear();
         this.$router.push({
           name: 'register-result',
           query: {

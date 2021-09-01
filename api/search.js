@@ -5,7 +5,7 @@ import request from './request';
  */
 export function getSearchPull(data) {
   return request({
-    url: '/api/search/productsearch/getSuggestionResult',
+    url: '/search/productsearch/getSuggestionResult',
     method: 'post',
     data,
     headers: {

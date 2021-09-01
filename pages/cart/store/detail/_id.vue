@@ -1,7 +1,7 @@
 <template>
   <!-- 店铺-店铺详情 -->
   <div class="bg-grey vh-100">
-    <BmHeaderNav :left="{ isShow: true }" :title="$t('cart.storeInformation')" />
+    <BmHeaderNav :left="{ isShow: true }" :title="$t('store_information')" />
 
     <!-- 关注店铺 -->
     <div class="bg-white pr-12 pl-20 ptb-14 flex between vcenter">
@@ -12,8 +12,9 @@
           :width="'0.96rem'" 
           :height="'0.96rem'"
           :isLazy="false"
-          :isShow="false"
+          :isShow="true"
           class="round-8 hidden"
+          :alt="detailData.storeName"
         />
         <!-- 店铺名、关注数 -->
         <dl class="ml-12">
@@ -55,7 +56,7 @@
     </van-cell-group>
 
     <!-- 所有商品 -->
-    <nuxt-link class="ptb-20 flex center bg-white mt-20" v-slot="{ navigate }" :to="{ name: 'cart-store-id', params: { id: this.$route.params.id }, query: { tabbarActive: 1, sellerId: this.$route.query.sellerId } }">
+    <nuxt-link class="ptb-20 flex center bg-white mt-20" replace v-slot="{ navigate }" :to="{ name: 'cart-store-id', params: { id: this.$route.params.id }, query: { ...$route.query, tabbarActive: 1 } }">
       <div @click="navigate" role="link">
         <span class="fs-14 black mr-20">{{ $t('all_products') }}</span>
         <van-icon name="arrow" color="rgba(0, 0, 0, 0.45)" />
@@ -81,7 +82,7 @@ export default {
     }
   },
   async fetch() {
-    const detailData = await this.$api.getStoreInfo({ sellerId: this.$route.query.sellerId, storeId: this.$route.params.id, userId: this.$store.state.user.userInfo.id });
+    const detailData = await this.$api.getStoreInfo({ sellerId: this.$route.query.sellerId, storeId: this.$route.params.id });
     if (detailData.code != 0) return false;
 
     this.detailData = {
@@ -91,6 +92,13 @@ export default {
   },
   methods: {
     onSubscribe(flag) { // 订阅/取消订阅 flag: true 订阅 false 取消订阅
+      if (!this.$store.state.user.authToken) {
+        this.$router.push({
+          name: 'login'
+        })
+        return false;
+      }
+      
       let _axios = flag ? storeFollow({ sellerId: this.$route.query.sellerId, storeId: this.$route.params.id }) : storeCancelFollow([this.$route.params.id]);
       _axios.then(res => {
         this.$fetch();

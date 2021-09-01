@@ -7,7 +7,7 @@
       </div>
     </BmHeaderNav>
 
-    <van-field v-model="name" class="p-20" clearable maxlength="30" minlength="4" />
+    <van-field v-model="name" class="p-20" clearable maxlength="30" />
     <p class="mt-10 fs-14 plr-20 username-tip">{{ $t('characters_limit') }}</p>
   </div>
 </template>
@@ -27,7 +27,7 @@ export default {
       type: ''
     }
   },
-  created() {
+  activated() {
     this.name = this.$route.query.name;
     this.type = this.$route.query.type; // name nickname
   },

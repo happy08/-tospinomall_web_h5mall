@@ -46,6 +46,8 @@
         clearable
         :placeholder="$t('enter_verification_code')"
         class="field-container"
+        type="digit"
+        maxlength="6"
       >
         <template #button>
           <van-button class="fs-14 green lh-20 round-8 verification-btn" v-show="countdown === 0" @click="sendCode" :disabled="account.length === 0">{{ $t('get_it') }}</van-button>
@@ -110,14 +112,14 @@ export default {
   activated() {
     // 手机号注册或者忘记密码时 需要先获取手机号前缀
     if (this.$route.query.changeWay !== 'email' || !this.$route.query.changeWay) {
-      this.getPhonePrefix()
+      this.getPhonePrefix();
     }
   },
   methods: {
     getPhonePrefix() { // 获取手机号前缀
       getPhonePrefix().then(res => {
         this.phonePrefixs = res.data;
-        this.prefixCode = res.data[0].phonePrefix;
+        this.prefixCode = this.$t('prefix_tip');
       })
     },
     onConfirm(event) { // 选择手机号前缀

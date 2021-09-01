@@ -16,7 +16,6 @@ body {
   -webkit-touch-callout: none;
   user-select: none;
   background-color: #fff;
-  // max-width: 750px;
   margin: 0 auto;
   line-height: 1.2;
 }
@@ -530,10 +529,10 @@ svg {
   color: #383838!important;
 }
 .grey {
-  color: #B6B6B6;
+  color: #B6B6B6!important;
 }
 .light-grey {
-  color: #999999;
+  color: #999999!important;
 }
 .white {
   color: #ffffff!important;
@@ -589,7 +588,16 @@ svg {
   border: solid 1px #E5E5E5!important;
 }
 .border-b{
-  border-bottom: 1px solid #ebedf0;
+  position: relative;
+  &::after{
+    border-bottom: 1px solid #ebedf0;
+    position: absolute;
+    content: '';
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    transform: scaleY(0.5);
+  }
 }
 .pre-wrap{
   white-space: pre-wrap;
@@ -609,8 +617,11 @@ svg {
 .h-100{
   height: 100%!important;
 }
-.vh-100{
+.vh-100 {
   min-height: 100vh;
+}
+.v-percent-100 {
+  min-height: 100%;
 }
 // 行高
 .lh-1 {
@@ -665,20 +676,20 @@ svg {
 }
 
 //自定义美化滚动条样式
-.custom-scrollbar {
-  &::-webkit-scrollbar {
-    width: 6px;
-    height: 1px;
-  }
-  &::-webkit-scrollbar-thumb {
-    border-radius: 4px;
-    background: rgba(144, 147, 153, 0.3);
-  }
-  &::-webkit-scrollbar-track {
-    border-radius: 4px;
-    background: rgba(144, 147, 153, 0.1);
-  }
-}
+// .custom-scrollbar {
+//   &::-webkit-scrollbar {
+//     width: 6px;
+//     height: 1px;
+//   }
+//   &::-webkit-scrollbar-thumb {
+//     border-radius: 4px;
+//     background: rgba(144, 147, 153, 0.3);
+//   }
+//   &::-webkit-scrollbar-track {
+//     border-radius: 4px;
+//     background: rgba(144, 147, 153, 0.1);
+//   }
+// }
 
 // 输入框样式
 .field-container{
@@ -709,19 +720,6 @@ svg {
   height: 48px!important;
 }
 
-// 登录按钮
-.login-page__container{
-  margin-top: 50px;
-}
-
-// 搜索框样式修改
-.search-container{
-  .van-cell {
-    padding: 0 !important;
-    align-items: center;
-  }
-}
-
 // 按钮样式
 .button-container{
   &.small{
@@ -730,28 +728,28 @@ svg {
 }
 
 // 语言下拉框
-.language-dropdown-menu{
-  padding-right: 18px;
-  position: relative;
-  .van-dropdown-item{
-    width: 125px;
-    left: auto;
-    right: 0;
-  }
-  .van-dropdown-item__content{
-    box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, .13);
-    position: static;
-  }
-  .van-dropdown-item--down{
-    bottom: 0;
-    top: 38px!important;
-    max-height: fit-content;
-    position: absolute;
-  }
-  .van-dropdown-menu__title::after{
-    border-color: transparent transparent #383838 #383838;
-  }
-}
+// .language-dropdown-menu{
+//   padding-right: 18px;
+//   position: relative;
+//   .van-dropdown-item{
+//     width: 125px;
+//     left: auto;
+//     right: 0;
+//   }
+//   .van-dropdown-item__content{
+//     box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, .13);
+//     position: static;
+//   }
+//   .van-dropdown-item--down{
+//     bottom: 0;
+//     top: 38px!important;
+//     max-height: fit-content;
+//     position: absolute;
+//   }
+//   .van-dropdown-menu__title::after{
+//     border-color: transparent transparent #383838 #383838;
+//   }
+// }
 
 // 图片标题和价格 小模块
 .pic-title-price{
@@ -825,6 +823,22 @@ svg {
   .van-hairline--bottom::after{
     border-bottom-width: 0!important;
   }
+}
+html, body, #__nuxt, #__layout{
+  height: 100%!important;
+  // max-width: 750PX!important;
+}
+.custom-min-height-46{
+  min-height: calc(100vh - 46px - 30px - 34px - 44px - 20px);
+}
+.custom-min-height-66{
+  min-height: calc(100vh - 66px - 30px - 34px - 44px);
+}
+.custom-min-height-154{
+  min-height: calc(100vh - 154px - 30px - 34px - 44px);
+}
+.custom-min-height-128{
+  min-height: calc(100vh - 128px - 30px - 34px - 44px);
 }
 
 // 适配

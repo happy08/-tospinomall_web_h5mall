@@ -7,11 +7,12 @@
       <div>
         <!-- 邮箱 -->
         <van-field
-          v-model="account"
+          v-model="account_email"
           :placeholder="$t('enter_your_email')"
           class="field-container phone-code-field"
+          v-if="isType === 'email'"
+          maxlength="254"
           type="email"
-          v-if="isType === 'email'" 
         />
         <!-- 手机号 --> 
         <div v-else class="border-b">
@@ -19,7 +20,8 @@
             v-model="account"
             :placeholder="$t('phone_number')"
             class="field-container phone-code-field"
-            type="tel"
+            maxlength="30"
+            type="number"
           >
             <template #label>
               <span @click="showPicker = true" class="iblock fs-14 black lh-20 prefix-container">
@@ -46,14 +48,16 @@
           clearable
           :placeholder="$t('enter_verification_code')"
           class="field-container"
+          type="digit"
+          maxlength="6"
         >
           <template #button>
-            <van-button class="fs-14 green lh-20 round-8 verification-btn" v-show="countdown === 0" @click="sendCode" :disabled="account.length === 0">{{ $t('get_it') }}</van-button>
+            <van-button class="fs-14 green lh-20 round-8 verification-btn" v-show="countdown === 0" @click="sendCode" :disabled="(isType == 'email' && account_email.length === 0) || (isType != 'email' && account.length === 0)">{{ $t('get_it') }}</van-button>
             <button class="fs-14 lh-20 round-8 verification-countdown-btn" v-show="countdown > 0">{{ countdown }}S</button>
           </template>
         </van-field>
         <!-- 注册，点击跳转到设置密码页面 -->
-        <van-button class="mt-60 btn_h48 fw fs-16 w-100" color="linear-gradient(270deg, #3EB5AE 0%, #70CEB6 100%)" :disabled="account.length === 0 || code.length === 0" @click="jumpPwd">
+        <van-button class="mt-60 btn_h48 fw fs-16 w-100" color="linear-gradient(270deg, #3EB5AE 0%, #70CEB6 100%)" :disabled="(isType == 'email' && account_email.length === 0) || (isType != 'email' && account.length === 0) || code.length === 0" @click="jumpPwd">
           {{ $t('next') }}
         </van-button> 
         <van-checkbox v-model="checked" class="mt-20">
@@ -64,6 +68,7 @@
               :height="'0.32rem'"
               :isLazy="false"
               :isShow="false"
+              :alt="'Tospino choose icon'"
             />
           </template>
           <div v-html="login_service_privacy()"></div>
@@ -128,6 +133,7 @@ export default {
   data() {
     return {
       account: '',
+      account_email: '',
       code: '',
       phonePrefixs: [],
       showPicker: false,
@@ -140,10 +146,17 @@ export default {
     }
   },
   watch: {
-    "$route"(e) {
-      this.isType = e.query.changeWay || '';
-      if (e.query.changeWay !== 'email' || !e.query.changeWay) {
-        this.getPhonePrefix()
+    "$route"(to, from) {
+      this.isType = to.query.changeWay || '';
+      if (to.name == 'register' && from.name == 'register') {
+        this.account = '';
+        this.account_email = '';
+        this.code = '';
+        this.countdown = 0;
+      }
+      
+      if (to.query.changeWay !== 'email' || !to.query.changeWay) {
+        this.getPhonePrefix();
       }
     }
   },
@@ -156,6 +169,7 @@ export default {
     next(vm => {
       if (from.name === 'login') {
         vm.account = '';
+        vm.account_email = '';
         vm.code = '';
         vm.countdown = 0;
       }
@@ -172,7 +186,7 @@ export default {
     getPhonePrefix() { // 获取所有手机号前缀
       getPhonePrefix().then(res => {
         this.phonePrefixs = res.data;
-        this.prefixCode = res.data[0].phonePrefix;
+        this.prefixCode = this.$t('prefix_tip');
       })
     },
     onConfirm(event) { // 选择手机号前缀
@@ -191,7 +205,12 @@ export default {
       });
       let _axios;
       if (this.$route.query.changeWay === 'email') { // 获取邮箱验证码
-        _axios = getEmailCode({ email: this.account, userType: 'buyer', type: this.$route.query.type === 'forgot' ? 2 : 1 });
+        let reg = /^([a-zA-Z]|[0-9])(\w|\-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/;
+        if (!reg.test(this.account_email)) {
+          this.$toast(this.$t('email_format_error'));
+          return false;
+        }
+        _axios = getEmailCode({ email: this.account_email, userType: 'buyer', type: this.$route.query.type === 'forgot' ? 2 : 1 });
       } else { // 默认是获取手机验证码
         _axios = getPhoneCode({ phone: this.account, phonePrefix: this.prefixCode.split('+')[1], userType: 'buyer', type: this.$route.query.type === 'forgot' ? 2 : 1 });
       }
@@ -230,7 +249,12 @@ export default {
 
       let _axios;
       if (this.$route.query.changeWay === 'email') { // 校验邮箱验证码
-        _axios = checkEmailCode({ code: this.code, email: this.account, userType: 'buyer', isDelCode: 0 });
+        let reg = /^([a-zA-Z]|[0-9])(\w|\-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/;
+        if (!reg.test(this.account_email)) {
+          this.$toast(this.$t('email_format_error'));
+          return false;
+        }
+        _axios = checkEmailCode({ code: this.code, email: this.account_email, userType: 'buyer', isDelCode: 0 });
       } else { // 校验手机验证码
         _axios = checkPhoneCode({ code: this.code, phone: this.account, phonePrefix: this.prefixCode.split('+')[1], userType: 'buyer', isDelCode: 0 });
       }
@@ -240,7 +264,7 @@ export default {
         this.isNextFlag = false;
         // 如果是忘记密码，手机验证通过之后跳转到设置密码页面
         if (this.$route.query.type === 'forgot') {
-          let changeObj = this.$route.query.changeWay === 'email' ? { email: this.account } : { phone: this.account, phonePrefix: this.prefixCode.split('+')[1] }
+          let changeObj = this.$route.query.changeWay === 'email' ? { email: this.account_email } : { phone: this.account, phonePrefix: this.prefixCode.split('+')[1] }
           this.$router.push({
             name: 'register-changePwd',
             query: {
@@ -251,7 +275,7 @@ export default {
           return false;
         }
         // 注册手机号验证通过之后跳转到设置密码页面
-        let registerQuery = this.$route.query.changeWay === 'email' ? { code: this.code, email: this.account } : { code: this.code,code: this.code, phone: this.account, phonePrefix: this.prefixCode.split('+')[1] };
+        let registerQuery = this.$route.query.changeWay === 'email' ? { code: this.code, email: this.account_email } : { code: this.code,code: this.code, phone: this.account, phonePrefix: this.prefixCode.split('+')[1] };
         this.$router.push({ 
           name: 'register-password',
           query: registerQuery

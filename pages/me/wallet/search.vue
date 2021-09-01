@@ -1,7 +1,7 @@
 <template>
   <!-- 账单的搜索页面  -->
   <div>
-    <BmHeaderNav :left="{ isShow: true }" :border="false" :title="$t('common.search')" />
+    <BmHeaderNav :left="{ isShow: true }" :border="false" :title="$t('search')" />
 
     <!-- 搜索框 -->
     <div class="bg-white plr-12 pb-14 border-b">

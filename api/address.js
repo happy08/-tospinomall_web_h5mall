@@ -6,7 +6,7 @@ import qs from 'qs';
  */
  export function getAddressList() {
   return request({
-    url: '/api/admin/ums/buyer/deliveryAddress/findCurrent',
+    url: '/admin/ums/buyer/deliveryAddress/findCurrent',
     method: 'post'
   })
 }
@@ -16,7 +16,7 @@ import qs from 'qs';
  */
 export function addAddress(data) {
   return request({
-    url: '/api/admin/ums/buyer/deliveryAddress/save',
+    url: '/admin/ums/buyer/deliveryAddress/save',
     method: 'post',
     data: qs.stringify(data)
   })
@@ -27,7 +27,7 @@ export function addAddress(data) {
  */
 export function getAreasTree() {
   return request({
-    url: '/api/basics/base/area/findAreasTree',
+    url: '/basics/base/area/findAreasTree',
     method: 'get'
   })
 }
@@ -37,7 +37,7 @@ export function getAreasTree() {
  */
 export function getAddressDetail(id) {
   return request({
-    url: `/api/admin/ums/buyer/deliveryAddress/findByIdInner/${id}`,
+    url: `/admin/ums/buyer/deliveryAddress/findByIdInner/${id}`,
     method: 'post',
   })
 }
@@ -47,7 +47,7 @@ export function getAddressDetail(id) {
  */
 export function getNextArea(params) {
   return request({
-    url: '/api/basics/base/area/findByParentId',
+    url: '/basics/base/area/findByParentId',
     method: 'get',
     params: params,
     headers: {
@@ -61,7 +61,7 @@ export function getNextArea(params) {
  */
 export function updateAddress(data) {
   return request({
-    url: '/api/admin/ums/buyer/deliveryAddress/updateById',
+    url: '/admin/ums/buyer/deliveryAddress/updateById',
     method: 'put',
     data: qs.stringify(data),
     headers: {
@@ -75,7 +75,7 @@ export function updateAddress(data) {
  */
 export function deleteAddress(id) {
   return request({
-    url: `/api/admin/ums/buyer/deliveryAddress/deleteById/${id}`,
+    url: `/admin/ums/buyer/deliveryAddress/deleteById/${id}`,
     method: 'delete',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded'
@@ -88,7 +88,7 @@ export function deleteAddress(id) {
  */
 export function updateDefaultAddress(id) {
   return request({
-    url: `/api/admin/ums/buyer/deliveryAddress/updateIsDefault/${id}`,
+    url: `/admin/ums/buyer/deliveryAddress/updateIsDefault/${id}`,
     method: 'put',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded'
@@ -101,7 +101,7 @@ export function updateDefaultAddress(id) {
  */
 export function getCurrentDefaultAddress() {
   return request({
-    url: '/api/admin/ums/buyer/deliveryAddress/findCurrentDefault',
+    url: '/admin/ums/buyer/deliveryAddress/findCurrentDefault',
     method: 'post'
   })
 }

@@ -1,6 +1,6 @@
 <template>
   <!-- 首页-头部-搜索页面 -->
-  <div :class="{'vh-100': true, 'bg-grey': !isShowTip}">
+  <div :class="{'bg-grey': !isShowTip, 'v-percent-100': true}">
     <van-sticky :offset-top="0">
       <BmHeaderNav :left="{ isShow: true }" :title="$t('search')" :border="false" />
       <!-- 搜索 -->
@@ -21,7 +21,7 @@
             <template #title="props" v-if="productItem.type === 0">
               {{ props }}
               <van-dropdown-menu active-color="#42B7AE" class="custom-dropdown-menu">
-                <van-dropdown-item v-model="dropdownVal" :options="$t('search_filter_price')" />
+                <van-dropdown-item v-model="dropdownVal" @change="getDropSearchList" :options="$t('search_filter_price')" />
               </van-dropdown-menu>
             </template>
           </van-tab>
@@ -56,37 +56,60 @@
         </div>
       </div>
 
-      <div v-show="!isShowTip">
-        
-
+      <PullRefresh v-show="!isShowTip" :refreshing="refreshing" @refresh="onRefresh" class="pb-20 custom-min-height-154">
         <div :class="{'w-100': true, 'plr-20 bg-white': arrangeType == 1 && list.length > 0, 'plr-12': arrangeType == 2} ">
           <!-- 空状态  -->
-          <empty-status v-if="list.length === 0" :image="require('@/assets/images/empty/order.png')" :description="$t('out_of_stock')"/>
-          <div 
-            :class="{'flex between flex-wrap w-100': arrangeType == 2}"
-            v-else>
+          <empty-status v-if="list.length === 0" :image="require('@/assets/images/empty/order.png')" />
+          <van-list
+            v-else
+            v-model="loading"
+            :finished="finished"
+            finished-text=""
+            @load="onLoad"
+          >
+            <!-- 商品展示两列 -->
+            <template v-if="arrangeType == 2">
+              <div 
+                class="mx-auto my-2"
+                v-masonry
+                item-selector=".custom-grid-item"
+                fit-width="true"
+                transition-duration="0s"
+                stagger="0.03s"
+                gutter="10"
+              >
+                <nuxt-link 
+                  v-for="(searchItem, searchIndex) in list" 
+                  :key="'search-list-' + searchIndex"
+                  :to="{ name: 'cart-product-id', params: { id: searchItem.productId } }"
+                  class="mt-12 custom-grid-item"
+                >
+                  <ProductTopBtmSingle
+                    :img="{ url: searchItem.mainPictureUrl, width: '3.4rem', height: '3.4rem', loadImage: require('@/assets/images/product-bgd-170.png') }" 
+                    :detail="{ desc: searchItem.productTitle, price: searchItem.productPrice, rate: searchItem.starLevel, volumn: searchItem.saleCount, ellipsis: 2, country: searchItem.supplyCountryName, country_url: searchItem.supplyCountryIcon }"
+                    class="round-4 bg-white hidden v-100"
+                  ></ProductTopBtmSingle>
+                </nuxt-link>
+              </div>
+            </template>
+            <!-- 商品展示一列 -->
+            <div v-else>
               <nuxt-link 
                 v-for="(searchItem, searchIndex) in list" 
                 :key="'search-list-' + searchIndex"
                 :to="{ name: 'cart-product-id', params: { id: searchItem.productId } }"
                 class="mt-12"
               >
-                <!-- 商品展示两列 -->
-                <ProductTopBtmSingle
-                  :img="{ url: searchItem.mainPictureUrl, width: '3.4rem', height: '3.4rem', loadImage: require('@/assets/images/product-bgd-170.png') }" 
-                  :detail="{ desc: searchItem.productTitle, price: searchItem.productPrice, rate: searchItem.starLevel, volumn: searchItem.saleCount, ellipsis: 2, country: searchItem.supplyCountryName, country_url: searchItem.supplyCountryIcon }"
-                  class="round-4 bg-white hidden v-100"
-                  v-if="arrangeType === 2"
-                ></ProductTopBtmSingle>
-                <!-- 商品展示一列 -->
-                <div v-if="arrangeType === 1" :class="{'flex vcenter pt-20 pb-30 hidden bg-white': true, 'border-229': searchIndex !== list.length - 1} ">
+                <div :class="{'flex vcenter pt-20 pb-30 hidden bg-white': true, 'border-229': searchIndex !== list.length - 1} ">
                   <div>
                     <BmImage 
                       :url="searchItem.mainPictureUrl"
                       :width="'1.8rem'" 
                       :height="'1.8rem'"
                       :fit="'cover'"
+                      :isShow="true"
                       class="border round-4"
+                      :alt="searchItem.productTitle"
                     />
                   </div>
                   <div class="ml-14 w-230 hidden-1">
@@ -102,10 +125,10 @@
                   </div>
                 </div>
               </nuxt-link>
-          </div>
-
+            </div>
+          </van-list>
         </div>
-      </div>
+      </PullRefresh>
     </template>
 
     <!-- 弹窗筛选 -->
@@ -159,10 +182,11 @@
 </template>
 
 <script>
-import { Search, Tab, Tabs, DropdownItem, DropdownMenu, Popup, Field, Cell, Sticky } from 'vant';
+import { Search, Tab, Tabs, DropdownItem, DropdownMenu, Popup, Field, Cell, Sticky, List } from 'vant';
 import ProductTopBtmSingle from '@/components/ProductTopBtmSingle';
 import EmptyStatus from '@/components/EmptyStatus';
 import { getSearchPull } from '@/api/search';
+import PullRefresh from '@/components/PullRefresh';
 
 export default {
   components: {
@@ -175,15 +199,17 @@ export default {
     vanField: Field,
     vanCell: Cell,
     vanSticky: Sticky,
+    vanList: List,
     EmptyStatus,
-    ProductTopBtmSingle
+    ProductTopBtmSingle,
+    PullRefresh
   },
   data() {
     return {
       arrangeType: 1,
       tabs: [
         {
-          name: 'search_filter_overall',
+          name: 'all',
           type: 0,
           key: ''
         },
@@ -218,7 +244,16 @@ export default {
       brandName: '',
       overseas: false,
       deliveryType: false,
-      available: false
+      available: false,
+      pageIndex: 1,
+      pageSize: 10,
+      params: {},
+      refreshing: {
+        isFresh: false
+      },
+      loading: false,
+      finished: false,
+      total: 0
     }
   },
   async fetch() {
@@ -231,8 +266,11 @@ export default {
     // 如果带着搜索的参数跳转过来的需要先获取相对应的搜索数据
     if (this.searchVal != '') {
       this.$store.commit('user/SET_SEARCHLIST', this.searchVal); // 搜索历史存储
+      this.arrangeType = 2;
+      this.pageIndex = 1;
       // 获取搜索列表数据
-      const listData = await this.$api.getProductSearch(_params);
+      this.params = {..._params, pageIndex: this.pageIndex, pageSize: this.pageSize};
+      const listData = await this.$api.getProductSearch(this.params);
       
       // 数据列表需要格式化
       this.list = listData.data.items.map(item => {
@@ -242,6 +280,12 @@ export default {
           saleCount: parseFloat(item.saleCount)
         }
       });
+
+      // 品牌列表
+      this.brandList = listData.data.brandList;
+      // 所有分类
+      this.categoryList = listData.data.categoryList;
+      this.total = listData.data.total;
       
       // 更新页面展示
       this.searchHistoryList = this.$store.state.user.searchList.filter((item, index) => {
@@ -292,9 +336,66 @@ export default {
     },
     changeArrange() { // 切换展示样式 1列 2列
       this.arrangeType = this.arrangeType === 1 ? 2 : 1;
+      if (this.arrangeType == 2) {
+        this.$redrawVueMasonry();
+      }
     },
-    getSearchList(name, title) { // 获取分类列表
-      console.log(name, title)
+    getSearchList(index, title) { // 获取分类列表
+      this.pageIndex = 1;
+      this.finished = false;
+      this.params = { pageIndex: this.pageIndex, pageSize: this.pageSize, searchKeyword: this.searchVal };
+      if (index == 1) { // 销量
+        this.params = {
+          ...this.params,
+          sortMap: {
+            key: 'sale_count',
+            value: 0
+          }
+        }
+      } else if (index == 0) { 
+        if (this.dropdownVal == 0) { // 综合排序
+          
+        } else if (this.dropdownVal == 1) { // 价格升序
+          this.params = {
+            ...this.params,
+            sortMap: {
+              key: 'promotion_price',
+              value: 1
+            }
+          }
+        } else if (this.dropdownVal == 2) { // 价格降序
+          this.params = {
+            ...this.params,
+            sortMap: {
+              key: 'promotion_price',
+              value: 0
+            }
+          }
+        }
+      }
+      this.getProductList();
+    },
+    getDropSearchList(value) {
+      this.pageIndex = 1;
+      this.params = { pageIndex: this.pageIndex, pageSize: this.pageSize, searchKeyword: this.searchVal };
+      if (value == 1) { // 价格升序
+        this.params = {
+          ...this.params,
+          sortMap: {
+            key: 'promotion_price',
+            value: 1
+          }
+        }
+      } else if (value == 2) { // 价格降序
+        this.params = {
+          ...this.params,
+          sortMap: {
+            key: 'promotion_price',
+            value: 0
+          }
+        }
+      }
+      this.getProductList();
     },
     onSearch(val) { // 搜索
       let value = val;
@@ -305,20 +406,10 @@ export default {
         return index < 6;
       });
       this.searchVal = value;
+      this.pageIndex = 1;
       // 获取搜索列表
-      this.$api.getProductSearch({ searchKeyword: value }).then(res => {
-        this.list = res.data.items.map(item => {
-          return {
-            ...item,
-            starLevel: parseFloat(item.starLevel)
-          }
-        });
-        // 品牌列表
-        this.brandList = res.data.brandList;
-        // 所有分类
-        this.categoryList = res.data.categoryList;
-        this.isShowTip = false;
-      })
+      this.params = { searchKeyword: value, pageIndex: this.pageIndex, pageSize: this.pageSize };
+      this.getProductList();
     },
     onFocus() { // 获取焦点之后，不展示数据列表和历史数据
       this.isShowTip = this.searchVal.length > 0 ? -1 : this.searchVal.length === 0;
@@ -344,28 +435,24 @@ export default {
       if (this.maxPrice != '') { // 最高价格
         _data.queryMaxPrice = this.maxPrice;
       }
-      this.$api.getProductSearch(_data).then(res => {
-        this.list = res.data.items.map(item => {
-          return {
-            ...item,
-            starLevel: parseFloat(item.starLevel)
-          }
-        });
-        this.filterPopup = false;
-      })
+      this.pageIndex = 1;
+      this.params = {
+        ..._data,
+        pageIndex: this.pageIndex,
+        pageSize: this.pageSize
+      };
+      this.getProductList();
     },
     onReset() { // 筛选重置
       this.brandName = this.minPrice = this.maxPrice = this.categoryName = '';
       this.available = this.overseas = this.deliveryType = false;
-      this.$api.getProductSearch({ searchKeyword: this.searchVal }).then(res => {
-        this.list = res.data.items.map(item => {
-          return {
-            ...item,
-            starLevel: parseFloat(item.starLevel)
-          }
-        });
-        this.filterPopup = false;
-      })
+      this.pageIndex = 1;
+      this.params = {
+        searchKeyword: this.searchVal,
+        pageSize: this.pageSize,
+        pageIndex: this.pageIndex
+      }
+      this.getProductList();
     },
     showMoreHistory() { // 展示更多的搜索历史
       this.historyNum = false;
@@ -390,6 +477,38 @@ export default {
         this.searchPullList = res.data.suggestions;
         this.list = [];
       })
+    },
+    getProductList() { // 获取商品列表
+      this.$api.getProductSearch(this.params).then(res => {
+        let list = res.data.items.map(item => {
+          return {
+            ...item,
+            starLevel: parseFloat(item.starLevel)
+          }
+        });
+        this.list = this.pageIndex == 1 ? list : this.list.concat(list);
+        // 品牌列表
+        this.brandList = res.data.brandList;
+        // 所有分类
+        this.categoryList = res.data.categoryList;
+        this.total = res.data.total;
+        this.isShowTip = false;
+        this.filterPopup = false; // 筛选窗口隐藏
+        this.refreshing.isFresh = false;
+      })
+    },
+    onRefresh() { // 刷新
+      this.pageIndex = 1;
+      this.getProductList();
+    },
+    onLoad() { // 加载更多
+      if (this.total == this.list.length) { // 没有下一页了
+        this.finished = true;
+        this.loading = false;
+        return false;
+      }
+      this.pageIndex += 1;
+      this.getProductList();
     }
   },
 }

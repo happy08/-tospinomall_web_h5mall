@@ -30,14 +30,14 @@
         </li>
       </ul>
       <!-- 自定义金额 -->
-      <van-field class="mt-24 border round-8" v-model="amount" type="number" :placeholder="$t('enter_a_custom_amount')" />
+      <van-field class="mt-24 border round-8" v-model="amount" type="number" :placeholder="$t('enter_a_custom_amount')" :formatter="formatter" />
     </div>
     
     <!-- 充值按钮 -->
     <div class="mt-24 mlr-20">
-      <BmButton class="w-100 round-8" @click.stop="onRecharge(2, amount)">{{ $t('recharge_now') }}</BmButton>
+      <BmButton class="w-100 round-8" :disabled="amount <= 0" @click.stop="onRecharge(2, amount)">{{ $t('recharge_now') }}</BmButton>
     
-      <p class="mt-40 fs-14 black" v-if="detail.freeRechargeCard && detail.freeRechargeCard.rechargeExplain">{{ $t('me.wallet.rechargeInstructions') }}</p>
+      <p class="mt-40 fs-14 black" v-if="detail.freeRechargeCard && detail.freeRechargeCard.rechargeExplain">{{ $t('recharge_instructions') }}</p>
       <p class="mt-8 fs-14 light-grey" v-if="detail.freeRechargeCard && detail.freeRechargeCard.rechargeExplain">{{ detail.freeRechargeCard.rechargeExplain }}</p>
     </div>
   </div>
@@ -90,10 +90,13 @@ export default {
       this.$router.push({
         name: 'me-pay-payment',
         query: {
-          amount: amount,
+          amount: parseFloat(amount),
           type: type // 1固定卡 2自由充值卡 
         }
       })
+    },
+    formatter(value) {
+      return value.match(/^\d*(\.?\d{0,2})/g)[0];
     }
   },
 }

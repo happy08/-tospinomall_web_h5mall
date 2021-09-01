@@ -1,6 +1,6 @@
 <template>
   <!-- 我的-订单-评价-发表评价 -->
-  <div class="vh-100 bg-grey pt-46">
+  <div class="v-percent-100 bg-grey pt-46">
     <BmHeaderNav :left="{ isShow: true }" :title="$t('evaluation')" :fixed="true">
       <div slot="header-right" class="green fs-14" @click="onConfirm">{{ $t('submit') }}</div>
     </BmHeaderNav>
@@ -18,6 +18,7 @@
                 :isShow="true"
                 :fit="'cover'"
                 class="border"
+                :alt="detail.goodName"
               />
             </div>
             <p class="fs-14 black ml-12">{{ detail.goodName }}</p>
@@ -51,6 +52,7 @@
             :height="'0.32rem'"
             :isLazy="false"
             :isShow="false"
+            :alt="'Tospino choose icon'"
           />
         </template>
         <span class="fs-14 lh-20 grey-666">{{ $t('anonymous_buyer') }}</span>

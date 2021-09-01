@@ -25,6 +25,7 @@
           v-model="message"
           rows="2"
           type="textarea"
+          maxlength="500"
           :placeholder="$t('feedback_input_hint')"
         />
         <!-- 上传图片 -->
@@ -36,6 +37,7 @@
             :isLazy="false"
             :isShow="false"
             class="ml-12"
+            :alt="'Tospino camera upload icon'"
           />
         </van-uploader>
       </div>

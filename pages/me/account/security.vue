@@ -13,6 +13,7 @@
         :isShow="true"
         class="mr-12"
         :errorUrl="require('@/assets/images/icon/user-icon.png')"
+        :alt="'Tospino user icon'"
       />
       <p class="white">{{ $store.state.user.userInfo.nickname }}{{ $t('welcome_back_to_security') }}</p>
     </div>

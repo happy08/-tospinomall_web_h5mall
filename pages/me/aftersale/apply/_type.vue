@@ -3,7 +3,7 @@
     我的-售后-售后申请-售后类型 type: 1仅退款 2退货退款 3换货 
     换货功能暂时不做，故暂时先把选择商品规格的弹窗删除了，之后可以从购物车页面copy一份 
   -->
-  <div class="bg-grey vh-100 pb-30 pt-46">
+  <div class="bg-grey v-percent-100 pb-30 pt-46">
     <BmHeaderNav :left="{ isShow: true }" :title="$t(title)" :fixed="true" />
 
     <!-- 订单详情 -->
@@ -30,12 +30,12 @@
     </van-cell-group>
 
     <!-- 退款金额 -->
-    <van-cell class="ptb-20 plr-20 mt-12" center :title="$t('refund_amount')" title-class="fs-14 black" :label="$t('modify_the_amount')" value-class="black fw fs-18" >
+    <!-- <van-cell class="ptb-20 plr-20 mt-12" center :title="$t('refund_amount')" title-class="fs-14 black" :label="$t('modify_the_amount')" value-class="black fw fs-18" >
       <template #default>
         <van-field v-model="detail.returnAmount" type="number" input-align="right" :formatter="onFormatter" />
       </template>
-    </van-cell>
-    <div class="p-20 fs-14 black">{{ $t('refund_price_tip', { replace_tip: detail.returnAmount }) }}</div>
+    </van-cell> -->
+    <div class="p-20 fs-14 mt-12 black">{{ $t('refund_price_tip', { replace_tip: $store.state.rate.currency + detail.realAmount }) }}</div>
 
     <!-- 申请指令 -->
     <div class="plr-20 pt-20 pb-24 bg-white">
@@ -72,6 +72,7 @@
             :height="'0.32rem'"
             :isLazy="false"
             :isShow="false"
+            :alt="'Tospino choose icon'"
           />
         </template>
         <span class="fs-14 lh-20 grey-666">{{ $t('pick_up_service_agreement') }}</span>
@@ -142,6 +143,7 @@
                     :height="'0.32rem'"
                     :isLazy="false"
                     :isShow="false"
+                    :alt="'Tospino choose icon'"
                   />
                 </template>
               </van-radio>
@@ -170,6 +172,7 @@
                     :height="'0.32rem'"
                     :isLazy="false"
                     :isShow="false"
+                    :alt="'Tospino choose icon'"
                   />
                 </template>
               </van-radio>
@@ -351,7 +354,7 @@ export default {
           this.currentSelect = {
             type: type,
             title: this.$t('applyReason'),
-            list: res.data.map(item => {
+            list: res.data.map((item, index) => {
               return item.applyReason;
             })
           }
@@ -364,7 +367,7 @@ export default {
         type: type,
         title: type === 'type' ? this.$t('returnMethodTitle') : type === 'status' ? this.$t('state_of_the_goods') : type === 'reason' ? this.$t('applyReason') : '',
         // list: type === 'type' ? this.detail.status == 1 ? [this.$t('selectReason')[0]] : this.$t('returnMethodList') : type === 'status' ? this.$t('stateGoodsList') : this.$t('selectReason')
-        list: type === 'type' ? this.$t('selectReason') : type === 'status' ? this.$t('stateGoodsList') : this.$t('selectReason')
+        list: type === 'type' ? parseFloat(this.$route.params.type) == 1 ? [this.$t('selectReason')[0]] : this.$t('selectReason') : type === 'status' ? this.$t('stateGoodsList') : this.$t('selectReason')
       }
       this.isSelectType = true;
     },

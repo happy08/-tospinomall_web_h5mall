@@ -21,7 +21,7 @@
       :items="catrgorieList" 
       :main-active-index.sync="treeActive"
       @click-nav="changeNavEvent"
-      height="90vh"
+      height="100vh"
     >
       <template #content>
         <div class="product-categories__box" v-for="(item, index) in leftLists" :key="index">
@@ -33,6 +33,7 @@
                 :width="'1.4rem'"
                 :height="'1.28rem'"
                 :isShow="true"
+                :alt="childrenItem.name"
               />
               <h5 class="fs-12 mt-8 product-single__name" v-html="childrenItem.name"></h5>
             </div>
@@ -174,7 +175,7 @@ export default {
       this.$router.push({
         name: 'search',
         query: {
-          categoryName: data.name,
+          categoryIds: [data.id],
           val: data.name
         }
       })
@@ -211,6 +212,7 @@ export default {
 
 <style lang="less">
 .categories-page{
+  // padding-bottom: 50px;
   .search-camera{
     width: 16px;
     height: 14px;

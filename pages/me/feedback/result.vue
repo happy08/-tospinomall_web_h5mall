@@ -4,12 +4,12 @@
     <BmHeaderNav :left="{ isShow: true }" :title="''" />
     <div class="plr-20 tc result-page__container">
       <van-icon name="checked" color="#52C41A" size="64" />
-      <p class="fs-18 fw black mt-24 result-page__container--title">反馈成功</p>
+      <p class="fs-18 fw black mt-24 result-page__container--title">{{ $t('feedback_success') }}</p>
       <van-button
         class="mt-60 btn_h48 round-8 fw fs-16 w-100 result-page__btn"
         color="linear-gradient(270deg, #3EB5AE 0%, #70CEB6 100%)"
         @click="onConfirm"> 
-        {{ $t('me.authentication.iknow') }}
+        {{ $t('i_know') }}
       </van-button>
     </div>
   </div>

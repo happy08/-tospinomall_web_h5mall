@@ -36,6 +36,7 @@
                       :height="'0.32rem'"
                       :isLazy="false"
                       :isShow="false"
+                      :alt="'Tospino choose icon'"
                     />
                   </template>
                 </van-checkbox>
@@ -59,6 +60,7 @@
                         class="ml-12"
                         v-if="item.isValid == 1"
                         @onClick="onSKu(item)"
+                        :alt="'Tospino add cart icon'"
                       />
                     </div>
 
@@ -86,6 +88,7 @@
                   :height="'0.32rem'"
                   :isLazy="false"
                   :isShow="false"
+                  :alt="'Tospino choose icon'"
                 />
               </template>
               <span class="ml-14 fs-14 lh-20 black">{{ $t('all') }}</span>
@@ -170,6 +173,7 @@ export default {
     });
   },
   activated() {
+    this.$fetch();
   },
   methods: {
     isTrue(val, list) { // 判断是否选中
@@ -182,10 +186,10 @@ export default {
     },
     onDelete() { // 删除
       this.$dialog.confirm({
-        message: this.$t('me.order.clearBrowingRecords'),
-        onfirmButtonText: this.$t('common.confirm'),
+        message: this.$t('clear_all_browing_records'),
+        onfirmButtonText: this.$t('confirm'),
         confirmButtonColor: '#42B7AE',
-        cancelButtonText: this.$t('common.cancel'),
+        cancelButtonText: this.$t('cancel'),
         cancelButtonColor: '#383838'
       }).then(() => {
         // 格式化参数
@@ -210,6 +214,7 @@ export default {
             }
           })
           this.checkResult = [];
+          this.edit = false;
         })
       }).catch(() => {
 
@@ -238,7 +243,8 @@ export default {
       this.$fetch();
     },
     onLoad() {
-      if (this.total == this.list.length) { // 没有下一页了
+      this.finished = false;
+      if (parseFloat(this.total) == this.list.length) { // 没有下一页了
         this.finished = true;
         this.loading = false;
         return false;

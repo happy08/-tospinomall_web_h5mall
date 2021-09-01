@@ -1,4 +1,4 @@
-import { setCookie } from '/api/utils';
+// import { setCookie } from '/api/utils';
 
 export const state = () => ({
   authToken: null,
@@ -18,6 +18,9 @@ export const mutations = {
   },
   SET_TOKEN(state, token) { // 提交token
     state.authToken = token;
+    if (token == null) {
+      state.userInfo = null;
+    }
     this.$cookies.set('authToken', token);
   },
   SET_REFRESHTOKEN(state, refreshToken) {
@@ -39,7 +42,7 @@ export const mutations = {
       }
       state.searchList = [...new Set(state.searchList)]; // 去重
     }
-    setCookie('searchList', state.searchList);
+    this.$cookies.set('searchList', encodeURI(state.searchList));
   },
   SET_ORDERSEARCHLIST(state, searchItem) {
     if (searchItem == null) {
@@ -52,7 +55,7 @@ export const mutations = {
       }
       state.orderSearchList = [...new Set(state.orderSearchList)]; // 去重
     }
-    setCookie('orderSearchList', state.orderSearchList);
+    this.$cookies.set('orderSearchList', encodeURI(state.orderSearchList));
   },
   SET_WEBSOCKET(state, websocketMsg) {
     state.websocketMsg = websocketMsg;
@@ -71,8 +74,8 @@ export const mutations = {
 export const actions = {
   GetUserInfo({ commit, state }, authToken) {
     return new Promise((resolve, reject) => {
-      if (state.userInfo) resolve();
-      else
+      // if (state.userInfo) resolve();
+      // else
         this.$api.getUserInfo(authToken).then(res => {
           if (res.code != 0) return false;
           
@@ -109,12 +112,14 @@ export const actions = {
     return new Promise((resolve, reject) => {
       this.$api.logout().then(res => {
         commit('SET_TOKEN', null);
+        commit('SET_USERINFO', null);
         this.$router.push({
           name: 'login'
         })
         resolve(res);
       }).catch(error => {
         commit('SET_TOKEN', null);
+        commit('SET_USERINFO', null);
         reject(error);
       })
     })
