@@ -25,7 +25,8 @@ import { authLogin } from '@/api/login';
 export default {
   data() {
     return {
-      countdown: 5
+      countdown: 5,
+      timer: null
     }
   },
   computed: {
@@ -36,10 +37,10 @@ export default {
   activated() {
     if (!this.$route.query.type) {
       this.countdown = 5;
-      let timer = setInterval(() => {
+      this.timer = setInterval(() => {
         if (this.countdown == 1) {
           this.login();
-          clearInterval(timer);
+          clearInterval(this.timer);
         }
         this.countdown -= 1;
       }, 1000)
@@ -59,7 +60,7 @@ export default {
         duration: 0
       });
       authLogin({ username: this.$route.query.phone ? this.$route.query.phone : this.$route.query.email, password: this.$route.query.password, grant_type: 'password' }).then(res => {
-        this.$toast.clear();
+        clearInterval(this.timer);
         this.$store.commit('user/SET_TOKEN', res.data.token_type + ' ' + res.data.access_token);
         this.$store.commit('user/SET_REFRESHTOKEN', res.data.refresh_token);
         this.$store.commit('user/SET_SCOPE', res.data.scope);

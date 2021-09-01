@@ -46,6 +46,13 @@ export default {
       pwdType: 'password'
     }
   },
+  beforeRouteEnter (to, from, next) {
+    next(vm => {
+      if (from.name === 'register') {
+        vm.password = '';
+      }
+    });
+  },
   methods: {
     registerClick() { // 买家用户注册
       const reg = /^(?![\d]+$)(?![a-zA-Z]+$)(?![-=+_.,]+$)[\da-zA-Z-=+_.,]{6,18}$/;
