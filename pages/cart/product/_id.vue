@@ -725,7 +725,8 @@ export default {
     this.likeList = [];
     // 获取商品推荐列表
     if (this.storeInfo.storeId) {
-      const recommendData = await this.$api.getRecommendList({ shopId: this.storeInfo.storeId, categoryId: 7 }); // 465085110123757568
+      const recommendData = await this.$api.getRecommendList({ shopId: this.storeInfo.storeId, categoryId: 7 });
+      if (!recommendData.data) return false;
       this.likeList = recommendData.data;
     }
   },
