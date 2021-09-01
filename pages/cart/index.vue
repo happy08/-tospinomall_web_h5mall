@@ -7,7 +7,7 @@
     </BmHeaderNav>
 
     <div class="bg-white">
-      <!-- 购物车为空时展示 -->
+      <!-- 未登录,购物车为空时展示 -->
       <empty-status v-if="!$store.state.user.authToken" :image="require('@/assets/images/empty/cart.png')" :btn="{ btn: '去登录', isEmit: true }" @emptyClick="onLogin" />
       <!-- 分类TAB -->
       <van-sticky v-else :offset-top="'0.92rem'">
