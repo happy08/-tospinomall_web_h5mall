@@ -724,7 +724,8 @@ const cn = {
   axios_tip_503: '服务不可用',
   axios_tip_504: '网络超时',
   axios_tip_505: 'HTTP版本不受支持',
-  axios_tip_10401: '登录过期，请重新登录'
+  axios_tip_10401: '登录过期，请重新登录',
+  email_format_error: '邮箱格式错误'
 }
 
 export default cn;

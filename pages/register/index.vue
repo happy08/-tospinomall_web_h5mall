@@ -145,6 +145,9 @@ export default {
   watch: {
     "$route"(e) {
       this.isType = e.query.changeWay || '';
+      this.account = '';
+      this.code = '';
+      this.countdown = 0;
       if (e.query.changeWay !== 'email' || !e.query.changeWay) {
         this.getPhonePrefix()
       }
@@ -194,6 +197,11 @@ export default {
       });
       let _axios;
       if (this.$route.query.changeWay === 'email') { // 获取邮箱验证码
+        let reg = /^([a-zA-Z]|[0-9])(\w|\-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/;
+        if (!reg.test(this.account)) {
+          this.$toast(this.$t('email_format_error'));
+          return false;
+        }
         _axios = getEmailCode({ email: this.account, userType: 'buyer', type: this.$route.query.type === 'forgot' ? 2 : 1 });
       } else { // 默认是获取手机验证码
         _axios = getPhoneCode({ phone: this.account, phonePrefix: this.prefixCode.split('+')[1], userType: 'buyer', type: this.$route.query.type === 'forgot' ? 2 : 1 });

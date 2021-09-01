@@ -722,7 +722,8 @@ const en = {
   axios_tip_503: 'service is not available',
   axios_tip_504: 'network timeout',
   axios_tip_505: 'HTTP version is not supported',
-  axios_tip_10401: 'Login expired, please log in again'
+  axios_tip_10401: 'Login expired, please log in again',
+  email_format_error: 'Email format error'
 }
 
 export default en;
