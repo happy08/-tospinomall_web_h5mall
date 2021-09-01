@@ -10,6 +10,7 @@
         :placeholder="$t('enter_password_6_20')"
         class="field-container phone-code-field"
         :type="pwdType"
+        maxlength="20"
       >
         <template #button>
           <!-- 睁眼 -->
