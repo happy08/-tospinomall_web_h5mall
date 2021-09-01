@@ -11,7 +11,8 @@
           :placeholder="$t('enter_your_email')"
           class="field-container phone-code-field"
           type="email"
-          v-if="isType === 'email'" 
+          v-if="isType === 'email'"
+          maxlength="254"
         />
         <!-- 手机号 --> 
         <div v-else class="border-b">
@@ -20,6 +21,7 @@
             :placeholder="$t('phone_number')"
             class="field-container phone-code-field"
             type="number"
+            maxlength="30"
           >
             <template #label>
               <span @click="showPicker = true" class="iblock fs-14 black lh-20 prefix-container">
