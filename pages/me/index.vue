@@ -165,7 +165,7 @@ export default {
           icon: 'address-management'
         },
         {
-          text: 'my_shop', // 我的店铺
+          text: 'shop_follow', // 店铺关注
           name: 'me-likes',
           query: {
             active: 1
