@@ -3,8 +3,7 @@ import { vantLocales } from '@/plugins/vue-i18n';
 export const state = () => ({
   locales: ['en', 'zh-CN', 'zh-TW', 'fr', 'es', 'ms', 'vi'],
   locale: 'zh-CN',
-  rate: null,
-  nowTime: null
+  rate: null
 });
 
 export const mutations = {
@@ -19,10 +18,6 @@ export const mutations = {
   SET_RATE(state, rate) { // 修改当前货币信息
     state.rate = rate;
     // this.$cookies.set('rate', rate);
-  },
-  SET_NOWTIME(state, nowTime) {
-    state.nowTime = nowTime;
-    this.$cookies.set('nowTime', nowTime);
   }
 };
 
@@ -49,7 +44,7 @@ export const actions = {
       // 获取用户信息
       const userInfo = await $api.getUserInfo();
       commit('user/SET_USERINFO', userInfo.data);
-      commit('SET_NOWTIME', userInfo.data.nowTime);
+      commit('user/SET_NOWTIME', userInfo.data.nowTime);
 
       // 消息信息
       commit('user/SET_WEBSOCKET', $cookies.get('websocketMsg'));

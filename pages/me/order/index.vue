@@ -354,8 +354,8 @@ export default {
   activated() {
     this.isFirst = true;
     this.$fetch();
-    this.beforeOneYear = Moment(parseInt(this.$store.state.nowTime)).subtract(1,'years').format('YYYY');
-    this.beforeTwoYear = Moment(parseInt(this.$store.state.nowTime)).subtract(2,'years').format('YYYY');
+    this.beforeOneYear = Moment(parseFloat(this.$store.state.user.nowTime)).subtract(1,'years').format('YYYY');
+    this.beforeTwoYear = Moment(parseFloat(this.$store.state.user.nowTime)).subtract(2,'years').format('YYYY');
     // 取消订单原因，因为整个列表都是同一种类型，所以就只在全局引入一次就好了
     getOrderReasonList({ orderType: 1, applyType: 0, goodsStatus: 0 }).then(res => {
       if (res.code != 0) return false;
@@ -375,7 +375,7 @@ export default {
         pageSize: 10
       };
       if (this.filterTimeType == 1) _params.beforeDay = 7; // 一周之内
-      let datetime = parseInt(this.$store.state.nowTime);
+      let datetime = parseInt(this.$store.state.user.nowTime);
       if (this.filterTimeType == 2) { // 一个月内
         _params = {
           beginTime: Moment(datetime).subtract(1,'months').format('YYYY-MM-DD HH:mm:ss'),

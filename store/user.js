@@ -9,7 +9,8 @@ export const state = () => ({
   scope: null,
   websocketMsg: null,
   isNewMessage: false,
-  account: null // 登陆账号
+  account: null, // 登陆账号
+  nowTime: null
 });
 
 export const mutations = {
@@ -68,6 +69,10 @@ export const mutations = {
   SET_ACCOUNT(state, account) {
     state.account = account;
     this.$cookies.set('account', account);
+  },
+  SET_NOWTIME(state, nowTime) {
+    state.nowTime = nowTime;
+    this.$cookies.set('nowTime', nowTime);
   }
 };
 
@@ -80,6 +85,7 @@ export const actions = {
           if (res.code != 0) return false;
           
           commit('SET_USERINFO', res.data);
+          commit('SET_NOWTIME', res.data.nowTime);
  
           resolve(res);
         }).catch(error => {
