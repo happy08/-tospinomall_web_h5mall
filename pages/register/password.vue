@@ -61,6 +61,11 @@ export default {
         this.$toast(this.$t('t_format_error'));
         return false;
       }
+      this.$toast.loading({
+        forbidClick: true,
+        loadingType: 'spinner',
+        duration: 0
+      });
       // 通过路由获取上一步输入的信息
       const _params = {
         ...this.$route.query,
@@ -68,7 +73,8 @@ export default {
         repeatPassword: this.password
       }
       
-      buyerRegister(_params).then(res => {
+      buyerRegister(_params).then(() => {
+        this.$toast.clear();
         this.$router.push({
           name: 'register-result',
           query: {
