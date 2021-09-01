@@ -19,7 +19,7 @@
         type="tel"
       >
         <template #right-icon>
-          <nuxt-link class="flex grey" :to="{ name: 'me-address-areacode' }">
+          <nuxt-link class="flex grey" replace :to="{ name: 'me-address-areacode', query: $route.query }">
             {{ form.phonePrefix }}
             <van-icon name="arrow" />
           </nuxt-link>
@@ -193,32 +193,51 @@ export default {
       return '选择街道或城镇';
     }
   },
+  beforeRouteEnter (to, from, next) {
+    next(vm => {
+      if (from.name !== 'me-address-areacode') { // 从选择手机号前缀页面回退
+        vm.form = {
+          name: '',
+          phone: '',
+          phonePrefix: '',
+          address: '', // 详细地址
+          countryCode: '', //国家编码
+          provinceCode: '', // 省份编码
+          cityCode: '', // 市编码
+          districtCode: '', //区编码
+          isDefault: false, // 是否为默认地址
+          tag: '', // 标签
+          tagEditor: '', // 自定义标签
+        }
+        vm.allAddress = '';
+      }
+    });
+  },
   activated() {
-    // 获取手机号前缀
-    if (this.$route.query.phonePrefix) {
-      this.form.phonePrefix = this.$route.query.phonePrefix;
-    } else {
-      this.getPhonePrefix();
-    }
-
     // 修改地址时要先获取用户的数据
     if (this.$route.query.id) {
       this.getAddressDetail();
     } else { // 新建页面
-      this.form = {
-        name: '',
-        phone: '',
-        phonePrefix: '',
-        address: '', // 详细地址
-        countryCode: '', //国家编码
-        provinceCode: '', // 省份编码
-        cityCode: '', // 市编码
-        districtCode: '', //区编码
-        isDefault: false, // 是否为默认地址
-        tag: '', // 标签
-        tagEditor: '', // 自定义标签
-      }
+      // this.form = {
+      //   name: '',
+      //   phone: '',
+      //   phonePrefix: '',
+      //   address: '', // 详细地址
+      //   countryCode: '', //国家编码
+      //   provinceCode: '', // 省份编码
+      //   cityCode: '', // 市编码
+      //   districtCode: '', //区编码
+      //   isDefault: false, // 是否为默认地址
+      //   tag: '', // 标签
+      //   tagEditor: '', // 自定义标签
+      // }
       this.isEmit = 0;
+      // 获取手机号前缀
+      if (this.$route.query.phonePrefix) {
+        this.form.phonePrefix = this.$route.query.phonePrefix;
+      } else {
+        this.getPhonePrefix();
+      }
       this.getNextArea({ id: 0 });
     }
   },
@@ -288,7 +307,7 @@ export default {
     },
     getAddressDetail() { // 查看地址信息
       getAddressDetail(this.$route.query.id).then(res => {
-        this.allAddress = res.data.completeAddress
+        this.allAddress = res.data.completeAddress;
         this.form = {
           name: res.data.name,
           phone: res.data.phone,
@@ -304,6 +323,10 @@ export default {
         }
 
         this.isEmit = res.data.tagEditor ? 2 : 0;
+        // 获取手机号前缀
+        if (this.$route.query.phonePrefix) {
+          this.form.phonePrefix = this.$route.query.phonePrefix;
+        }
 
         this.stepArr = res.data.areaList;
         this.assgnStepList = res.data.areaList;

@@ -54,9 +54,10 @@ export default {
       })
     },
     goBack(phonePrefix) {
-      this.$router.push({
+      this.$router.replace({
         name: 'me-address-make',
         query: {
+          ...this.$route.query,
           phonePrefix: phonePrefix
         }
       });
