@@ -10,13 +10,14 @@
     <!-- 收货地址 -->
     <div class="bg-white">
       <!-- 收货人姓名 -->
-      <van-field v-model="form.name" class="p-20" :placeholder="$t('the_consignee')" />
+      <van-field v-model="form.name" class="p-20" :placeholder="$t('the_consignee')" maxlength="30" />
       <!-- 收货人电话号码 -->
       <van-field
         v-model="form.phone"
         :placeholder="$t('phone_number')"
         class="p-20"
-        type="tel"
+        type="number"
+        maxlength="20"
       >
         <template #right-icon>
           <nuxt-link class="flex grey" replace :to="{ name: 'me-address-areacode', query: $route.query }">
@@ -182,15 +183,15 @@ export default {
     },
     chooseTitle() {
       if (this.form.countryCode === '') {
-        return '选择国家';
+        return this.$t('please_select_a_country');
       }
       if (this.form.provinceCode === '') {
-        return '选择州/省/地区';
+        return this.$t('please_select_a_state_province_region');
       }
       if (this.form.cityCode === '') {
-        return '选择城市';
+        return this.$t('Please_select_city');
       }
-      return '选择街道或城镇';
+      return this.$t('please_select_district_county');
     }
   },
   beforeRouteEnter (to, from, next) {
