@@ -215,6 +215,7 @@ export default {
         vm.chooseList = [];
         vm.stepArr = [];
         vm.stepActive = -1;
+        vm.isShowChooseTitle = true;
       }
     });
   },
