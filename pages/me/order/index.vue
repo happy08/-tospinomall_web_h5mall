@@ -157,8 +157,8 @@
           <span :class="{'fs-14 round-8 tc': true, 'is-active': filterTimeType == 2}" @click="filterTimeType = 2">{{ $t('within_a_month') }}</span>
           <span :class="{'fs-14 round-8 tc': true, 'is-active': filterTimeType == 3}" @click="filterTimeType = 3">{{ $t('within_3_month') }}</span>
           <span :class="{'fs-14 round-8 tc': true, 'is-active': filterTimeType == 4}" @click="filterTimeType = 4">{{ $t('within_this_year') }}</span>
-          <span :class="{'fs-14 round-8 tc': true, 'is-active': filterTimeType == 5}" @click="filterTimeType = 5">In {{ beforeOneYear }}</span>
-          <span :class="{'fs-14 round-8 tc': true, 'is-active': filterTimeType == 6}" @click="filterTimeType = 6">In {{ beforeTwoYear }}</span>
+          <span :class="{'fs-14 round-8 tc': true, 'is-active': filterTimeType == 5}" @click="filterTimeType = 5">{{ beforeOneYear }}</span>
+          <span :class="{'fs-14 round-8 tc': true, 'is-active': filterTimeType == 6}" @click="filterTimeType = 6">{{ beforeTwoYear }}</span>
         </div>
       </div>
 
