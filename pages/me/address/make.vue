@@ -182,13 +182,13 @@ export default {
       return emptyArr.length > 0 ? true : false;
     },
     chooseTitle() {
-      if (this.form.countryCode === '') {
+      if (this.stepArr.length == 0) {
         return this.$t('please_select_a_country');
       }
-      if (this.form.provinceCode === '') {
+      if (this.stepArr.length == 1) {
         return this.$t('please_select_a_state_province_region');
       }
-      if (this.form.cityCode === '') {
+      if (this.stepArr.length == 2) {
         return this.$t('Please_select_city');
       }
       return this.$t('please_select_district_county');
@@ -211,6 +211,9 @@ export default {
           tagEditor: '', // 自定义标签
         }
         vm.allAddress = '';
+        vm.chooseList = [];
+        vm.stepArr = [];
+        vm.stepActive = -1;
       }
     });
   },
