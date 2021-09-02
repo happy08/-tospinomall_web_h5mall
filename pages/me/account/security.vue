@@ -15,13 +15,13 @@
         :errorUrl="require('@/assets/images/icon/user-icon.png')"
         :alt="'Tospino user icon'"
       />
-      <p class="white">{{ $store.state.user.userInfo.nickname }}{{ $t('welcome_back_to_security') }}</p>
+      <p class="white" v-if="$store.state.user.userInfo">{{ $store.state.user.userInfo.nickname }}{{ $t('welcome_back_to_security') }}</p>
     </div>
 
     <div class="mt-12">
       <!-- 修改密码 -->
       <van-cell class="ptb-10 plr-20" center :title="$t('change_password')" value-class="light-grey" is-link title-class="black" :to="{ name: 'me-account-verifymethod' }">
-        <template #default v-if="$store.state.user.userInfo.pwdLastUpdateTime">
+        <template #default v-if="$store.state.user.userInfo">
           <span v-html="$t('last_modified')" class="pre-wrap"></span>{{ $store.state.user.userInfo.pwdLastUpdateTime }}
         </template>
       </van-cell>
