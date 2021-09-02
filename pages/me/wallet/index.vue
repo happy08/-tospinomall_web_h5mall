@@ -13,7 +13,7 @@
         <div class="flex column white fw purse-total__container tc">
           <span class="fs-30" v-show="pwdType === 'text'"><span class="fm-menlo">{{ $store.state.rate.currency }}</span><span class="fm-din">{{ detail.balance }}</span></span>
           <span class="fs-30" v-show="pwdType === 'password'">****</span>
-          <span class="fs-18 mt-10">{{ $t('balance') }}</span>
+          <span class="fs-18 mt-10 lh-1">{{ $t('balance') }}</span>
         </div>
         <div class="purse-total__show">
           <!-- 睁眼 -->
@@ -110,14 +110,13 @@ export default {
   background-position: center center;
   position: relative;
   .purse-total__container{
-    margin-top: 34px;
+    margin-top: 40px;
     line-height: 34px;
   }
   .purse-total__show{
     position: absolute;
     right: 16px;
-    top: 50%;
-    transform: translateY(-50%);
+    top: 16px;
   }
 }
 .perse-li{
