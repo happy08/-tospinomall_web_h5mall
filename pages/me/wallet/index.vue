@@ -30,7 +30,7 @@
         </li>
       </ul>
       <!-- 自定义金额 -->
-      <van-field class="mt-24 border round-8" v-model="amount" type="number" :placeholder="$t('enter_a_custom_amount')" :formatter="formatter" />
+      <van-field class="mt-24 border round-8" v-model="amount" type="number" maxlength="15" :placeholder="$t('enter_a_custom_amount')" :formatter="formatter" />
     </div>
     
     <!-- 充值按钮 -->
