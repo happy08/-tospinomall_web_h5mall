@@ -115,7 +115,7 @@
               </template>
               <span class="ml-14 fs-14 lh-20 black">{{ $t('all') }}</span>
             </van-checkbox>
-            <BmButton class="fs-16 round-0 v-100" @click="onUnsubscribe">{{ $t('unsubscribe') }}</BmButton>
+            <BmButton class="fs-16 round-0 v-100" @click="onUnsubscribe('all')">{{ $t('unsubscribe') }}</BmButton>
           </div>
         </div>
 
@@ -252,7 +252,7 @@ export default {
         cancelButtonText: this.$t('cancel'),
         cancelButtonColor: '#383838'
       }).then(() => {
-        let _ajax = this.active == 1 ? storeCancelFollow(item ? [item.storeId] : this.checkResult) : cancelAttentionGood(item ? [item.productId] : this.checkResult);
+        let _ajax = this.active == 1 ? storeCancelFollow(item == 'all' ? this.checkResult : [item.storeId] ) : cancelAttentionGood(item == 'all' ? this.checkResult : [item.productId]);
       
         _ajax.then(() => {
           this.getList();
