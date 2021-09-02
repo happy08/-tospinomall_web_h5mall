@@ -48,11 +48,7 @@
       <!-- 开店时间 -->
       <van-cell :title="$t('open_a_shop_time')" title-class="black fs-14" class="p-20" :value="detailData.createTime" value-class="light-grey" />
       <!-- 品牌销售 -->
-      <van-cell :title="$t('sales_of_the_brand')" title-class="black fs-14" class="p-20" value-class="light-grey">
-        <template #default>
-          <span v-for="(item, index) in detailData.brandNameList" :key="index">{{ item }}</span>
-        </template>
-      </van-cell>
+      <van-cell :title="$t('sales_of_the_brand')" title-class="black fs-14" class="p-20" value-class="light-grey" :value="detailData.brandNameLabelList" />
     </van-cell-group>
 
     <!-- 所有商品 -->
@@ -87,7 +83,8 @@ export default {
 
     this.detailData = {
       ...detailData.data,
-      collectNum: detailData.data.collectNum
+      collectNum: detailData.data.collectNum,
+      brandNameLabelList: detailData.data.brandNameList.join('、')
     };
   },
   methods: {

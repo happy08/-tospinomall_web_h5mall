@@ -14,9 +14,9 @@
     </div>
     <van-sticky offset-top="0">
       <div class="flex between plr-12 bg-white ptb-10 vcenter">
-        <div class="flex vcenter">
+        <div class="flex vcenter w-100">
           <!-- 店铺详情 -->
-          <nuxt-link :to="{ name: 'cart-store-detail-id', params: { id: $route.params.id }, query: $route.query }" v-slot="{ navigate }" class="flex vcenter">
+          <nuxt-link :to="{ name: 'cart-store-detail-id', params: { id: $route.params.id }, query: $route.query }" v-slot="{ navigate }" class="flex vcenter w-100">
             <div @click="navigate" role="link">
               <!-- 店铺logo -->
               <BmImage
@@ -39,9 +39,9 @@
         
         
         <!-- 取消订阅 -->
-        <van-button  v-if="detailData && detailData.isAttention == 1" color="#FC2B31" class="round-8 h-26 plr-8" @click="onSubscribe(false)">{{ $t('unsubscribe') }}</van-button>
+        <van-button  v-if="detailData && detailData.isAttention == 1" color="#FC2B31" class="round-8 h-26 plr-8 ws-nowrap" @click="onSubscribe(false)">{{ $t('unsubscribe') }}</van-button>
         <!-- 订阅 -->
-        <van-button plain color="#FC2B31" class="round-8 h-26 plr-8" @click="onSubscribe(true)" v-else>{{ $t('add_subscribe') }}</van-button>
+        <van-button plain color="#FC2B31" class="round-8 h-26 plr-8 ws-nowrap" @click="onSubscribe(true)" v-else>{{ $t('add_subscribe') }}</van-button>
         
       </div>
       <van-tabs v-if="tabbarActive == 1" sticky swipeable animated color="#42B7AE" class="customs-van-tabs bg-white plr-20" v-model="productTabActive" line-height="0" line-width="0" :before-change="beforeChange">
@@ -382,7 +382,12 @@ export default {
 
       let _axios = flag ? storeFollow({ sellerId: this.$route.query.sellerId, storeId: this.$route.params.id }) : storeCancelFollow([this.$route.params.id]);
       _axios.then(() => {
-        this.$fetch();
+        this.$api.getStoreInfo({ sellerId: this.$route.query.sellerId, storeId: this.$route.params.id }).then(res => {
+          this.detailData = {
+            ...res.data,
+            collectNum: res.data.collectNum == '' ? 0 : res.data.collectNum
+          };
+        })
       })
     },
     leftBack() { // 返回上一页
@@ -571,5 +576,8 @@ export default {
 }
 .pb-70{
   padding-bottom: 70px;
+}
+.ws-nowrap{
+  white-space: nowrap;
 }
 </style>
