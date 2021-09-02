@@ -9,11 +9,14 @@
 
     <div class="mlr-12 mt-4">
       <!-- 总金额展示 -->
-      <div class="purse-total w-100 flex hcenter">
-        <div class="flex column white fw purse-total__container tc">
-          <span class="fs-30" v-show="pwdType === 'text'"><span class="fm-menlo">{{ $store.state.rate.currency }}</span><span class="fm-din">{{ detail.balance }}</span></span>
-          <span class="fs-30" v-show="pwdType === 'password'">****</span>
-          <span class="fs-18 mt-10 lh-1">{{ $t('balance') }}</span>
+      <div class="purse-total w-100 flex hcenter hidden">
+        <div class="flex column white fw purse-total__container tc w-100 hidden">
+          <div class="fs-30 lh-36 plr-12 flex w-100 center" v-show="pwdType === 'text'">
+            <span class="fm-menlo">{{ $store.state.rate.currency }}</span>
+            <span class="fm-din hidden-1">{{ detail.balance }}</span>
+          </div>
+          <div class="fs-30 lh-36" v-show="pwdType === 'password'">****</div>
+          <div class="fs-18 mt-10 lh-1">{{ $t('balance') }}</div>
         </div>
         <div class="purse-total__show">
           <!-- 睁眼 -->
@@ -132,5 +135,9 @@ export default {
 }
 .mt-8{
   margin-top: 8px;
+}
+.lh-36{
+  line-height: 36px;
+  height: 36px;
 }
 </style>
