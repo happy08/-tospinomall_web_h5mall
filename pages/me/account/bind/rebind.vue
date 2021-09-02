@@ -140,6 +140,11 @@ export default {
       
       let _axios;
       if (this.$route.query.changeWay === 'email') { // 获取邮箱验证码
+        let reg = /^([a-zA-Z]|[0-9])(\w|\-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/;
+        if (!reg.test(this.account_email)) {
+          this.$toast(this.$t('email_format_error'));
+          return false;
+        }
         _axios = getEmailCode({ email: this.account, userType: 'buyer' });
       } else { // 默认是获取手机验证码
         _axios = getPhoneCode({ phone: this.account, phonePrefix: this.prefixCode.split('+')[1], userType: 'buyer' });
@@ -161,6 +166,10 @@ export default {
       })
     },
     goback() { // 返回上一级目录
+      if (this.$store.state.user.userInfo.email == '' && this.$route.query.changeWay == 'email') { // 绑定邮箱
+        this.$router.go(-1);
+        return false;
+      }
       this.$router.replace('/me/account/bind');
     },
     jump() { // 验证手机/邮箱号码，去绑定成功后跳转到重新绑定结果展示页面
@@ -170,7 +179,7 @@ export default {
       this.isNextFlag = true;
 
       let _axios;
-      if (this.$route.query.changeWay === 'email') { // 校验邮箱验证码
+      if (this.$route.query.changeWay == 'email') { // 校验邮箱验证码
         _axios = checkEmailCode({ code: this.code, email: this.account, userType: 'buyer', isDelCode: 0 });
       } else { // 校验手机验证码
         _axios = checkPhoneCode({ code: this.code, phone: this.account, phonePrefix: this.prefixCode.split('+')[1], userType: 'buyer', isDelCode: 0 });
@@ -180,13 +189,13 @@ export default {
         this.isNextFlag = false;
         if (res.code != 0) return false;
         // 校验成功之后提交修改
-        let _userinfoAjax = this.$route.query.changeWay === 'email' ? updateUserInfo({ email: this.account, code: this.code }) : updateUserInfo({ phone: this.account, phonePrefix: this.prefixCode.split('+')[1], code: this.code });
+        let _userinfoAjax = this.$route.query.changeWay == 'email' ? updateUserInfo({ email: this.account, code: this.code }) : updateUserInfo({ phone: this.account, phonePrefix: this.prefixCode.split('+')[1], code: this.code });
         _userinfoAjax.then(res => {
           this.$store.commit('user/SET_USERINFO', res.data); // 修改本地用户信息
           this.$router.push({
             name: 'me-account-bind-result',
             query: {
-              changeWay: this.$route.query.changeWay === 'email' ? 'email' : 'phone'
+              changeWay: this.$route.query.changeWay == 'email' ? 'email' : 'phone'
             }
           })
         })

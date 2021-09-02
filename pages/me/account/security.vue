@@ -21,7 +21,7 @@
     <div class="mt-12">
       <!-- 修改密码 -->
       <van-cell class="ptb-10 plr-20" center :title="$t('change_password')" value-class="light-grey" is-link title-class="black" :to="{ name: 'me-account-verifymethod' }">
-        <template #default v-if="$store.state.user.userInfo">
+        <template #default v-if="$store.state.user.userInfo && $store.state.user.userInfo.pwdLastUpdateTime">
           <span v-html="$t('last_modified')" class="pre-wrap"></span>{{ $store.state.user.userInfo.pwdLastUpdateTime }}
         </template>
       </van-cell>
