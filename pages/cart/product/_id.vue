@@ -331,7 +331,7 @@
         <div class="mt-12 bg-white ptb-20">
           <h3 class="black flex between vcenter plr-20 fn fm-helvetica">
             <span class="fs-16">{{ $t("just_for_you") }}</span>
-            <nuxt-link class="fs-14" :to="{ name: 'cart-store-id', params: { id: storeInfo.storeId }, query: { sellerId: storeInfo.sellerId, hasAdornment: storeInfo.hasAdornment} }">{{ $t("more") }}</nuxt-link>
+            <nuxt-link class="fs-14" :to="{ name: 'cart-store-id', params: { id: storeInfo.storeId }, query: { sellerId: storeInfo.sellerId, hasAdornment: storeInfo.hasAdornment, tabbarActive: 1 } }">{{ $t("more") }}</nuxt-link>
           </h3>
           <!-- 推荐商品 -->
           <div>
@@ -497,7 +497,7 @@
 
 <script>
 import { ImagePreview, Cell, Step, Steps, Rate, Sticky, Search, Tab, Tabs, Popup, Stepper } from 'vant';
-import { getDeliveryInfo, attentionProduct } from '@/api/cart';
+import { getDeliveryInfo, attentionProduct, cancelAttentionProduct } from '@/api/cart';
 import { getCurrentDefaultAddress, getNextArea } from '@/api/address';
 import ProductSku from '@/components/ProductSku';
 import 'swiper/css/swiper.css';
@@ -959,6 +959,13 @@ export default {
         })
         return false;
       }
+      if (this.goodSpuVo.isAttention == 1) { // 取消关注
+        cancelAttentionProduct([this.goodSpuVo.id]).then(() => {
+          this.goodSpuVo.isAttention = 0;
+        })
+        return false;
+      }
+      
       attentionProduct(this.goodSpuVo.id).then(() => {
         this.goodSpuVo.isAttention = 1;
       })
