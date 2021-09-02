@@ -196,6 +196,7 @@ export default {
       this.walletNum = this.$store.state.user.userInfo && this.$store.state.rate ? this.$store.state.rate.currency + this.$utils.numberFormat(this.$store.state.user.userInfo.balance) : 0;
     }
     if (this.$store.state.user.authToken) {
+      this.$store.dispatch('user/GetUserInfo');
       getOrderCount().then(res => {
         this.orderList[0].count = res.data.await_pay_count; // 待支付订单数
         this.orderList[1].count = res.data.await_take_good_count; // 待收货订单数
