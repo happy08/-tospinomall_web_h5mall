@@ -19,7 +19,7 @@
           v-model="account"
           :placeholder="$t('phone_number')"
           class="field-container phone-code-field"
-          type="tel"
+          type="number"
         >
           <template #label>
             <span @click="showPicker = true" class="iblock fs-14 black lh-20 prefix-container">
@@ -166,7 +166,7 @@ export default {
       })
     },
     goback() { // 返回上一级目录
-      if (this.$store.state.user.userInfo.email == '' && this.$route.query.changeWay == 'email') { // 绑定邮箱
+      if ((this.$store.state.user.userInfo.email == '' && this.$route.query.changeType == 'email') || (this.$store.state.user.userInfo.phone == '' && this.$route.query.changeType == 'phone')) { // 首次绑定邮箱和手机号选择其他方式时返回上一页
         this.$router.go(-1);
         return false;
       }
