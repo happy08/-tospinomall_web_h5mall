@@ -122,12 +122,12 @@ export default {
   },
   beforeRouteEnter(to, from, next) { // 从初始页面进入重置值为空
     next(vm => {
-      if (from.name === 'me-wallet' || from.name == 'me-order') {
+      if (from.name === 'me-wallet' || from.name == 'me-order' || from.name == 'cart-order-id') {
         vm.payRadio = 100;
-        vm.isBackDialog = false;
-        vm.balanceShow = false;
         vm.showPicker = false;
+        vm.isBackDialog = false;
         vm.payPwd = '';
+        vm.balanceShow = false;
       } else if (from.name === 'me-pay-wait') { // 从确认订单页面回来
         vm.isBackDialog = true;
       }
@@ -140,9 +140,13 @@ export default {
       loadingType: 'spinner',
       duration: 0
     });
+    this.list = [];
+    if (this.payRadio == 100) {
+      this.balanceShow = false;
+    }
     getAvailable().then(res => {
       this.$toast.clear();
-      if (res.code != 0) return false;
+      if (!res.data) return false;
 
       this.list = res.data.map(item => {
         return {
@@ -174,6 +178,9 @@ export default {
       })
     },
     onPay() { // 提交支付,成功跳转到确认订单页面
+      if (this.payRadio == 100) {
+        return false;
+      }
       if (this.payRadio == 'balance') { // 余额支付
         if (this.$store.state.user.userInfo.payPassword == '') { // 未设置支付密码
           this.$router.push({

@@ -1,7 +1,7 @@
 <template>
   <!-- 购物车-确认订单 -->
   <div class="v-percent-100 bg-grey pb-68 pb-46" v-if="detail.storeSaleInfoList">
-    <BmHeaderNav :left="{ isShow: true, isEmit: true }" :fixed="true" :title="$t('confirm_the_order')" @leftBack="leftBack" />
+    <BmHeaderNav :left="{ isShow: true, isEmit: true }" :fixed="true" :title="$t('confirm_the_order')" @leftClick="leftClick" />
 
     <div v-if="codeData.code == 0">
       <!-- 个人信息 -->
@@ -396,12 +396,12 @@ export default {
     onConfirmPayment() { // 确认修改支付方式
       this.paymentShow = false;
     },
-    leftBack() { // 回退页面
+    leftClick() { // 回退页面
       if (this.$route.query.address) { // 说明是从地址管理页面回退回来的
         this.$router.go(-2);
         return false;
       }
-
+      console.log(window.history)
       if(window.history.length < 2){ //解决部分机型拿不到history
         this.$router.replace('/');
       }else{

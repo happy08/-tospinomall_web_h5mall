@@ -286,13 +286,13 @@ export default {
     this.list = listData.data.storeList.map(storeItem => { // 购物车列表
 
       this.result = this.result.concat(storeItem.products.filter(selectItem => { // 是否选中
-        return selectItem.isSelect == 1;
+        return selectItem.isSelect == 1 && selectItem.stock > 0;
       }).map(resultItem => {
         return resultItem.productSku;
       }));
 
       this.productResult = this.productResult.concat(storeItem.products.filter(selectItem => { // 已选择商品
-        return selectItem.isSelect == 1;
+        return selectItem.isSelect == 1 && selectItem.stock > 0;
       }).map(resultItem => {
         return {
           skuId: resultItem.productSku,
@@ -301,7 +301,7 @@ export default {
       }));
 
       let result = storeItem.products.filter(selectItem => { // 是否选中
-        return selectItem.isSelect == 1;
+        return selectItem.isSelect == 1 && selectItem.stock > 0;
       }).map(resultItem => {
         return resultItem.id;
       })
