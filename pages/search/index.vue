@@ -2,16 +2,17 @@
   <!-- 首页-头部-搜索页面 -->
   <div :class="{'bg-grey': !isShowTip, 'v-percent-100': true}">
     <van-sticky :offset-top="0">
-      <BmHeaderNav :left="{ isShow: true }" :title="$t('search')" :border="false" />
+      <BmHeaderNav :left="{ isShow: true, isEmit: true }" :title="$t('search')" :border="false" @leftClick="leftClick" />
       <!-- 搜索 -->
       <van-search
         v-model="searchVal"
         shape="round"
         :placeholder="hintName"
-        class="plr-20 bg-white ptb-12 border-b"
+        :class="{'plr-20 bg-white ptb-12': true, 'border-b': isShowTip != -1}"
         @input="inputChange"
         @search="onSearch"
         @focus="onFocus"
+        @clear="onClear"
         ref="searchContainer"
       />
       <!-- 分类 -->
@@ -34,7 +35,7 @@
     <!-- 搜索列表展示 -->
     <template v-if="isShowTip === -1">
       <div class="bg-white">
-        <van-cell class="ptb-20 plr-20" v-for="(pullItem, pullIndex) in searchPullList" :key="pullIndex" :title="pullItem.suggestion" :value="''" value-class="light-grey" title-class="black" @click="toSearch(pullItem)" />
+        <van-cell class="ptb-20 plr-20" v-for="(pullItem, pullIndex) in searchPullList" :key="pullIndex" :title="pullItem.suggestion" :value="''" value-class="light-grey lh-1" title-class="black lh-1" @click="toSearch(pullItem)" />
       </div>
     </template>
 
@@ -253,7 +254,8 @@ export default {
       },
       loading: false,
       finished: false,
-      total: 0
+      total: 0,
+      isRouteBack: 0
     }
   },
   async fetch() {
@@ -286,11 +288,15 @@ export default {
       // 所有分类
       this.categoryList = listData.data.categoryList;
       this.total = listData.data.total;
+
+      if (typeof this.$redrawVueMasonry === 'function') {
+        this.$redrawVueMasonry();
+      }
       
       // 更新页面展示
-      this.searchHistoryList = this.$store.state.user.searchList.filter((item, index) => {
-        return index < 6;
-      });
+      // this.searchHistoryList = this.$store.state.user.searchList.filter((item, index) => {
+      //   return index < 6;
+      // });
     }
 
     // 搜索发现数据
@@ -302,7 +308,7 @@ export default {
     this.hintName = hintList.data.result[0].name;
   },
   watch: {
-    '$route'(e) {
+    '$route'() {
       this.$fetch();
     }
   },
@@ -314,6 +320,9 @@ export default {
       this.$nextTick(() => {
         this.$refs.searchContainer.querySelector('input').focus();
       })
+      this.isRouteBack = 0;
+    } else {
+      this.isRouteBack = 1;
     }
     this.searchHistoryList = this.$store.state.user.searchList.filter((item, index) => {
       return index < 6;
@@ -322,6 +331,9 @@ export default {
     // 搜索防抖
     this.inputChange = this.$utils.debounce((e) => {
       this.isShowTip = e[0].length > 0 && this.list.length === 0 ? -1 : e[0].length === 0;
+      if (!this.searchVal) {
+        return false;
+      }
       this.getSearchPull();
     }, 300);
   },
@@ -398,21 +410,39 @@ export default {
       this.getProductList();
     },
     onSearch(val) { // 搜索
-      let value = val;
+      // let value = val;
       if (!val && this.hintName) value = this.hintName;
-      this.$store.commit('user/SET_SEARCHLIST', value); // 搜索历史存储
-      // 更新页面展示
-      this.searchHistoryList = this.$store.state.user.searchList.filter((item, index) => {
-        return index < 6;
-      });
-      this.searchVal = value;
-      this.pageIndex = 1;
-      // 获取搜索列表
-      this.params = { searchKeyword: value, pageIndex: this.pageIndex, pageSize: this.pageSize };
-      this.getProductList();
+      if (this.isRouteBack != 0) {
+        this.$router.replace({
+          name: 'search',
+          query: {
+            val: val,
+            searchKeyword: val
+          }
+        })
+      } else {
+        this.$router.push({
+          name: 'search',
+          query: {
+            val: val,
+            searchKeyword: val
+          }
+        })
+      }
+      // this.$store.commit('user/SET_SEARCHLIST', value); // 搜索历史存储
+      // // 更新页面展示
+      // this.searchHistoryList = this.$store.state.user.searchList.filter((item, index) => {
+      //   return index < 6;
+      // });
+      // this.searchVal = value;
+      // this.pageIndex = 1;
+      // // 获取搜索列表
+      // this.params = { searchKeyword: value, pageIndex: this.pageIndex, pageSize: this.pageSize };
+      // this.getProductList();
     },
     onFocus() { // 获取焦点之后，不展示数据列表和历史数据
       this.isShowTip = this.searchVal.length > 0 ? -1 : this.searchVal.length === 0;
+      this.getSearchPull();
     },
     onFilter() { // 筛选
       let _data = {
@@ -461,16 +491,31 @@ export default {
     toSearch(item) {
       this.$store.commit('user/SET_SEARCHLIST', item.suggestion); // 搜索历史存储
       // 更新页面展示
-      this.searchHistoryList = this.$store.state.user.searchList.filter((item, index) => {
-        return index < 6;
-      });
-      this.$router.push({
-        name: 'search',
-        query: {
-          val: item.suggestion,
-          searchKeyword: item.suggestion
-        } 
-      })
+      if (this.searchHistoryList.length > 6) {
+        this.searchHistoryList = this.$store.state.user.searchList
+      } else {
+        this.searchHistoryList = this.$store.state.user.searchList.filter((item, index) => {
+          return index < 6;
+        });
+      }
+      
+      if (this.isRouteBack != 0) {
+        this.$router.replace({
+          name: 'search',
+          query: {
+            val: item.suggestion,
+            searchKeyword: item.suggestion
+          } 
+        })
+      } else {
+        this.$router.push({
+          name: 'search',
+          query: {
+            val: item.suggestion,
+            searchKeyword: item.suggestion
+          } 
+        })
+      }
     },
     getSearchPull() {
       getSearchPull({ queryName: this.searchVal, hits: 10 }).then(res => {
@@ -509,6 +554,29 @@ export default {
       }
       this.pageIndex += 1;
       this.getProductList();
+    },
+    onClear() { // 点击清除按钮
+      if (this.isRouteBack == 0) { // 空的搜索关键字进来的页面
+        this.$router.go(-1);
+      } else {
+        this.$router.replace({
+          name: 'search'
+        })
+      }
+    },
+    leftClick() {
+      // if (this.isRouteBack == -1 && this.searchVal == '') { // 特殊情况空的搜索关键字进来页面，又清空了数据的
+      //   this.$router.go(-2);
+      //   return false;
+      // }
+
+      if (window.history.length < 2) { //解决部分机型拿不到history
+        console.log('go home');
+        this.$router.replace('/');
+      } else {
+        console.log('back');
+        history.back();
+      }
     }
   },
 }
