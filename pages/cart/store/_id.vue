@@ -337,18 +337,22 @@ export default {
   },
   async fetch() {
     // 获取店铺详情
-    const detailData = await this.$api.getStoreInfo({ sellerId: this.$route.query.sellerId, storeId: this.$route.params.id });
+    let _detailParams = {};
+    if (this.$store.state.user.userInfo) {
+      _detailParams.userId = this.$store.state.user.userInfo.id
+    }
+    const detailData = await this.$api.getStoreInfo({ sellerId: this.$route.query.sellerId, storeId: this.$route.params.id, ..._detailParams });
     if (detailData.code != 0) return false;
     this.detailData = {
       ...detailData.data,
       collectNum: detailData.data.collectNum == '' ? 0 : detailData.data.collectNum
     };
     // 店铺组件数据,店铺有装修才可看
-    if (Boolean(this.$route.query.hasAdornment) == true) {
+    // if (String(this.$route.query.hasAdornment) == 'true') {
       const moduleData = await this.$api.getStoreIndex({shopId: this.$route.params.id});
       if (moduleData.code != 0) return false;
       this.moduleData = moduleData.data.components;
-    }
+    // }
     this.sort = {
       shopId: this.$route.params.id, pageIndex: this.pageIndex, pageSize: this.pageSize
     }
@@ -364,11 +368,10 @@ export default {
     });
   },
   activated() {
-    this.tabbarActive = 0;
     this.isTabbarShow = false;
-    if (this.$route.query.tabbarActive) this.tabbarActive = this.$route.query.tabbarActive;
-    if (Boolean(this.$route.query.hasAdornment) == false) this.tabbarActive = 1;
-    this.isTabbarShow = Boolean(this.$route.query.hasAdornment);
+    if (this.$route.query.tabbarActive) this.tabbarActive = parseFloat(this.$route.query.tabbarActive);
+    if (String(this.$route.query.hasAdornment) == 'false') this.tabbarActive = 1;
+    this.isTabbarShow = String(this.$route.query.hasAdornment) == 'false' ? false : true;
     this.$fetch();
   },
   methods: {
@@ -380,9 +383,14 @@ export default {
         return false;
       }
 
+      let _detailParams = {};
+      if (this.$store.state.user.userInfo) {
+        _detailParams.userId = this.$store.state.user.userInfo.id
+      }
+
       let _axios = flag ? storeFollow({ sellerId: this.$route.query.sellerId, storeId: this.$route.params.id }) : storeCancelFollow([this.$route.params.id]);
       _axios.then(() => {
-        this.$api.getStoreInfo({ sellerId: this.$route.query.sellerId, storeId: this.$route.params.id }).then(res => {
+        this.$api.getStoreInfo({ sellerId: this.$route.query.sellerId, storeId: this.$route.params.id, ..._detailParams }).then(res => {
           this.detailData = {
             ...res.data,
             collectNum: res.data.collectNum == '' ? 0 : res.data.collectNum

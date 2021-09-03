@@ -476,7 +476,7 @@
           size="0.6rem"
         /> -->
         <!-- 店铺 -->
-        <nuxt-link :to="{ name: 'cart-store-id', params: { id: storeInfo.storeId }, query: { sellerId: storeInfo.sellerId, hasAdornment: storeInfo.hasAdornment} }">
+        <nuxt-link :to="{ name: 'cart-store-id', params: { id: storeInfo.storeId }, query: { sellerId: storeInfo.sellerId, hasAdornment: storeInfo.hasAdornment, tabbarActive: 0} }">
           <van-icon :name="require('@/assets/images/icon/store-icon.png')" size="0.6rem" />
         </nuxt-link>
         <!-- 收藏 0未关注 1已关注 -->

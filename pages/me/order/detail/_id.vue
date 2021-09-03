@@ -73,7 +73,7 @@
 
     <!-- 订单详情 -->
     <div class="bg-white p-20 tr mt-12">
-      <OrderStoreSingle :name="detail.storeName" @goStoreDetail="goStoreDetail" />
+      <OrderStoreSingle :name="detail.storeName" :showArrow="false" />
       <div v-for="(item, index) in detail.items" :key="'order-product-' + index">
         <OrderSingle class="mt-20 w-100" :product_num="item.goodQuantity" :product_desc="item.goodName" :product_size="item.goodAttr" :price="item.goodPrice" :image="item.goodImg" @onClick="onClick(item.goodId)" />
 
@@ -352,14 +352,17 @@ export default {
         history.back();
       }
     },
-    goStoreDetail() { // 跳转到店铺首页
-      this.$router.push({
-        name: 'cart-store-id',
-        params: {
-          id: this.detail.storeId
-        }
-      })
-    },
+    // goStoreDetail() { // 跳转到店铺首页
+    //   this.$router.push({
+    //     name: 'cart-store-id',
+    //     params: {
+    //       id: this.detail.storeId
+    //     },
+    //     query: {
+    //       tabbarActive: 0
+    //     }
+    //   })
+    // },
     onClick(goodId) { // 跳转到商品详情页
       this.$router.push({
         name: 'cart-product-id',

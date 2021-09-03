@@ -78,14 +78,21 @@ export default {
     }
   },
   async fetch() {
-    const detailData = await this.$api.getStoreInfo({ sellerId: this.$route.query.sellerId, storeId: this.$route.params.id });
-    if (detailData.code != 0) return false;
+    let _detailParams = {};
+    if (this.$store.state.user.userInfo) {
+      _detailParams.userId = this.$store.state.user.userInfo.id
+    }
+    const detailData = await this.$api.getStoreInfo({ sellerId: this.$route.query.sellerId, storeId: this.$route.params.id, ..._detailParams });
+    if (!detailData.data) return false;
 
     this.detailData = {
       ...detailData.data,
       collectNum: detailData.data.collectNum,
       brandNameLabelList: detailData.data.brandNameList.join('、')
     };
+  },
+  activated() {
+    this.$fetch();
   },
   methods: {
     onSubscribe(flag) { // 订阅/取消订阅 flag: true 订阅 false 取消订阅
