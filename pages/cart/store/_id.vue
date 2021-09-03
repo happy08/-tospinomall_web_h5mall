@@ -495,7 +495,7 @@ export default {
       this.finished = false;
       if (index == 0) { // 推荐列表
         this.sort = {
-          shopId: this.$route.params.id, pageIndex: this.pageIndex, pageSize: this.pageSize, recommend: 1
+          shopId: this.$route.params.id, pageIndex: this.pageIndex, pageSize: this.pageSize
         }
       }
       if (index == 1) { // 销量列表

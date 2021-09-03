@@ -36,7 +36,7 @@
                 :alt="'choose icon'"
               />
               <!-- 店铺 -->
-              <OrderStoreSingle class="pl-16 pr-30" @goStoreDetail="goStoreDetail(item.storeId)" :logo="item.storeLogo" :name="item.storeName" />
+              <OrderStoreSingle class="pl-16 pr-30" :logo="item.storeLogo" :name="item.storeName" :showArrow="false" />
             </div>
             <van-swipe-cell class="pl-12" v-for="singleItem in item.products" :key="'single-' + singleItem.id">
               <div class="flex vcenter">
@@ -425,6 +425,9 @@ export default {
         name: 'cart-store-id',
         params: {
           id: storeId
+        },
+        query: {
+          sellerId: storeInfo.sellerId
         }
       })
     },
