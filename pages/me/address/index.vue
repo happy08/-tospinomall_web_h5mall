@@ -98,6 +98,25 @@ export default {
       if (!this.$route.query.back) {
         return false;
       }
+
+      if (this.$route.query.cartOrderId) { // 确认订单页面
+        this.$router.replace({
+          name: 'cart-order-id',
+          params: {
+            id: this.$route.query.cartOrderId
+          },
+          query: {
+            ...this.$route.query.otherQuery,
+            address: JSON.stringify({
+              name: item.name,
+              phone: item.phone,
+              completeAddress: item.completeAddress,
+              id: item.id
+            })
+          }
+        })
+        return false;
+      }
       
       this.$router.replace({
         name: 'me-aftersale-apply-type',
@@ -106,12 +125,12 @@ export default {
         },
         query: {
           ...JSON.parse(this.$route.query.back),
-          address: {
+          address: JSON.stringify({
             name: item.name,
             phone: item.phone,
             completeAddress: item.completeAddress,
             id: item.id
-          }
+          })
         }
       })
     }

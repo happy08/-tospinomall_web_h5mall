@@ -1,12 +1,12 @@
 <template>
   <!-- 购物车-确认订单 -->
   <div class="v-percent-100 bg-grey pb-68 pb-46" v-if="detail.storeSaleInfoList">
-    <BmHeaderNav :left="{ isShow: true }" :fixed="true" :title="$t('confirm_the_order')" />
+    <BmHeaderNav :left="{ isShow: true, isEmit: true }" :fixed="true" :title="$t('confirm_the_order')" @leftBack="leftBack" />
 
     <div v-if="codeData.code == 0">
       <!-- 个人信息 -->
       <div class="bg-white">
-        <van-cell :label="address.completeAddress" is-link :to="{ name: 'me-address' }" title-class="fs-14 black" label-class="fs-14 light-grey" class="pt-20 pl-20 pr-14 pb-30" :border="false" >
+        <van-cell :label="address.completeAddress" is-link :to="{ name: 'me-address', query: { back: 'car-order-id', cartOrderId: this.$route.params.id, otherQuery: $route.query } }" title-class="fs-14 black" label-class="fs-14 light-grey" class="pt-20 pl-20 pr-14 pb-30" :border="false" >
           <template #title>
             {{ address.name }} {{ address.phonePrefix }}-{{ address.phone }}
           </template>
@@ -69,7 +69,7 @@
             
           </div>
           <!-- 留言 -->
-          <van-field class="plr-20 mt-12 mb-12" v-model="item.message" :label="$t('leave_message')" input-align="right" label-class="fs-14 color-black-85" label-width="2rem" />
+          <van-field class="plr-20 mt-12 mb-12" v-model="item.message" :label="$t('leave_message')" input-align="right" label-class="fs-14 w-auto  color-black-85" maxlength="255" />
         </div>
       </div>
 
@@ -203,26 +203,30 @@ export default {
   },
   async activated() {
     // 获取默认地址
-    const addressData = await getCurrentDefaultAddress();
-    if (addressData.code != 0) return false;
+    if (this.$route.query.address) { // 如果是从地址管理页面回跳回来的
+      this.address = JSON.parse(this.$route.query.address);
+    } else {
+      const addressData = await getCurrentDefaultAddress();
+      if (addressData.code != 0) return false;
 
-    if (!addressData.data) { // 还没有设置地址
-      this.$dialog.confirm({
-        message: this.$t('go_set_address'),
-        confirmButtonText: this.$t('go_seeting'),
-        confirmButtonColor: '#42B7AE',
-        cancelButtonText: this.$t('cancel'),
-        cancelButtonColor: '#383838'
-      }).then(() => {
-        this.$router.push({
-          name: 'me-address'
+      if (!addressData.data) { // 还没有设置地址
+        this.$dialog.confirm({
+          message: this.$t('go_set_address'),
+          confirmButtonText: this.$t('go_seeting'),
+          confirmButtonColor: '#42B7AE',
+          cancelButtonText: this.$t('cancel'),
+          cancelButtonColor: '#383838'
+        }).then(() => {
+          this.$router.push({
+            name: 'me-address'
+          })
+        }).catch(() => {
+          this.$router.go(-1);
         })
-      }).catch(() => {
-        this.$router.go(-1);
-      })
-      return false;
+        return false;
+      }
+      this.address = addressData.data;
     }
-    this.address = addressData.data;
 
     // 获取销售信息
     this.getSaleInfo();
@@ -391,6 +395,18 @@ export default {
     },
     onConfirmPayment() { // 确认修改支付方式
       this.paymentShow = false;
+    },
+    leftBack() { // 回退页面
+      if (this.$route.query.address) { // 说明是从地址管理页面回退回来的
+        this.$router.go(-2);
+        return false;
+      }
+
+      if(window.history.length < 2){ //解决部分机型拿不到history
+        this.$router.replace('/');
+      }else{
+        history.back();
+      }
     }
   },
 }
@@ -451,5 +467,8 @@ export default {
 }
 .flex-2{
   flex: 2!important;
+}
+.w-auto{
+  width: auto!important;
 }
 </style>
