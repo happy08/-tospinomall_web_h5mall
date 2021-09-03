@@ -281,13 +281,25 @@ export default {
     if (!this.$store.state.user.authToken) return false;
     this.listTotal = 0;
     this.result = [];
+    this.productResult = [];
     const listData = await this.$api.getCartList({ queryType: this.queryType });
     this.list = listData.data.storeList.map(storeItem => { // 购物车列表
+
       this.result = this.result.concat(storeItem.products.filter(selectItem => { // 是否选中
         return selectItem.isSelect == 1;
       }).map(resultItem => {
         return resultItem.productSku;
       }));
+
+      this.productResult = this.productResult.concat(storeItem.products.filter(selectItem => { // 已选择商品
+        return selectItem.isSelect == 1;
+      }).map(resultItem => {
+        return {
+          skuId: resultItem.productSku,
+          quantity: resultItem.quantity
+        };
+      }));
+
       let result = storeItem.products.filter(selectItem => { // 是否选中
         return selectItem.isSelect == 1;
       }).map(resultItem => {
