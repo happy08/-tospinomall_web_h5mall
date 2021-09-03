@@ -1,7 +1,7 @@
 <template>
   <!-- 购物车-订单支付-确认订单 -->
   <div class="vh-100 bg-grey">
-    <div class="bg-green-linear">
+    <div class="bg-green-linear pay-confirm-container">
       <van-sticky @scroll="stickyScroll" ref="headerStickyContainer">
         <BmHeaderNav :left="{ isShow: true, isEmit: true }" :title="isScrollShow ? '' : $t('you_may_also_like')" :border="false" :color="isScrollShow ? 'white' : 'black'" :bg_color="isScrollShow ? 'bg-green-linear' : 'white'"  @leftClick="leftClick" />
       </van-sticky>
@@ -190,6 +190,11 @@ export default {
     min-height: 0;
     display: none;
     animation: all 1s;
+  }
+}
+.pay-confirm-container{
+  .van-hairline--bottom::after{
+    display: none;
   }
 }
 </style>
