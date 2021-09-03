@@ -347,12 +347,7 @@ export default {
       ...detailData.data,
       collectNum: detailData.data.collectNum == '' ? 0 : detailData.data.collectNum
     };
-    // 店铺组件数据,店铺有装修才可看
-    // if (String(this.$route.query.hasAdornment) == 'true') {
-      const moduleData = await this.$api.getStoreIndex({shopId: this.$route.params.id});
-      if (moduleData.code != 0) return false;
-      this.moduleData = moduleData.data.components;
-    // }
+    
     this.sort = {
       shopId: this.$route.params.id, pageIndex: this.pageIndex, pageSize: this.pageSize
     }
@@ -366,6 +361,13 @@ export default {
         starLevel: parseFloat(item.starLevel)
       }
     });
+
+    // 店铺组件数据,店铺有装修才可看
+    // if (String(this.$route.query.hasAdornment) == 'true') {
+      const moduleData = await this.$api.getStoreIndex({shopId: this.$route.params.id});
+      if (moduleData.code != 0) return false;
+      this.moduleData = moduleData.data.components;
+    // }
   },
   activated() {
     this.isTabbarShow = false;
