@@ -298,7 +298,8 @@ export default {
           id: item.storeId
         },
         query: {
-          sellerId: item.sellerId
+          sellerId: item.sellerId,
+          tabbarActive: 0
         }
       })
     },

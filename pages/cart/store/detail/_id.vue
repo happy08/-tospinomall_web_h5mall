@@ -80,7 +80,7 @@ export default {
   async fetch() {
     let _detailParams = {};
     if (this.$store.state.user.userInfo) {
-      _detailParams.userId = this.$store.state.user.userInfo.id
+      _detailParams.userId = this.$store.state.user.userInfo.id;
     }
     const detailData = await this.$api.getStoreInfo({ sellerId: this.$route.query.sellerId, storeId: this.$route.params.id, ..._detailParams });
     if (!detailData.data) return false;
