@@ -39,7 +39,8 @@
           v-model="item.phone"
           :placeholder="$t('phone_number')"
           :class="{'field-container phone-code-field pt-0 pb-20': true, 'is-active': payRadio == item.label}"
-          type="tel"
+          type="number"
+          maxlength="20"
           v-if="item.label != 'balance'"
         >
           <template #label>
