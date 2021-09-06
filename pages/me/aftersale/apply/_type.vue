@@ -8,7 +8,31 @@
 
     <!-- 订单详情 -->
     <div class="bg-white p-20">
-      <OrderSingle class="bg-white" :image="detail.goodImg" :product_num="detail.goodQuantity" :product_desc="detail.goodName" :product_size="detail.goodAttr" :price="detail.goodPrice" />
+      <template v-if="orderList.length == 1">
+        <OrderSingle :image="detailItem.productImage" :product_num="detailItem.returnQuantity" :product_desc="detailItem.productName" :product_size="detailItem.productAttr" :price="detailItem.productPrice"  v-for="(detailItem, orderIndex) in orderList" :key="'order-item-' + orderIndex" />
+      </template>
+      <template v-else>
+        <swiper
+          ref="swiperComponentRef"
+          :class="{ 'swiper order-page__global-swiper': true, 'swiper-no-swiping' : orderList.length <= 4 }"
+          :options="{
+            ...swiperComponentOption
+          }"
+        >
+          <swiper-slide v-for="(productItem,productIndex) in orderList" :key="'swiper-' + productIndex" class="round-4 hidden">
+            <BmImage 
+              :url="productItem.productImage"
+              :width="'1.68rem'" 
+              :height="'1.68rem'"
+              :isLazy="false"
+              :isShow="true"
+              class="flex-shrink border"
+              :alt="productItem.productName"
+            />
+            <div class="product-price">{{ $store.state.rate.currency }}{{ productItem.productRealAmount }}</div>
+          </swiper-slide>
+        </swiper>
+      </template>
 
       <!-- 换货的话可以选择换货数量 仅换货时展示 -->
       <van-cell v-if="$route.params.type == 3" class="mt-14 vcenter plr-0 ptb-0" :title="$t('number_of_applications')" title-class="fs-14 light-grey">
@@ -20,9 +44,9 @@
     
     <van-cell-group class="mt-12">
       <!-- 申请类型 -->
-      <van-cell class="ptb-20 plr-20" :title="$t('application_type')" title-class="fs-14 black" is-link @click="selectPopup('type')" :value="applyTypeLabel" />
+      <van-cell class="ptb-20 plr-20" :title="$t('application_type')" title-class="fs-14 black" :is-link="parseFloat(this.$route.params.type) == 1 && detail.status == 1 ? false: true" @click="selectPopup('type')" :value="applyTypeLabel" />
       <!-- 货物状态 -->
-      <van-cell class="ptb-20 plr-20" :title="$t('state_of_the_goods')" title-class="fs-14 black" is-link @click="selectPopup('status')" :value="goodsStatusLabel" />
+      <van-cell class="ptb-20 plr-20" :title="$t('state_of_the_goods')" title-class="fs-14 black" :is-link="parseFloat(this.$route.params.type) == 1 && detail.status == 1 ? false: true" @click="selectPopup('status')" :value="goodsStatusLabel" />
       <!-- 申请原因 -->
       <van-cell class="ptb-20 plr-20" :title="$t('applyReason')" title-class="fs-14 black" is-link @click="selectPopup('reason')" :value="applyReasonLabel" />
       <!-- 换货商品 仅换货时展示 -->
@@ -35,7 +59,7 @@
         <van-field v-model="detail.returnAmount" type="number" input-align="right" :formatter="onFormatter" />
       </template>
     </van-cell> -->
-    <div class="p-20 fs-14 mt-12 black">{{ $t('refund_price_tip', { replace_tip: $store.state.rate.currency + detail.realAmount }) }}</div>
+    <div class="p-20 fs-14 mt-12 black">{{ $t('refund_price_tip', { replace_tip: $store.state.rate.currency + detail.payAmount }) }}</div>
 
     <!-- 申请指令 -->
     <div class="plr-20 pt-20 pb-24 bg-white">
@@ -190,9 +214,11 @@
 
 <script>
 import OrderSingle from '@/components/OrderSingle';
-import { Cell, CellGroup, Uploader, Field, Checkbox, Switch, Stepper, Popup, RadioGroup, Radio, Sku } from 'vant';
-import { getOrderItem, getOrderReasonList, applyAfterSale, getUpdateReturnDetail, updateApply } from '@/api/order';
+import { Cell, CellGroup, Uploader, Field, Checkbox, Switch, Stepper, Popup, RadioGroup, Radio } from 'vant';
+import { aftersaleOrderItem, getOrderReasonList, applyAfterSale, getUpdateReturnDetail, updateApply } from '@/api/order';
 import { getPicUrl } from '@/api/user';
+import 'swiper/css/swiper.css';
+import { Swiper, SwiperSlide } from 'vue-awesome-swiper';
 
 export default {
   middleware: 'authenticated',
@@ -207,8 +233,9 @@ export default {
     vanPopup: Popup,
     vanRadioGroup: RadioGroup,
     vanRadio: Radio,
-    vanSku: Sku,
-    OrderSingle
+    OrderSingle,
+    swiper: Swiper,
+    swiperSlide: SwiperSlide
   },
   data() {
     return {
@@ -241,8 +268,36 @@ export default {
       applyMessage: '',
       concatName: '',
       concatCell: '',
-      address: {}
+      address: {},
+      orderList: [],
+      swiperComponentOption: { // 一排四列 滚动
+        slidesPerView: 'auto',
+        // slidesPerGroup: 4,
+        spaceBetween: 0,
+        // loop: true,
+        // loopFillGroupWithBlank: true,
+        pagination: {
+          el: '.swiper-group-pagination',
+          clickable: true,
+        },
+      },
     }
+  },
+  beforeRouteEnter (to, from, next) {
+    next(vm => {
+      if (from.name == 'me-aftersale-apply') {
+        vm.applyReason = -1; // 售后原因
+        vm.applyReasonLabel = '';
+        vm.applyType = -1; // 申请类型状态
+        vm.applyTypeLabel = '';
+        vm.goodsStatus = -1; // 货物状态
+        vm.goodsStatusLabel = '';
+        vm.cancelReasonList = [];
+        vm.applyMessage = '';
+        vm.imgList = [];
+        vm.fileList = [];
+      }
+    });
   },
   activated() {
     if (this.$route.params.type == 1) this.title = 'applyReturn'; // 仅退款
@@ -250,11 +305,17 @@ export default {
     // if (this.$route.params.type == 3) this.title = 'me.afterSale.exchange'; // 换货
     this.returnMethodTitle = this.$t('returnMethodList')[this.returnMethodRadio].title;
 
-    let _ajax = this.$route.query.edit ? getUpdateReturnDetail(this.$route.query.itemId) : getOrderItem(this.$route.query.itemId);
+    this.$toast.loading({
+      forbidClick: true,
+      loadingType: 'spinner',
+      duration: 0
+    });
+
+    let _ajax = this.$route.query.edit ? getUpdateReturnDetail(this.$route.query.itemId) : aftersaleOrderItem(this.$route.query.itemId);
     
     _ajax.then(res => {
-      if (res.code != 0) return false;
-      
+      if (!res.data) return false;
+      this.$toast.clear();
       if (this.$route.query.edit) {
         this.detail = {
           ...res.data,
@@ -264,12 +325,13 @@ export default {
           goodAttr: res.data.productAttr,
           goodPrice: res.data.productPrice
         };
+        this.orderList = res.data.orderReturnItems;
         // 申请原因
         this.applyReasonLabel = res.data.applyReason;
         // 申请类型
         this.applyType = res.data.returnType;
         this.applyTypeLabel = this.$t('selectReason')[res.data.returnType];
-        // 获取状态
+        // 货品状态
         this.goodsStatus = res.data.goodState;
         this.goodsStatusLabel = this.$t('stateGoodsList')[res.data.goodState];
         // 申请信息
@@ -279,8 +341,9 @@ export default {
           this.returnMethodTitle = this.$t('returnMethodList')[this.returnMethodRadio].title;
           this.concatName = res.data.contactPerson;
           this.concatCell = res.data.contactPhone;
+          this.isGreenment = res.data.deliveryType == 1 ? false: true;
           if (this.$route.query.address) {
-            this.address = this.$route.query.address;
+            this.address = JSON.parse(this.$route.query.address);
           } else {
             this.address = {
               name: res.data.sendName,
@@ -301,9 +364,29 @@ export default {
         this.imgList = pics;
         return false;
       }
-      this.detail = res.data;
+      this.detail = res.data.order;
+      this.orderList = res.data.orderItemList.map(item => {
+        return {
+          ...item,
+          productImage: item.goodImg,
+          returnQuantity: item.goodQuantity,
+          productName: item.goodName,
+          productAttr: item.goodAttr,
+          productPrice: item.goodPrice,
+          productRealAmount: item.realAmount
+        }
+      });
+      if (parseFloat(this.$route.params.type) == 1 && res.data.order.status == 1) { // 代发货仅退款
+        // 申请类型
+        this.applyType = parseFloat(this.$route.params.type) - 1;
+        this.applyTypeLabel = this.$t('selectReason')[parseFloat(this.$route.params.type) - 1];
+        // 货品状态
+        this.goodsStatus = parseFloat(this.$route.params.type) - 1;
+        this.goodsStatusLabel = this.$t('stateGoodsList')[parseFloat(this.$route.params.type) - 1];
+      }
+
       if (this.$route.query.address) {
-        this.address = this.$route.query.address;
+        this.address = JSON.parse(this.$route.query.address);
       } else{
         this.address = {
           name: res.data.order.receiverName,
@@ -368,6 +451,9 @@ export default {
         title: type === 'type' ? this.$t('returnMethodTitle') : type === 'status' ? this.$t('state_of_the_goods') : type === 'reason' ? this.$t('applyReason') : '',
         // list: type === 'type' ? this.detail.status == 1 ? [this.$t('selectReason')[0]] : this.$t('returnMethodList') : type === 'status' ? this.$t('stateGoodsList') : this.$t('selectReason')
         list: type === 'type' ? parseFloat(this.$route.params.type) == 1 ? [this.$t('selectReason')[0]] : this.$t('selectReason') : type === 'status' ? this.$t('stateGoodsList') : this.$t('selectReason')
+      }
+      if (parseFloat(this.$route.params.type) == 1 && (type == 'type' || type == 'status') && this.detail.status == 1) { // 待发货仅退款,申请原因和状态不可选
+        return false;
       }
       this.isSelectType = true;
     },
@@ -440,7 +526,7 @@ export default {
         productQuantity: this.detail.goodQuantity,
         applyDesc: this.applyMessage,
         deliveryType: this.returnMethodRadio == 0 ? 2 : 1,
-        returnAmount: this.returnAmount
+        returnAmount: this.detail.payAmount
       };
       
       if (this.$route.params.type == 2) { // 退货退款
@@ -456,8 +542,8 @@ export default {
       if (this.$route.query.edit) {
         _data.id = this.detail.id;
       } else {
-        _data.orderId = this.detail.orderId;
-        _data.orderItemId = this.detail.id;
+        _data.orderId = this.detail.id;
+        _data.orderItemId = this.$route.query.itemId;
       }
 
       this.$toast.loading({
@@ -466,10 +552,10 @@ export default {
         duration: 0
       })
       
-      // edit 存在表示修改申请
-      let _ajax = this.$route.query.edit ? updateApply(_data) : applyAfterSale(_data);
+      // edit 存在表示修改申请 isBatchReturn:是否整批退 0否1是
+      let _ajax = this.$route.query.edit ? updateApply(_data) : applyAfterSale({ ..._data, isBatchReturn: this.detail.status == 1 ? 1 : 0});
 
-      _ajax.then(res => {
+      _ajax.then(() => {
         this.$toast.clear();
 
         // 提交之后数据清空
@@ -529,5 +615,29 @@ export default {
 }
 .w-90{
   width: 90%;
+}
+.order-page__global-swiper{
+  height: 84px;
+  .swiper-slide{
+    width: 84px!important;
+    position: relative;
+    margin-left: 6px;
+    &:first-child{
+      margin-left: 0;
+    }
+    .product-price{
+      position: absolute;
+      bottom: 0;
+      width: 82px;
+      left: 1px;
+      color: #fff;
+      background-color: rgba(0, 0, 0, .65);
+      text-align: center;
+      padding-top: 2px;
+      padding-bottom: 2px;
+      border-bottom-right-radius: 4px;
+      border-bottom-left-radius: 4px;
+    }
+  }
 }
 </style>

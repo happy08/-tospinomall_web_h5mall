@@ -5,7 +5,7 @@
     <!-- 售后列表 -->
     <van-tabs sticky swipeable animated :offset-top="46" color="#42B7AE" class="customs-van-tabs" :ellipsis="false" @change="getSearchList" v-model="tabActive">
       <van-tab v-for="(categoryItem, tabIndex) in $t('after_sale_status')" :title="titleFormat(categoryItem, tabIndex)" :key="'scroll-tab-' + tabIndex" title-class="border-b pb-0" :name="tabIndex">
-        <PullRefresh :refreshing="refreshing" @refresh="onRefresh">
+        <PullRefresh :refreshing="refreshing" @refresh="onRefresh" class="custom-min-height-94">
           <div class="pb-20 bg-grey">
             <!-- 空列表 -->
             <empty-status v-if="lists.length === 0" :image="require('@/assets/images/empty/order.png')" />
@@ -34,7 +34,7 @@
                     <!-- 售后申请 -->
                     <div :class="{'mt-24 flex vcenter': true, 'hend': productItem.showAfterSale != 0, 'between': productItem.showAfterSale == 0}" v-if="tabActive === 0">
                       <!-- 订单售后状态showAfterSale：-1->数量达到不可售后 0->时间达到不可售后 1->可以售后 -->
-                      <div v-if="productItem.showAfterSale == 0" class="tl">The goods have timed out</div>
+                      <div v-if="productItem.showAfterSale == 0" class="tl">{{ $t('the_goods_have_timed_out') }}</div>
                       <BmButton :type="'info'" class="h-32" v-if="productItem.showAfterSale == 1" @click="afterSales(productItem)">{{ $t('apply_for_after_sales') }}</BmButton>
                       <BmButton :type="'info'" class="h-32 time-out" v-else>{{ $t('apply_for_after_sales') }}</BmButton>
                     </div>
@@ -44,14 +44,45 @@
                 <!-- 售后申请列表2/3 -->
                 <div v-else class="w-100">
                   <OrderStoreSingle :name="orderitem.storeName" :status="orderitem.returnType == 0 ? $t('refund_no_return') : $t('return_refund')" />
-                  <OrderSingle class="mt-20" 
-                    :product_num="orderitem.returnQuantity" 
-                    :product_desc="orderitem.productName" 
-                    :product_size="orderitem.productAttr" 
-                    :price="orderitem.productPrice"
-                    :image="orderitem.productImage"
-                    @onClick="goReturnDetail(orderitem.id)" 
-                  />
+                  <template v-if="orderitem.orderReturnItems.length == 1">
+                    <OrderSingle class="mt-20" 
+                      :product_num="orderReturnItem.returnQuantity" 
+                      :product_desc="orderReturnItem.productName" 
+                      :product_size="orderReturnItem.productAttr" 
+                      :price="orderReturnItem.productPrice"
+                      :image="orderReturnItem.productImage"
+                      @onClick="goReturnDetail(orderitem.id)"
+                      v-for="orderReturnItem, orderReturnIndex in orderitem.orderReturnItems"
+                      :key="'order-return-item-' + orderReturnIndex"
+                    />
+                  </template>
+                  <div v-else class="more-order-content" @click="goReturnDetail(orderitem.id)">
+                    <swiper
+                      ref="swiperComponentRef"
+                      :class="{ 'swiper mt-12 order-page__global-swiper': true, 'swiper-no-swiping' : orderitem.orderReturnItems.length <= 4 }"
+                      :options="{
+                        ...swiperComponentOption
+                      }"
+                    >
+                      <swiper-slide v-for="(productItem,productIndex) in orderitem.orderReturnItems" :key="'swiper-' + productIndex" class="round-4 hidden">
+                        <BmImage 
+                          :url="productItem.productImage"
+                          :width="'1.68rem'" 
+                          :height="'1.68rem'"
+                          :isLazy="false"
+                          :isShow="true"
+                          class="flex-shrink border"
+                          :alt="productItem.productName"
+                        />
+                        <!-- <div class="product-price">{{ $store.state.rate.currency }}{{ productItem.productRealAmount }}</div> -->
+                      </swiper-slide>
+                    </swiper>
+                    <div class="tr more-order-content__info">
+                      <p class="fs-18 fw black lh-20">{{ $store.state.rate.currency }}{{ orderitem.returnAmount }}</p>
+                      <p class="light-grey fs-14 lh-20 mt-8">X{{ orderitem.returnQuantity }}</p>
+                    </div>
+                  </div>
+
                   <div class="flex between mt-18">
                     <div class="fs-14 light-grey w-auto">
                       <p>{{ statusFormat(orderitem.status, orderitem.deliveryType, orderitem.orderType) }}</p>
@@ -100,6 +131,8 @@ import OrderSingle from '@/components/OrderSingle';
 import OrderStoreSingle from '@/components/OrderStoreSingle';
 import { getOrderAfterSalesCount, removeOrder, revokeApply, cancelApply } from '@/api/order';
 import PullRefresh from '@/components/PullRefresh';
+import 'swiper/css/swiper.css';
+import { Swiper, SwiperSlide } from 'vue-awesome-swiper';
 
 export default {
   middleware: 'authenticated',
@@ -109,7 +142,9 @@ export default {
     vanList: List,
     OrderStoreSingle,
     OrderSingle,
-    PullRefresh
+    PullRefresh,
+    swiper: Swiper,
+    swiperSlide: SwiperSlide
   },
   data() {
     return {
@@ -125,7 +160,18 @@ export default {
       },
       loading: false,
       finished: false,
-      total: 0
+      total: 0,
+      swiperComponentOption: { // 一排四列 滚动
+        slidesPerView: 'auto',
+        // slidesPerGroup: 4,
+        spaceBetween: 0,
+        // loop: true,
+        // loopFillGroupWithBlank: true,
+        pagination: {
+          el: '.swiper-group-pagination',
+          clickable: true,
+        },
+      },
     }
   },
   async fetch() {
@@ -136,6 +182,7 @@ export default {
       listData = await this.$api.getAfterSaleStatusList({ pageNum: this.pageNum, pageSize: this.pageSize, ..._params }); // 申请原因/处理中列表
     } else {
       if (this.$route.query.orderId) {
+        this.afterSalesCount = 1;
         listData = await this.$api.getAfterSaleList({ pageNum: this.pageNum, pageSize: this.pageSize, status: 1, orderId: this.$route.query.orderId}); // 某一个订单售后申请列表
       } else {
         listData = await this.$api.getAfterSaleList({ pageNum: this.pageNum, pageSize: this.pageSize, status: 1}); // 售后申请列表
@@ -147,15 +194,15 @@ export default {
     this.loading = false;
     this.refreshing.isFresh = false;
     this.total = listData.data.total;
-  },
-  activated() {
     getOrderAfterSalesCount().then(res => {
-      if (res.code != 0) return false;
+      if (!res.data) return false;
       
-      this.afterSalesCount = parseFloat(res.data.afterSalesCount); // 申请售后总数
+      this.afterSalesCount = this.$route.query.orderId ? 1 : parseFloat(res.data.afterSalesCount); // 申请售后总数
       this.recordCount = parseFloat(res.data.recordCount); // 申请记录总数
       this.untreatedCount = parseFloat(res.data.untreatedCount); // 未处理总数
     })
+  },
+  activated() {
     this.$fetch();
   },
   methods: {
@@ -265,5 +312,39 @@ export default {
 .w-auto{
   width: fit-content;
   max-width: 60%;
+}
+.order-page__global-swiper{
+  height: 84px;
+  .swiper-slide{
+    width: 84px;
+    position: relative;
+    margin-left: 6px;
+    &:first-child{
+      margin-left: 0;
+    }
+    .product-price{
+      position: absolute;
+      bottom: 0;
+      width: 82px;
+      left: 1px;
+      color: #fff;
+      background-color: rgba(0, 0, 0, .65);
+      text-align: center;
+      padding-top: 2px;
+      padding-bottom: 2px;
+    }
+  }
+}
+.more-order-content{
+  position: relative;
+  .more-order-content__info{
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 1000;
+    height: 84px;
+    padding-left: 10px;
+    background-color: rgba(255, 255, 255, .8);
+  }
 }
 </style>

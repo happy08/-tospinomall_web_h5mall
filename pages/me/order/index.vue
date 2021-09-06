@@ -41,7 +41,7 @@
               <!-- 空状态  -->
               <empty-status v-if="lists.length === 0" :image="require('@/assets/images/empty/order.png')" />
               <!-- 订单列表 -->
-              <div v-else v-for="(item,index) in lists" :key="index" class="w-100 plr-12 mb-12  pb-20 pt-24 bg-white">
+              <div v-else v-for="(item,index) in lists" :key="index" class="w-100 plr-20 mb-12  pb-20 pt-24 bg-white">
                 <van-checkbox-group v-model="togetherResult">
                   <div class="flex vcenter">
                     <!-- 选中与否 -->
@@ -58,7 +58,7 @@
                       </template>
                     </van-checkbox>
                     <!-- 订单店铺 -->
-                    <OrderStoreSingle :name="item.storeName" :status="statusFormat(item.status, item)" @goStoreDetail="goOrderDetail(item.id)">
+                    <OrderStoreSingle :name="item.storeName" :status="statusFormat(item.status, item)" @goStoreDetail="goStoreDetail(item)">
                       <!-- 如果是取消状态，则该订单可删除，添加操作展示  -->
                       <div slot="other-deal" class="flex vcenter" v-if="item.status == 5 || item.status == 6 || item.status == 4">
                         <span class="block line-style"></span>
@@ -93,9 +93,7 @@
                       ref="swiperComponentRef"
                       :class="{ 'swiper mt-20 order-page__global-swiper': true, 'swiper-no-swiping' : item.totalQuantity <= 4 }"
                       :options="{
-                        ...swiperComponentOption,
-                        loop: item.totalQuantity > 4,
-                        loopFillGroupWithBlank: item.totalQuantity > 4
+                        ...swiperComponentOption
                       }"
                     >
                       <swiper-slide v-for="(productItem,productIndex) in item.items" :key="'swiper-' + productIndex">
@@ -174,10 +172,7 @@
         <!-- 取消原因 -->
         <van-cell class="plr-20" title="Reason for Cancel Order">
           <template #label>
-            <ul class="fs-14 light-grey">
-              <li>1. Order offer may be cancelled altogether</li>
-              <li>2. Once the order is cancelled, it cannot be reco-vered</li>
-            </ul>
+            <div v-html="$t('cancel_order_tip_header')"  class="fs-14 light-grey pre-wrap"></div>
           </template>
         </van-cell>
       </van-cell-group>
@@ -208,13 +203,13 @@
       </div>
       
       <div class="w-100 plr-12 flex between mt-12 pb-10">
-        <BmButton :type="'info'" class="black round-8 w-168 h-48 cancel-btn" @click="isCancelShow = false">Cancel</BmButton>
-        <BmButton class="fs-16 round-8 w-168 h-48" @click="cancelConfirm">Confirm</BmButton>
+        <BmButton :type="'info'" class="black round-8 w-168 h-48 cancel-btn" @click="isCancelShow = false">{{ $t('cancel') }}</BmButton>
+        <BmButton class="fs-16 round-8 w-168 h-48" @click="cancelConfirm">{{ $t('confirm') }}</BmButton>
       </div>
     </van-popup>
 
-    <div class="w-100 bg-white btn-content flex hend vcenter" v-show="togetherResult.length > 0 && typeActive == 0">
-      <BmButton class="fs-14 mr-10 round-8 plr-10 h-40" @btnClick="onToggerPay">合并支付</BmButton>
+    <div class="w-100 bg-white btn-content flex hend vcenter" v-if="togetherResult.length > 0 && typeActive == 0">
+      <BmButton class="fs-14 mr-10 round-8 plr-10 h-40" @btnClick="onToggerPay">{{ $t('merge_to_pay') }}</BmButton>
     </div>
   </div>
 </template>
@@ -294,9 +289,10 @@ export default {
       currentOrder: {},
       isCancelShow: false,
       swiperComponentOption: { // 一排四列 滚动
-        slidesPerView: 4,
-        slidesPerGroup: 4,
+        slidesPerView: 'auto',
+        // slidesPerGroup: 3,
         spaceBetween: 0,
+        centeredSlides: false,
         // loop: true,
         // loopFillGroupWithBlank: true,
         pagination: {
@@ -307,17 +303,21 @@ export default {
       filterTimeType: 0,
       beforeOneYear: '',
       beforeTwoYear: '',
-      togetherResult: []
+      togetherResult: [],
+      isTab: false
     }
   },
   beforeRouteEnter(to, from, next) { // 从绑定或修改页面进入重置值为空
     next(vm => {
-      if (from.name === 'me' || from.name == null) {
+      if (from.name == 'me' || from.name == null || from.name == 'cart-order-confirm') {
         vm.typeActive = vm.$route.query.type ? parseFloat(vm.tabs[vm.$route.query.type].type) : 100;
       }
     });
   },
   async fetch() {
+    if (!this.isTab) {
+      this.typeActive = this.$route.query.type ? parseFloat(this.tabs[this.$route.query.type].type) : 100;
+    }
     if (this.typeActive == 100) { // 全部
       this.params = {
         pageNum: this.params.pageNum,
@@ -353,6 +353,7 @@ export default {
   },
   activated() {
     this.isFirst = true;
+    this.pageNum = 1;
     this.$fetch();
     this.beforeOneYear = Moment(parseFloat(this.$store.state.user.nowTime)).subtract(1,'years').format('YYYY');
     this.beforeTwoYear = Moment(parseFloat(this.$store.state.user.nowTime)).subtract(2,'years').format('YYYY');
@@ -363,10 +364,14 @@ export default {
       this.cancelReasonList = res.data;
     })
   },
+  deactivated() {
+    this.isTab = false;
+  },
   methods: {
-    async getSearchList(index) { // 获取分类列表
+    async getSearchList() { // 获取分类列表
       this.params.pageNum = 1;
       this.finished = false;
+      this.isTab = true;
       this.$fetch();
     },
     onConfirmFilter() { // 过滤
@@ -419,7 +424,10 @@ export default {
     },
     goSearch() { // 跳转到搜索页面
       this.$router.push({
-        name: 'me-order-search'
+        name: 'me-order-search',
+        query: {
+          back: 'me-order'
+        }
       })
     },
     deleteFn(orderId) { // 删除订单
@@ -562,6 +570,18 @@ export default {
     },
     statusFormat(val, item) {
       return val == 0 ? this.$t('unpaid') : val == 1 ? this.$t('to_be_delivered') : val == 2 ? this.$t('unreceived') : val == 3 || val == 4 ? this.$t('completed') : val == 5 ? this.$t('cancelled') : val == 6 ? this.$t('trading_close') : val == 7 ? this.$t('un_rejected') : this.$t('other');
+    },
+    goStoreDetail(storeItem) { // 跳转到店铺首页
+      this.$router.push({
+        name: 'cart-store-id',
+        params: {
+          id: storeItem.storeId
+        },
+        query: {
+          tabbarActive: 0,
+          sellerId: storeItem.sellerId
+        }
+      })
     }
   },
 } 
@@ -648,10 +668,21 @@ export default {
 }
 .more-order-content{
   position: relative;
+  .swiper-slide{
+    width: 84px!important;
+    margin-left: 6px;
+    &:first-child{
+      margin-left: 0;
+    }
+  }
   .more-order-content__info{
     position: absolute;
     right: 0;
     top: 0;
+    z-index: 1000;
+    height: 84px;
+    padding-left: 10px;
+    background-color: rgba(255, 255, 255, .8);
   }
 }
 </style>

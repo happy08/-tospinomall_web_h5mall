@@ -46,7 +46,7 @@
     </div>
     
     <!-- 运输方式，待收货时展示 -->
-    <van-cell class="p-20" :title="detail.latestLogistics" is-link title-class="fw black ml-12" :to="{ name: 'me-order-detail-logistics', query: { deliverySn: detail.deliverySn } }" v-if="detail.status == 2">
+    <van-cell class="p-20" :title="detail.latestLogistics" is-link title-class="fw black ml-12" :to="{ name: 'me-order-detail-logistics', query: { deliverySn: detail.deliverySn } }" v-if="detail.status == 2 && detail.latestLogistics != ''">
       <!-- 左侧图标 -->
       <template #icon>
         <van-icon :name="require('@/assets/images/icon/car-icon.png')" size="0.48rem" />

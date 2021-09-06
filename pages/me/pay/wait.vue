@@ -100,7 +100,7 @@ export default {
         showCancelButton: true,
         cancelButtonText: this.$t('leave'),
         cancelButtonColor: '#383838'
-      }).then(res => { // on confirm
+      }).then(() => { // on confirm
         
       }).catch(() => { // on cancel
         if (this.$route.query.orderId) { // 取消订单支付

@@ -273,3 +273,13 @@ export function updateLogisticsOrder(data) {
     }
   })
 }
+
+/**
+ * 获取售后订单明细
+ */
+export function aftersaleOrderItem(itemId) {
+  return request({
+    url: `/order/omsorder/buyer/afterSale/orderItem/${itemId}`,
+    method: 'get'
+  })
+}

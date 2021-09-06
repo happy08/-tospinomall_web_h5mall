@@ -295,16 +295,25 @@ export default {
           return false;
         }
         // 不是余额支付的话，需要先跳转到收银台
-        this.$router.push({
-          name: 'me-pay-wait',
-          query: {
-            network: this.payRadio,
-            phone: phone,
-            amount: this.$route.query.amount,
-            refNo: res.data.refNo,
-            orderId: JSON.stringify({orderId: res.data.orderIds})
-          }
-        })
+        if (res.data.refNo) { // 有流水号跳转到收银台
+          this.$router.push({
+            name: 'me-pay-wait',
+            query: {
+              network: this.payRadio,
+              phone: phone,
+              amount: this.$route.query.amount,
+              refNo: res.data.refNo,
+              orderId: JSON.stringify({orderId: res.data.orderIds})
+            }
+          })
+        } else { // 没有流水号直接成功
+          this.$router.push({ // 校验之后成功跳转到订单支付结果页面
+            name: 'cart-order-confirm',
+            query: {
+              orderId: JSON.stringify({orderId: res.data.orderIds})
+            }
+          })
+        }
       }).catch(error => {
         if (error.code == 11000) { // 支付失败
           if (this.payRadio === 'balance') { // 余额支付，直接跳转到支付订单结果页

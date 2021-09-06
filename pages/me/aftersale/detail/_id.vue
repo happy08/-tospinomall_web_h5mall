@@ -268,7 +268,7 @@
     <!-- 订单展示 -->
     <div class="mt-12 bg-white pt-24 plr-20 pb-20">
       <OrderStoreSingle :name="detail.storeName" :showArrow="false" />
-      <OrderSingle class="mt-20" :product_num="detail.returnQuantity" :product_desc="detail.productName" :product_size="detail.productAttr" :price="detail.productPrice" :image="detail.productImage" />
+      <OrderSingle class="mt-20" :product_num="orderItem.returnQuantity" :product_desc="orderItem.productName" :product_size="orderItem.productAttr" :price="orderItem.productPrice" :image="orderItem.productImage" v-for="orderItem, orderIndex in orderList" :key="'store-product-' + orderIndex" />
     </div>
 
     <!-- 具体明细 -->
@@ -368,7 +368,8 @@ export default {
     return {
       stepActive: 1,
       detail: {},
-      stepList: []
+      stepList: [],
+      orderList: []
     }
   },
   activated() {
@@ -423,6 +424,7 @@ export default {
           ...res.data,
           surplusTime: res.data.surplusTime * 1000
         };
+        this.orderList = res.data.orderReturnItems;
         // 状态: 1->商家/运营待处理 2->待自行寄回/待上门取件 3商家/运营待收货 4->待退款 5->退款成功 6->关闭售后单 7->商家/运营驳回申请 8->商家/运营拒收退货商品
         if (res.data.returnType == 0) { // 退款
           if (res.data.involvedStatus == 0) {
