@@ -55,7 +55,7 @@ export default {
     copy() { // 复制
       let clipboard = new ClipboardJS('.copy-order', {
         text: () => {
-          return this.detail.sign;
+          return this.detail.waybillNumber;
         }
       })
       clipboard.on('success', () => {
