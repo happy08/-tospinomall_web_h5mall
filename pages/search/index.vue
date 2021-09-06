@@ -22,7 +22,11 @@
             <template #title="props" v-if="productItem.type === 0">
               {{ props }}
               <van-dropdown-menu active-color="#42B7AE" class="custom-dropdown-menu">
-                <van-dropdown-item v-model="dropdownVal" @change="getDropSearchList" :options="$t('search_filter_price')" />
+                <van-dropdown-item v-model="dropdownVal" @change="getDropSearchList" :options="$t('search_filter_price')">
+                  <template #title v-if="dropdownVal == 0">
+                    {{ $t('all') }}
+                  </template>
+                </van-dropdown-item>
               </van-dropdown-menu>
             </template>
           </van-tab>
@@ -340,7 +344,7 @@ export default {
   methods: {
     deleteFn() { // 删除历史记录
       this.$dialog.confirm({
-        message: '确认删除全部历史记录',
+        message: this.$t('delete_all_search_history_tips'),
       }).then(() => { // 确认删除历史记录
         this.$store.commit('user/SET_SEARCHLIST', null);
         this.searchHistoryList = [];
@@ -366,7 +370,7 @@ export default {
         }
       } else if (index == 0) { 
         if (this.dropdownVal == 0) { // 综合排序
-          
+          // this.typeActive = this.$t('search_filter_overall');
         } else if (this.dropdownVal == 1) { // 价格升序
           this.params = {
             ...this.params,
@@ -388,6 +392,9 @@ export default {
       this.getProductList();
     },
     getDropSearchList(value) {
+      // if (value == 0) { // 综合排序
+      //   this.typeActive = this.$t('search_filter_overall');
+      // }
       this.pageIndex = 1;
       this.params = { pageIndex: this.pageIndex, pageSize: this.pageSize, searchKeyword: this.searchVal };
       if (value == 1) { // 价格升序
@@ -540,6 +547,9 @@ export default {
         this.isShowTip = false;
         this.filterPopup = false; // 筛选窗口隐藏
         this.refreshing.isFresh = false;
+        if (typeof this.$redrawVueMasonry === 'function') {
+          this.$redrawVueMasonry();
+        }
       })
     },
     onRefresh() { // 刷新
