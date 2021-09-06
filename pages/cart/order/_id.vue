@@ -341,7 +341,6 @@ export default {
         }
       });
       getSaleInfo({ skuItems: skuItems, addressId: this.address.id, confirmTransportModes: confirmTransportModes ? confirmTransportModes : [] }).then(res => {
-        console.log(res)
         this.codeData = {
           code: res.code,
           msg: res.msg
@@ -377,7 +376,7 @@ export default {
         this.confirmTransportModes = res.data.storeSaleInfoList.map(item => {
           return {
             storeId: item.storeId,
-            sendType:  Object.values(item.deliveryTypeSkuItemMap)[0].sendTypeEstimateVoList.length > 0 ? Object.values(item.deliveryTypeSkuItemMap)[0].sendTypeEstimateVoList.filter(sendItem => sendItem.sendType === Object.values(item.deliveryTypeSkuItemMap)[0].choiceSendType)[0].sendType : ''
+            sendType:  Object.values(item.deliveryTypeSkuItemMap)[0].sendTypeEstimateVoList.length > 0 ? Object.values(item.deliveryTypeSkuItemMap)[0].sendTypeEstimateVoList.filter(sendItem => sendItem.sendType === Object.values(item.deliveryTypeSkuItemMap)[0].choiceSendType)[0].sendType : 0
           }
         })
       }).catch(error => {
