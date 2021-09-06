@@ -6,20 +6,25 @@
     <!-- 物流单号及运送者 -->
     <div class="plr-20 pb-20 pt-20 bg-white">
       <p class="fs-14 black flex vcenter">
-        <span class="word-break">{{ $t('tracking_no_') }}{{ detail.sign }}</span>
-        <i class="iconfont icon-fuzhi fs-20 ml-12 copy-order" @click="copy"></i>
+        <span class="word-break">{{ $t('tracking_no_') }}{{ detail.waybillNumber }}</span>
+        <van-icon :name="require('@/assets/images/icon/copy-icon.png')" size="0.48rem" class="ml-12 copy-order" @click="copy" />
       </p>
       <p class="fs-14 black flex vcenter mt-18">{{ $t('carrier_') }}{{ detail.senderName }}</p>
     </div>
 
-    <!-- 步骤条-物流详情 -->
-    <van-steps direction="vertical" :active="0" class="mt-12">
-      <van-step v-for="(locusItem, locusIndex) in detail.locusList" :key="locusIndex">
-        <h3>{{ locusItem.context }}</h3>
-        <!-- <p class="mt-10">The parcel is received, please contact with the courier(xiao/1591360999)to make a confirm-ation if you have any questions. Thank for pur-chasing goods on TOSPINO. We hope to pro-vide you better services again. </p> -->
-        <p class="mt-12">{{ locusItem.createTime }}</p>
-      </van-step>
-    </van-steps>
+    <div class="pr-10 pl-10 bg-white">
+      <!-- 步骤条-物流详情 -->
+      <van-steps direction="vertical" :active="0" class="mt-12 fs-14" active-color="#FFCE05">
+        <van-step v-for="(locusItem, locusIndex) in detail.locusList" :key="locusIndex">
+          <div class="black fs-18 flex between vcenter" v-if="locusIndex == 0">
+            <span class="fw fs-18 black">{{ detail.stateName }}</span>
+            <a :href="'tel:' + detail.arrivePhone" class="round-8 plr-12 ptb-4 border black fs-14">{{ $t('dial_phone') }}</a>
+          </div>
+          <p :class="{'mt-10': locusIndex == 0}" style="color: #666;">{{ locusItem.context }}</p>
+          <p class="mt-12 light-grey">{{ locusItem.createTime }}</p>
+        </van-step>
+      </van-steps>
+    </div>
   </div>
 </template>
 
@@ -54,7 +59,7 @@ export default {
         }
       })
       clipboard.on('success', () => {
-        let msg = this.$t('common.copySuccess');
+        let msg = this.$t('t_copied_to_clipboard');
         this.$toast({
           message: msg,
           type: 'success'
@@ -62,7 +67,7 @@ export default {
         clipboard.destroy();
       })
       clipboard.on('error', () => {
-        let msg = this.$t('common.copyError');
+        let msg = this.$t('fail_copied_to_clipboard');
         this.$toast({
           message: msg,
           type: 'fail'
