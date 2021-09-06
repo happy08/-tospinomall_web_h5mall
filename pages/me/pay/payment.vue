@@ -82,7 +82,6 @@
 
 <script>
 import { RadioGroup, Radio, Cell, CellGroup, Field, Popup, Picker, NumberKeyboard, PasswordInput } from 'vant';
-import { getPhonePrefix } from '@/api/login';
 import { getAvailable, buyerRecharge, payOrder } from '@/api/pay';
 
 export default {
@@ -167,11 +166,6 @@ export default {
     })
   },
   methods: {
-    getPhonePrefix() {
-      getPhonePrefix().then(res => {
-        this.phonePrefixs = res.data;
-      })
-    },
     onPay() { // 提交支付,成功跳转到确认订单页面
       if (this.payRadio == 100) {
         return false;
@@ -250,14 +244,14 @@ export default {
       }
 
       this.$dialog({
-        title: 'Are you sure want to leave',
-        message: 'This order will automatically be can-celed if not paid within 30 mins.',
-        confirmButtonText: 'Reconsider',
+        title: this.$t('are_you_sure_want_to_leave'),
+        message: this.$t('paid_wait_time_tip'),
+        confirmButtonText: this.$t('reconsider'),
         confirmButtonColor: '#42B7AE',
         showCancelButton: true,
-        cancelButtonText: 'Leave',
+        cancelButtonText: this.$t('leave'),
         cancelButtonColor: '#383838'
-      }).then(res => { // on confirm
+      }).then(() => { // on confirm
 
       }).catch(() => { // on leave
         this.$router.go(-1);
