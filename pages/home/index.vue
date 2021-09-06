@@ -12,7 +12,7 @@
         :alt="'Tospino logo'"
       />
       <!-- 搜索框 -->
-      <div class="mlr-12 home-page-nav__search" ref="homeSearch" @click="$router.push({ name: 'search' })">
+      <div class="mlr-12 home-page-nav__search" ref="homeSearch" @click="$router.push({ name: 'search', query: { back: 'home' } })">
         <van-search
           v-model="searchVal"
           :placeholder="$t('search_product_of_interest')"

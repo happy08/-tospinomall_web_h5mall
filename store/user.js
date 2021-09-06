@@ -3,8 +3,7 @@
 export const state = () => ({
   authToken: null,
   userInfo: null,
-  searchList: [], // 商品搜索历史
-  orderSearchList: [], // 订单搜索历史
+  searchOrderList: [], // 订单搜索历史
   refreshToken: null,
   scope: null,
   websocketMsg: null,
@@ -32,31 +31,18 @@ export const mutations = {
     state.scope = scope;
     this.$cookies.set('scope', scope);
   },
-  SET_SEARCHLIST(state, searchItem) {
+  SET_SEARCHORDERLIST(state, searchItem) {
     if (searchItem == null) {
-      state.searchList = [];
+      state.searchOrderList = [];
     } else {
       if (Array.isArray(searchItem)) { // 主要是刷新页面时从cookie中获取数据
-        state.searchList = state.searchList.concat(searchItem);
+        state.searchOrderList = state.searchOrderList.concat(searchItem);
       } else {
-        state.searchList.unshift(searchItem);
+        state.searchOrderList.unshift(searchItem);
       }
-      state.searchList = [...new Set(state.searchList)]; // 去重
+      state.searchOrderList = [...new Set(state.searchOrderList)]; // 去重
     }
-    this.$cookies.set('searchList', encodeURI(state.searchList));
-  },
-  SET_ORDERSEARCHLIST(state, searchItem) {
-    if (searchItem == null) {
-      state.orderSearchList = [];
-    } else {
-      if (Array.isArray(searchItem)) { // 主要是刷新页面时从cookie中获取数据
-        state.orderSearchList = state.orderSearchList.concat(searchItem);
-      } else {
-        state.orderSearchList.unshift(searchItem);
-      }
-      state.orderSearchList = [...new Set(state.orderSearchList)]; // 去重
-    }
-    this.$cookies.set('orderSearchList', encodeURI(state.orderSearchList));
+    this.$cookies.set('searchOrderList', encodeURI(state.searchOrderList));
   },
   SET_WEBSOCKET(state, websocketMsg) {
     state.websocketMsg = websocketMsg;

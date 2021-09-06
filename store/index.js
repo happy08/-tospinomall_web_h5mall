@@ -3,7 +3,8 @@ import { vantLocales } from '@/plugins/vue-i18n';
 export const state = () => ({
   locales: ['en', 'zh-CN', 'zh-TW', 'fr', 'es', 'ms', 'vi'],
   locale: 'zh-CN',
-  rate: null
+  rate: null,
+  searchProductList: [], // 商品搜索历史
 });
 
 export const mutations = {
@@ -18,7 +19,20 @@ export const mutations = {
   SET_RATE(state, rate) { // 修改当前货币信息
     state.rate = rate;
     // this.$cookies.set('rate', rate);
-  }
+  },
+  SET_SEARCHPRODUCTLIST(state, searchItem) {
+    if (searchItem == null) {
+      state.searchProductList = [];
+    } else {
+      if (Array.isArray(searchItem)) { // 主要是刷新页面时从cookie中获取数据
+        state.searchProductList = state.searchProductList.concat(searchItem);
+      } else {
+        state.searchProductList.unshift(searchItem);
+      }
+      state.searchProductList = [...new Set(state.searchProductList)]; // 去重
+    }
+    this.$cookies.set('searchProductList', encodeURI(state.searchProductList));
+  },
 };
 
 export const actions = {
@@ -55,14 +69,14 @@ export const actions = {
     // 是否有未读消息
     commit('user/SET_ISNEWMESSAGE', Boolean($cookies.get('isNewWebsocketMsg')));
 
-    const searchList = decodeURI($cookies.get('searchList')); // 商品搜索历史
-    if (searchList != 'undefined') {
-      commit('user/SET_SEARCHLIST', searchList.split(','));
+    const searchProductList = decodeURI($cookies.get('searchProductList')); // 商品搜索历史
+    if (searchProductList != 'undefined' && searchProductList != '') {
+      commit('SET_SEARCHPRODUCTLIST', searchProductList.split(','));
     }
 
-    const orderSearchList = decodeURI($cookies.get('orderSearchList')); // 订单搜索历史
-    if (orderSearchList != 'undefined') {
-      commit('user/SET_ORDERSEARCHLIST', orderSearchList.split(','));
+    const searchOrderList = decodeURI($cookies.get('searchOrderList')); // 订单搜索历史
+    if (searchOrderList != 'undefined' && searchOrderList != '') {
+      commit('user/SET_SEARCHORDERLIST', searchOrderList.split(','));
     }
     
 

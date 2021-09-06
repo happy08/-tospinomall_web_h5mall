@@ -19,7 +19,7 @@
             v-show="!isScroll"
             @click="leftBack"
           />
-          <div class="sticky-opacity ml-14" @click="$router.push({ name: 'search' })">
+          <div class="sticky-opacity ml-14" @click="$router.replace({ name: 'search', query: { back: 'cart-product-id', backId: $route.params.id } })">
             <van-search v-model="searchVal" disabled class="round-20 hidden" />
           </div>
         </div>

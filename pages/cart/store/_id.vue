@@ -9,7 +9,7 @@
         disabled
         slot="header-title"
         :placeholder="$t('search_our_products')"
-        @click="$router.push({ name: 'search', query: { shopId: $route.params.id } })"
+        @click="$router.replace({ name: 'search', query: { shopId: $route.params.id, back: 'cart-store-id', backId: $route.params.id, backQuery: $route.query } })"
       />
     </div>
     <van-sticky offset-top="0">

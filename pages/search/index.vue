@@ -194,6 +194,7 @@ import { getSearchPull } from '@/api/search';
 import PullRefresh from '@/components/PullRefresh';
 
 export default {
+  name: 'search',
   components: {
     vanSearch: Search,
     vanTab: Tab,
@@ -260,7 +261,10 @@ export default {
       finished: false,
       total: 0,
       isRouteBack: 0,
-      shopId: ''
+      shopId: '',
+      backName: '',
+      backNameId: '',
+      backQuery: null
     }
   },
   async fetch() {
@@ -270,9 +274,21 @@ export default {
     let _params = this.$route.query;
     delete _params.val;
 
+    if (this.$route.query.back) { // 从哪个页面进来的
+      this.backName = this.$route.query.back;
+    }
+    if (this.$route.query.backId) {
+      this.backNameId = this.$route.query.backId;
+      this.isRouteBack = 1;
+    }
+    if (this.$route.query.backQuery) {
+      this.backQuery = this.$route.query.backQuery;
+    }
+
     // 如果带着搜索的参数跳转过来的需要先获取相对应的搜索数据
     if (this.searchVal != '') {
-      this.$store.commit('user/SET_SEARCHLIST', this.searchVal); // 搜索历史存储
+      console.log('22222222222222222222')
+      this.$store.commit('SET_SEARCHPRODUCTLIST', this.searchVal); // 搜索历史存储
       this.arrangeType = 2;
       this.pageIndex = 1;
       // 获取搜索列表数据
@@ -284,6 +300,7 @@ export default {
         }
       }
       const listData = await this.$api.getProductSearch(this.params);
+      this.isRouteBack = 1;
       
       // 数据列表需要格式化
       this.list = listData.data.items.map(item => {
@@ -293,6 +310,7 @@ export default {
           saleCount: parseFloat(item.saleCount)
         }
       });
+      this.isShowTip = false;
 
       // 品牌列表
       this.brandList = listData.data.brandList;
@@ -305,9 +323,9 @@ export default {
       }
       
       // 更新页面展示
-      // this.searchHistoryList = this.$store.state.user.searchList.filter((item, index) => {
-      //   return index < 6;
-      // });
+      this.searchHistoryList = this.$store.state.searchProductList.filter((item, index) => {
+        return index < 6;
+      });
     }
 
     // 搜索发现数据
@@ -332,14 +350,14 @@ export default {
       this.$nextTick(() => {
         this.$refs.searchContainer.querySelector('input').focus();
       })
-      this.isRouteBack = 0;
+      this.isRouteBack = this.$route.query.backId ? 1 : 0;
     } else {
       this.isRouteBack = 1;
     }
-    this.searchHistoryList = this.$store.state.user.searchList.filter((item, index) => {
+    this.searchHistoryList = this.$store.state.searchProductList.filter((item, index) => {
       return index < 6;
     });
-    this.historyNum = this.$store.state.user.searchList.length > 6 ? true: false;
+    this.historyNum = this.$store.state.searchProductList.length > 6 ? true: false;
     // 搜索防抖
     this.inputChange = this.$utils.debounce((e) => {
       this.isShowTip = e[0].length > 0 && this.list.length === 0 ? -1 : e[0].length === 0;
@@ -351,6 +369,8 @@ export default {
   },
   deactivated() {
     this.shopId = '';
+    this.backName = '';
+    this.backNameId = '';
   },
   methods: {
     deleteFn() { // 删除历史记录
@@ -361,8 +381,9 @@ export default {
         cancelButtonText: this.$t('cancel'),
         cancelButtonColor: '#383838'
       }).then(() => { // 确认删除历史记录
-        this.$store.commit('user/SET_SEARCHLIST', null);
+        this.$store.commit('SET_SEARCHPRODUCTLIST', null);
         this.searchHistoryList = [];
+        this.historyNum = false;
       })
     },
     changeArrange() { // 切换展示样式 1列 2列
@@ -451,9 +472,9 @@ export default {
           }
         })
       }
-      // this.$store.commit('user/SET_SEARCHLIST', value); // 搜索历史存储
+      // this.$store.commit('SET_SEARCHPRODUCTLIST', value); // 搜索历史存储
       // // 更新页面展示
-      // this.searchHistoryList = this.$store.state.user.searchList.filter((item, index) => {
+      // this.searchHistoryList = this.$store.state.searchProductList.filter((item, index) => {
       //   return index < 6;
       // });
       // this.searchVal = value;
@@ -508,15 +529,15 @@ export default {
     },
     showMoreHistory() { // 展示更多的搜索历史
       this.historyNum = false;
-      this.searchHistoryList = this.$store.state.user.searchList;
+      this.searchHistoryList = this.$store.state.searchProductList;
     },
     toSearch(item) {
-      this.$store.commit('user/SET_SEARCHLIST', item.suggestion); // 搜索历史存储
+      // this.$store.commit('SET_SEARCHPRODUCTLIST', item.suggestion); // 搜索历史存储
       // 更新页面展示
       if (this.searchHistoryList.length > 6) {
-        this.searchHistoryList = this.$store.state.user.searchList
+        this.searchHistoryList = this.$store.state.searchProductList;
       } else {
-        this.searchHistoryList = this.$store.state.user.searchList.filter((item, index) => {
+        this.searchHistoryList = this.$store.state.searchProductList.filter((item, index) => {
           return index < 6;
         });
       }
@@ -587,19 +608,33 @@ export default {
       this.getProductList();
     },
     onClear() { // 点击清除按钮
-      if (this.isRouteBack == 0) { // 空的搜索关键字进来的页面
-        this.$router.go(-1);
-      } else {
-        this.$router.replace({
-          name: 'search'
-        })
-      }
+      this.$router.replace({
+        name: 'search'
+      })
     },
     leftClick() {
-      // if (this.isRouteBack == -1 && this.searchVal == '') { // 特殊情况空的搜索关键字进来页面，又清空了数据的
-      //   this.$router.go(-2);
-      //   return false;
-      // }
+      if (!this.$route.query.searchKeyword && this.backName != '') {
+        if (this.backNameId != '') { // 商品详情
+          this.$router.replace({
+            name: this.backName,
+            params: {
+              id: this.backNameId
+            },
+            query: this.backQuery
+          });
+        } else {
+          this.$router.replace({
+            name: this.backName
+          });
+        }
+        return false;
+      } else if (this.backNameId != '') {
+        this.$router.replace({
+          name: 'search',
+          query: this.backQuery
+        });
+        return false;
+      }
 
       if (window.history.length < 2) { //解决部分机型拿不到history
         console.log('go home');

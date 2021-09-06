@@ -77,7 +77,7 @@ export default {
         }
         return;
       }
-      if(window.history.length < 2){ //解决部分机型拿不到history
+      if(window.history.length < 3){ //解决部分机型拿不到history
         console.log('go home');
         this.$router.replace('/');
       }else{
