@@ -259,7 +259,8 @@ export default {
       loading: false,
       finished: false,
       total: 0,
-      isRouteBack: 0
+      isRouteBack: 0,
+      shopId: ''
     }
   },
   async fetch() {
@@ -276,6 +277,12 @@ export default {
       this.pageIndex = 1;
       // 获取搜索列表数据
       this.params = {..._params, pageIndex: this.pageIndex, pageSize: this.pageSize};
+      if (this.shopId != '') {
+        this.params = {
+          ...this.params,
+          shopId: this.shopId
+        }
+      }
       const listData = await this.$api.getProductSearch(this.params);
       
       // 数据列表需要格式化
@@ -316,10 +323,11 @@ export default {
       this.$fetch();
     }
   },
-  mounted() {
-  },
   activated() {
     this.$fetch();
+    if (this.$route.query.shopId) { // 从店铺搜索跳转过来的
+      this.shopId = this.$route.query.shopId;
+    }
     if (this.searchVal == '') { // 没有带参数进来的时候，搜索输入框需要自动聚焦
       this.$nextTick(() => {
         this.$refs.searchContainer.querySelector('input').focus();
@@ -340,6 +348,9 @@ export default {
       }
       this.getSearchPull();
     }, 300);
+  },
+  deactivated() {
+    this.shopId = '';
   },
   methods: {
     deleteFn() { // 删除历史记录
@@ -531,6 +542,12 @@ export default {
       })
     },
     getProductList() { // 获取商品列表
+      if (this.shopId != '') {
+        this.params = {
+          ...this.params,
+          shopId: this.shopId
+        }
+      }
       this.$api.getProductSearch(this.params).then(res => {
         let list = res.data.items.map(item => {
           return {
