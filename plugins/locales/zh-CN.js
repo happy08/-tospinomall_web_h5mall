@@ -274,7 +274,7 @@ const cn = {
   password_login: '密码登录',
   t_please_enter_the_email: '请输入邮箱',
   login_status_has_expired: '登录状态已过期',
-  delivery_to: 'Delivery to',
+  delivery_to: '选择电话区号',
   please_select_a_country: '请选择国家',
   please_select_a_state_province_region: '请选择州/省/区',
   Please_select_city: '请选择城市',

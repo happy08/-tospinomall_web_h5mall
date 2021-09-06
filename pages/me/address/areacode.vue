@@ -55,7 +55,7 @@ export default {
     },
     goBack(phonePrefix) {
       this.$router.replace({
-        name: 'me-address-make',
+        name: this.$route.query.paymentWay ? 'me-pay-payment' : 'me-address-make',
         query: {
           ...this.$route.query,
           phonePrefix: phonePrefix

@@ -43,22 +43,12 @@
           v-if="item.label != 'balance'"
         >
           <template #label>
-            <span @click="showPicker = true" class="iblock fs-14 black lh-20 pl-4">
-              {{ prefixCode }}
+            <span @click="$router.push({ name: 'me-address-areacode', query: { ...$route.query, paymentWay: item.label } })" class="iblock fs-14 black lh-20 pl-4">
+              {{ item.prefixCode }}
               <img class="prefix-container--icon" src="@/assets/images/triangle-icon.png">
             </span>
           </template>
         </van-field>
-        <!-- 手机前缀选择 -->
-        <van-popup v-model="showPicker" round position="bottom">
-          <van-picker
-            show-toolbar
-            :columns="phonePrefixs"
-            value-key="phonePrefix"
-            @cancel="showPicker = false"
-            @confirm="onConfirm"
-          />
-        </van-popup>
       </van-cell-group>
     </van-radio-group>
 
@@ -112,8 +102,6 @@ export default {
     return {
       payRadio: 100,
       list: [],
-      showPicker: false,
-      prefixCode: '',
       phonePrefixs: [],
       isBackDialog: false,
       balanceShow: false,
@@ -124,7 +112,6 @@ export default {
     next(vm => {
       if (from.name === 'me-wallet' || from.name == 'me-order' || from.name == 'cart-order-id') {
         vm.payRadio = 100;
-        vm.showPicker = false;
         vm.isBackDialog = false;
         vm.payPwd = '';
         vm.balanceShow = false;
@@ -134,7 +121,15 @@ export default {
     });
   },
   activated() {
-    this.getPhonePrefix();
+    if (this.$route.query.phonePrefix && this.list.length > 0) { // 从选择电话的页面回跳回来的
+      this.list = this.list.map(item => {
+        return {
+          ...item,
+          prefixCode: this.$route.query.phonePrefix && item.label == this.$route.query.paymentWay ? this.$route.query.phonePrefix : item.prefixCode
+        }
+      });
+      return false;
+    }
     this.$toast.loading({
       forbidClick: true,
       loadingType: 'spinner',
@@ -151,7 +146,8 @@ export default {
       this.list = res.data.map(item => {
         return {
           label: item,
-          phone: ''
+          phone: '',
+          prefixCode: this.$route.query.phonePrefix && item == this.$route.query.paymentWay ? this.$route.query.phonePrefix : this.$t('prefix_tip')
         }
       });
 
@@ -174,7 +170,6 @@ export default {
     getPhonePrefix() {
       getPhonePrefix().then(res => {
         this.phonePrefixs = res.data;
-        this.prefixCode = this.$t('prefix_tip');
       })
     },
     onPay() { // 提交支付,成功跳转到确认订单页面
@@ -198,6 +193,10 @@ export default {
       let phone = this.list.filter(item => {
         return item.label === this.payRadio;
       })[0].phone;
+
+      let phonePrefix = this.list.filter(item => {
+        return item.label === this.payRadio;
+      })[0].prefixCode;
       
       if (phone.length == 0) {
         return false;
@@ -205,7 +204,7 @@ export default {
 
       // 订单支付
       if (this.$route.query.orderIds) {
-        this.payOrder({ payType: 2, network: this.payRadio, phone: phone, phonePrefix: this.prefixCode, sourceType: 4, orderIds: JSON.parse(this.$route.query.orderIds).orderIds });
+        this.payOrder({ payType: 2, network: this.payRadio, phone: phone, phonePrefix: phonePrefix, sourceType: 4, orderIds: JSON.parse(this.$route.query.orderIds).orderIds });
         return false;
       }
 
@@ -222,10 +221,6 @@ export default {
           }
         })
       })
-    },
-    onConfirm(event) { // 选择手机号前缀
-      this.prefixCode = event.phonePrefix;
-      this.showPicker = false;
     },
     leftClick() {
       if (this.$route.query.comfirmOrder) { // 从确认订单页面进来，返回的时候1个订单返回订单详情，2个及以上跳到订单列表
