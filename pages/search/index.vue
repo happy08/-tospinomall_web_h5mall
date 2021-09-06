@@ -356,6 +356,10 @@ export default {
     deleteFn() { // 删除历史记录
       this.$dialog.confirm({
         message: this.$t('delete_all_search_history_tips'),
+        confirmButtonText: this.$t('confirm'),
+        confirmButtonColor: '#42B7AE',
+        cancelButtonText: this.$t('cancel'),
+        cancelButtonColor: '#383838'
       }).then(() => { // 确认删除历史记录
         this.$store.commit('user/SET_SEARCHLIST', null);
         this.searchHistoryList = [];
