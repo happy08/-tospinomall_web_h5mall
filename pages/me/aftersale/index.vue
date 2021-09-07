@@ -174,9 +174,17 @@ export default {
       },
     }
   },
+  beforeRouteEnter (to, from, next) {
+    next(vm => {
+      if (from.name === 'me') {
+        vm.tabActive = 0;
+      }
+    })
+  },
   async fetch() {
     let _params = {};
     let listData;
+    this.tabActive = this.$route.query.orderId ? 0 : this.tabActive;
     if (this.tabActive > 0) {
       _params.status = this.tabActive + 1;
       listData = await this.$api.getAfterSaleStatusList({ pageNum: this.pageNum, pageSize: this.pageSize, ..._params }); // 申请原因/处理中列表

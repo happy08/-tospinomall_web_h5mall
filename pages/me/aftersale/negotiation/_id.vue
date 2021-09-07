@@ -9,7 +9,7 @@
       <p class="mt-12 fs-14 grey flex between fs-14">
         <span>{{ item.createTime }}</span>
         <!-- 物流信息 -->
-        <nuxt-link v-if="item.orderReturn.deliveryType == 2 && item.status == 4" :to="{ name: '' }" class="green">Logistics information</nuxt-link>
+        <nuxt-link v-if="item.orderReturn.deliveryType == 2 && item.status == 4" :to="{ name: '' }" class="green">{{ $t('logistics_information') }}</nuxt-link>
       </p>
       <!-- 状态显示 -->
       <p class="mt-12 fs-14 grey" v-if="item.status == 1">{{ $t('negotiation_status_1', { replace_tip: item.orderReturn.returnType == 0 ? $t('refund_no_return') : $t('return_refund'), replace_tip2: item.orderReturn.applyReason }) }}</p>

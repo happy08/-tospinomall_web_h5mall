@@ -147,9 +147,9 @@
     </div>
 
     <!-- 商家同意退货申请 -->
-    <!-- <div class="bg-white plr-12 ptb-20" v-if="detail.status == 2 && detail.orderType == 1">
-      <p class="fs-12 black">{{ $t('refund_return_state_tip_7', { replace_tip: detail.orderType == 1 ? $t('merchant'): $t('platform') }) }}</p>
-    </div> -->
+    <div class="bg-white plr-12 ptb-20" v-if="detail.status == 2 && detail.deliveryType == 1">
+      <h4 class="fs-12 black">{{ $t('refund_return_state_tip_7', { replace_tip: detail.orderType == 1 ? $t('merchant'): $t('platform') }) }}</h4>
+    </div>
 
     <!-- 已关闭工单 -->
     <div class="bg-white plr-12 ptb-20" v-if="detail.status == 6">
@@ -294,8 +294,8 @@
       </van-cell>
       <!-- 退货方式 -->
       <van-cell class="ptb-20 plr-20" :title="$t('return_method')" title-class="fs-14 black flex-2" value-class="tl flex-3 light-grey" :value="detail.deliveryType == 1 ? $t('self_return') : $t('pick_up')" v-if="detail.returnType == 1" />
-      <!-- 姓名、电话、地址 -->
-      <van-cell class="ptb-20 plr-20" v-if="detail.returnType == 1">
+      <!-- 上门取件 -->
+      <van-cell class="ptb-20 plr-20" v-if="detail.returnType == 1 && detail.deliveryType == 2">
         <template #default>
           <div class="flex between">
             <p class="fs-14 black">{{ detail.sendName }}  {{ detail.sendPhone }}</p>
@@ -304,7 +304,8 @@
           <p class="black fs-14 mt-12">{{ $t('address') }}: {{ detail.sendCompleteAddress }}</p>
         </template>
       </van-cell>
-      <van-cell class="ptb-20 plr-20" v-if="detail.returnType == 1 && detail.deliveryType == 2 && detail.receiverName != ''">
+      <!-- 退货地址 -->
+      <van-cell class="ptb-20 plr-20" v-if="detail.returnType == 1 && (detail.deliveryType == 1 || detail.deliveryType == 2) && detail.receiverName != ''">
         <template #default>
           <div class="flex between">
             <p class="fs-14 black">{{ detail.receiverName }}  {{ detail.receiverPhone }}</p>
