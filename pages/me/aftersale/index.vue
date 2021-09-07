@@ -21,7 +21,7 @@
               <div v-for="(orderitem, index) in lists" :key="index" :class="{'w-100 plr-20 pb-20 pt-24 bg-white': true, 'mt-12': index != 0}">
                 <!-- 售后订单列表1 -->
                 <template v-if="tabActive == 0">
-                  <OrderStoreSingle :name="orderitem.storeName" />
+                  <OrderStoreSingle :name="orderitem.storeName" :showArrow="false" />
                   <div v-for="(productItem, productIndex) in (orderitem.items)" :key="'product-' + productIndex">
                     <OrderSingle class="mt-20" 
                       :product_num="productItem.goodQuantity" 
@@ -43,7 +43,7 @@
 
                 <!-- 售后申请列表2/3 -->
                 <div v-else class="w-100">
-                  <OrderStoreSingle :name="orderitem.storeName" :status="orderitem.returnType == 0 ? $t('refund_no_return') : $t('return_refund')" />
+                  <OrderStoreSingle :name="orderitem.storeName" :status="orderitem.returnType == 0 ? $t('refund_no_return') : $t('return_refund')" :showArrow="false" />
                   <template v-if="orderitem.orderReturnItems.length == 1">
                     <OrderSingle class="mt-20" 
                       :product_num="orderReturnItem.returnQuantity" 
