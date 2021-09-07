@@ -555,7 +555,7 @@ export default {
       // edit 存在表示修改申请 isBatchReturn:是否整批退 0否1是
       let _ajax = this.$route.query.edit ? updateApply(_data) : applyAfterSale({ ..._data, isBatchReturn: this.detail.status == 1 ? 1 : 0});
 
-      _ajax.then(() => {
+      _ajax.then(res => {
         this.$toast.clear();
 
         // 提交之后数据清空
@@ -575,16 +575,17 @@ export default {
         this.concatName = '';
         this.concatCell = '';
 
-        this.$router.go(-1);
-        // this.$router.replace({
-        //   name: 'me-aftersale-detail-id',
-        //   params: {
-        //     id: res.data.orderReturnId
-        //   },
-        //   // query: {
-        //   //   back: this.$route.query.edit ? 'me-aftersale': ''
-        //   // }
-        // })
+        // this.$router.go(-1);
+        this.$router.push({
+          name: 'me-aftersale-detail-id',
+          params: {
+            id: res.data.orderReturnId
+          },
+          query: {
+            // back: this.$route.query.edit ? 'me-aftersale': ''
+            back: 'me-aftersale'
+          }
+        })
       })
     },
     onDeleteFile() { // 删除选择的图片
