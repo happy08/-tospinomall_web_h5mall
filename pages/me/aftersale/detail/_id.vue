@@ -146,7 +146,7 @@
       </p>
     </div>
 
-    <!-- 商家同意退货申请 -->
+    <!-- 商家同意退货申请, 自行邮寄 -->
     <div class="bg-white plr-12 ptb-20" v-if="detail.status == 2 && detail.deliveryType == 1">
       <h4 class="fs-12 black">{{ $t('refund_return_state_tip_7', { replace_tip: detail.orderType == 1 ? $t('merchant'): $t('platform') }) }}</h4>
     </div>

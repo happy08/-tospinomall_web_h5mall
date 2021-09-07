@@ -72,10 +72,10 @@
         :placeholder="$t('apply_for_instructions_tips')"
         :border="false"
       />
-      <van-uploader v-model="fileList" multiple :max-count="6" preview-size="1.62rem" :after-read="afterRead" @delete="onDeleteFile">
+      <van-uploader v-model="fileList" multiple :max-count="9" preview-size="1.62rem" :after-read="afterRead" @delete="onDeleteFile">
         <div class="custom-proof-upload tc">
           <van-icon name="plus" size="0.32rem" />
-          <div class="mt-10 fs-12 lh-1">{{ $t('add_picture_6') }}</div>
+          <div class="mt-10 fs-12 lh-1">{{ $t('add_picture_9') }}</div>
         </div>
       </van-uploader>
       <p class="fs-14 orange mt-10">{{ $t('apply_after_sale_upload_tips') }}</p>
