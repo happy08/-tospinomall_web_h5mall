@@ -9,7 +9,19 @@
     <!-- 订单详情 -->
     <div class="bg-white p-20">
       <template v-if="orderList.length == 1">
-        <OrderSingle :image="detailItem.productImage" :product_num="detailItem.returnQuantity" :product_desc="detailItem.productName" :product_size="detailItem.productAttr" :price="detailItem.productPrice"  v-for="(detailItem, orderIndex) in orderList" :key="'order-item-' + orderIndex" />
+        <OrderSingle :image="detailItem.productImage" :product_num="detailItem.canAfterApplyNum" :product_desc="detailItem.productName" :product_size="detailItem.productAttr" :price="detailItem.productPrice"  v-for="(detailItem, orderIndex) in orderList" :key="'order-item-' + orderIndex" />
+        <div class="flex between mt-14 vcenter">
+          <span class="fs-14 light-grey">{{ $t('aftersale_apply_num') }}</span>
+          <van-stepper
+            v-model="applyNum"
+            input-width="0.796rem"
+            button-size="0.42rem"
+            :integer="true"
+            class="custom-stepper"
+            :max="$route.query.edit ? orderList[0].returnQuantity : orderList[0].canAfterApplyNum"
+            @change="onChangeQuantity"
+          />
+        </div>
       </template>
       <template v-else>
         <swiper
@@ -59,7 +71,7 @@
         <van-field v-model="detail.returnAmount" type="number" input-align="right" :formatter="onFormatter" />
       </template>
     </van-cell> -->
-    <div class="p-20 fs-14 mt-12 black">{{ $t('refund_price_tip', { replace_tip: $store.state.rate.currency + detail.payAmount }) }}</div>
+    <div class="p-20 fs-14 mt-12 black">{{ $t('refund_price_tip', { replace_tip: $store.state.rate.currency + detail.returnAmount }) }}</div>
 
     <!-- 申请指令 -->
     <div class="plr-20 pt-20 pb-24 bg-white">
@@ -281,6 +293,8 @@ export default {
           clickable: true,
         },
       },
+      applyNum: 1,
+      isFrom: false
     }
   },
   beforeRouteEnter (to, from, next) {
@@ -296,10 +310,18 @@ export default {
         vm.applyMessage = '';
         vm.imgList = [];
         vm.fileList = [];
+        vm.isFrom = false;
+        vm.isGreenment = false;
+      }
+      if (from.name == 'me-address') { // 从地址选择页面回来不需要重新获取数据
+        vm.isFrom = true;
       }
     });
   },
   activated() {
+    if (this.isFrom) {
+      return false;
+    }
     if (this.$route.params.type == 1) this.title = 'applyReturn'; // 仅退款
     if (this.$route.params.type == 2) this.title = 'return_refund'; // 退货退款
     // if (this.$route.params.type == 3) this.title = 'me.afterSale.exchange'; // 换货
@@ -316,15 +338,17 @@ export default {
     _ajax.then(res => {
       if (!res.data) return false;
       this.$toast.clear();
-      if (this.$route.query.edit) {
+      if (this.$route.query.edit) { // 修改申请
         this.detail = {
           ...res.data,
           goodImg: res.data.productImage,
           goodQuantity: res.data.returnQuantity,
           goodName: res.data.productName,
           goodAttr: res.data.productAttr,
-          goodPrice: res.data.productPrice
+          goodPrice: res.data.productPrice,
+          returnAmount: res.data.returnAmount
         };
+        this.applyNum = res.data.orderReturnItems[0].returnQuantity;
         this.orderList = res.data.orderReturnItems;
         // 申请原因
         this.applyReasonLabel = res.data.applyReason;
@@ -364,7 +388,11 @@ export default {
         this.imgList = pics;
         return false;
       }
-      this.detail = res.data.order;
+      this.detail = {
+        ...res.data.order,
+        returnAmount: res.data.orderItemList[0].canAfterApplyNum * res.data.orderItemList[0].goodPrice
+      };
+      this.applyNum = res.data.orderItemList[0].canAfterApplyNum;
       this.orderList = res.data.orderItemList.map(item => {
         return {
           ...item,
@@ -526,7 +554,7 @@ export default {
         productQuantity: this.detail.goodQuantity,
         applyDesc: this.applyMessage,
         deliveryType: this.returnMethodRadio == 0 ? 2 : 1,
-        returnAmount: this.detail.payAmount
+        returnAmount: this.detail.returnAmount
       };
       
       if (this.$route.params.type == 2) { // 退货退款
@@ -551,6 +579,13 @@ export default {
         loadingType: 'spinner',
         duration: 0
       })
+
+      if (this.detail.status == 2 || this.detail.orderStatus) { // 待收货状态, 需要传退款数量
+        _data = {
+          ..._data,
+          productQuantity: this.applyNum
+        }
+      }
       
       // edit 存在表示修改申请 isBatchReturn:是否整批退 0否1是
       let _ajax = this.$route.query.edit ? updateApply(_data) : applyAfterSale({ ..._data, isBatchReturn: this.detail.status == 1 ? 1 : 0});
@@ -596,6 +631,10 @@ export default {
     onReturnConfirm() { // 选择退货方式
       this.returnMethodTitle = this.$t('returnMethodList')[this.returnMethodRadio].title;
       this.returnMethod = false;
+    },
+    onChangeQuantity(value) { // 修改售后数量
+      console.log(value)
+      this.detail.returnAmount = this.orderList[0].productPrice * value;
     }
   },
 }

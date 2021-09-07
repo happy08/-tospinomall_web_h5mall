@@ -1,9 +1,9 @@
 <template>
   <!-- 订单评价列表/商品-商品详情-评价列表 -->
-  <div class="v-percent-100 bg-grey pt-46">
-    <BmHeaderNav :left="{ isShow: true }" :title="$t('product_evaluation')" :fixed="true" />
+  <div class="v-percent-100 bg-grey">
+    <van-sticky>
+      <BmHeaderNav :left="{ isShow: true }" :title="$t('product_evaluation')" />
 
-    <PullRefresh :refreshing="refreshing" @refresh="onRefresh">
       <!-- 评价列表分类 -->
       <div class="plr-20 bg-white">
         <!-- 是否只看当前商品的评价 -->
@@ -36,6 +36,9 @@
           </van-tab>
         </van-tabs>
       </div>
+    </van-sticky>
+
+    <PullRefresh :refreshing="refreshing" @refresh="onRefresh" class="custom-min-height-94">
       <!-- 无数据时展示 -->
       <empty-status v-if="list.length === 0" :image="require('@/assets/images/empty/order.png')" />
       <!-- 评价列表 -->
@@ -155,7 +158,7 @@
 </template>
 
 <script>
-import { Checkbox, Cell, Tab, Tabs, Rate, CellGroup, List, ImagePreview } from 'vant';
+import { Checkbox, Cell, Tab, Tabs, Rate, CellGroup, List, ImagePreview, Sticky } from 'vant';
 import { getRateList, addGive } from '@/api/product';
 import PullRefresh from '@/components/PullRefresh';
 import EmptyStatus from '@/components/EmptyStatus';
@@ -169,6 +172,7 @@ export default {
     vanRate: Rate,
     vanCellGroup: CellGroup,
     vanList: List,
+    vanSticky: Sticky,
     PullRefresh,
     EmptyStatus
   },
@@ -188,17 +192,27 @@ export default {
       finished: false,
     }
   },
+  beforeRouteEnter (to, from, next) {
+    next(vm => {
+      if (from.name === 'cart-product-id') {
+        vm.tabActive = 0;
+      }
+    });
+  },
   activated() {
+    this.pageNum = 1;
     this.getList();
   },
   methods: {
     getList() { // 获取数据
-      this.$toast.loading({
-        forbidClick: true,
-        loadingType: 'spinner',
-        duration: 0
-      });
-      this.pageNum = 1;
+      if (this.pageNum == 1) {
+        this.$toast.loading({
+          forbidClick: true,
+          loadingType: 'spinner',
+          duration: 0
+        });
+      }
+      
       this.finished = false;
       let _params = { goodsId: this.$route.query.id, pageNum: this.pageNum, pageSize: this.pageSize }
       if (this.tabActive == 1) {
@@ -235,8 +249,6 @@ export default {
         this.total = res.data.total;
         this.loading = false;
         this.refreshing.isFresh = false;
-      }).catch(() => {
-        this.list = [];
       })
     },
     onReport(id) { // 举报
@@ -293,7 +305,7 @@ export default {
         return false;
       }
       this.pageNum += 1;
-      this.getRateList();
+      this.getList();
     },
     onPreview(item, index) { // 图片预览
       const imgs = item.map(picItem => {

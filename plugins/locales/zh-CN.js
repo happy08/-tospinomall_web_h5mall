@@ -726,7 +726,9 @@ const cn = {
   axios_tip_505: 'HTTP版本不受支持',
   axios_tip_10401: '登录过期，请重新登录',
   email_format_error: '邮箱格式错误',
-  dial_phone: '拨打电话'
+  dial_phone: '拨打电话',
+  aftersale_apply_num: '申请数量',
+  total_piece: '共{replace_tip}件'
 }
 
 export default cn;

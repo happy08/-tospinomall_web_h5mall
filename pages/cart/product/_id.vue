@@ -237,8 +237,7 @@
               {{ hotEvaluates.total | reviewNumFormat }}</span
             >
             <!-- 更多评论 -->
-            <span v-if="hotEvaluates.total == 0" class="fs-14">{{ $t("more") }}</span>
-            <nuxt-link v-else class="fs-14" :to="{ name: 'me-order-rate-detail-list', query: { id: goodSpuVo.id } }">{{ $t("more") }}</nuxt-link>
+            <nuxt-link class="fs-14" :to="{ name: 'me-order-rate-detail-list', query: { id: goodSpuVo.id } }">{{ $t("more") }}</nuxt-link>
           </h3>
           <!-- 评论展示 -->
           <div

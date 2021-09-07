@@ -22,14 +22,17 @@
                 <!-- 售后订单列表1 -->
                 <template v-if="tabActive == 0">
                   <OrderStoreSingle :name="orderitem.storeName" :showArrow="false" />
-                  <div v-for="(productItem, productIndex) in (orderitem.items)" :key="'product-' + productIndex">
+                  <div v-for="(productItem, productIndex) in orderitem.items" :key="'product-' + productIndex">
                     <OrderSingle class="mt-20" 
-                      :product_num="productItem.goodQuantity" 
+                      :product_num="0" 
                       :product_desc="productItem.goodName" 
                       :product_size="productItem.goodAttr" 
-                      :price="productItem.goodPrice"
+                      :price="productItem.productAmount"
                       :image="productItem.goodImg"
-                      @onClick="goProduct(productItem.goodId)" />
+                      @onClick="goProduct(productItem.goodId)"
+                    >
+                      <p class="light-grey fs-14 lh-20 mt-8 ws-nowrap" slot="product-num">{{ $t('total_piece', { replace_tip: productItem.goodQuantity }) }}</p>
+                    </OrderSingle>
                     
                     <!-- 售后申请 -->
                     <div :class="{'mt-24 flex vcenter': true, 'hend': productItem.showAfterSale != 0, 'between': productItem.showAfterSale == 0}" v-if="tabActive === 0">
@@ -46,15 +49,17 @@
                   <OrderStoreSingle :name="orderitem.storeName" :status="orderitem.returnType == 0 ? $t('refund_no_return') : $t('return_refund')" :showArrow="false" />
                   <template v-if="orderitem.orderReturnItems.length == 1">
                     <OrderSingle class="mt-20" 
-                      :product_num="orderReturnItem.returnQuantity" 
+                      :product_num="0" 
                       :product_desc="orderReturnItem.productName" 
                       :product_size="orderReturnItem.productAttr" 
-                      :price="orderReturnItem.productPrice"
+                      :price="orderReturnItem.productRealAmount"
                       :image="orderReturnItem.productImage"
                       @onClick="goReturnDetail(orderitem.id)"
                       v-for="orderReturnItem, orderReturnIndex in orderitem.orderReturnItems"
                       :key="'order-return-item-' + orderReturnIndex"
-                    />
+                    > 
+                      <p class="light-grey fs-14 lh-20 mt-8 ws-nowrap" slot="product-num">{{ $t('total_piece', { replace_tip: orderReturnItem.returnQuantity }) }}</p>
+                    </OrderSingle>
                   </template>
                   <div v-else class="more-order-content" @click="goReturnDetail(orderitem.id)">
                     <swiper
@@ -79,7 +84,7 @@
                     </swiper>
                     <div class="tr more-order-content__info">
                       <p class="fs-18 fw black lh-20">{{ $store.state.rate.currency }}{{ orderitem.returnAmount }}</p>
-                      <p class="light-grey fs-14 lh-20 mt-8">X{{ orderitem.returnQuantity }}</p>
+                      <p class="light-grey fs-14 lh-20 mt-8">{{ $t('total_piece', { replace_tip: orderitem.returnQuantity }) }}</p>
                     </div>
                   </div>
 
@@ -172,19 +177,24 @@ export default {
           clickable: true,
         },
       },
+      isTab: false
     }
   },
   beforeRouteEnter (to, from, next) {
     next(vm => {
       if (from.name === 'me') {
         vm.tabActive = 0;
+        vm.isTab = false;
+      }
+      if (from.name === 'me' || from.name === 'me-order' || from.name === 'me-order-detail-id' || from.name == null) {
+        vm.$fetch();
       }
     })
   },
   async fetch() {
     let _params = {};
     let listData;
-    this.tabActive = this.$route.query.orderId ? 0 : this.tabActive;
+    this.tabActive = this.$route.query.orderId && this.isTab == false ? 0 : this.tabActive;
     if (this.tabActive > 0) {
       _params.status = this.tabActive + 1;
       listData = await this.$api.getAfterSaleStatusList({ pageNum: this.pageNum, pageSize: this.pageSize, ..._params }); // 申请原因/处理中列表
@@ -211,7 +221,9 @@ export default {
     })
   },
   activated() {
-    this.$fetch();
+  },
+  deactivated() {
+    this.isTab = false;
   },
   methods: {
     titleFormat(val, titleIndex) {
@@ -221,6 +233,7 @@ export default {
       this.lists = [];
       this.pageNum = 1;
       this.finished = false;
+      this.isTab = true;
       this.$fetch();
     },
     goProduct(productId) { // 跳转到商品详情页
@@ -250,7 +263,7 @@ export default {
     },
     onRefresh() { // 下拉刷新
       this.pageNum = 1;
-      if (this.$route.query.orderId) { // 从我的订单页面跳转过来查看售后订单，刷新之后展示全部售后订单
+      if (this.$route.query.orderId && this.tabActive == 0) { // 从我的订单页面跳转过来查看售后订单，刷新之后展示全部售后订单
         this.$router.replace({
           name: 'me-aftersale'
         })

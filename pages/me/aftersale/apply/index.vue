@@ -5,7 +5,7 @@
 
     <!-- 订单详情 -->
     <template v-if="orderList.length == 1">
-      <OrderSingle class="bg-white p-20" :image="detailItem.goodImg" :product_num="detailItem.goodQuantity" :product_desc="detailItem.goodName" :product_size="detailItem.goodAttr" :price="detailItem.goodPrice"  v-for="(detailItem, orderIndex) in orderList" :key="'order-item-' + orderIndex" />
+      <OrderSingle class="bg-white p-20" :image="detailItem.goodImg" :product_num="detailItem.canAfterApplyNum" :product_desc="detailItem.goodName" :product_size="detailItem.goodAttr" :price="detailItem.goodPrice"  v-for="(detailItem, orderIndex) in orderList" :key="'order-item-' + orderIndex" />
     </template>
     <template v-else>
       <swiper

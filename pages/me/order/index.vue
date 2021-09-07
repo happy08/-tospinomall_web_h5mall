@@ -80,12 +80,14 @@
                       :image="productItem.goodImg" 
                       :product_desc="productItem.goodName"
                       :product_size="productItem.goodAttr"
-                      :price="productItem.goodPrice"
-                      :product_num="item.totalQuantity"
+                      :price="productItem.productAmount"
+                      :product_num="0"
                       @onClick="goOrderDetail(item.id)"
                       v-for="(productItem,productIndex) in item.items"
                       :key="productIndex"
-                    />
+                    >
+                      <p class="light-grey fs-14 lh-20 mt-8 ws-nowrap" slot="product-num">{{ $t('total_piece', { replace_tip: productItem.goodQuantity }) }}</p>
+                    </OrderSingle>
                   </template>
                   <!-- 多个商品 -->
                   <div v-else class="more-order-content" @click="goOrderDetail(item.id)">
@@ -110,7 +112,7 @@
                     </swiper>
                     <div class="tr more-order-content__info">
                       <p class="fs-18 fw black lh-20">{{ $store.state.rate.currency }}{{ item.productAmount }}</p>
-                      <p class="light-grey fs-14 lh-20 mt-8">X{{ item.totalQuantity }}</p>
+                      <p class="light-grey fs-14 lh-20 mt-8">{{ $t('total_piece', { replace_tip: item.totalQuantity }) }}</p>
                     </div>
                   </div>
                   <!-- 订单不同状态对应的按钮展示 -->
@@ -311,6 +313,9 @@ export default {
     next(vm => {
       if (from.name == 'me' || from.name == null || from.name == 'cart-order-confirm') {
         vm.typeActive = vm.$route.query.type ? parseFloat(vm.tabs[vm.$route.query.type].type) : 100;
+        vm.isFirst = true;
+        vm.pageNum = 1;
+        vm.$fetch();
       }
     });
   },
@@ -352,9 +357,6 @@ export default {
     this.finished = false;
   },
   activated() {
-    this.isFirst = true;
-    this.pageNum = 1;
-    this.$fetch();
     this.beforeOneYear = Moment(parseFloat(this.$store.state.user.nowTime)).subtract(1,'years').format('YYYY');
     this.beforeTwoYear = Moment(parseFloat(this.$store.state.user.nowTime)).subtract(2,'years').format('YYYY');
     // 取消订单原因，因为整个列表都是同一种类型，所以就只在全局引入一次就好了

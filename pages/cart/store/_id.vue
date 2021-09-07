@@ -587,7 +587,4 @@ export default {
 .pb-70{
   padding-bottom: 70px;
 }
-.ws-nowrap{
-  white-space: nowrap;
-}
 </style>
