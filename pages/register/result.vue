@@ -68,11 +68,11 @@ export default {
         this.$store.dispatch('user/GetUserInfo', res.data.token_type + ' ' + res.data.access_token);
         // 获取消息信息
         this.$store.commit('user/SET_WEBSOCKET', res.data.user_info.passUrl);
+        // 当前登录账号
+        this.$store.commit('user/SET_ACCOUNT', this.$route.query.phone ? this.$route.query.phone : this.$route.query.email);
         this.$toast.clear();
         // 登录成功跳转到首页
         setTimeout(() => {
-          this.account = '';
-          this.password = '';
           this.$router.push({
             name: 'home'
           })

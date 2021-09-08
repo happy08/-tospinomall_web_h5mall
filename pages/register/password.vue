@@ -19,7 +19,7 @@
           <van-icon v-else :name="require('@/assets/images/icon/eye-close.png')" size="0.48rem" @click="pwdType = 'text'" />
         </template>
       </van-field>
-      <p class="fs-14 register-pwd__tip">{{ $t('register_set_password_limit_tips') }}</p>
+      <p class="fs-14 register-pwd__tip">{{ $t('password_limit_tips') }}</p>
       <!-- 注册 -->
       <van-button 
         class="mt-60 btn_h48 fw fs-16 w-100"
@@ -56,7 +56,7 @@ export default {
   },
   methods: {
     registerClick() { // 买家用户注册
-      const reg = /^(?![\d]+$)(?![a-zA-Z]+$)(?![-=+_.,]+$)[\da-zA-Z-=+_.,]{6,18}$/;
+      const reg = /^(?![\d]+$)(?![a-zA-Z]+$)(?![^\da-zA-Z]+$)(?=[\w!@~#\$%\^&\*\(\)\-\+=\{\}\[\]\|\\,\.<>\?/:;"']+$).{6,20}$/;
       if (!reg.test(this.password)) {
         this.$toast(this.$t('t_format_error'));
         return false;

@@ -86,7 +86,8 @@ export default {
       }
     },
     jump() { // 校验登录密码，成功之后跳转到确认新密码页面
-      const reg = /^(?![\d]+$)(?![a-zA-Z]+$)(?![-=+_.,]+$)[\da-zA-Z-=+_.,]{6,18}$/;
+      const reg = /^(?![\d]+$)(?![a-zA-Z]+$)(?![^\da-zA-Z]+$)(?=[\w!@~#\$%\^&\*\(\)\-\+=\{\}\[\]\|\\,\.<>\?/:;"']+$).{6,20}$/;
+
       if (!reg.test(this.newPwd) || !reg.test(this.pwd)) {
         this.$toast(this.$t('t_format_error'));
         return false;
