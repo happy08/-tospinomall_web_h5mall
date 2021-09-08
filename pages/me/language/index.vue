@@ -23,7 +23,14 @@ export default {
     }
   },
   activated() {
+    // 加载图标
+    this.$toast.loading({
+      forbidClick: true,
+      loadingType: 'spinner',
+      duration: 0
+    });
     this.$api.getLangs().then(res => {
+      this.$toast.clear();
       this.langList = res.data.localeList;
     });
   },
