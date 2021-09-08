@@ -14,6 +14,7 @@
           :show-action="isHeader"
           @search="onSearch"
           @cancel="onCancel"
+          maxlength="30"
         />
       </div>
     </van-sticky>
