@@ -105,6 +105,12 @@ export default {
       operateFeedback({ content: this.message, feedbackCategoryId: this.activeTag, phone: this.phone, imgUrls: this.imgList.join(',') }).then(res => {
         if (res.code != 0) return false;
 
+        this.message = '';
+        this.phone = '';
+        this.fileList = [];
+        this.feedbackType = [];
+        this.activeTag = '';
+        this.imgList = [];
         this.$router.push({
           name: 'me-feedback-result'
         })
