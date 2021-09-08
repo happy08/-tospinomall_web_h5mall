@@ -14,6 +14,7 @@
         @focus="onFocus"
         @clear="onClear"
         ref="searchContainer"
+        maxlength="200"
       />
       <!-- 分类 -->
       <div class="flex between vcenter plr-20 bg-white" v-show="!isShowTip">
