@@ -27,7 +27,7 @@
                       :product_num="0" 
                       :product_desc="productItem.goodName" 
                       :product_size="productItem.goodAttr" 
-                      :price="productItem.productAmount"
+                      :price="productItem.realAmount"
                       :image="productItem.goodImg"
                       @onClick="goProduct(productItem.goodId)"
                     >

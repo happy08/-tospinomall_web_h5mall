@@ -78,9 +78,9 @@ export function checkCurrentCode(data) {
 }
 
 /**
- * 获取语言列表-查询字典接口
+ * 查询字典接口
  */
-export function getLangList(type = 'sys_language_type') {
+export function getDictList() {
   return request({
     // url: `/admin/dict/type/${type}`,
     url: `/basics/dict/type/${type}`,

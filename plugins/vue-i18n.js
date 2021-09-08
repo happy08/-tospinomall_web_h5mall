@@ -37,11 +37,20 @@ export function vantLocales(lang) {
 }
 
 // 导出语言数据
-export default ({ app, store }) => {
+export default async ({ app, store }) => {
+  // 获取默认站点语言
+  const defaultLocale = function () {
+    return new Promise(resolve => {
+      app.$api.getLangs().then(res => {
+        resolve(res.data.defaultLocale);
+      });
+    })
+  }
+  
   app.i18n = new VueI18n({
-    locale: store.state.locale,
+    locale: store.state.locale || await defaultLocale(),
     // fallbackLocale: store.state.locale || 'en',
-    fallbackLocale: 'zh-CN', // 没有文案的时候默认英文语言
+    fallbackLocale: await defaultLocale(),
     messages: {
       'zh-CN': {
         ...zhCNLocale,
@@ -74,5 +83,5 @@ export default ({ app, store }) => {
     }
   });
   
-  vantLocales(store.state.locale || 'zh-CN');
+  vantLocales(store.state.locale || await defaultLocale());
 };
