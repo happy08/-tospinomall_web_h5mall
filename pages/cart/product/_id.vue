@@ -24,11 +24,18 @@
           </div>
         </div>
 
-        <div slot="header-right" @click="$router.push({ name: 'cart', query: { isBar: 1 } })">
+        <div slot="header-right">
           <van-icon
-            :name="require('@/assets/images/icon/cart-bgd.svg')"
+            :name="!isScroll ? require('@/assets/images/icon/share-icon.png') : require('@/assets/images/icon/share-icon-white.png')"
             size="0.64rem"
             class="mt-6"
+            @click="showShare = true"
+          />
+          <van-icon
+            :name="!isScroll ? require('@/assets/images/icon/cart-icon.png') : require('@/assets/images/icon/cart-icon-white.png')"
+            size="0.64rem"
+            class="mt-6 ml-12"
+            @click="$router.push({ name: 'cart', query: { isBar: 1 } })"
           />
         </div>
       </BmHeaderNav>
@@ -491,16 +498,24 @@
 
     <!-- 产品规格 -->
     <ProductSku :productShow="productShow" :goodSpuVo="goodSpuVo" :initialSku="initialSku" :sku="sku" :type="skuType" @onSkuInfo="onSkuInfo" @onSelectedSkuCombId="selectedSkuCombId = $event" />
+
+    <!-- 分享 -->
+    <van-share-sheet v-model="showShare" :options="shareOptions" :title="$t('share_title')" :cancel-text="$t('cancel')" @select="onShare" />
   </div>
 </template>
 
 <script>
-import { ImagePreview, Cell, Step, Steps, Rate, Sticky, Search, Tab, Tabs, Popup, Stepper } from 'vant';
+import { ImagePreview, Cell, Step, Steps, Rate, Sticky, Search, Tab, Tabs, Popup, Stepper, ShareSheet } from 'vant';
 import { getDeliveryInfo, attentionProduct, cancelAttentionProduct } from '@/api/cart';
 import { getCurrentDefaultAddress, getNextArea } from '@/api/address';
 import ProductSku from '@/components/ProductSku';
 import 'swiper/css/swiper.css';
 import { Swiper, SwiperSlide } from 'vue-awesome-swiper';
+import ClipboardJS from 'clipboard';
+import { getShareDetail } from '@/api/user';
+import shareFacebook from '@/assets/images/icon/share-facebook.png';
+import shareInfo from '@/assets/images/icon/share-info.png';
+import shareLink from '@/assets/images/icon/share-link.png';
 
 export default {
   components: {
@@ -516,6 +531,7 @@ export default {
     vanStepper: Stepper,
     swiper: Swiper,
     swiperSlide: SwiperSlide,
+    vanShareSheet: ShareSheet,
     ProductSku
   },
   data() {
@@ -581,7 +597,23 @@ export default {
       skuType: '', // cart 操作区按钮为确认，''操作区按钮为加入购物车/立即购买
       goodAttr: [], // 商品选中的属性规格展示
       selectedSkuCombId: null,
-      deliveryInfo: []
+      deliveryInfo: [],
+      showShare: false,
+      shareOptions: [
+        {
+          name: this.$t('share_facebook'),
+          icon: shareFacebook
+        },
+        {
+          name: this.$t('share_copy_link'),
+          icon: shareLink
+        },
+        {
+          name: this.$t('share_content'),
+          icon: shareInfo
+        }
+      ],
+      shareDetail: {}
     }
   },
   async fetch() {
@@ -756,6 +788,11 @@ export default {
       this.getNextArea({ id: 0 });
     }
     this.$fetch();
+    // 获取分享内容
+    getShareDetail(this.$route.params.id).then(res => {
+      this.shareDetail = res.data;
+    })
+    
     // this.$refs.productSku.resetSelectedSku();
   },
   head() {
@@ -980,6 +1017,43 @@ export default {
           id: id
         }
       })
+    },
+    onShare(option, index) { // 分享操作
+      if (index == 0) { // facebook
+        window.open("https://www.facebook.com/share.php?u=".concat(encodeURIComponent(this.shareDetail.url)));
+        return false;
+      }
+      if (index == 1) { // 复制链接
+        this.onCopy(this.shareDetail.urlContent);
+        return false;
+      }
+      if (index == 2) { // 分享内容
+        this.onCopy(this.shareDetail.textContent);
+        return false;
+      }
+    },
+    onCopy(value) {
+      let clipboard = new ClipboardJS('.van-share-sheet__option', {
+        text: () => {
+          return value;
+        }
+      })
+      clipboard.on('success', () => {
+        let msg = this.$t('t_copied_to_clipboard');
+        this.$toast({
+          message: msg,
+          type: 'success'
+        })
+        clipboard.destroy();
+      })
+      clipboard.on('error', () => {
+        let msg = this.$t('fail_copied_to_clipboard');
+        this.$toast({
+          message: msg,
+          type: 'fail'
+        })
+        clipboard.destroy();
+      })
     }
   },
 }
@@ -1104,7 +1178,7 @@ export default {
     display: none;
   }
   .van-nav-bar__left{
-    width: 88%;
+    width: 76%;
     &>div, .sticky-opacity{
       width: 100%;
     }

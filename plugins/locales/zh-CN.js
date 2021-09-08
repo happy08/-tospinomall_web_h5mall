@@ -728,7 +728,11 @@ const cn = {
   email_format_error: '邮箱格式错误',
   dial_phone: '拨打电话',
   aftersale_apply_num: '申请数量',
-  total_piece: '共{replace_tip}件'
+  total_piece: '共{replace_tip}件',
+  share_title: '分享',
+  share_facebook: 'Facebook',
+  share_copy_link: '复制链接',
+  share_content: '分享内容'
 }
 
 export default cn;

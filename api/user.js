@@ -122,3 +122,16 @@ export function getService(params) {
     params
   })
 }
+
+/**
+ * 商品详情获取分享内容
+ */
+export function getShareDetail(goodsId) {
+  return request({
+    url: '/basics/mmsoperateenjoy/findByGoodsId',
+    method: 'post',
+    data: qs.stringify({
+      goodsId: goodsId
+    })
+  })
+}

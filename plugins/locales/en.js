@@ -726,7 +726,11 @@ const en = {
   email_format_error: 'Email format error',
   dial_phone: 'Dial number',
   aftersale_apply_num: 'Number of applications',
-  total_piece: '{replace_tip} piece'
+  total_piece: '{replace_tip} piece',
+  share_title: 'Share',
+  share_facebook: 'Facebook',
+  share_copy_link: 'Copy Link',
+  share_content: 'Share Content'
 }
 
 export default en;
