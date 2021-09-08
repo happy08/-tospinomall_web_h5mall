@@ -396,7 +396,7 @@ const cn = {
   please_enter_contact: '请输入联系人',
   please_enter_phone_number: '请输入联系电话',
   merge_to_pay: '合并付款',
-  after_sale_freight_tip: '快递服务由合作快递公司提供，预计收费{replace_tip}元。具体费用以送货人员实际收费为准',
+  after_sale_freight_tip: '由合作快递公司提供服务，取件方便快捷，预计费用：{replace_tip}，具体费用请以配送人员实际收费为准',
   pick_up_service_agreement: '已阅读并同意《上门取件服务协议》',
   t_agree_pick_up_service_agreement: '请勾选同意上门取件服务协议',
   refund_price_tip: '若退款成功，将退还给您{replace_tip}现金',

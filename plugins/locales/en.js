@@ -396,7 +396,7 @@ const en = {
   please_enter_contact: 'Please enter contact',
   please_enter_phone_number: 'Please enter the contact number',
   merge_to_pay: 'Consolidated payment',
-  after_sale_freight_tip: 'The express service is provided by the cooperative express company, and the estimated fee is {replace_tip} yuan. The specific fees shall be subject to the actual fees charged by the delivery personnel',
+  after_sale_freight_tip: 'The service is provided by the cooperative express company, and the pickup is convenient and fast. Estimated cost: {replace_tip}.Please refer to the actual charge of the delivery staff for the specific cost',
   pick_up_service_agreement: 'Read and agree《Door to door pick-up service agreement》',
   t_agree_pick_up_service_agreement: 'Please check the agree to pick-up service agreement',
   refund_price_tip: 'If the refund is successful, it will be returned to you {replace_tip} cash',
