@@ -283,3 +283,17 @@ export function aftersaleOrderItem(itemId) {
     method: 'get'
   })
 }
+
+/**
+ * 计算邮费
+ */
+export function getFreightPrice(data) {
+  return request({
+    url: '/basics/base/logistics/buyer/calculteFreightPrice',
+    method: 'post',
+    data: data,
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+}

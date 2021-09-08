@@ -9,7 +9,7 @@
     <!-- 订单详情 -->
     <div class="bg-white p-20">
       <template v-if="orderList.length == 1">
-        <OrderSingle :image="detailItem.productImage" :product_num="detailItem.canAfterApplyNum" :product_desc="detailItem.productName" :product_size="detailItem.productAttr" :price="detailItem.productPrice"  v-for="(detailItem, orderIndex) in orderList" :key="'order-item-' + orderIndex" />
+        <OrderSingle :image="detailItem.productImage" :product_num="$route.query.edit ? detail.totalreturnQuantity: detailItem.canAfterApplyNum" :product_desc="detailItem.productName" :product_size="detailItem.productAttr" :price="detailItem.productPrice"  v-for="(detailItem, orderIndex) in orderList" :key="'order-item-' + orderIndex" />
         <div class="flex between mt-14 vcenter">
           <span class="fs-14 light-grey">{{ $t('aftersale_apply_num') }}</span>
           <van-stepper
@@ -18,7 +18,7 @@
             button-size="0.42rem"
             :integer="true"
             class="custom-stepper"
-            :max="$route.query.edit ? orderList[0].returnQuantity : orderList[0].canAfterApplyNum"
+            :max="$route.query.edit ? detail.totalreturnQuantity : orderList[0].canAfterApplyNum"
             @change="onChangeQuantity"
           />
         </div>
@@ -71,7 +71,8 @@
         <van-field v-model="detail.returnAmount" type="number" input-align="right" :formatter="onFormatter" />
       </template>
     </van-cell> -->
-    <div class="p-20 fs-14 mt-12 black">{{ $t('refund_price_tip', { replace_tip: $store.state.rate.currency + detail.returnAmount }) }}</div>
+    <van-cell class="ptb-20 plr-20 mt-12" center :title="$t('refund_amount')" title-class="fs-14 black" value-class="black fw fs-18" :value="$store.state.rate.currency + detail.returnAmount"></van-cell>
+    <div class="p-20 fs-14 black">{{ $t('refund_price_tip', { replace_tip: $store.state.rate.currency + detail.returnAmount }) }}</div>
 
     <!-- 申请指令 -->
     <div class="plr-20 pt-20 pb-24 bg-white">
@@ -99,6 +100,8 @@
     <!-- 退货方法 退货退款才展示 -->
     <div class="p-20 bg-white mt-12" v-if="$route.params.type == 2">
       <van-cell class="pb-20 pt-0 plr-0" :title="$t('return_method')" title-class="fs-14 black" :value="returnMethodTitle" is-link :border="false" @click="returnMethod = true" />
+      <!-- 上门取件-有运费 -->
+      <p class="fs-14 light-grey pb-10" v-if="returnMethodRadio == 0">{{ $t('after_sale_freight_tip', { replace_tip: $store.state.rate.currency + freightPrice }) }}</p>
       <!-- 上门取件,服务协议 -->
       <van-checkbox class="flex vcenter" @click="isGreenment = !isGreenment" v-if="returnMethodRadio == 0">
         <template #icon>
@@ -129,7 +132,7 @@
           <p class="mt-8 lh-20 grey" v-if="address">{{ address.completeAddress }}</p>
         </template>
       </van-cell>
-
+    
       <!-- 自行寄回 -->
       <p class="fs-14 light-grey pb-10" v-if="returnMethodRadio == 1">{{ $t('self_return_freight_tips') }}</p>
       <van-field
@@ -227,7 +230,7 @@
 <script>
 import OrderSingle from '@/components/OrderSingle';
 import { Cell, CellGroup, Uploader, Field, Checkbox, Switch, Stepper, Popup, RadioGroup, Radio } from 'vant';
-import { aftersaleOrderItem, getOrderReasonList, applyAfterSale, getUpdateReturnDetail, updateApply } from '@/api/order';
+import { aftersaleOrderItem, getOrderReasonList, applyAfterSale, getUpdateReturnDetail, updateApply, getFreightPrice } from '@/api/order';
 import { getPicUrl } from '@/api/user';
 import 'swiper/css/swiper.css';
 import { Swiper, SwiperSlide } from 'vue-awesome-swiper';
@@ -294,7 +297,8 @@ export default {
         },
       },
       applyNum: 1,
-      isFrom: false
+      isFrom: false,
+      freightPrice: 0
     }
   },
   beforeRouteEnter (to, from, next) {
@@ -312,6 +316,8 @@ export default {
         vm.fileList = [];
         vm.isFrom = false;
         vm.isGreenment = false;
+        vm.freightPrice = 0;
+        vm.applyNum = 1;
       }
       if (from.name == 'me-address') { // 从地址选择页面回来不需要重新获取数据
         vm.isFrom = true;
@@ -320,6 +326,10 @@ export default {
   },
   activated() {
     if (this.isFrom) {
+      if (this.returnMethodRadio == 0 && this.$route.params.type == 2) { // 上门取件要计算邮费
+        this.address = JSON.parse(this.$route.query.address);
+        this.getFreightPrice();
+      }
       return false;
     }
     if (this.$route.params.type == 1) this.title = 'applyReturn'; // 仅退款
@@ -346,9 +356,10 @@ export default {
           goodName: res.data.productName,
           goodAttr: res.data.productAttr,
           goodPrice: res.data.productPrice,
-          returnAmount: res.data.returnAmount
+          returnAmount: res.data.returnAmount,
+          totalreturnQuantity: parseFloat(res.data.orderReturnItems[0].returnQuantity) + parseFloat(res.data.canAfterApplyNum)
         };
-        this.applyNum = res.data.orderReturnItems[0].returnQuantity;
+        this.applyNum = parseFloat(res.data.orderReturnItems[0].returnQuantity);
         this.orderList = res.data.orderReturnItems;
         // 申请原因
         this.applyReasonLabel = res.data.applyReason;
@@ -373,8 +384,15 @@ export default {
               name: res.data.sendName,
               phone: res.data.sendPhone,
               completeAddress: res.data.sendCompleteAddress,
-              id: res.data.sendAddressId
+              id: res.data.sendAddressId,
+              areaCode: res.data.sendDistrictCode,
+              cityCode: res.data.sendCityCode,
+              countryCode: res.data.sendCountryCode,
+              provinceCode: res.data.sendProvinceCode,
             }
+          }
+          if (this.returnMethodRadio == 0) { // 上门取件要计算邮费
+            this.getFreightPrice();
           }
         }
         // 凭证图片
@@ -420,8 +438,15 @@ export default {
           name: res.data.order.receiverName,
           phone: res.data.order.receiverPhone,
           completeAddress: res.data.order.receiverCompleteAddress,
-          id: res.data.order.receiverAddressId
+          id: res.data.order.receiverAddressId,
+          areaCode: res.data.order.receiverRegionCode,
+          cityCode: res.data.order.receiverCityCode,
+          countryCode: res.data.order.receiverCountryCode,
+          provinceCode: res.data.order.receiverProvinceCode
         }
+      }
+      if (this.$route.params.type == 2 && this.returnMethodRadio == 0) { // 退货退款
+        this.getFreightPrice();
       }
     })
   },
@@ -443,6 +468,7 @@ export default {
         this.applyReasonLabel = this.cancelReasonList[this.typeRadio].applyReason; 
       }
       this.isSelectType = false;
+
     },
     selectPopup(type) { // 打开售后选项
       if (type == 'reason') { // 申请类型和货物状态选择之后才可以选择申请原因
@@ -633,8 +659,30 @@ export default {
       this.returnMethod = false;
     },
     onChangeQuantity(value) { // 修改售后数量
-      console.log(value)
       this.detail.returnAmount = this.orderList[0].productPrice * value;
+      if (this.returnMethodRadio == 0 && this.$route.params.type == 2) { // 上门取件要计算邮费
+        this.getFreightPrice();
+      }
+    },
+    getFreightPrice() { // 计算邮费
+      const _data = {
+        amount: this.orderList[0].productPrice,
+        areaCode: this.address.areaCode,
+        cityCode: this.address.cityCode,
+        countryCode: this.address.countryCode,
+        provinceCode: this.address.provinceCode,
+        deliveryType: 2,
+        goodsWeight: this.orderList[0].weight,
+        goodsWeightUnit: this.orderList[0].weightUnit,
+        pieceCount: this.applyNum,
+        promisedDeliveryTime: this.detail.promisedDeliveryTime,
+        volume: this.orderList[0].volume,
+        volumeUnit: this.orderList[0].volumeUnit,
+        orderType: 2
+      }
+      getFreightPrice(_data).then(res => {
+        this.freightPrice = res.data.freightPrice;
+      })
     }
   },
 }

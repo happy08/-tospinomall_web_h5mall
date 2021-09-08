@@ -197,7 +197,10 @@ export default ({ app }, inject) => {
     getLangs() { // 查询当前站点语言及语言列表
       return app.$axios({
         url: `${url}/basics/dict/locale`,
-        method: 'get'
+        method: 'get',
+        headers: {
+          Authorization: app.$cookies.get('authToken')
+        }
       })
     }
   };

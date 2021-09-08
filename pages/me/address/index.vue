@@ -129,7 +129,11 @@ export default {
             name: item.name,
             phone: item.phone,
             completeAddress: item.completeAddress,
-            id: item.id
+            id: item.id,
+            areaCode: item.districtCode,
+            cityCode: item.cityCode,
+            countryCode: item.countryCode,
+            provinceCode: item.provinceCode,
           })
         }
       })

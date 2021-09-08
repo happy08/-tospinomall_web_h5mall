@@ -52,7 +52,7 @@
                       :product_num="0" 
                       :product_desc="orderReturnItem.productName" 
                       :product_size="orderReturnItem.productAttr" 
-                      :price="orderReturnItem.productRealAmount"
+                      :price="orderitem.returnAmount"
                       :image="orderReturnItem.productImage"
                       @onClick="goReturnDetail(orderitem.id)"
                       v-for="orderReturnItem, orderReturnIndex in orderitem.orderReturnItems"
