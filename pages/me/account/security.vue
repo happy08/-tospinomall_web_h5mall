@@ -14,6 +14,7 @@
         class="mr-12"
         :errorUrl="require('@/assets/images/icon/user-icon.png')"
         :alt="'Tospino user icon'"
+        :round="true"
       />
       <p class="white" v-if="$store.state.user.userInfo">{{ $store.state.user.userInfo.nickname }}{{ $t('welcome_back_to_security') }}</p>
     </div>
