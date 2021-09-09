@@ -155,7 +155,7 @@ export default {
       }
     }
   },
-  beforeDestroy(){
+  deactivated(){
     window.removeEventListener('scroll', this.stickyScroll); // 离开页面清除滚动事件
   }
 }
