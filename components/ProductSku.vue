@@ -129,6 +129,8 @@ export default {
           this.$toast.success(this.$t('t_add_shopping_cart_successfully'));
           this.productShow.show = false;
         })
+      } else {
+        this.$toast(this.$t('inventory_shortage')); // 库存不足
       }
     },
     onOutStock() { // 售空

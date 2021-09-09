@@ -313,6 +313,8 @@ export default {
     next(vm => {
       if (from.name == 'me' || from.name == null || from.name == 'cart-order-confirm') {
         vm.typeActive = vm.$route.query.type ? parseFloat(vm.tabs[vm.$route.query.type].type) : 100;
+      }
+      if (from.name == 'me' || from.name == null || from.name == 'cart-order-confirm' || from.name == 'me-order-detail-id') {
         vm.isFirst = true;
         vm.pageNum = 1;
         vm.$fetch();
@@ -320,9 +322,9 @@ export default {
     });
   },
   async fetch() {
-    if (!this.isTab) {
-      this.typeActive = this.$route.query.type ? parseFloat(this.tabs[this.$route.query.type].type) : 100;
-    }
+    // if (!this.isTab) {
+    //   this.typeActive = this.$route.query.type ? parseFloat(this.tabs[this.$route.query.type].type) : 100;
+    // }
     if (this.typeActive == 100) { // 全部
       this.params = {
         pageNum: this.params.pageNum,

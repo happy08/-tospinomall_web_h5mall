@@ -1,7 +1,7 @@
 <template>
   <!-- 我的-设置-收货地址 -->
   <div>
-    <BmHeaderNav :left="{ isShow: true }" :title="$t('harvest_address')" />
+    <BmHeaderNav :left="{ isShow: true, isEmit: true }" :title="$t('harvest_address')" @leftClick="leftClick" />
     <!-- 地址列表 -->
     <div class="p-20 address-single" v-for="(item, index) in lists" :key="index" @click="onClick(item)">
       <div class="flex between vcenter address-single__top">
@@ -110,7 +110,7 @@ export default {
             address: JSON.stringify({
               name: item.name,
               phone: item.phone,
-              completeAddress: item.completeAddress,
+              completeAddress: item.completeAddressDetail,
               id: item.id
             })
           }
@@ -128,7 +128,7 @@ export default {
           address: JSON.stringify({
             name: item.name,
             phone: item.phone,
-            completeAddress: item.completeAddress,
+            completeAddress: item.completeAddressDetail,
             id: item.id,
             areaCode: item.districtCode,
             cityCode: item.cityCode,
@@ -137,6 +137,28 @@ export default {
           })
         }
       })
+    },
+    leftClick() {
+      if (this.$route.query.backName && this.$route.query.backName == 'me-aftersale-apply-type') {
+        this.$router.replace({
+          name: this.$route.query.backName,
+          params: {
+            type: this.$route.query.applyType
+          },
+          query: {
+            ...JSON.parse(this.$route.query.back)
+          }
+        })
+        return false;
+      }
+
+      if(window.history.length < 3){ //解决部分机型拿不到history
+        console.log('go home');
+        this.$router.replace('/');
+      }else{
+        console.log('back');
+        history.back();
+      }
     }
   },
 }

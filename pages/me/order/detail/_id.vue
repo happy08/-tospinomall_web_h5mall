@@ -10,7 +10,7 @@
       <div class="min-h-95">
         <!-- 待付款0倒计时，在线支付 -->
         <div class="mt-14 tc white fs-14 pb-40 flex center plr-20" v-if="detail.status == 0 && detail.paymentType == 1 && detail.remainCloseMills > 0">
-          {{ $t('refund_countdown') }}:
+          {{ $t('refund_countdown') }}
           <van-count-down :time="detail.remainCloseMills" format="HH:mm:ss" class="white" /> 
           {{ $t('automatically_closed') }}
         </div>

@@ -9,7 +9,7 @@
       <!-- 结果提示 -->
       <div class="tc flex center">
         <!-- 失败 -->
-        <template v-if="$route.query.isSuccess && $route.query.isSuccess == 0">
+        <template v-if="$route.query.isSuccess == 0">
           <BmIcon :name="'guanbi2'" :width="'0.4rem'" :height="'0.4rem'" :color="'#fff'" />
           <span class="ml-4 white fs-18">{{ $t('payment_failed') }}</span>
         </template>
@@ -30,7 +30,6 @@
       </div>
     </div>
     
-
     <!-- 可能喜欢的推荐列表展示 -->
     <div v-if="recommendList.length > 0">
       <van-divider class="plr-30 mt-24 fw fs-14 clr-black-85">
@@ -148,7 +147,7 @@ export default {
       }
     },
     leftClick() {
-      if (this.$route.query.isSuccess || this.$route.query.isSuccess == 0) { // 订单余额支付
+      if (this.$route.query.isSuccess && this.$route.query.isSuccess == 0) { // 订单余额支付
         this.$router.go(-2);
       } else { // 订单其他支付
         this.$router.go(-3);

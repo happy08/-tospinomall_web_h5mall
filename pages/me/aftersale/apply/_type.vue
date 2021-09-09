@@ -9,8 +9,8 @@
     <!-- 订单详情 -->
     <div class="bg-white p-20">
       <template v-if="orderList.length == 1">
-        <OrderSingle :image="detailItem.productImage" :product_num="$route.query.edit ? detail.totalreturnQuantity: detailItem.canAfterApplyNum" :product_desc="detailItem.productName" :product_size="detailItem.productAttr" :price="detailItem.productPrice"  v-for="(detailItem, orderIndex) in orderList" :key="'order-item-' + orderIndex" />
-        <div class="flex between mt-14 vcenter">
+        <OrderSingle :image="detailItem.productImage" :product_num="$route.params.type == 2 ? $route.query.edit ? detail.totalreturnQuantity: detailItem.canAfterApplyNum : detailItem.returnQuantity" :product_desc="detailItem.productName" :product_size="detailItem.productAttr" :price="detailItem.productPrice"  v-for="(detailItem, orderIndex) in orderList" :key="'order-item-' + orderIndex" />
+        <div class="flex between mt-14 vcenter" v-if="$route.params.type == 2">
           <span class="fs-14 light-grey">{{ $t('aftersale_apply_num') }}</span>
           <van-stepper
             v-model="applyNum"
@@ -118,7 +118,7 @@
       </van-checkbox>
 
       <!-- 上门取件-选择地址 -->
-      <van-cell class="mt-20 plr-0 ptb-0" title-class="black ml-12" is-link replace :to="{ name: 'me-address', query: { back: JSON.stringify($route.query), applyType: $route.params.type } }" v-if="returnMethodRadio == 0">
+      <van-cell class="mt-20 plr-0 ptb-0" title-class="black ml-12" is-link replace :to="{ name: 'me-address', query: { back: JSON.stringify($route.query), applyType: $route.params.type, backName: 'me-aftersale-apply-type' } }" v-if="returnMethodRadio == 0">
         <!-- 左侧图标 -->
         <template #icon>
           <van-icon :name="require('@/assets/images/icon/address-icon.png')" size="0.48rem" />
@@ -303,7 +303,7 @@ export default {
   },
   beforeRouteEnter (to, from, next) {
     next(vm => {
-      if (from.name == 'me-aftersale-apply') {
+      if (from.name == 'me-aftersale-apply' || from.name == null) {
         vm.applyReason = -1; // 售后原因
         vm.applyReasonLabel = '';
         vm.applyType = -1; // 申请类型状态
@@ -326,7 +326,7 @@ export default {
   },
   activated() {
     if (this.isFrom) {
-      if (this.returnMethodRadio == 0 && this.$route.params.type == 2) { // 上门取件要计算邮费
+      if (this.returnMethodRadio == 0 && this.$route.params.type == 2 && this.$route.query.address) { // 上门取件要计算邮费
         this.address = JSON.parse(this.$route.query.address);
         this.getFreightPrice();
       }
@@ -408,7 +408,8 @@ export default {
       }
       this.detail = {
         ...res.data.order,
-        returnAmount: res.data.orderItemList[0].canAfterApplyNum * res.data.orderItemList[0].goodPrice
+        returnAmount: res.data.orderItemList[0].canAfterApplyNum * res.data.orderItemList[0].goodPrice,
+        realPrice: res.data.orderItemList[0].realPrice
       };
       this.applyNum = res.data.orderItemList[0].canAfterApplyNum;
       this.orderList = res.data.orderItemList.map(item => {
@@ -449,6 +450,9 @@ export default {
         this.getFreightPrice();
       }
     })
+  },
+  deactivated() {
+    this.isFrom = false;
   },
   methods: {
     onConfirm() { // 提交 售后选项 根据currentSelect.type判断提交类别
@@ -659,7 +663,11 @@ export default {
       this.returnMethod = false;
     },
     onChangeQuantity(value) { // 修改售后数量
-      this.detail.returnAmount = this.orderList[0].productPrice * value;
+      const max = this.$route.query.edit ? this.detail.totalreturnQuantity : this.orderList[0].canAfterApplyNum;
+      if (value > max) {
+        return false;
+      }
+      this.detail.returnAmount = this.detail.realPrice * 1000 * value / 1000;
       if (this.returnMethodRadio == 0 && this.$route.params.type == 2) { // 上门取件要计算邮费
         this.getFreightPrice();
       }

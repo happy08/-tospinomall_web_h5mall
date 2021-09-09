@@ -186,7 +186,7 @@ export default {
         vm.tabActive = 0;
         vm.isTab = false;
       }
-      if (from.name === 'me' || from.name === 'me-order' || from.name === 'me-order-detail-id' || from.name == null) {
+      if (from.name === 'me' || from.name === 'me-order' || from.name === 'me-order-detail-id' || from.name == null || from.name === 'me-aftersale-detail-id') {
         vm.$fetch();
       }
     })
@@ -206,11 +206,11 @@ export default {
         listData = await this.$api.getAfterSaleList({ pageNum: this.pageNum, pageSize: this.pageSize, status: 1}); // 售后申请列表
       }
     }
-
-    if (listData.code != 0) return false;
-    this.lists = this.pageNum == 1 ? listData.data.records : this.lists.concat(listData.data.records);
     this.loading = false;
     this.refreshing.isFresh = false;
+    if (!listData.data) return false;
+    this.lists = this.pageNum == 1 ? listData.data.records : this.lists.concat(listData.data.records);
+    
     this.total = listData.data.total;
     getOrderAfterSalesCount().then(res => {
       if (!res.data) return false;
@@ -293,14 +293,24 @@ export default {
       })
     },
     onRevokeApply(id) { // 撤销申请
-      revokeApply(id).then(() => {
-        this.lists.forEach((item, index) => {
-          if (item.id == id) {
-            this.lists.splice(index, 1);
-            this.untreatedCount -= 1;
-            this.recordCount += 1;
-          }
+      this.$dialog.confirm({
+        message: this.$t('cancel_the_after_sales_order'),
+        onfirmButtonText: this.$t('confirm'),
+        confirmButtonColor: '#42B7AE',
+        cancelButtonText: this.$t('cancel'),
+        cancelButtonColor: '#383838'
+      }).then(() => {
+        revokeApply(id).then(() => {
+          this.lists.forEach((item, index) => {
+            if (item.id == id) {
+              this.lists.splice(index, 1);
+              this.untreatedCount -= 1;
+              this.recordCount += 1;
+            }
+          })
         })
+      }).catch(() => {
+
       })
     },
     onCancelApply(id) { // 撤销工单的申请

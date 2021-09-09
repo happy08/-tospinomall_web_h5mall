@@ -730,7 +730,8 @@ const en = {
   share_title: 'Share',
   share_facebook: 'Facebook',
   share_copy_link: 'Copy Link',
-  share_content: 'Share Content'
+  share_content: 'Share Content',
+  inventory_shortage: 'Inventory shortage'
 }
 
 export default en;

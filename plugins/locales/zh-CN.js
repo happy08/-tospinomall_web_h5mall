@@ -405,7 +405,7 @@ const cn = {
   receiving_information: '收货信息',
   address_: '地址：',
   delete_the_after_sales_order: '是否删除该售后订单？',
-  cancel_the_after_sales_order: '是否撤销该售后订单？',
+  cancel_the_after_sales_order: '您将撤销本次申请，如果问题未解决，您还可以再次发起，确定继续吗？',
   modify_the_application: '修改申请',
   refund_countdown: '倒计时:',
   refund_over_time: '商家超时未处理',
@@ -732,7 +732,8 @@ const cn = {
   share_title: '分享',
   share_facebook: 'Facebook',
   share_copy_link: '复制链接',
-  share_content: '分享内容'
+  share_content: '分享内容',
+  inventory_shortage: '库存不足'
 }
 
 export default cn;

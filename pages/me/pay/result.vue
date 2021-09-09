@@ -22,6 +22,7 @@ export default {
   middleware: 'authenticated',
   methods: {
     onConfirm() {
+      this.$store.dispatch('user/GetUserInfo');
       if (this.$route.query.from) { // 主要判断从订单页面回来要跳回去
         if (this.$route.query.from == 'me-pay-payment') { // 支付方式页面没有设置支付密码，设置支付密码成功后要跳回支付方式页面
           this.$router.go(-3);

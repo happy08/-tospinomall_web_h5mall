@@ -225,7 +225,10 @@ export default {
         })
         return false;
       }
-      this.address = addressData.data;
+      this.address = {
+        ...addressData.data,
+        completeAddress: addressData.data.completeAddressDetail
+      };
     }
 
     // 获取销售信息

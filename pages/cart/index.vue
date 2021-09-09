@@ -45,7 +45,7 @@
                   <template #icon="props">
                     <div>
                       <BmImage
-                        :url="!singleItem.stock ? require('@/assets/images/icon/unchoose-icon.png') : props.checked ? require('@/assets/images/icon/choose-icon.png') : require('@/assets/images/icon/choose-default-icon.png')"
+                        :url="singleItem.status != 1 ? require('@/assets/images/icon/unchoose-icon.png') : props.checked ? require('@/assets/images/icon/choose-icon.png') : require('@/assets/images/icon/choose-default-icon.png')"
                         :width="'0.32rem'" 
                         :height="'0.32rem'"
                         :isLazy="false"
@@ -55,12 +55,10 @@
                     </div>
                   </template>
                 </van-checkbox>
-                <van-card
-                  class="bg-white pt-24 ml-12 plr-0 pb-0 lh-20 width-313 fm-helvetica"
-                >
+                <van-card class="bg-white pt-24 ml-12 plr-0 pb-0 lh-20 width-313 fm-helvetica">
                   <!-- 自定义图片 -->
                   <template #thumb>
-                    <SoldOut :isShow="singleItem.stock ? false: true" @onClick="goProductDetail(singleItem.productId)">
+                    <SoldOut :isShow="singleItem.status == 1 ? false: true" @onClick="goProductDetail(singleItem.productId)">
                       <BmImage
                         :url="singleItem.mainPictureUrl"
                         :width="'1.8rem'" 
@@ -87,7 +85,7 @@
                   </template>
                   <!-- 标签 -->
                   <template #tags>
-                    <div class="flex mt-8 vcenter hidden round-8 product-tag" v-if="singleItem.stock" @click="goProductDetail(singleItem.productId)">
+                    <div class="flex mt-8 vcenter hidden round-8 product-tag" v-if="singleItem.status == 1" @click="goProductDetail(singleItem.productId)">
                       <BmImage
                         :url="require('@/assets/images/icon/plane-icon.png')"
                         :width="'0.36rem'" 
@@ -102,14 +100,14 @@
                   </template>
                   <!-- 自定义数量,有库存显示数量，没有去看相似物品 -->
                   <template #num>
-                    <van-stepper v-if="singleItem.stock" v-model="singleItem.quantity" input-width="0.796rem" button-size="0.42rem" :integer="true" class="mt-6 custom-stepper" @change="onChangeNum(singleItem)" />
-                    <div v-else class="border fs-12 black round-8 ptb-4 plr-8 mt-6 lh-1" @click="goSimilar(singleItem.productId)">相似商品</div>
+                    <van-stepper v-if="singleItem.status == 1" v-model="singleItem.quantity" input-width="0.796rem" button-size="0.42rem" :integer="true" class="mt-6 custom-stepper" @change="onChangeNum(singleItem)" />
+                    <div v-else class="border fs-12 black round-8 ptb-4 plr-8 mt-6 lh-1" @click="goSimilar(singleItem.productId)">{{ $t('similar_goods') }}</div>
                   </template>
                   <!-- 自定义价格 -->
                   <template #price>
                     <div class="mt-8" @click="goProductDetail(singleItem.productId)">
-                      <span class="red fs-16 fw" v-if="$store.state.rate">{{ $store.state.rate.currency }}{{ tabActive == 1 ? singleItem.productPrice : singleItem.addCartPrice }}</span>
-                      <span class="grey fs-12 ml-4 line-through" v-if="tabActive == 1">{{ $store.state.rate.currency }}{{ singleItem.addCartPrice }}</span>
+                      <span class="red fs-16 fw" v-if="$store.state.rate">{{ $store.state.rate.currency }}{{ singleItem.isPriceReduction == 1 ? singleItem.productPrice : singleItem.addCartPrice }}</span>
+                      <span class="grey fs-12 ml-4 line-through" v-if="singleItem.isPriceReduction == 1">{{ $store.state.rate.currency }}{{ singleItem.addCartPrice }}</span>
                     </div>
                   </template>
                 </van-card>
@@ -118,9 +116,9 @@
               <template #right>
                 <div class="v-100 flex">
                   <!-- 设置经常购买 -->
-                  <van-button v-if="singleItem.stock" @click="onOftenBy(singleItem)" square :text="singleItem.isOftenBuy ? $t('cancel_often_buy'): $t('often_buy2')" class="v-100 w-70 bg-f0 black plr-12 fs-14 border-no pre-wrap" />
+                  <van-button v-if="singleItem.status == 1" @click="onOftenBy(singleItem)" square :text="singleItem.isOftenBuy ? $t('cancel_often_buy'): $t('often_buy2')" class="v-100 w-70 bg-f0 black plr-12 fs-14 border-no pre-wrap" />
                   <!-- 移入收藏夹 -->
-                  <van-button v-if="singleItem.stock" @click="moveToFavorite(singleItem.productSku)" square :text="$t('goods_add_follow')" class="v-100 w-70 bg-yellow white plr-12 fs-14 border-no" />
+                  <van-button v-if="singleItem.status == 1" @click="moveToFavorite(singleItem.productSku)" square :text="$t('goods_add_follow')" class="v-100 w-70 bg-yellow white plr-12 fs-14 border-no" />
                   <!-- 删除订单 -->
                   <van-button square :text="$t('delete')" @click="onDelete(singleItem.productSku)" class="v-100 w-70 bg-red white plr-12 fs-14 border-no" />
                 </div>
@@ -190,7 +188,7 @@
       </div>
       <!-- 编辑 -->
       <div v-show="isEdit">
-        <BmButton :type="'info'" class="round-8 h-32 orange bg-white orange-border" @click="onMove">{{ $t('move_to_favorites') }}</BmButton>
+        <BmButton :type="'info'" class="round-8 h-32 orange bg-white orange-border" @click="onMove">{{ $t('goods_add_follow') }}</BmButton>
         <BmButton :type="'info'" class="round-8 h-32 orange bg-white orange-border ml-12" @click="onEmitDelete">{{ $t('delete') }}</BmButton>
       </div>
     </div>
@@ -286,13 +284,13 @@ export default {
     this.list = listData.data.storeList.map(storeItem => { // 购物车列表
 
       this.result = this.result.concat(storeItem.products.filter(selectItem => { // 是否选中
-        return selectItem.isSelect == 1 && selectItem.stock > 0;
+        return selectItem.isSelect == 1 && selectItem.status == 1;
       }).map(resultItem => {
         return resultItem.productSku;
       }));
 
       this.productResult = this.productResult.concat(storeItem.products.filter(selectItem => { // 已选择商品
-        return selectItem.isSelect == 1 && selectItem.stock > 0;
+        return selectItem.isSelect == 1 && selectItem.status == 1;
       }).map(resultItem => {
         return {
           skuId: resultItem.productSku,
@@ -301,7 +299,7 @@ export default {
       }));
 
       let result = storeItem.products.filter(selectItem => { // 是否选中
-        return selectItem.isSelect == 1 && selectItem.stock > 0;
+        return selectItem.isSelect == 1;
       }).map(resultItem => {
         return resultItem.id;
       })
@@ -310,7 +308,7 @@ export default {
         result: result,
         isAll: result.length == storeItem.products.length ? true : false, // 是否全选
         isEmpty: storeItem.products.filter(selectItem => { // 是否选中
-          return selectItem.stock == '' || selectItem.stock == 0;
+          return selectItem.status != 1;
         })
       }
     });
@@ -391,6 +389,9 @@ export default {
       this.checkAll(check.length === 0, check.length === 0); // 判断是否全部选中
     },
     onEmitDelete() { // 确认删除订单
+      if (this.productResult.length === 0) {
+        return false;
+      }
       this.$dialog.confirm({
         message: this.$t('delete_cart_tips', { replace_tip: this.productResult.length }),
         onfirmButtonText: this.$t('confirm'),
@@ -483,17 +484,18 @@ export default {
     onCountPrice() { // 计算购物车总价格
       let productResult = []; // 选中的数据集合
       let cancelResult = []; // 取消选中的数据集合
-      this.list.map(item => {
-        productResult = productResult.concat(item.result.map(resultItem => {
-          return {
-            skuId: item.products.filter(productItem => {
-              return productItem.id === resultItem;
-            })[0].productSku,
-            quantity: item.products.filter(productItem => {
-              return productItem.id === resultItem;
-            })[0].quantity
+      this.list.forEach(item => {
+        item.result.forEach(resultItem => {
+          let _filterResult = item.products.filter(productItem => {
+            return productItem.id === resultItem && productItem.status == 1;
+          });
+          if (_filterResult.length > 0) {
+            productResult.push({
+              skuId: _filterResult[0].productSku,
+              quantity: _filterResult[0].quantity
+            })
           }
-        }));
+        });
       })
       this.productResult = productResult; // 选中的商品
       // 判断是否有取消计算的商品
@@ -515,6 +517,9 @@ export default {
       })
     },
     onMove() { // 移入收藏夹
+      if (this.productResult.length == 0) {
+        return false;
+      }
       let skuIds = this.productResult.map(item => {
         return item.skuId;
       })
