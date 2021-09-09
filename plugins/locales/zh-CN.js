@@ -308,7 +308,7 @@ const cn = {
   sold_out: '失效',
   often_buy2: '经常\n购买',
   t_operation_successful: '操作成功',
-  delete_cart_tips: 'Delete the {replace_tip} Products?',
+  delete_cart_tips: '确认要删除{replace_tip}种商品吗?',
   collect_cart_tips: '确认要将这{replace_tip}件商品移入我的关注？',
   cancel_often_buy: '取消\n常买',
   unpaid: '待付款',

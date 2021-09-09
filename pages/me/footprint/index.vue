@@ -163,6 +163,7 @@ export default {
 
     this.total = listData.data.total;
     this.list = listData.data.records;
+    this.finished = false;
   },
   beforeRouteEnter (to, from, next) {
     next(vm => {

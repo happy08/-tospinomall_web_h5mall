@@ -104,7 +104,8 @@ export default {
   },
   data() {
     return {
-      selectSku: {}
+      selectSku: {},
+      quantity: 1
     }
   },
   methods: {
@@ -113,19 +114,20 @@ export default {
         this.$toast(this.$t('choose_product_sku'));
         return false;
       }
+      
       const num = await this.getSkuStock();
       if (num > this.selectSku.selectedNum) {
         if (flag) { // 立即购买
           this.$router.push({
             name: 'cart-order-id',
             params: {
-              id: JSON.stringify({skuItems: [{ quantity: this.selectSku.selectedNum, skuId: this.selectSku.selectedSkuComb.id }]})
+              id: JSON.stringify({skuItems: [{ quantity: this.quantity, skuId: this.selectSku.selectedSkuComb.id }]})
             }
           })
           return false;
         }
-
-        addCart({ quantity: this.selectSku.selectedNum, skuId: this.selectSku.selectedSkuComb.id }).then(res => {
+        console.log(this.$refs.productSku.getSkuData())
+        addCart({ quantity: this.quantity, skuId: this.selectSku.selectedSkuComb.id }).then(res => {
           this.$toast.success(this.$t('t_add_shopping_cart_successfully'));
           this.productShow.show = false;
         })
@@ -139,12 +141,14 @@ export default {
     getSkuInfo(value, type) { // 获取选中的产品规格
       if (this.$refs.productSku) {
         this.selectSku = this.$refs.productSku.getSkuData(); // 得到已选择的商品属性
+        console.log(value)
         if (type === 'stepper') {
           this.selectSku = {
             ...this.selectSku,
             selectedNum: value.selectedNum
           };
         }
+        this.quantity = value.selectedNum;
         // 商品图片展示切换
         this.goodSpuVo.picture = value.selectedSkuComb ? value.selectedSkuComb.picture : this.goodSpuVo.picture;
         // 针对商品详情需要展示选中的规格属性

@@ -172,7 +172,7 @@
     <van-popup v-model="isCancelShow" position="bottom" closeable style="height: 80%">
       <van-cell-group>
         <!-- 取消原因 -->
-        <van-cell class="plr-20" title="Reason for Cancel Order">
+        <van-cell class="plr-20" :title="$t('reason_for_cancel_order')">
           <template #label>
             <div v-html="$t('cancel_order_tip_header')"  class="fs-14 light-grey pre-wrap"></div>
           </template>
@@ -201,7 +201,7 @@
         </van-radio-group>
 
         <!-- 取消之后将订单放入购物车 -->
-        <van-cell class="p-20" title-class="light-grey" title="After submission, put this item back into the shopping cart" />
+        <van-cell class="p-20" title-class="light-grey" :title="$t('cancel_order_tip_footer')" />
       </div>
       
       <div class="w-100 plr-12 flex between mt-12 pb-10">

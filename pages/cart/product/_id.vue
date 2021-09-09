@@ -742,9 +742,9 @@ export default {
       }
     })
     
-    this.initialSku = this.selectSku = {
+    this.initialSku = {
       ...initArr[0],
-      selectedNum: 1,
+      // selectedNum: 1,
       selectedSkuComb: {
         stock_num: initArr[0].stock_num
       }
