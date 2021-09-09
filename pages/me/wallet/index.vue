@@ -86,7 +86,7 @@ export default {
       
       this.detail = {
         ...rechargeData.data,
-        balance: this.$utils.numberFormat(rechargeData.data.balance, 2)
+        balance: rechargeData.data.balance
       };
     },
     onRecharge(type, amount) { // 充值
