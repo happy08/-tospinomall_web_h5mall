@@ -244,19 +244,19 @@ export default {
         return false;
       }
 
-      this.$dialog({
-        title: this.$t('are_you_sure_want_to_leave'),
-        message: this.$t('paid_wait_time_tip'),
-        confirmButtonText: this.$t('reconsider'),
-        confirmButtonColor: '#42B7AE',
-        showCancelButton: true,
-        cancelButtonText: this.$t('leave'),
-        cancelButtonColor: '#383838'
-      }).then(() => { // on confirm
+      // this.$dialog({
+      //   title: this.$t('are_you_sure_want_to_leave'),
+      //   message: this.$t('paid_wait_time_tip'),
+      //   confirmButtonText: this.$t('reconsider'),
+      //   confirmButtonColor: '#42B7AE',
+      //   showCancelButton: true,
+      //   cancelButtonText: this.$t('leave'),
+      //   cancelButtonColor: '#383838'
+      // }).then(() => { // on confirm
 
-      }).catch(() => { // on leave
+      // }).catch(() => { // on leave
         this.$router.go(-1);
-      })
+      // })
     },
     onInput() { // 密码按键时触发
       if (this.payPwd.length >= 5) {
