@@ -256,7 +256,7 @@ const cn = {
   message_authentication: '短信验证',
   enter_password_again: '请再次输入新支付密码',
   forgot_password_tips: `温馨提示:\n1、为保障您的账号安全,变更重要信息需要身份验证.\n2、验证过程中如有疑问请联系客服.\n3、更改绑定手机,如原手机停用无法获取验证码,请联系客服.`,
-  the_two_passwords_entered_are_inconsistent: '两次密码输入不一致',
+  the_two_passwords_entered_are_inconsistent: '两次密码不一致',
   sign_up_now: '立即注册',
   t_please_enter_the_phone_number: '请输入手机号码',
   individual_registration: '个人注册',
