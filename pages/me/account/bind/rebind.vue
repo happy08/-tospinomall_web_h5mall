@@ -141,7 +141,7 @@ export default {
       let _axios;
       if (this.$route.query.changeWay === 'email') { // 获取邮箱验证码
         let reg = /^[a-z0-9A-Z]+[- | a-z0-9A-Z . _]+@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\.)+[a-zA-Z]{2,}$/;
-        if (!reg.test(this.account_email)) {
+        if (!reg.test(this.account)) {
           this.$toast(this.$t('email_format_error'));
           return false;
         }
