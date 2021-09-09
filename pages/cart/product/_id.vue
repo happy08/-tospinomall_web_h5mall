@@ -490,9 +490,9 @@
       </div>
       <div class="flex">
         <!-- 加入购物车 -->
-        <BmButton :type="'info'" class="fs-16 round-0 w-130 h-56 add-cart-btn border-no" @click="onAddCart">{{ $t('add_to_cart') }}</BmButton>
+        <BmButton :type="'info'" class="fs-16 round-0 w-130 h-56 add-cart-btn border-no" :disabled="goodSpuVo.inSale == 0" @click="onAddCart">{{ $t('add_to_cart') }}</BmButton>
         <!-- 立即购买 -->
-        <BmButton class="fs-16 round-0 w-130 h-56" @click="onBuySku">{{ $t('buy_now') }}</BmButton>
+        <BmButton class="fs-16 round-0 w-130 h-56" :disabled="goodSpuVo.inSale == 0" @click="onBuySku">{{ $t('buy_now') }}</BmButton>
       </div>
     </div>
 
@@ -744,7 +744,7 @@ export default {
     
     this.initialSku = {
       ...initArr[0],
-      // selectedNum: 1,
+      selectedNum: 1,
       selectedSkuComb: {
         stock_num: initArr[0].stock_num
       }

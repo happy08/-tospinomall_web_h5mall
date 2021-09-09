@@ -126,7 +126,7 @@ export default {
           })
           return false;
         }
-        console.log(this.$refs.productSku.getSkuData())
+
         addCart({ quantity: this.quantity, skuId: this.selectSku.selectedSkuComb.id }).then(res => {
           this.$toast.success(this.$t('t_add_shopping_cart_successfully'));
           this.productShow.show = false;
@@ -141,7 +141,6 @@ export default {
     getSkuInfo(value, type) { // 获取选中的产品规格
       if (this.$refs.productSku) {
         this.selectSku = this.$refs.productSku.getSkuData(); // 得到已选择的商品属性
-        console.log(value)
         if (type === 'stepper') {
           this.selectSku = {
             ...this.selectSku,
