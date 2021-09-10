@@ -19,6 +19,7 @@
             :integer="true"
             class="custom-stepper"
             :max="$route.query.edit ? detail.totalreturnQuantity : orderList[0].canAfterApplyNum"
+            :min="$route.query.edit && detail.totalreturnQuantity ? 1 : orderList[0].canAfterApplyNum > 0 ? 1 : 0"
             @change="onChangeQuantity"
           />
         </div>
