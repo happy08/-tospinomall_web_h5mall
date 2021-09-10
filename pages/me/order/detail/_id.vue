@@ -85,7 +85,8 @@
         <!-- 退款/售后：在线支付[待发货1且已支付1且可售后1,待收货2且已支付1且可售后1,已完成4且可售后1]；货到付款[待发货1且已支付1且可售后1,待收货2且可售后1,已完成4且可售后1] -->
         
         <div v-else-if="detail.status == 2 || detail.status == 4" class="mt-24">
-          <BmButton class="fs-14 ml-10 round-8 plr-12 h-30 gery-border" :type="'info'" v-if="(detail.paymentType == 1 && (((detail.status == 1 || detail.status == 2) && detail.payState == 1) || detail.status == 4)  && detail.showAfterSale == 1) || (detail.paymentType == 0 && ((detail.status == 1 && detail.payState == 1) || detail.status == 2 || detail.status == 4) && detail.showAfterSale == 1)" @btnClick="onApplyAfterSale(item)">{{ $t('apply_for_after_sales') }}</BmButton>
+          <!-- <BmButton class="fs-14 ml-10 round-8 plr-12 h-30 gery-border" :type="'info'" v-if="(detail.paymentType == 1 && (((detail.status == 1 || detail.status == 2) && detail.payState == 1) || detail.status == 4)  && item.showAfterSale == 1) || (detail.paymentType == 0 && ((detail.status == 1 && detail.payState == 1) || detail.status == 2 || detail.status == 4) && item.showAfterSale == 1)" @btnClick="onApplyAfterSale(item)">{{ $t('apply_for_after_sales') }}</BmButton> -->
+          <BmButton class="fs-14 ml-10 round-8 plr-12 h-30 gery-border" :type="'info'" v-if="item.showAfterSale == 1" @btnClick="onApplyAfterSale(item)">{{ $t('apply_for_after_sales') }}</BmButton> 
           <BmButton :type="'info'" class="h-30 ml-10" @click="addCart(item)">{{ $t('add_shopping_cart') }}</BmButton>
         </div>
       </div>
