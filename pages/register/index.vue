@@ -207,6 +207,7 @@ export default {
       if (this.$route.query.changeWay === 'email') { // 获取邮箱验证码
         let reg = /^[a-z0-9A-Z]+[- | a-z0-9A-Z . _]+@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\.)+[a-zA-Z]{2,}$/;
         if (!reg.test(this.account_email)) {
+          this.isCodeFlag = false;
           this.$toast(this.$t('email_format_error'));
           return false;
         }
@@ -251,6 +252,7 @@ export default {
       if (this.$route.query.changeWay === 'email') { // 校验邮箱验证码
         let reg = /^[a-z0-9A-Z]+[- | a-z0-9A-Z . _]+@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\.)+[a-zA-Z]{2,}$/;
         if (!reg.test(this.account_email)) {
+          this.isNextFlag = false;
           this.$toast(this.$t('email_format_error'));
           return false;
         }
