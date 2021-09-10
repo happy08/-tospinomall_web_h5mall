@@ -89,7 +89,7 @@
           </template>
         </van-cell>
         <!-- 支付方式 -->
-        <van-cell :title="$t('pay_by')" :value="$t('online')" title-class="color-black-85" value-class="color-black-85" is-link @click="onChangePayment" />
+        <van-cell :title="$t('pay_by')" :value="paymentRadio == 2 ? $t('cash_on_delivery') : $t('online')" title-class="color-black-85" value-class="color-black-85" is-link @click="onChangePayment" />
       </van-cell-group>
 
       <!-- 提交 -->
@@ -124,25 +124,25 @@
 
     <!-- 支付方式 -->
     <van-popup v-model="paymentShow" position="bottom" closeable class="pb-20">
-      <h4 class="fs-18 black fw p-20 border-b">Method of payment</h4>
+      <h4 class="fs-18 black fw p-20 border-b">{{ $t('method_of_payment') }}</h4>
       <!-- 选择方式 -->
-      <van-radio-group v-model="paymentRadio">
-        <van-radio name="0" shape="square" class="iblock lh-12 plr-24 mt-30" >
+      <van-radio-group v-model="paymentRadio" class="mt-30 plr-24">
+        <van-radio name="1" shape="square" class="iblock lh-12 h-48" >
           <template #icon="props">
-            <BmButton :type="'info'" :class="{ 'round-8 h-30': true, 'unchecked-radio': !props.checked ? true: false }">Normal distribution</BmButton>
+            <BmButton :type="'info'" :class="{ 'round-8 h-30': true, 'unchecked-radio': !props.checked ? true: false }">{{ $t('online') }}</BmButton>
           </template>
-          <p class="light-grey fs-14 mt-10">Estimated time of delivery: 9:00-21:00 on The 21st[Monday]</p>
+          <!-- <p class="light-grey fs-14 mt-10">Estimated time of delivery: 9:00-21:00 on The 21st[Monday]</p> -->
         </van-radio>
-        <van-radio name="1" shape="square" class="iblock lh-12 plr-24 mt-30" >
+        <van-radio name="2" shape="square" class="iblock lh-12 pl-12 h-48" >
           <template #icon="props">
-            <BmButton :type="'info'" :class="{ 'round-8 h-30': true, 'unchecked-radio': !props.checked ? true: false }">international direct mail</BmButton>
+            <BmButton :type="'info'" :class="{ 'round-8 h-30': true, 'unchecked-radio': !props.checked ? true: false }">{{ $t('cash_on_delivery') }}</BmButton>
           </template>
-          <p class="light-grey fs-14 mt-10">Estimated time of delivery: 9:00-21:00 on The 21st[Monday]</p>
+          <!-- <p class="light-grey fs-14 mt-10">Estimated time of delivery: 9:00-21:00 on The 21st[Monday]</p> -->
         </van-radio>
       </van-radio-group>
 
-      <div class="mt-30 plr-20">
-        <BmButton class="round-8 w-100 h-48" @click="onChangePayment">{{ $t('confirm') }}</BmButton>
+      <div class="plr-20 mt-30">
+        <BmButton class="round-8 w-100 h-48" @click="onConfirmPayment">{{ $t('confirm') }}</BmButton>
       </div>
     </van-popup>
 
@@ -192,7 +192,7 @@ export default {
       address: {},
       deliveryList: [],
       paymentShow: false,
-      paymentRadio: '0',
+      paymentRadio: '1',
       confirmTransportModes: [], // 配送方式
       currentChangeModeStoreId: '',
       codeData: {
@@ -284,9 +284,18 @@ export default {
         duration: 0
       });
 
-      submitOrder({ addressId: this.address.id, sourceType: 4, skuItems: skuItems, isCart: this.$route.params.isCart ? 1 : 0, leaveMessages: leaveMessages, confirmTransportModes: confirmTransportModes, orderToken: this.detail.orderToken }).then(res => {
+      submitOrder({ addressId: this.address.id, sourceType: 4, skuItems: skuItems, isCart: this.$route.params.isCart ? 1 : 0, leaveMessages: leaveMessages, confirmTransportModes: confirmTransportModes, orderToken: this.detail.orderToken, paymentType: this.paymentRadio }).then(res => {
         this.$toast.clear();
-
+        if (this.paymentRadio == 2) { // 货到付款
+          this.$router.push({ // 校验之后成功跳转到订单支付结果页面
+            name: 'cart-order-confirm',
+            query: {
+              orderId: JSON.stringify({orderId: res.data.orderIds}),
+              isSuccess: 2
+            }
+          })
+          return false;
+        }
         this.$router.push({
           name: 'me-pay-payment',
           query: {
@@ -392,7 +401,7 @@ export default {
     },
     onChangePayment() { // 选择支付方式
       if (this.detail.isCashDelivery == 1) { // 支持货到付款，才可以选择付款方式
-        this.paymentShow = true
+        this.paymentShow = true;
       }
     },
     onConfirmPayment() { // 确认修改支付方式

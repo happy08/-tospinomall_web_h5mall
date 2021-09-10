@@ -16,11 +16,11 @@
       <!-- 步骤条-物流详情 -->
       <van-steps direction="vertical" :active="0" class="mt-12 fs-14" active-color="#FFCE05">
         <van-step v-for="(locusItem, locusIndex) in detail.locusList" :key="locusIndex">
-          <div class="black fs-18 flex between vcenter" v-if="locusIndex == 0">
+          <!-- <div class="black fs-18 flex between vcenter" v-if="locusIndex == 0">
             <span class="fw fs-18 black">{{ detail.stateName }}</span>
             <a :href="'tel:' + detail.arrivePhone" class="round-8 plr-12 ptb-4 border black fs-14">{{ $t('dial_phone') }}</a>
-          </div>
-          <p :class="{'mt-10': locusIndex == 0}" style="color: #666;">{{ locusItem.context }}</p>
+          </div> -->
+          <p :class="{'mt-10': false}" style="color: #666;">{{ locusItem.context }}</p>
           <p class="mt-12 light-grey">{{ locusItem.createTime }}</p>
         </van-step>
       </van-steps>

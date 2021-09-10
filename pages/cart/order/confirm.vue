@@ -9,7 +9,7 @@
       <!-- 结果提示 -->
       <div class="tc flex center">
         <!-- 失败 -->
-        <template v-if="$route.query.isSuccess == 0">
+        <template v-if="$route.query.isSuccess == 2">
           <BmIcon :name="'guanbi2'" :width="'0.4rem'" :height="'0.4rem'" :color="'#fff'" />
           <span class="ml-4 white fs-18">{{ $t('payment_failed') }}</span>
         </template>
@@ -93,7 +93,11 @@ export default {
     if (this.total > this.recommendList.length) {
       this.finished = false;
     }
-    
+    setTimeout(() => {
+      if (typeof this.$redrawVueMasonry === 'function') {
+        this.$redrawVueMasonry();
+      }
+    }, 50)
     // 加载状态结束
     this.loading = false;
   },
@@ -147,7 +151,7 @@ export default {
       }
     },
     leftClick() {
-      if (this.$route.query.isSuccess && this.$route.query.isSuccess == 0) { // 订单余额支付
+      if (this.$route.query.isSuccess && this.$route.query.isSuccess == 2) { // 订单余额支付
         this.$router.go(-2);
       } else { // 订单其他支付
         this.$router.go(-3);

@@ -329,7 +329,7 @@ const cn = {
   issued_warehouse: '已出库',
   confirm_receipt: '确认收货',
   cash_on_delivery: '货到付款',
-  online: 'Online',
+  online: '在线支付',
   within_a_week: '一周之内',
   within_a_month: '一月之内',
   within_3_month: '3个月内',

@@ -11,7 +11,7 @@
         <!-- 待付款0倒计时，在线支付 -->
         <div class="mt-14 tc white fs-14 pb-40 flex center plr-20" v-if="detail.status == 0 && detail.paymentType == 1 && detail.remainCloseMills > 0">
           {{ $t('refund_countdown') }}
-          <van-count-down :time="detail.remainCloseMills" format="HH:mm:ss" class="white" /> 
+          <van-count-down :time="detail.remainCloseMills" format="HH:mm:ss" class="white" @finish="getOrderDetail" /> 
           {{ $t('automatically_closed') }}
         </div>
         <!-- 待发货 -->
@@ -99,7 +99,7 @@
         <van-icon :name="require('@/assets/images/icon/copy-icon.png')" size="0.48rem" class="ml-24 copy-order" @click="copy" />
       </p>
       <p class="fs-14 black flex vcenter">{{ $t('start_from') }}{{ detail.createTime }}</p>
-      <p class="fs-14 black flex vcenter">{{ $t('pay_by') }}{{ detail.paymentType | paymentTypeFormat}}</p>
+      <p class="fs-14 black flex vcenter">{{ $t('pay_by') }}{{ detail.paymentTypeLabel }}</p>
       <p class="fs-14 black flex vcenter" v-if="detail.paymentTime">{{ $t('time_of_payment') }}{{ detail.paymentTime }}</p>
       <p class="fs-14 black flex vcenter" v-if="detail.deliveryCompany">{{ $t('delivery_method') }}{{ detail.deliveryCompany }}</p>
     </div>
@@ -275,11 +275,6 @@ export default {
       this.$fetch();
     }
   },
-  filters: {
-    paymentTypeFormat(val) { // 支付方式
-      return val == 1 ? '在线支付' : val == 2 ? '货到付款' : '';
-    }
-  },
   methods: {
     cancelConfirm() { // 提交取消订单
       const reason = this.cancelReasonList.filter(item => {
@@ -408,7 +403,8 @@ export default {
         this.title = title;
         this.detail = {
           ...res.data,
-          remainCloseMills: parseFloat(res.data.remainCloseMills)
+          remainCloseMills: parseFloat(res.data.remainCloseMills),
+          paymentTypeLabel: res.data.paymentType == 1 ? this.$t('online') : res.data.paymentType == 2 ? this.$t('cash_on_delivery') : ''
         };
         this.$toast.clear();
       })

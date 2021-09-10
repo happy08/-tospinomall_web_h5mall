@@ -321,7 +321,7 @@ export default {
               name: 'cart-order-confirm',
               query: {
                 orderId: JSON.stringify({orderId: error.data.orderIds}),
-                isSuccess: 0
+                isSuccess: 2
               }
             })
             return false;
