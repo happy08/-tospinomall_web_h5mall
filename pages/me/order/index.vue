@@ -39,7 +39,7 @@
             </template>
             <div class="flex between flex-wrap">
               <!-- 空状态  -->
-              <empty-status v-if="lists.length === 0" :image="require('@/assets/images/empty/order.png')" />
+              <empty-status v-if="lists.length === 0" :image="require('@/assets/images/empty/order.png')" :description="$t('empty')" />
               <!-- 订单列表 -->
               <div v-else v-for="(item,index) in lists" :key="index" class="w-100 plr-20 mb-12  pb-20 pt-24 bg-white">
                 <van-checkbox-group v-model="togetherResult">

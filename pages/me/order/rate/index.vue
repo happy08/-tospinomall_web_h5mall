@@ -8,7 +8,7 @@
     <!-- 评价类型tab切换 -->
     <van-tabs sticky swipeable animated :offset-top="'0.92rem'" color="#42B7AE" class="customs-van-tabs" :ellipsis="false" @change="getList" v-model="tabActive">
       <van-tab v-for="(categoryItem, tabIndex) in $t('rate_tab')" :title="categoryItem + ' (' + (tabIndex == 1 ? hasCommentOrReview : notComment) + ')'" :key="'scroll-tab-' + tabIndex" title-class="border-b pb-0" :name="tabIndex">
-        <PullRefresh :refreshing="refreshing" @refresh="onRefresh">
+        <PullRefresh :refreshing="refreshing" @refresh="onRefresh" class="custom-min-height-94">
           <van-list
             v-model="loading"
             :finished="finished"
@@ -23,7 +23,7 @@
             <!-- 列表展示 -->
             <div v-else v-for="(orderitem, index) in lists" :key="index" class="mb-12 plr-20 bg-white pt-20 pb-24">
               <OrderStoreSingle :name="orderitem.storeName" :showArrow="false" />
-              <OrderSingle class="mt-20" :product_num="orderitem.goodQuantity" :product_desc="orderitem.goodName" :product_size="orderitem.goodAttr" :price="orderitem.goodPrice" :image="orderitem.goodImg" @onClick="onClick(orderitem.goodId)" />
+              <OrderSingle class="mt-20" :product_num="orderitem.goodQuantity" :product_desc="orderitem.goodName" :product_size="orderitem.goodAttr" :price="orderitem.goodPrice" :image="orderitem.goodImg" @onClick="onClick(orderitem)" />
               <!-- 评价操作 -->
               <div class="mt-18 flex hend">
                 <!-- 待评价 -->
@@ -82,6 +82,14 @@ export default {
   },
   async fetch() {
     // 查询评价订单列表
+    if (this.pageNum == 1) {
+      // 加载图标
+      this.$toast.loading({
+        forbidClick: true,
+        loadingType: 'spinner',
+        duration: 0
+      });
+    }
     let listData;
     if (this.$route.query.orderId) { // 查看某一个订单评价
       listData = await this.$api.getRateList({ pageNum: this.pageNum, pageSize: this.pageSize, status: this.tabActive, orderId: this.$route.query.orderId });
@@ -94,6 +102,13 @@ export default {
     this.total = listData.data.total; // 列表总条数
     this.lists = this.pageNum == 1 ? listData.data.records : this.lists.concat(listData.data.records); // 列表数据
     this.refreshing.isFresh = false;
+    this.loading = false;
+    if (this.pageNum == 1 || parseFloat(this.total) == this.lists.length) {
+      this.$toast.clear();
+    }
+    if (parseFloat(this.total) == this.lists.length) {
+      this.finished = true;
+    }
 
     getOrderRateCount().then(res => {
       if (res.code != 0) return false;
@@ -127,7 +142,7 @@ export default {
       this.$fetch();
     },
     onLoad() {
-      if (this.total == this.lists.length) {
+      if (parseFloat(this.total) == this.lists.length) {
         this.loading = false;
         this.finished = true;
         return false;
@@ -135,11 +150,20 @@ export default {
       this.pageNum += 1;
       this.$fetch();
     },
-    onClick(productId) { // 跳转到商品详情页
+    onClick(productItem) { // 跳转到商品详情页
+      if (this.tabActive == 1) { // 跳转到评价详情
+        this.$router.push({
+          name: 'me-order-rate-detail-id',
+          params: {
+            id: productItem.evaluateId
+          }
+        })
+        return false;
+      }
       this.$router.push({
         name: 'cart-product-id',
         params: {
-          id: productId
+          id: productItem.goodId
         }
       })
     }

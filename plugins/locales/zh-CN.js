@@ -13,7 +13,7 @@ const cn = {
   // loading: '努力加载中…',
   // load_failed: '加载失败，点击重试！',
   // load_failed_no_network: '无法连接网络，请稍后再试',
-  empty: 'Empty!',
+  empty: '暂无数据!',
   // str_none: undefined,
   // to_single_view: 'Wrap a single view',
   // to_scroll_view: 'Wrap views in ScrollView',

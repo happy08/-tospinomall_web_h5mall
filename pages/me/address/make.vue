@@ -387,7 +387,6 @@ export default {
     closePopup() { // 关闭修改地址弹窗时触发, 数据处理
       if (!this.isNext) {
         this.assgnStepList = this.stepArr; // 更新地址数据
-        console.log('---更新地址')
         let _address = '';
         this.stepArr.map(item => {
           _address += item.name;

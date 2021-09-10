@@ -8,7 +8,7 @@
         <PullRefresh :refreshing="refreshing" @refresh="onRefresh" class="custom-min-height-94">
           <div class="pb-20 bg-grey">
             <!-- 空列表 -->
-            <empty-status v-if="lists.length === 0" :image="require('@/assets/images/empty/order.png')" />
+            <empty-status v-if="lists.length === 0" :image="require('@/assets/images/empty/order.png')" :description="$t('empty')" />
             <van-list
               v-else
               v-model="loading"
