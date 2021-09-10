@@ -61,6 +61,11 @@ export default {
         this.detail = res.data;
         this.message = res.data.deliveryNote;
         this.trackingNumber = res.data.deliverySn;
+        this.fileList = [];
+        this.imgList = [];
+        if (res.data.deliveryPics == '') {
+          return false;
+        }
         this.fileList = res.data.deliveryPics.split(',').map(item => {
           return {
             url: item,
