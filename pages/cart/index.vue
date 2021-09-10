@@ -624,7 +624,11 @@ export default {
       this.$api.getRecommend({ type: 0, pageNum: this.pageNum, pageSize: this.pageSize}).then(res => { // 搜索商品列表
         
         this.recommendList = this.recommendList.concat(res.data.items);
-        this.$redrawVueMasonry();
+        setTimeout(() => {
+          if (typeof this.$redrawVueMasonry === 'function') {
+            this.$redrawVueMasonry();
+          }
+        }, 50)
         this.total = res.data.total;
         
         // 加载状态结束

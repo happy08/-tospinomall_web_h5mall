@@ -312,6 +312,8 @@ export default {
         }
       });
       this.isShowTip = false;
+      this.loading = false;
+      this.finished = false;
 
       // 品牌列表
       this.brandList = listData.data.brandList;
@@ -568,6 +570,10 @@ export default {
       })
     },
     getProductList() { // 获取商品列表
+      this.params = {
+        ...this.params,
+        pageIndex: this.pageIndex
+      }
       if (this.shopId != '') {
         this.params = {
           ...this.params,
@@ -590,9 +596,13 @@ export default {
         this.isShowTip = false;
         this.filterPopup = false; // 筛选窗口隐藏
         this.refreshing.isFresh = false;
-        if (typeof this.$redrawVueMasonry === 'function') {
-          this.$redrawVueMasonry();
-        }
+        this.loading = false;
+        this.finished = false;
+        setTimeout(() => {
+          if (typeof this.$redrawVueMasonry === 'function') {
+            this.$redrawVueMasonry();
+          }
+        }, 50)
       })
     },
     onRefresh() { // 刷新
@@ -600,6 +610,7 @@ export default {
       this.getProductList();
     },
     onLoad() { // 加载更多
+      this.finished = false;
       if (this.total == this.list.length) { // 没有下一页了
         this.finished = true;
         this.loading = false;

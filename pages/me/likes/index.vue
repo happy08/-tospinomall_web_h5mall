@@ -352,7 +352,11 @@ export default {
       };
 
       this.recommendList = this.pageNum == 1 ? recommendData.data.items : this.recommendList.concat(recommendData.data.items);
-      this.$redrawVueMasonry();
+      setTimeout(() => {
+        if (typeof this.$redrawVueMasonry === 'function') {
+          this.$redrawVueMasonry();
+        }
+      }, 50)
       this.recommendTotal = recommendData.data.total;
       // 加载状态结束
       this.loading = false;

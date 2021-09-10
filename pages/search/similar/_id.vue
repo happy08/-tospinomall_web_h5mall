@@ -69,9 +69,11 @@ export default {
   async fetch() {
     const listData = await this.$api.getSimilarGood({ pageNum: this.pageNum, pageSize: this.pageSize, goodId: this.$route.params.id });
     this.lists = this.pageNum == 1 ? listData.data.items : this.lists.concat(listData.data.items);
-    if (typeof this.$redrawVueMasonry === 'function') {
-      this.$redrawVueMasonry();
-    }
+    setTimeout(() => {
+      if (typeof this.$redrawVueMasonry === 'function') {
+        this.$redrawVueMasonry();
+      }
+    }, 50)
     this.total = listData.data.total;
     this.refreshing.isFresh = false;
     this.loading = false;

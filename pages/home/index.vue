@@ -536,7 +536,11 @@ export default {
         })
 
         this.searchList = this.searchList.concat(list);
-        this.$redrawVueMasonry();
+        setTimeout(() => {
+          if (typeof this.$redrawVueMasonry === 'function') {
+            this.$redrawVueMasonry();
+          }
+        }, 50)
         
         // 加载状态结束
         this.loading = false;
