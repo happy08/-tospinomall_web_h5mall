@@ -185,8 +185,10 @@ export default {
       if (from.name === 'me') {
         vm.tabActive = 0;
         vm.isTab = false;
+        vm.lists = [];
       }
       if (from.name === 'me' || from.name === 'me-order' || from.name === 'me-order-detail-id' || from.name == null || from.name === 'me-aftersale-detail-id') {
+        vm.pageNum = 1;
         vm.$fetch();
       }
     })
@@ -195,6 +197,15 @@ export default {
     let _params = {};
     let listData;
     this.tabActive = this.$route.query.orderId && this.isTab == false ? 0 : this.tabActive;
+    if (this.pageNum == 1 && this.refreshing.isFresh == false) { // 只有请求第一页数据的时候进行loading处理
+      // 加载图标
+      this.$toast.loading({
+        forbidClick: true,
+        loadingType: 'spinner',
+        duration: 0
+      });
+    }
+
     if (this.tabActive > 0) {
       _params.status = this.tabActive + 1;
       listData = await this.$api.getAfterSaleStatusList({ pageNum: this.pageNum, pageSize: this.pageSize, ..._params }); // 申请原因/处理中列表
@@ -206,9 +217,12 @@ export default {
         listData = await this.$api.getAfterSaleList({ pageNum: this.pageNum, pageSize: this.pageSize, status: 1}); // 售后申请列表
       }
     }
+    if (this.pageNum == 1) {
+      this.$toast.clear();
+    }
+    if (listData.code != 0) return false;
     this.loading = false;
     this.refreshing.isFresh = false;
-    if (!listData.data) return false;
     this.lists = this.pageNum == 1 ? listData.data.records : this.lists.concat(listData.data.records);
     
     this.total = listData.data.total;
