@@ -733,7 +733,9 @@ const cn = {
   share_facebook: 'Facebook',
   share_copy_link: '复制链接',
   share_content: '分享内容',
-  inventory_shortage: '库存不足'
+  inventory_shortage: '库存不足',
+  free_freight: '免运费',
+  not_sale: '该商品在该地区暂不支持销售'
 }
 
 export default cn;

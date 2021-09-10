@@ -101,15 +101,22 @@
             <template #title>
               <div class="flex vcenter">
                 <span class="fw fs-12 block">{{ $t("freight") }}</span>
-                <span class="ml-12 fs-12 grey fm-helvetica" v-if="deliveryInfo.length > 0">{{ $t("freight") }}: {{ $store.state.rate.currency }}{{ deliveryInfo[0].freightPrice }}</span>
-                <span class="ml-12 fs-12 grey fm-helvetica" v-if="deliveryInfo.length == 0">{{ completeAddress ? completeAddress : $t('please_choose_address')}}</span>
+                <span class="ml-12 fs-12 grey fm-helvetica" v-if="deliveryInfo.length > 0 && completeAddress">
+                  <!-- 包邮 -->
+                  <span v-if="deliveryInfo[0].type == 1">{{ $t('free_freight') }}</span>
+                  <!-- 不配送 -->
+                  <span v-else-if="deliveryInfo[0].type == 3">{{ $t('not_sale') }}</span>
+                  <!-- 不包邮 -->
+                  <span v-else>{{ $t("freight") }}: {{ $store.state.rate.currency }}{{ deliveryInfo[0].freightPrice }}</span>
+                </span>
+                <span class="ml-12 fs-12 grey fm-helvetica" v-else>{{ completeAddress ? completeAddress : $t('please_choose_address')}}</span>
               </div>
             </template>
           </van-cell>
           <!-- 货源地到收货地 -->
-          <template v-if="deliveryInfo.length > 0">
+          <template v-if="deliveryInfo.length > 0 && completeAddress">
             <!-- 步骤条 -->
-            <van-steps :active="freightActive" class="mt-20 plr-0">
+            <van-steps :active="freightActive" class="plr-20">
               <!-- 发货地址 -->
               <van-step>
                 {{ storeInfo.deliveryCountryName }}
@@ -468,7 +475,7 @@
       <div class="mt-20 plr-24">
         <p class="fs-14 grey-1">{{ chooseTitle }}</p>
         <ul class="plr-24 fs-16 black">
-          <li class="mt-20" v-for="city, cityIndex in chooseList" :key="'city-' + cityIndex" @click="changeCity(city)">{{ city.name }}</li>
+          <li :class="{'mt-20': true, 'green': city.name == stepArr[stepArr.length - 1].name}" v-for="city, cityIndex in chooseList" :key="'city-' + cityIndex" @click="changeCity(city)">{{ city.name }}</li>
         </ul>
       </div>
     </van-popup>

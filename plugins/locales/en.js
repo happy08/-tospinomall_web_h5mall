@@ -731,7 +731,9 @@ const en = {
   share_facebook: 'Facebook',
   share_copy_link: 'Copy Link',
   share_content: 'Share Content',
-  inventory_shortage: 'Inventory shortage'
+  inventory_shortage: 'Inventory shortage',
+  free_freight: 'Free shipping',
+  not_sale: 'The region does not support sales'
 }
 
 export default en;
