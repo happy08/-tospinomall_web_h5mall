@@ -293,7 +293,7 @@ const cn = {
   more: '更多',
   buy_now: '立即购买',
   please_select: '请选择 ',
-  in_stock: '现货:',
+  in_stock: '库存:',
   out_of_stock: '无货',
   just_for_you: '同店商品',
   specification: '规格:',
