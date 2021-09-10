@@ -46,9 +46,9 @@
 
     <van-cell-group class="mt-20" :border="false">
       <!-- 开店时间 -->
-      <van-cell :title="$t('open_a_shop_time')" title-class="black fs-14" class="p-20" :value="detailData.createTime" value-class="light-grey" />
+      <van-cell :title="$t('open_a_shop_time')" title-class="black fs-14 f-auto" class="p-20" :value="detailData.createTime" value-class="light-grey f-auto max-w-70" />
       <!-- 品牌销售 -->
-      <van-cell :title="$t('sales_of_the_brand')" title-class="black fs-14" class="p-20" value-class="light-grey" :value="detailData.brandNameLabelList" />
+      <van-cell :title="$t('sales_of_the_brand')" title-class="black fs-14 f-auto" class="p-20" value-class="light-grey f-auto max-w-70" :value="detailData.brandNameLabelList" />
     </van-cell-group>
 
     <!-- 所有商品 -->
@@ -118,5 +118,12 @@ export default {
 }
 .max-w-160{
   max-width: 160px;
+}
+.f-auto{
+  flex: auto!important;
+  width: fit-content;
+}
+.max-w-70{
+  max-width: 70%!important;
 }
 </style>
