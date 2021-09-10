@@ -509,7 +509,7 @@ export default {
         type: type,
         title: type === 'type' ? this.$t('returnMethodTitle') : type === 'status' ? this.$t('state_of_the_goods') : type === 'reason' ? this.$t('applyReason') : '',
         // list: type === 'type' ? this.detail.status == 1 ? [this.$t('selectReason')[0]] : this.$t('returnMethodList') : type === 'status' ? this.$t('stateGoodsList') : this.$t('selectReason')
-        list: type === 'type' ? parseFloat(this.$route.params.type) == 1 ? [this.$t('selectReason')[0]] : this.$t('selectReason') : type === 'status' ? this.$t('stateGoodsList') : this.$t('selectReason')
+        list: type === 'type' ? parseFloat(this.$route.params.type) == 1 && this.detail.status == 1 ? [this.$t('selectReason')[0]] : this.$t('selectReason') : type === 'status' ? this.$t('stateGoodsList') : this.$t('selectReason')
       }
       if (parseFloat(this.$route.params.type) == 1 && (type == 'type' || type == 'status') && this.detail.status == 1) { // 待发货仅退款,申请原因和状态不可选
         return false;

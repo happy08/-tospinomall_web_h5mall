@@ -117,7 +117,7 @@ export default {
       }
       
       const num = await this.getSkuStock();
-      if (num > this.selectSku.selectedNum) {
+      if (num >= this.selectSku.selectedNum) {
         if (flag) { // 立即购买
           this.$router.push({
             name: 'cart-order-id',
@@ -131,6 +131,7 @@ export default {
         addCart({ quantity: this.quantity, skuId: this.selectSku.selectedSkuComb.id }).then(res => {
           this.$toast.success(this.$t('t_add_shopping_cart_successfully'));
           this.productShow.show = false;
+          this.quantity = 1;
         })
       } else {
         this.$toast(this.$t('inventory_shortage')); // 库存不足
