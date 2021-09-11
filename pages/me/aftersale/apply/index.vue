@@ -35,11 +35,11 @@
       <!-- 选择售后类型 type: 1仅退款 2退货退款 3换货 -->
       <van-cell class="ptb-20 plr-20" :title="$t('select_after_sales_type')" title-class="fs-14 black fw"/>
       <!-- 退货退款 -->
-      <van-cell class="ptb-20 plr-20" :title="$t('return_refund')" :title-class="{'fs-14': true, 'black': detail.status != 1, 'grey': detail.status == 1 }" is-link @click="onApply(2)" />
+      <van-cell class="ptb-20 plr-20" :title="$t('I_want_to_return')" :title-class="{'fs-14': true, 'black': detail.status != 1, 'grey': detail.status == 1 }" is-link @click="onApply(2)" />
       <!-- 换货,暂时不做 -->
       <!-- <van-cell class="ptb-20 plr-20" :title="$t('me.afterSale.exchange')" title-class="fs-14 black"  is-link @click="onApply(3)" /> -->
       <!-- 仅退款 -->
-      <van-cell class="ptb-20 plr-20" :title="$t('applyReturn')" title-class="fs-14 black"  is-link @click="onApply(1)"  />
+      <van-cell class="ptb-20 plr-20" :title="$t('I_want_a_refund_no_return')" title-class="fs-14 black"  is-link @click="onApply(1)"  />
     </van-cell-group>
 
     <!-- 退货退款说明 -->
