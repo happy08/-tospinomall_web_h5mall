@@ -111,6 +111,13 @@ export default {
   },
   methods: {
     async onConfirm(flag) { // 确认加入
+      // 未登录情况下跳转到登录页面
+      if (!this.$store.state.user.authToken) {
+        this.$router.push({
+          name: 'login',
+        })
+        return false;
+      }
       if (!this.selectSku.selectedSkuComb) {
         this.$toast(this.$t('choose_product_sku'));
         return false;

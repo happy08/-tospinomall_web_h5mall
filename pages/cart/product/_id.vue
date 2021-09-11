@@ -985,15 +985,15 @@ export default {
       })
     },
     onSelect() { // 选择产品规格
-      if (this.$store.state.user.authToken) {
+      // if (this.$store.state.user.authToken) {
         this.skuType = '';
         this.productShow.show = true;
-        return false;
-      }
-      // 未登录情况下跳转到登录页面
-      this.$router.push({
-        name: 'login'
-      })
+      //   return false;
+      // }
+      // // 未登录情况下跳转到登录页面
+      // this.$router.push({
+      //   name: 'login'
+      // })
     },
     attentionProduct() { // 关注商品
       if (!this.$store.state.user.authToken) {
