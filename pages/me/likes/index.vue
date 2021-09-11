@@ -59,6 +59,7 @@
                         :isShow="true"
                         :round="true"
                         :alt="item.storeName"
+                        :errorUrl="require('@/assets/images/store-bgd.png')"
                       />
                       <div class="ml-12 fs-14 fm-helvetica">
                         <p class="black hidden-2">{{ item.storeName }}</p>

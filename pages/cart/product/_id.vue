@@ -475,7 +475,7 @@
       <div class="mt-20 plr-24">
         <p class="fs-14 grey-1">{{ chooseTitle }}</p>
         <ul class="plr-24 fs-16 black">
-          <li :class="{'mt-20': true, 'green': city.name == stepArr[stepArr.length - 1].name}" v-for="city, cityIndex in chooseList" :key="'city-' + cityIndex" @click="changeCity(city)">{{ city.name }}</li>
+          <li :class="{'mt-20': true, 'green': stepArr.length > 0 && city.name == stepArr[stepArr.length - 1].name}" v-for="city, cityIndex in chooseList" :key="'city-' + cityIndex" @click="changeCity(city)">{{ city.name }}</li>
         </ul>
       </div>
     </van-popup>
