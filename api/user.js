@@ -80,7 +80,7 @@ export function checkCurrentCode(data) {
 /**
  * 查询字典接口
  */
-export function getDictList() {
+export function getDictList(type) {
   return request({
     // url: `/admin/dict/type/${type}`,
     url: `/basics/dict/type/${type}`,
