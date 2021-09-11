@@ -582,7 +582,7 @@ export default {
         goodState: this.goodsStatus,
         returnType: this.applyType,
         proofPics: this.imgList.join(','),
-        productQuantity: this.detail.goodQuantity,
+        productQuantity: this.detail.totalQuantity,
         applyDesc: this.applyMessage,
         deliveryType: this.returnMethodRadio == 0 ? 2 : 1,
         returnAmount: this.detail.returnAmount

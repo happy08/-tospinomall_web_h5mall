@@ -141,7 +141,8 @@
       <!-- 退货退款 -->
       <h4 class="fs-14 fw" v-if="detail.returnType == 1">{{ $t('refund_return_state_tip_50', { replace_tip: detail.orderType == 1 ? $t('merchant'): $t('platform') }) }}</h4>
       <!-- 退款 -->
-      <p class="mt-12 fs-12 light-grey pre-wrap" v-if="detail.returnType == 0" v-html="$t('refund_return_state_tip_4', { replace_tip: detail.orderType == 1 ? $t('merchant'): $t('platform') })"></p>
+      <p class="mt-12 fs-12 light-grey pre-wrap" v-if="detail.returnType == 0 && detail.orderType == 1" v-html="$t('refund_return_state_tip_4', { replace_tip: detail.orderType == 1 ? $t('merchant'): $t('platform') })"></p>
+      <p class="mt-12 fs-12 light-grey pre-wrap" v-if="detail.returnType == 0 && detail.orderType == 2" v-html="$t('refund_return_state_tip_3', { replace_tip: detail.orderType == 1 ? $t('merchant'): $t('platform') })"></p>
       <!-- 退货退款 -->
       <!-- FBT -->
       <p class="mt-12 fs-12 light-grey" v-if="detail.returnType == 1 && detail.orderType == 1">

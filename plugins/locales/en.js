@@ -209,7 +209,7 @@ const en = {
   refund_process_tips: 'You have initiated a refund request, please wait for processing',
   total_refund: 'Total refund',
   apply_for_time: 'Apply for time',
-  refund_number: 'Refund number',
+  refund_number: 'After-sales number',
   confirm_the_order: 'Confirm the order',
   distribution: 'Distribution',
   leave_message: 'Leave message',

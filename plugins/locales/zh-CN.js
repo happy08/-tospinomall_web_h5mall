@@ -209,7 +209,7 @@ const cn = {
   refund_process_tips: '您已发起退款请求，请等待处理',
   total_refund: '退款总金额',
   apply_for_time: '申请时间',
-  refund_number: '退款编号',
+  refund_number: '售后编号',
   confirm_the_order: '确认订单',
   distribution: '配送',
   leave_message: '留言',
