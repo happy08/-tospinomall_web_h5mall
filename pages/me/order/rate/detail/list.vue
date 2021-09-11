@@ -214,7 +214,7 @@ export default {
       }
       
       this.finished = false;
-      let _params = { goodsId: this.$route.query.id, pageNum: this.pageNum, pageSize: this.pageSize }
+      let _params = { goodsId: this.$route.query.id, pageNum: this.pageNum, pageSize: this.pageSize, createUser: this.$store.state.user.userInfo.id }
       if (this.tabActive == 1) {
         _params.sortType = 1; // 最新创建时间排序
       }

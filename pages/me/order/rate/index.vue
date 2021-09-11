@@ -92,9 +92,9 @@ export default {
     }
     let listData;
     if (this.$route.query.orderId) { // 查看某一个订单评价
-      listData = await this.$api.getRateList({ pageNum: this.pageNum, pageSize: this.pageSize, status: this.tabActive, orderId: this.$route.query.orderId });
+      listData = await this.$api.getRateList({ pageNum: this.pageNum, pageSize: this.pageSize, status: this.tabActive, orderId: this.$route.query.orderId, createUser: this.$store.state.user.userInfo.id });
     } else {
-      listData = await this.$api.getRateList({ pageNum: this.pageNum, pageSize: this.pageSize, status: this.tabActive });
+      listData = await this.$api.getRateList({ pageNum: this.pageNum, pageSize: this.pageSize, status: this.tabActive, createUser: this.$store.state.user.userInfo.id });
     }
 
     if (listData.code != 0) return false;
