@@ -111,9 +111,9 @@
               <!-- 去评价：在线支付[已完成4且未评价0]；货到付款[已完成4且未评价0] -->
               <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" v-if="item.hasComment == 0 && item.status == 4" @btnClick="onEvaluate(item)">{{ $t('evaluation') }}</BmButton>
               <!-- 退款/售后：在线支付[待发货1且已支付1且可售后1,待收货2且已支付1且可售后1,已完成4且可售后1]；货到付款[待发货1且已支付1且可售后1,待收货2且可售后1,已完成4且可售后1] -->
-              <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" v-if="(item.paymentType == 1 && (((item.status == 1 || item.status == 2) && item.payState == 1) || item.status == 4)  && item.showAfterSale == 1) || (item.paymentType == 0 && ((item.status == 1 && item.payState == 1) || item.status == 2 || item.status == 4) && item.showAfterSale == 1)">{{ $t('refund_after_sale') }}</BmButton>
+              <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" v-if="(item.paymentType == 1 && (((item.status == 1 || item.status == 2) && item.payState == 1) || item.status == 4)  && item.showAfterSale == 1) || (item.paymentType == 0 && ((item.status == 1 && item.payState == 1) || item.status == 2 || item.status == 4) && item.showAfterSale == 1)" @btnClick="onAfterSale(item)">{{ $t('refund_after_sale') }}</BmButton>
               <!-- 确认收货：在线支付[待收货2且已支付1]；货到付款[待收货2] -->
-              <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" v-if="(item.paymentType == 1 && item.status == 2 && item.payState == 1) || (item.paymentType == 0 && item.status == 2)">{{ $t('confirm_receipt') }}</BmButton>
+              <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" v-if="(item.paymentType == 1 && item.status == 2 && item.payState == 1) || (item.paymentType == 0 && item.status == 2)" @btnClick="onReceipt(item)">{{ $t('confirm_receipt') }}</BmButton>
               <!-- 去购买：待发货1,待收货2,待评价3,已完成4,已取消5,超时未付款6,已拒收7,其他8 -->
               <BmButton class="fs-14 ml-10 round-8 plr-12 h-32" :type="'info'" v-if="item.status != 0" @btnClick="onBuy(item)">{{ $t('buy_again') }}</BmButton>
             </div>
@@ -171,7 +171,7 @@
 import { Search, List, Popup, Cell, CellGroup, RadioGroup, Radio, Sticky } from 'vant';
 import OrderSingle from '@/components/OrderSingle';
 import OrderStoreSingle from '@/components/OrderStoreSingle';
-import { cancelOrder, getOrderReasonList, deleteOrder } from '@/api/order';
+import { cancelOrder, getOrderReasonList, deleteOrder, confirmReceiptOrder } from '@/api/order';
 import PullRefresh from '@/components/PullRefresh';
 import 'swiper/css/swiper.css';
 import { Swiper, SwiperSlide } from 'vue-awesome-swiper';
@@ -481,7 +481,42 @@ export default {
         console.log('back');
         history.back();
       }
-    }
+    },
+    onReceipt(orderItem) { // 确认收货
+      this.$dialog.confirm({
+        message: this.$t('confirm_receipt_tips'),
+        onfirmButtonText: this.$t('confirm_receipt'),
+        confirmButtonColor: '#42B7AE',
+        cancelButtonText: this.$t('cancel'),
+        cancelButtonColor: '#383838'
+      }).then(() => {
+        // 加载图标
+        this.$toast.loading({
+          forbidClick: true,
+          loadingType: 'spinner',
+          duration: 0
+        });
+
+        confirmReceiptOrder(orderItem.id).then(res => {
+          this.$toast.clear();
+          this.lists.forEach((item, index) => {
+            if (item.id == orderItem.id) {
+              this.lists.splice(index, 1);
+            }
+          })
+        })
+      }).catch(() => {
+
+      })
+    },
+    onAfterSale(orderItem) { // 退款售后
+      this.$router.push({
+        name: 'me-aftersale',
+        query: {
+          orderId: orderItem.id
+        }
+      })
+    },
   },
 }
 </script>
