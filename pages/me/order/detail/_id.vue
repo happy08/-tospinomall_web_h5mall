@@ -4,7 +4,7 @@
     <!-- 头部 -->
     <div class="bg-green-linear">
       <van-sticky @scroll="stickyScroll" ref="headerStickyContainer">
-        <BmHeaderNav :left="{ isShow: true, isEmit: true }" :border="false" :title="$t(title)" :color="isScrollShow ? 'white' : 'black'" :bg_color="isScrollShow ? 'bg-green-linear' : 'white'" @leftClick="leftClick" />
+        <BmHeaderNav :left="{ isShow: true, isEmit: true }" :border="false" :title="$t(title)" :color="isScrollShow ? 'white' : 'black'" :bg_color="isScrollShow ? 'bg-green-linear bg-transparent' : 'white'" @leftClick="leftClick" />
       </van-sticky>
 
       <div class="min-h-95">
@@ -107,7 +107,7 @@
     <!-- 订单价格 -->
     <div class="plr-20 mt-12 bg-white order-price">
       <p class="flex between black fs-14 lh-36">
-        <span>{{ $t('subtotal') }}:</span>
+        <span>{{ $t('subtotal_') }}</span>
         <span class="fw">{{ $store.state.rate.currency }}{{ detail.productAmount }}</span>
       </p>
       <p class="flex between black fs-14 lh-36">
@@ -115,7 +115,7 @@
         <span class="fw">{{ $store.state.rate.currency }}{{ detail.buyerFreightAmount }}</span>
       </p>
       <p class="flex between black fs-14 lh-36">
-        <span>{{ $t('total') }}:</span>
+        <span>{{ $t('total') }}</span>
         <span class="red fw">{{ $store.state.rate.currency }}{{ detail.payAmount }}</span>
       </p>
     </div>

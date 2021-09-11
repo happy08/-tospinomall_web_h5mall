@@ -3,7 +3,7 @@
   <div class="vh-100 bg-grey">
     <div class="bg-green-linear pay-confirm-container">
       <van-sticky @scroll="stickyScroll" ref="headerStickyContainer">
-        <BmHeaderNav :left="{ isShow: true, isEmit: true }" :title="isScrollShow ? '' : $t('you_may_also_like')" :border="false" :color="isScrollShow ? 'white' : 'black'" :bg_color="isScrollShow ? 'bg-green-linear' : 'white'"  @leftClick="leftClick" />
+        <BmHeaderNav :left="{ isShow: true, isEmit: true }" :title="isScrollShow ? '' : $t('you_may_also_like')" :border="false" :color="isScrollShow ? 'white' : 'black'" :bg_color="isScrollShow ? 'bg-green-linear bg-transparent' : 'white'"  @leftClick="leftClick" />
       </van-sticky>
       
       <!-- 结果提示 -->
