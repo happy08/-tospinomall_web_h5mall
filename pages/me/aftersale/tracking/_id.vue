@@ -105,7 +105,7 @@ export default {
       });
     },
     onConfirm() { // 提交
-      const deliveryPics = this.imgList.length > 0 ? this.imgList.join(',') : [];
+      const deliveryPics = this.imgList.length > 0 ? this.imgList.join(',') : '';
       if (this.$route.query.edit) {
         updateLogisticsOrder({ deliveryNote: this.message, deliveryPics: deliveryPics, deliverySn: this.trackingNumber, orderReturnId: this.$route.params.id }).then(() => {
           this.$router.go(-1);

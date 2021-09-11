@@ -226,13 +226,7 @@ export default {
     this.lists = this.pageNum == 1 ? listData.data.records : this.lists.concat(listData.data.records);
     
     this.total = listData.data.total;
-    getOrderAfterSalesCount().then(res => {
-      if (!res.data) return false;
-      
-      this.afterSalesCount = this.$route.query.orderId ? 1 : parseFloat(res.data.afterSalesCount); // 申请售后总数
-      this.recordCount = parseFloat(res.data.recordCount); // 申请记录总数
-      this.untreatedCount = parseFloat(res.data.untreatedCount); // 未处理总数
-    })
+    this.getOrderAfterSalesCount();
   },
   activated() {
   },
@@ -302,6 +296,7 @@ export default {
         this.lists.forEach((item, index) => {
           if (item.id == id) {
             this.lists.splice(index, 1);
+            this.getOrderAfterSalesCount();
           }
         })
       })
@@ -340,6 +335,15 @@ export default {
     },
     statusFormat(val, deliveryType, orderType) { // 格式化状态文案
       return val == 1 ? this.$t('wait_process', { replace_tip: orderType == 1 ? this.$t('merchant'): this.$t('platform') }) : val == 2 ? (deliveryType == 1 ? this.$t('wait_return_self') : this.$t('wait_pick_up')) : val == 3 ? this.$t('wait_receive', { replace_tip: orderType == 1 ? this.$t('merchant'): this.$t('platform') }) : val == 4 ? this.$t('wait_refund') : val == 5 ? this.$t('refund_successfully') : val == 6 ? this.$t('close_after_sale_order') : val == 7 ? this.$t('reject_apply', { replace_tip: orderType == 1 ? this.$t('merchant'): this.$t('platform') }) : val == 8 ? this.$t('rejection_goods', { replace_tip: orderType == 1 ? this.$t('merchant'): this.$t('platform') }) : '';
+    },
+    getOrderAfterSalesCount() {
+      getOrderAfterSalesCount().then(res => {
+        if (!res.data) return false;
+        
+        this.afterSalesCount = this.$route.query.orderId ? 1 : parseFloat(res.data.afterSalesCount); // 申请售后总数
+        this.recordCount = parseFloat(res.data.recordCount); // 申请记录总数
+        this.untreatedCount = parseFloat(res.data.untreatedCount); // 未处理总数
+      })
     }
   },
 }

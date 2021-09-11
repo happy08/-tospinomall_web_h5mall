@@ -134,16 +134,22 @@
       </div>
     </div>
 
-    <!-- 已发起退款申请，请耐心等待商家处理 -->
-    <div class="bg-white plr-12 ptb-20" v-if="detail.status == 1 && detail.orderType == 1">
-      <h4 class="fs-14 fw">{{ $t('refund_return_state_tip_2', { replace_tip: detail.orderType == 1 ? $t('merchant'): $t('platform') }) }}</h4>
+    <!-- 已发起退款/退货退款申请，请耐心等待商家处理 -->
+    <div class="bg-white plr-12 ptb-20" v-if="detail.status == 1 && (detail.orderType == 1 || detail.orderType == 2)">
+      <!-- 仅退款 -->
+      <h4 class="fs-14 fw" v-if="detail.returnType == 0">{{ $t('refund_return_state_tip_2', { replace_tip: detail.orderType == 1 ? $t('merchant'): $t('platform') }) }}</h4>
+      <!-- 退货退款 -->
+      <h4 class="fs-14 fw" v-if="detail.returnType == 1">{{ $t('refund_return_state_tip_50', { replace_tip: detail.orderType == 1 ? $t('merchant'): $t('platform') }) }}</h4>
       <!-- 退款 -->
       <p class="mt-12 fs-12 light-grey pre-wrap" v-if="detail.returnType == 0" v-html="$t('refund_return_state_tip_4', { replace_tip: detail.orderType == 1 ? $t('merchant'): $t('platform') })"></p>
       <!-- 退货退款 -->
-      <p class="mt-12 fs-12 light-grey" v-if="detail.returnType == 1">
+      <!-- FBT -->
+      <p class="mt-12 fs-12 light-grey" v-if="detail.returnType == 1 && detail.orderType == 1">
         <span class="pre-wrap" v-html="$t('refund_return_state_tip_4', { replace_tip: detail.orderType == 1 ? $t('merchant'): $t('platform') })"></span>
         <span class="pre-wrap" v-html="$t('refund_return_state_tip_6', { replace_tip: detail.orderType == 1 ? $t('merchant'): $t('platform') })"></span>
       </p>
+      <!-- FBM -->
+      <p class="mt-12 fs-12 light-grey" v-if="detail.returnType == 1 && detail.orderType == 2">{{ $t('refund_return_state_tip_51') }}</p>
     </div>
 
     <!-- 商家同意退货申请, 自行邮寄 -->
