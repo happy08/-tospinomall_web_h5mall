@@ -78,14 +78,15 @@
         <OrderSingle class="mt-20 w-100" :product_num="item.goodQuantity" :product_desc="item.goodName" :product_size="item.goodAttr" :price="item.goodPrice" :image="item.goodImg" @onClick="onClick(item.goodId)" />
 
         <!-- 待付款状态/待发货/已取消/超时关闭/已拒收 -->
-        <BmButton v-if="detail.status == 0 || detail.status == 1 || detail.status == 5 || detail.status == 6 || detail.status == 7" type="info" plain class="plr-12 round-8 h-30 mt-24" @click="addCart(item)">{{ $t('add_shopping_cart') }}</BmButton>
+        <!-- <BmButton v-if="detail.status == 0 || detail.status == 1 || detail.status == 5 || detail.status == 6 || detail.status == 7" type="info" plain class="plr-12 round-8 h-30 mt-24" @click="addCart(item)">{{ $t('add_shopping_cart') }}</BmButton> -->
 
         
         <!-- 待收货状态 / 已完成状态 -->
         <!-- 退款/售后：在线支付[待发货1且已支付1且可售后1,待收货2且已支付1且可售后1,已完成4且可售后1]；货到付款[待发货1且已支付1且可售后1,待收货2且可售后1,已完成4且可售后1] -->
         
-        <div v-else-if="detail.status == 2 || detail.status == 4" class="mt-24">
-          <!-- <BmButton class="fs-14 ml-10 round-8 plr-12 h-30 gery-border" :type="'info'" v-if="(detail.paymentType == 1 && (((detail.status == 1 || detail.status == 2) && detail.payState == 1) || detail.status == 4)  && item.showAfterSale == 1) || (detail.paymentType == 0 && ((detail.status == 1 && detail.payState == 1) || detail.status == 2 || detail.status == 4) && item.showAfterSale == 1)" @btnClick="onApplyAfterSale(item)">{{ $t('apply_for_after_sales') }}</BmButton> -->
+        <!-- <div v-else-if="detail.status == 2 || detail.status == 4" class="mt-24"> -->
+        <div class="mt-24">
+          <!-- <BmButton class="fs-14 ml-10 round-8 plr-12 h-30 gery-border" :type="'info'" v-if="(detail.paymentType == 1 && (((detail.status == 1 || detail.status == 2) && detail.payState == 1) || detail.status == 4)  && item.showAfterSale == 1) || (detail.paymentType == 2 && ((detail.status == 1 && detail.payState == 1) || detail.status == 2 || detail.status == 4) && item.showAfterSale == 1)" @btnClick="onApplyAfterSale(item)">{{ $t('apply_for_after_sales') }}</BmButton> -->
           <BmButton class="fs-14 ml-10 round-8 plr-12 h-30 gery-border" :type="'info'" v-if="item.showAfterSale == 1" @btnClick="onApplyAfterSale(item)">{{ $t('apply_for_after_sales') }}</BmButton> 
           <BmButton :type="'info'" class="h-30 ml-10" @click="addCart(item)">{{ $t('add_shopping_cart') }}</BmButton>
         </div>
@@ -159,15 +160,15 @@
       <!-- 售后状态showAfterSale：0->不可售后 1->可以售后 -->
 
       <!-- 取消订单：在线支付[待付款0]；货到付款[待发货1且未支付0] -->
-      <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" v-if="(detail.paymentType == 1 && detail.status == 0) || (detail.paymentType == 0 && detail.status == 1 && detail.payState == 0)" @btnClick="onCancel(detail)">{{ $t('cancel_order') }}</BmButton>
+      <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" v-if="(detail.paymentType == 1 && detail.status == 0) || (detail.paymentType == 2 && detail.status == 1 && detail.payState == 0)" @btnClick="onCancel(detail)">{{ $t('cancel_order') }}</BmButton>
       <!-- 去支付：在线支付[待付款0] -->
       <BmButton class="fs-14 ml-10 round-0 plr-30 v-100" v-if="detail.paymentType == 1 && detail.status == 0" @btnClick="onPay(detail)">{{ $t('pay_now')}}</BmButton>
       <!-- 去评价：在线支付[已完成4且未评价0]；货到付款[已完成4且未评价0] -->
       <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" v-if="detail.hasComment == 0 && detail.status == 4" @btnClick="onRate(detail)">{{ $t('evaluation') }}</BmButton>
       <!-- 退款/售后：在线支付[待发货1且已支付1且可售后1, 该处2/4不展示[待收货2且已支付1且可售后1,已完成4且可售后1]]；货到付款[待发货1且已支付1且可售后1,该地方不展示[待收货2且可售后1,已完成4且可售后1]] -->
-      <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" v-if="(detail.paymentType == 1 && (((detail.status == 1) && detail.payState == 1))  && detail.showAfterSale == 1) || (detail.paymentType == 0 && ((detail.status == 1 && detail.payState == 1)) && detail.showAfterSale == 1)" @btnClick="onAfterSale(detail)">{{ $t('refund_after_sale') }}</BmButton>
+      <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" v-if="(detail.paymentType == 1 && (((detail.status == 1) && detail.payState == 1))  && detail.showAfterSale == 1) || (detail.paymentType == 2 && ((detail.status == 1 && detail.payState == 1)) && detail.showAfterSale == 1)" @btnClick="onAfterSale(detail)">{{ $t('refund_after_sale') }}</BmButton>
       <!-- 确认收货：在线支付[待收货2且已支付1]；货到付款[待收货2] -->
-      <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" v-if="(detail.paymentType == 1 && detail.status == 2 && detail.payState == 1) || (detail.paymentType == 0 && detail.status == 2)" @btnClick="onReceipt(detail)">{{ $t('confirm_receipt') }}</BmButton>
+      <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" v-if="(detail.paymentType == 1 && detail.status == 2 && detail.payState == 1) || (detail.paymentType == 2 && detail.status == 2)" @btnClick="onReceipt(detail)">{{ $t('confirm_receipt') }}</BmButton>
       <!-- 去购买：待发货1,待收货2,待评价3,已完成4,已取消5,超时未付款6,已拒收7,其他8 -->
       <BmButton class="fs-14 ml-10 round-0 plr-30 v-100" v-if="detail.status != 0" @btnClick="onBuy(detail)">{{ $t('buy_again') }}</BmButton>
     </div>
