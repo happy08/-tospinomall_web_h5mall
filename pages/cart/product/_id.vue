@@ -281,7 +281,6 @@
                   <van-rate
                     class="mt-4"
                     v-model="reviewItem.goodsScores"
-                    allow-half
                     size="0.24rem"
                     color="#F7B500"
                     readonly

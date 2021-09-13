@@ -34,7 +34,7 @@
       <!-- 店铺星级 -->
       <!-- <van-cell title="Star Shop" title-class="black fs-14" class="p-20">
         <template #default>
-          <van-rate class="mt-10" v-model="rate" readonly allow-half size="0.24rem" color="#F7B500" void-color="#DDDDDD" void-icon="star" />
+          <van-rate class="mt-10" v-model="rate" readonly size="0.24rem" color="#F7B500" void-color="#DDDDDD" void-icon="star" />
         </template>
       </van-cell> -->
       <!-- 用户评价 -->

@@ -228,7 +228,7 @@
           <!-- 商品详情 -->
           <div class="ml-14 w-230">
             <h4 class="hidden-2 black fs-14 lh-20 fm-helvetica">{{ productItem.productTitle }}</h4>
-            <van-rate disabled class="mt-10" v-model="productItem.starLevel" allow-half size="0.24rem" color="#F1520D" void-color="#DDDDDD" void-icon="star" />
+            <van-rate disabled class="mt-10" v-model="productItem.starLevel" size="0.24rem" color="#F1520D" void-color="#DDDDDD" void-icon="star" />
             <div class="flex between mt-10">
               <div>
                 <span class="red fs-18 fw"><span class="fm-menlo">{{ $store.state.rate.currency }}</span><span>{{ productItem.minPrice }}</span></span>

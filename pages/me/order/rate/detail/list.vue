@@ -70,7 +70,7 @@
           </div>
           <!-- 评分 -->
           <div class="mt-14 flex vcenter plr-20" @click="goDetail(item)">
-            <van-rate v-model="item.goodsScores" allow-half readonly size="14" color="#F7B500" void-color="#DDDDDD" void-icon="star" />
+            <van-rate v-model="item.goodsScores" readonly size="14" color="#F7B500" void-color="#DDDDDD" void-icon="star" />
             <div class="grey ml-12">{{ item.saleAttr }}</div>
           </div>
           <!-- 描述 -->
