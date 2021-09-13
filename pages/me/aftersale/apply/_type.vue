@@ -582,7 +582,6 @@ export default {
         goodState: this.goodsStatus,
         returnType: this.applyType,
         proofPics: this.imgList.join(','),
-        productQuantity: this.detail.totalQuantity,
         applyDesc: this.applyMessage,
         deliveryType: this.returnMethodRadio == 0 ? 2 : 1,
         returnAmount: this.detail.returnAmount
@@ -603,6 +602,12 @@ export default {
       } else {
         _data.orderId = this.detail.id;
         _data.orderItemId = this.$route.query.itemId;
+      }
+
+      if (this.orderList.length > 1) { // 多个商品取总值
+        _data.productQuantity = this.detail.totalQuantity;
+      } else { // 一个商品取她本身的数量
+        _data.productQuantity = this.orderList[0].goodQuantity;
       }
 
       this.$toast.loading({

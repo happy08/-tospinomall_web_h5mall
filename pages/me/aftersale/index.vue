@@ -283,7 +283,7 @@ export default {
       this.$fetch();
     },
     onLoad() {
-      if (this.total == this.lists.length) {
+      if (parseFloat(this.total) == this.lists.length) {
         this.loading = false;
         this.finished = true;
         return false;
