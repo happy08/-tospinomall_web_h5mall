@@ -271,6 +271,7 @@ export default {
     },
     onRefresh() { // 下拉刷新
       this.pageNum = 1;
+      this.finished = false;
       if (this.$route.query.orderId && this.tabActive == 0) { // 从我的订单页面跳转过来查看售后订单，刷新之后展示全部售后订单
         this.$router.replace({
           name: 'me-aftersale'

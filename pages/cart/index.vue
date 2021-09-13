@@ -463,7 +463,7 @@ export default {
       moveToFavorite({ skuIds: skuIds }).then(res => {
         if (res.code != 0) return false;
 
-        this.$toast(this.$t('move_to_favorites_success'))
+        this.$toast(this.$t('t_operation_successful'))
         this.$fetch();
         this.getCartCount();
       })

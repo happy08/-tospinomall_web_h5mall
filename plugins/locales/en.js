@@ -691,7 +691,6 @@ const en = {
   choose_proof_voucher: 'Please select a required voucher',
   go_set_address: 'There is no receiving address yet. Set it now',
   go_seeting: 'To set',
-  move_to_favorites_success: 'Successfully moved into favorites',
   set_often_buy_success: 'Set frequent purchase success',
   choose_product_sku: 'Please select the product specification first',
   copyright: 'Copyright information',
