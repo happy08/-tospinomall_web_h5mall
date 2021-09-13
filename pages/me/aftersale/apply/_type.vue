@@ -409,7 +409,7 @@ export default {
       }
       this.detail = {
         ...res.data.order,
-        returnAmount: res.data.orderItemList[0].canAfterApplyNum * res.data.orderItemList[0].goodPrice,
+        returnAmount: res.data.order.status == 1 ? res.data.order.payAmount : res.data.orderItemList[0].canAfterApplyNum * res.data.orderItemList[0].realPrice,
         realPrice: res.data.orderItemList[0].realPrice
       };
       this.applyNum = res.data.orderItemList[0].canAfterApplyNum;
