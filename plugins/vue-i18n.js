@@ -6,6 +6,7 @@ import zhCNLocale from 'vant/lib/locale/lang/zh-CN';
 import zhTWLocale from 'vant/lib/locale/lang/zh-TW'; // 中文繁体
 // import frLocale from 'vant/lib/locale/lang/fr-FR'; // 法语
 import esLocale from 'vant/lib/locale/lang/es-ES'; // 西班牙语
+import viLocale from './locales/vant-vi'; // vant ui 越南语
 import en from './locales/en.js';
 import zhCN from './locales/zh-CN.js';
 import zhTW from './locales/zh-TW.js';
@@ -32,7 +33,7 @@ export function vantLocales(lang) {
   } else if (lang === 'ms') {
     Locale.use(lang, esLocale);
   } else if (lang === 'vi') {
-    Locale.use(lang, esLocale);
+    Locale.use(lang, viLocale);
   }
 }
 
