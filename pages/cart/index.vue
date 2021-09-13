@@ -100,7 +100,7 @@
                   </template>
                   <!-- 自定义数量,有库存显示数量，没有去看相似物品 -->
                   <template #num>
-                    <van-stepper v-if="singleItem.status == 1" v-model="singleItem.quantity" input-width="0.796rem" button-size="0.42rem" :integer="true" class="mt-6 custom-stepper" @change="onChangeNum(singleItem)" />
+                    <van-stepper v-if="singleItem.status == 1" v-model="singleItem.quantity" input-width="0.796rem" button-size="0.42rem" :integer="true" class="mt-6 custom-stepper" @change="onChangeNum(singleItem)" :max="singleItem.stock" />
                     <div v-else class="border fs-12 black round-8 ptb-4 plr-8 mt-6 lh-1" @click="goSimilar(singleItem.productId)">{{ $t('similar_goods') }}</div>
                   </template>
                   <!-- 自定义价格 -->
