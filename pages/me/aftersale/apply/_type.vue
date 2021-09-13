@@ -151,6 +151,8 @@
         v-if="returnMethodRadio == 1"
         class="plr-0 ptb-10"
         :border="false"
+        type="number"
+        maxlength="20"
       />
     </div>
 
