@@ -318,7 +318,6 @@ const en = {
   freight: 'Freight',
   please_select_delivery_address: 'Please select a shipping address',
   accra: 'Accra',
-  delivery_: 'Delivery: {replace_tip}',
   air_freight: 'Air transport',
   sea_transportation: 'Ocean shipping',
   land_transportation: 'Land transportation',

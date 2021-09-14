@@ -318,7 +318,6 @@ const tw = {
   freight: '運費',
   please_select_delivery_address: '請選擇送貨地址',
   accra: 'Accra',
-  delivery_: 'Delivery: {replace_tip}',
   air_freight: '空運',
   sea_transportation: '海運',
   land_transportation: '陸運',

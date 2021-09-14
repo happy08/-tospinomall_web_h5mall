@@ -318,7 +318,6 @@ const cn = {
   freight: '运费',
   please_select_delivery_address: '请选择送货地址',
   accra: 'Accra',
-  delivery_: 'Delivery: {replace_tip}',
   air_freight: '空运',
   sea_transportation: '海运',
   land_transportation: '陆运',
