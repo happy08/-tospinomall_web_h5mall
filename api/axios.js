@@ -60,7 +60,8 @@ export default function({ $axios, app, redirect, store }) {
     if (res) {
       if (res.data.code === 0) {
         return res.data; //Promise.resolve(res.data);
-      } else if (res.data.code === 10401) { // 用户凭证过期跳转到登录页面
+      } else if (res.data.code == 10401) { // 用户凭证过期跳转到登录页面
+        console.log('响应成功')
         store.commit('user/SET_TOKEN', null);
         redirect({
           name: 'login'
@@ -81,6 +82,8 @@ export default function({ $axios, app, redirect, store }) {
   $axios.onError(error => {
     if (error.code > 0) {
       if (error.code === 10401) { // 用户凭证过期跳转到登录页面
+        console.log('响应失败')
+        console.log(error)
         store.commit('user/SET_TOKEN', null);
         redirect({
           name: 'login'

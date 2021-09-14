@@ -38,13 +38,6 @@ export const mutations = {
 export const actions = {
   // 数据持久化
   async nuxtServerInit ({ commit }, { $cookies, $api }) {
-    // 获取当前语言货币汇率
-    const rateData = await $api.getCurrentRate();
-    commit('SET_RATE', rateData.data);
-    // 回去当前语言
-    const lang = $cookies.get('lang');
-    commit('SET_LANG', lang);
-    
     const authToken = $cookies.get('authToken'); // 用户token
     console.log('持久化')
     console.log(authToken)
@@ -69,6 +62,15 @@ export const actions = {
       // 当前账户名
       commit('user/SET_ACCOUNT', $cookies.get('account'));
     }
+    
+    // 获取当前语言货币汇率
+    const rateData = await $api.getCurrentRate();
+    commit('SET_RATE', rateData.data);
+    // 回去当前语言
+    const lang = $cookies.get('lang');
+    commit('SET_LANG', lang);
+    
+    
 
     // 是否有未读消息
     commit('user/SET_ISNEWMESSAGE', Boolean($cookies.get('isNewWebsocketMsg')));

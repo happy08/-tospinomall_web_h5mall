@@ -267,14 +267,6 @@ export default {
     }
   },
   async fetch() {
-    // 获取商品推荐列表
-    const recommendData = await this.$api.getRecommend({type: 0, pageNum: this.pageNum, pageSize: this.pageSize});
-    if (recommendData.code != 0) return false;
-    this.recommendList = recommendData.data.items;
-    this.total = recommendData.data.total;
-    if (typeof this.$redrawVueMasonry === 'function') {
-      this.$redrawVueMasonry();
-    }
     // 未登录情况下不获取数据
     if (!this.$store.state.user.authToken) return false;
     this.listTotal = 0;
@@ -320,6 +312,20 @@ export default {
     this.totalAmount = listData.data.totalAmount;
     // this.onCountPrice();
     this.refreshing.isFresh = false;
+
+    // 获取商品推荐列表
+    const recommendData = await this.$api.getRecommend({type: 0, pageNum: this.pageNum, pageSize: this.pageSize});
+    if (recommendData.code != 0) return false;
+    this.recommendList = recommendData.data.items;
+    this.total = recommendData.data.total;
+    if (typeof this.$redrawVueMasonry === 'function') {
+      this.$redrawVueMasonry();
+    }
+    if (process.client) {
+      window.scrollTo({
+        top: 0
+      });
+    }
   },
   activated() {
     if (this.$store.state.user.authToken) { // 登录的情况下才请求数据
