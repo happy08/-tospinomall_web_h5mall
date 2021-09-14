@@ -217,11 +217,10 @@ export default {
         listData = await this.$api.getAfterSaleList({ pageNum: this.pageNum, pageSize: this.pageSize, status: 1}); // 售后申请列表
       }
     }
-    this.$toast.clear();
     this.loading = false;
     this.refreshing.isFresh = false;
     this.lists = this.pageNum == 1 ? listData.data.records : this.lists.concat(listData.data.records);
-    
+    this.$toast.clear();
     this.total = listData.data.total;
     this.getOrderAfterSalesCount();
   },
