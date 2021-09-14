@@ -314,7 +314,7 @@ export default {
       if (from.name == 'me' || from.name == null || from.name == 'cart-order-confirm') {
         vm.typeActive = vm.$route.query.type ? parseFloat(vm.tabs[vm.$route.query.type].type) : 100;
       }
-      if (from.name == 'me' || from.name == null || from.name == 'cart-order-confirm' || from.name == 'me-order-detail-id') {
+      if (from.name == 'me' || from.name == null || from.name == 'cart-order-confirm' || from.name == 'me-order-detail-id' || from.name == 'me-aftersale') {
         vm.isFirst = true;
         vm.pageNum = 1;
         vm.$fetch();

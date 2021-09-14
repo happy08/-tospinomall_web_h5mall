@@ -462,7 +462,8 @@ export default {
         query: {
           itemId: this.detail.id,
           edit: 1,
-          back: this.$route.fullPath
+          back: this.$route.fullPath,
+          backOrderId: this.$route.query.back && this.$route.query.back.indexOf('orderId') ? this.$route.query.back.split('orderId=')[1] : null
         }
       })
     },
