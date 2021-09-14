@@ -606,10 +606,12 @@ export default {
         _data.orderItemId = this.$route.query.itemId;
       }
 
-      if (this.orderList.length > 1) { // 多个商品取总值
-        _data.productQuantity = this.detail.totalQuantity;
-      } else { // 一个商品取她本身的数量
-        _data.productQuantity = this.orderList[0].canAfterApplyNum;
+      if (this.detail.status != 1) { // 整批退的时候不传商品数量
+        if (this.orderList.length > 1) { // 多个商品取总值
+          _data.productQuantity = this.detail.totalQuantity;
+        } else { // 一个商品取她本身的数量
+          _data.productQuantity = this.orderList[0].canAfterApplyNum;
+        }
       }
 
       this.$toast.loading({
