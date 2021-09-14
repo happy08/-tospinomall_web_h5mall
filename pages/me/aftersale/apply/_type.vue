@@ -4,7 +4,7 @@
     换货功能暂时不做，故暂时先把选择商品规格的弹窗删除了，之后可以从购物车页面copy一份 
   -->
   <div class="bg-grey v-percent-100 pb-30 pt-46">
-    <BmHeaderNav :left="{ isShow: true }" :title="$t(title)" :fixed="true" />
+    <BmHeaderNav :left="{ isShow: true, isEmit: true }" :title="$t(title)" :fixed="true" @leftClick="leftClick" />
 
     <!-- 订单详情 -->
     <div class="bg-white p-20">
@@ -609,7 +609,7 @@ export default {
       if (this.orderList.length > 1) { // 多个商品取总值
         _data.productQuantity = this.detail.totalQuantity;
       } else { // 一个商品取她本身的数量
-        _data.productQuantity = this.orderList[0].goodQuantity;
+        _data.productQuantity = this.orderList[0].canAfterApplyNum;
       }
 
       this.$toast.loading({
@@ -649,14 +649,14 @@ export default {
         this.concatCell = '';
 
         // this.$router.go(-1);
-        this.$router.push({
+        this.$router.replace({
           name: 'me-aftersale-detail-id',
           params: {
             id: res.data.orderReturnId
           },
           query: {
             // back: this.$route.query.edit ? 'me-aftersale': ''
-            back: 'me-aftersale'
+            back: this.$route.query.backOrderId ? '/me/aftersale?orderId=' + this.$route.query.backOrderId : '/me/aftersale'
           }
         })
       })
@@ -699,6 +699,19 @@ export default {
       getFreightPrice(_data).then(res => {
         this.freightPrice = res.data.freightPrice;
       })
+    },
+    leftClick() { // 页面回退 解决多次页面进来重复回退的问题
+      if (this.$route.query.back) { // 有需要回退的页面
+        this.$router.replace(this.$route.query.back)
+        return false;
+      }
+      if(window.history.length < 2){ //解决部分机型拿不到history
+        console.log('go home');
+        this.$router.replace('/');
+      }else{
+        console.log('back');
+        history.back();
+      }
     }
   },
 }

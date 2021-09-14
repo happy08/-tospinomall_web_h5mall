@@ -23,7 +23,7 @@ export default function({ $axios, app, redirect, store }) {
     } else {
       config.headers['Content-Type'] = config.headers['Content-Type'] || 'application/json';
     }
-    console.log(22222222222222222)
+    console.log(2222222222)
     // 登录之后要重新复值token
     // if (store.state.user.authToken && config.url != '/auth/oauth/token?grant_type=refresh_token') {
     //   config.headers['Authorization'] = `${store.state.user.authToken}`;

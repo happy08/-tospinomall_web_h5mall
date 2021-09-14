@@ -1,7 +1,7 @@
 <template>
   <!-- 我的-售后-售后申请 -->
   <div class="bg-grey vh-100" v-if="orderList.length > 0">
-    <BmHeaderNav :left="{ isShow: true }" :title="$t('after_sales_service')" />
+    <BmHeaderNav :left="{ isShow: true, isEmit: true }" :title="$t('after_sales_service')" @leftClick="leftClick" />
 
     <!-- 订单详情 -->
     <template v-if="orderList.length == 1">
@@ -98,11 +98,28 @@ export default {
     onApply(type) {
       if (type == 2 && this.detail.status == 1) return false; // 待发货时不可选择退货退款
 
-      this.$router.push({ 
+      this.$router.replace({ 
         name: 'me-aftersale-apply-type', 
         params: { type: type }, 
-        query: { itemId: this.$route.query.itemId } 
+        query: {
+          itemId: this.$route.query.itemId,
+          back: this.$route.fullPath,
+          backOrderId: this.$route.query.back && this.$route.query.back.indexOf('orderId=') ? this.$route.query.back.split('orderId=')[1] : null
+        } 
       })
+    },
+    leftClick() {
+      if (this.$route.query.back) { // 有需要回退的页面
+        this.$router.replace(this.$route.query.back)
+        return false;
+      }
+      if(window.history.length < 2){ //解决部分机型拿不到history
+        console.log('go home');
+        this.$router.replace('/');
+      }else{
+        console.log('back');
+        history.back();
+      }
     }
   },
 }

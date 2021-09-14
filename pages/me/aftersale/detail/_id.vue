@@ -454,20 +454,23 @@ export default {
       })
     },
     onEditApply() { // 修改申请
-      this.$router.push({
+      this.$router.replace({
         name: 'me-aftersale-apply-type',
         params: {
           type: this.detail.returnType + 1
         },
         query: {
           itemId: this.detail.id,
-          edit: 1
+          edit: 1,
+          back: this.$route.fullPath
         }
       })
     },
     leftClick() { // 回退，解决由申请页面提交跳转到详情页面，回退时需要回退到列表页面
-      if (this.$route.query.back && this.$route.query.back == 'me-aftersale') {
-        this.$router.go(-3);
+      // if (this.$route.query.back && this.$route.query.back == 'me-aftersale') {
+      if (this.$route.query.back) {
+        // this.$router.go(-3);
+        this.$router.replace(this.$route.query.back);
         return false;
       }
 

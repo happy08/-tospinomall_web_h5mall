@@ -38,7 +38,11 @@ export const mutations = {
 export const actions = {
   // 数据持久化
   async nuxtServerInit ({ commit }, { $cookies, $api }) {
-    const lang = $cookies.get('lang'); // 语言
+    // 获取当前语言货币汇率
+    const rateData = await $api.getCurrentRate();
+    commit('SET_RATE', rateData.data);
+    // 回去当前语言
+    const lang = $cookies.get('lang');
     commit('SET_LANG', lang);
     
     const authToken = $cookies.get('authToken'); // 用户token
@@ -78,10 +82,5 @@ export const actions = {
     if (searchOrderList != 'undefined' && searchOrderList != '') {
       commit('user/SET_SEARCHORDERLIST', searchOrderList.split(','));
     }
-    
-
-    // 获取当前语言货币汇率
-    const rateData = await $api.getCurrentRate();
-    commit('SET_RATE', rateData.data);
   }
 }

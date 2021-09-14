@@ -217,10 +217,7 @@ export default {
         listData = await this.$api.getAfterSaleList({ pageNum: this.pageNum, pageSize: this.pageSize, status: 1}); // 售后申请列表
       }
     }
-    if (this.pageNum == 1) {
-      this.$toast.clear();
-    }
-    if (listData.code != 0) return false;
+    this.$toast.clear();
     this.loading = false;
     this.refreshing.isFresh = false;
     this.lists = this.pageNum == 1 ? listData.data.records : this.lists.concat(listData.data.records);
@@ -253,19 +250,23 @@ export default {
       })
     },
     afterSales(orderItem) { // 跳转到售后申请页面
-      this.$router.push({
+      this.$router.replace({
         name: 'me-aftersale-apply',
         query: {
           itemId: orderItem.id,
-          status: this.tabActive + 1
+          status: this.tabActive + 1,
+          back: this.$route.fullPath
         }
       })
     },
     goReturnDetail(returnId) { // 跳转到退款详情页面
-      this.$router.push({
+      this.$router.replace({
         name: 'me-aftersale-detail-id',
         params: {
           id: returnId
+        },
+        query: {
+          back: this.$route.fullPath
         }
       })
     },
