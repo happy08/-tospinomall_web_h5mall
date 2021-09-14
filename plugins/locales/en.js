@@ -140,7 +140,6 @@ const en = {
   store: 'Store',
   filtrate: 'Filtrate',
   comprehensive: 'Comprehensive',
-  go: 'Go',
   logistics_tracking: 'Lgistics tracking',
   dial_number: 'Dial number',
   refund: 'Refund',

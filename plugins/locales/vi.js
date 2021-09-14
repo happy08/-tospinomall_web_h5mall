@@ -393,7 +393,7 @@ const vi = {
   negotiation_status_6_user_type_3: 'Nền tảng đã nhận hàng và đồng ý hoàn tiền',
   negotiation_status_7: 'Người bán đã từ chối hàng hóa của bạn',
   negotiation_status_8: 'Hoàn tiền thành công',
-  negotiation_status_9: 'Nền tảng đã từ chối đơn đăng ký dịch vụ sau bán hàng và lý do từ chối:  {replace_tip}, đơn đặt hàng sau bán hàng đóng',
+  negotiation_status_9: 'Nền tảng đã từ chối đơn đăng ký dịch vụ sau bán hàng và lý do từ chối: {replace_tip}, đơn đặt hàng sau bán hàng đóng',
   negotiation_status_10: 'Đơn hàng sau bán hàng bị đóng do người mua không gửi hàng trong thời hạn.',
   negotiation_status_11: 'Sau khi người bán từ chối thời gian chờ của người mua, dịch vụ khách hàng không can thiệp và đơn đặt hàng sau bán hàng đã bị đóng',
   negotiation_status_12: 'Sau khi người bán từ chối chấp nhận người mua, người mua không can thiệp sau thời gian chờ, và đơn đặt hàng sau bán hàng đã được đóng',
