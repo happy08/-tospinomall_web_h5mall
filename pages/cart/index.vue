@@ -516,6 +516,9 @@ export default {
       }
     },
     onChangeNum(item) { // 修改商品数量
+      if (item.quantity == '' || parseFloat(item.quantity) < 1) {
+        return false;
+      }
       updateCartNum({ quantity: item.quantity, skuId: item.productSku }).then(res => {
         if (res.code != 0) return false;
         

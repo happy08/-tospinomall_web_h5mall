@@ -31,7 +31,7 @@
         </div> -->
 
         <!-- 评价分类 -->
-        <van-tabs sticky swipeable animated :offset-top="44" color="#42B7AE" class="customs-van-tabs" :ellipsis="false" @change="getList" v-model="tabActive">
+        <van-tabs sticky swipeable animated :offset-top="44" color="#42B7AE" class="customs-van-tabs" :ellipsis="false" @change="onChangeTab" v-model="tabActive">
           <van-tab v-for="(categoryItem, tabIndex) in $t('product_rate_tab')" :title="categoryItem" :key="'scroll-tab-' + tabIndex" title-class="pb-0" :name="tabIndex">
           </van-tab>
         </van-tabs>
@@ -212,8 +212,7 @@ export default {
           duration: 0
         });
       }
-      
-      this.finished = false;
+
       let _params = { goodsId: this.$route.query.id, pageNum: this.pageNum, pageSize: this.pageSize, createUser: this.$store.state.user.userInfo.id }
       if (this.tabActive == 1) {
         _params.sortType = 1; // 最新创建时间排序
@@ -245,10 +244,14 @@ export default {
             sellerReplyList: item.sellerReplyList.length > 0 ? [item.sellerReplyList[0]] : []
           }
         });
+        
         this.list = this.pageNum == 1 ? list : this.list.concat(list);
         this.total = res.data.total;
         this.loading = false;
         this.refreshing.isFresh = false;
+        if (parseFloat(this.total) > this.list.length) {
+          this.finished = false;
+        }
       })
     },
     onReport(id) { // 举报
@@ -299,7 +302,8 @@ export default {
       this.getList();
     },
     onLoad() { // 加载更多
-      if (this.total == this.list.length) {
+      this.finished = false;
+      if (parseFloat(this.total) == this.list.length) {
         this.loading = false;
         this.finished = true;
         return false;
@@ -316,6 +320,15 @@ export default {
         startPosition: index,
         loop: false
       })
+    },
+    onChangeTab() { // tab切换
+      this.pageNum = 1;
+      if (process.client) {
+        window.scrollTo({
+          top: 0
+        });
+      }
+      this.getList();
     }
   },
 }

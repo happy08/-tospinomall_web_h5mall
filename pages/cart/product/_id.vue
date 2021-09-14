@@ -624,12 +624,17 @@ export default {
   },
   async fetch() {
     // 判断登录之后，获取详情时要带userid
+    this.$toast.loading({
+      forbidClick: true,
+      loadingType: 'spinner',
+      duration: 0
+    });
     let _detailParams = {};
     if (this.$store.state.user.userInfo) {
       _detailParams.userId = this.$store.state.user.userInfo.id
     }
     const detailData = await this.$api.getProductDetail(this.$route.params.id, _detailParams); // 获取商品详情;
-
+    this.$toast.clear();
     if (!detailData.data) return false;
 
     this.carouselMapUrls = detailData.data.carouselMapUrls; // 商品轮播图
