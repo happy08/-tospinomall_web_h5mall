@@ -321,6 +321,7 @@ export default {
     if (typeof this.$redrawVueMasonry === 'function') {
       this.$redrawVueMasonry();
     }
+    this.finished = false;
     if (process.client) {
       window.scrollTo({
         top: 0
@@ -693,7 +694,7 @@ export default {
   border-color: #FF8248!important;
 }
 .custom-submit-bar{
-  bottom: 50px;
+  bottom: 49px;
   left: 0;
   right: 0;
   height: 56px;

@@ -3,7 +3,7 @@
   <div class="v-percent-100 bg-grey pt-46">
     <BmHeaderNav :left="{ isShow: true }" :title="$t('refund_after_sale')" :fixed="true" />
     <!-- 售后列表 -->
-    <van-tabs sticky swipeable animated :offset-top="46" color="#42B7AE" class="customs-van-tabs" :ellipsis="false" @change="getSearchList" v-model="tabActive">
+    <van-tabs sticky swipeable animated :offset-top="'0.92rem'" color="#42B7AE" class="customs-van-tabs" :ellipsis="false" @change="getSearchList" v-model="tabActive">
       <van-tab v-for="(categoryItem, tabIndex) in $t('after_sale_status')" :title="titleFormat(categoryItem, tabIndex)" :key="'scroll-tab-' + tabIndex" title-class="border-b pb-0" :name="tabIndex">
         <PullRefresh :refreshing="refreshing" @refresh="onRefresh" class="custom-min-height-94">
           <div class="pb-20 bg-grey">
