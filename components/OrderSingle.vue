@@ -25,7 +25,7 @@
     </div>
     
     <!-- 商品价格和数量 -->
-    <div class="tr" v-if="isShowRight">
+    <div class="tr mw-80 flex-shrink" v-if="isShowRight">
       <p class="fs-18 fw black lh-20">{{ $store.state.rate.currency }}{{ price }}</p>
       <p class="light-grey fs-14 lh-20 mt-8" v-if="product_num > 0">X{{ product_num }}</p>
       <slot name="product-num"></slot>
@@ -104,5 +104,8 @@ export default {
   margin-left: 16px;
   margin-right: 16px;
   width: 100%;
+}
+.mw-80{
+  max-width: 80px;
 }
 </style>

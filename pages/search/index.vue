@@ -18,8 +18,8 @@
       />
       <!-- 分类 -->
       <div class="flex between vcenter plr-20 bg-white" v-show="!isShowTip">
-        <van-tabs swipeable animated color="#42B7AE"  @change="getSearchList" @disabled="filterPopup = true" class="customs-van-tabs underline" v-model="typeActive" line-height="0" line-width="0" :ellipsis="false">
-          <van-tab v-for="(productItem, tabIndex) in tabs" :title="$t(productItem.name)" :key="'scroll-tab-' + tabIndex" title-class="p-0 pr-60" :name="productItem.type" :disabled="productItem.type == 2">
+        <van-tabs swipeable animated color="#42B7AE"  @change="getSearchList" @disabled="filterPopup = true" class="customs-van-tabs underline w-100" v-model="typeActive" line-height="0" line-width="0" :ellipsis="false">
+          <van-tab v-for="(productItem, tabIndex) in tabs" :title="$t(productItem.name)" :key="'scroll-tab-' + tabIndex" title-class="p-0 between" :name="productItem.type" :disabled="productItem.type == 2">
             <template #title="props" v-if="productItem.type === 0">
               {{ props }}
               <van-dropdown-menu active-color="#42B7AE" class="custom-dropdown-menu">

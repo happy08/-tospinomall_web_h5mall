@@ -1,6 +1,6 @@
 <template>
   <!-- 我的-设置-账户安全 -->
-  <div>
+  <div class="bg-grey v-percent-100">
     <BmHeaderNav :left="{ isShow: true, url: '/me/account' }" :title="$t('account_security')" />
     
     <!-- 欢迎用户语 -->
@@ -21,7 +21,7 @@
 
     <div class="mt-12" v-if="$store.state.user.userInfo">
       <!-- 修改密码 -->
-      <van-cell class="ptb-10 plr-20" center :title="$t('change_password')" value-class="light-grey" is-link title-class="black" :to="{ name: 'me-account-verifymethod' }">
+      <van-cell class="ptb-20 plr-20" center :title="$t('change_password')" value-class="light-grey" is-link title-class="black" :to="{ name: 'me-account-verifymethod' }">
         <template #default v-if="$store.state.user.userInfo.pwdLastUpdateTime">
           <span v-html="$t('last_modified')" class="pre-wrap"></span>{{ $store.state.user.userInfo.pwdLastUpdateTime }}
         </template>

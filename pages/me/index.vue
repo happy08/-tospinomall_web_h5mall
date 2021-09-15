@@ -66,7 +66,7 @@
     <div class="bg-white mlr-12 round-8 plr-12 pb-20 user-page__order">
       <van-cell class="ptb-12 plr-0" :border="false" :title="$t('my_order')" is-link :value="$t('view_all')" value-class="green" title-class="black" :to="$store.state.user.authToken ? { name: 'me-order' } : { name: 'login' }" />
       <div class="flex between tc">
-        <nuxt-link v-for="(orderItem, orderIndex) in orderList" :key="'oder-' + orderIndex" :to="$store.state.user.authToken ? { name: orderItem.name, query: { type: orderItem.type } } : { name: 'login' }" >
+        <nuxt-link v-for="(orderItem, orderIndex) in orderList" :key="'oder-' + orderIndex" :to="$store.state.user.authToken ? { name: orderItem.name, query: { type: orderItem.type } } : { name: 'login' }" class="flex-1 plr-4">
           <van-badge :content="orderItem.count" max="99" :class="{'custom-badge': true, 'isNo-badge': orderItem.count == 0}">
             <BmImage 
               :url="require('@/assets/images/icon/' + orderItem.icon + '.png')"
@@ -77,7 +77,7 @@
               :alt="'Tospino '+ $t(orderItem.text) +' icon'"
             />
           </van-badge>
-          <p>{{ $t(orderItem.text) }}</p>
+          <p class="fs-14 black">{{ $t(orderItem.text) }}</p>
         </nuxt-link>
       </div>
     </div>
@@ -242,6 +242,9 @@ export default {
 }
 .user-page__other{
   box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.09);
+}
+.flex-1{
+  flex: 1;
 }
 </style>
 

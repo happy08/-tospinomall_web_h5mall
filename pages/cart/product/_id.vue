@@ -52,6 +52,7 @@
       title-inactive-color="#383838"
       class="product-tab-content"
       ref="detailTabContainer"
+      :ellipsis="false"
     >
       <van-tab :title="$t('shot')" name="Short">
         <div>

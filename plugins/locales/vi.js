@@ -89,7 +89,7 @@ const vi = {
   confirm: 'xác nhận',
   my_balance: 'Số dư của tôi',
   my_purse: 'Túi của tôi',
-  bill: 'hóa đơn thanh toán',
+  bill: 'phiếu thanh toán',
   enter_a_custom_amount: 'Vui lòng nhập số tiền tùy chỉnh',
   recharge_now: 'Nạp tiền ngay bây giờ',
   recharge_instructions: 'Hướng dẫn nạp tiền:',

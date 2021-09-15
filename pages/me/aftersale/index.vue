@@ -31,13 +31,13 @@
                       :image="productItem.goodImg"
                       @onClick="goProduct(productItem.goodId)"
                     >
-                      <p class="light-grey fs-14 lh-20 mt-8 ws-nowrap" slot="product-num">{{ $t('total_piece', { replace_tip: productItem.goodQuantity }) }}</p>
+                      <p class="light-grey fs-14 lh-20 mt-8" slot="product-num">{{ $t('total_piece', { replace_tip: productItem.goodQuantity }) }}</p>
                     </OrderSingle>
                     
                     <!-- 售后申请 -->
                     <div :class="{'mt-24 flex vcenter': true, 'hend': productItem.showAfterSale != 0, 'between': productItem.showAfterSale == 0}" v-if="tabActive === 0">
                       <!-- 订单售后状态showAfterSale：-1->数量达到不可售后 0->时间达到不可售后 1->可以售后 -->
-                      <div v-if="productItem.showAfterSale == 0" class="tl">{{ $t('the_goods_have_timed_out') }}</div>
+                      <div v-if="productItem.showAfterSale == 0" class="tl mw-50">{{ $t('the_goods_have_timed_out') }}</div>
                       <BmButton :type="'info'" class="h-32" v-if="productItem.showAfterSale == 1" @click="afterSales(productItem)">{{ $t('apply_for_after_sales') }}</BmButton>
                       <BmButton :type="'info'" class="h-32 time-out" v-else>{{ $t('apply_for_after_sales') }}</BmButton>
                     </div>
@@ -58,7 +58,7 @@
                       v-for="orderReturnItem, orderReturnIndex in orderitem.orderReturnItems"
                       :key="'order-return-item-' + orderReturnIndex"
                     > 
-                      <p class="light-grey fs-14 lh-20 mt-8 ws-nowrap" slot="product-num">{{ $t('total_piece', { replace_tip: orderReturnItem.returnQuantity }) }}</p>
+                      <p class="light-grey fs-14 lh-20 mt-8" slot="product-num">{{ $t('total_piece', { replace_tip: orderReturnItem.returnQuantity }) }}</p>
                     </OrderSingle>
                   </template>
                   <div v-else class="more-order-content" @click="goReturnDetail(orderitem.id)">
@@ -88,8 +88,8 @@
                     </div>
                   </div>
 
-                  <div class="flex between mt-18">
-                    <div class="fs-14 light-grey w-auto">
+                  <div class="flex between mt-10">
+                    <div class="fs-14 light-grey w-auto mt-8">
                       <p>{{ statusFormat(orderitem.status, orderitem.deliveryType, orderitem.orderType) }}</p>
                       <!-- 退款成功 -->
                       <p v-if="orderitem.status == 5">{{ $t('refund') }}{{ $store.state.rate.currency }}{{ orderitem.returnAmount }}</p>
@@ -98,25 +98,25 @@
                     <!-- 工单状态involvedStatus： 0未开始 1->待举证 2->平台处理中 3->工单关闭 4->工单已完结 -->
                     <!-- status: 1->商家/运营待处理 2->待自行寄回/待上门取件 3商家/运营待收货 4->待退款 5->退款成功 6->关闭售后单 7->商家/运营驳回申请 8->商家/运营拒收退货商品 -->
                     <!-- 订单类型orderType：1->FBM订单 2->FBT订单 -->
-                    <div class="flex hend">
+                    <div class="flex hend flex-wrap">
                       <!-- 客服介入 -->
-                      <BmButton :type="'info'" class="h-32 mr-12 time-out" v-if="(orderitem.status == 7 || orderitem.status == 8) && orderitem.involvedStatus == 0 && orderitem.orderType == 1 && orderitem.surplusTime > 0" @btnClick="$router.push({ name: 'me-aftersale-proof-id', params: { id: orderitem.id } })">{{ $t('customer_service_intervention') }}</BmButton>
+                      <BmButton :type="'info'" class="h-32 mr-12 time-out mt-8" v-if="(orderitem.status == 7 || orderitem.status == 8) && orderitem.involvedStatus == 0 && orderitem.orderType == 1 && orderitem.surplusTime > 0" @btnClick="$router.push({ name: 'me-aftersale-proof-id', params: { id: orderitem.id } })">{{ $t('customer_service_intervention') }}</BmButton>
                       <!-- 追加举证 -->
-                      <!-- <BmButton :type="'info'" class="h-32 time-out" v-if="(orderitem.status == 7 || orderitem.status == 8) && orderitem.involvedStatus == 1 && orderitem.orderType == 1 && orderitem.surplusTime > 0">追加举证</BmButton> -->
+                      <!-- <BmButton :type="'info'" class="h-32 time-out mt-8" v-if="(orderitem.status == 7 || orderitem.status == 8) && orderitem.involvedStatus == 1 && orderitem.orderType == 1 && orderitem.surplusTime > 0">追加举证</BmButton> -->
                       <!-- 撤销申请 -->
-                      <BmButton :type="'info'" class="h-32" v-if="orderitem.status == 1 || orderitem.status == 2 || (orderitem.status == 7 && orderitem.involvedStatus == 0) || (orderitem.status == 8 && orderitem.involvedStatus == 0)" @btnClick="onRevokeApply(orderitem.id)">{{ $t('cancel_the_application') }}</BmButton>
+                      <BmButton :type="'info'" class="h-32 mt-8" v-if="orderitem.status == 1 || orderitem.status == 2 || (orderitem.status == 7 && orderitem.involvedStatus == 0) || (orderitem.status == 8 && orderitem.involvedStatus == 0)" @btnClick="onRevokeApply(orderitem.id)">{{ $t('cancel_the_application') }}</BmButton>
                       <!-- 撤销工单 -->
-                      <BmButton :type="'info'" class="h-32" v-if="(orderitem.status == 7 || orderitem.status == 8) && (orderitem.involvedStatus == 1 || orderitem.involvedStatus == 2)" @btnClick="onCancelApply(orderitem.workId)">{{ $t('cancel_the_application') }}</BmButton>
+                      <BmButton :type="'info'" class="h-32 mt-8" v-if="(orderitem.status == 7 || orderitem.status == 8) && (orderitem.involvedStatus == 1 || orderitem.involvedStatus == 2)" @btnClick="onCancelApply(orderitem.workId)">{{ $t('cancel_the_application') }}</BmButton>
                       <!-- 删除 -->
-                      <BmButton :type="'info'" class="h-32 time-out" v-if="orderitem.status == 5 || orderitem.status == 6" @btnClick="onRemoveOrder(orderitem.id)">{{ $t('delete') }}</BmButton>
+                      <BmButton :type="'info'" class="h-32 time-out mt-8" v-if="orderitem.status == 5 || orderitem.status == 6" @btnClick="onRemoveOrder(orderitem.id)">{{ $t('delete') }}</BmButton>
                       <!-- 查看详情 -->
-                      <BmButton :type="'info'" class="h-32 ml-12" v-if="orderitem.status == 5 || orderitem.status == 6" @btnClick="$router.push({ name: 'me-aftersale-detail-id', params: { id: orderitem.id } })">{{ $t('watch_detail') }}</BmButton>
+                      <BmButton :type="'info'" class="h-32 ml-12 mt-8" v-if="orderitem.status == 5 || orderitem.status == 6" @btnClick="$router.push({ name: 'me-aftersale-detail-id', params: { id: orderitem.id } })">{{ $t('watch_detail') }}</BmButton>
                       <!-- 修改申请 -->
-                      <!-- <BmButton :type="'info'" class="h-32 time-out" v-if="orderitem.status == 1 || orderitem.status == 7">修改申请</BmButton> -->
+                      <!-- <BmButton :type="'info'" class="h-32 time-out mt-8" v-if="orderitem.status == 1 || orderitem.status == 7">修改申请</BmButton> -->
                       <!-- 填写运单号 -->
-                      <!-- <BmButton :type="'info'" class="h-32 time-out" v-if="orderitem.status == 2 && orderitem.deliveryType == 1">填写运单号</BmButton> -->
+                      <!-- <BmButton :type="'info'" class="h-32 time-out mt-8" v-if="orderitem.status == 2 && orderitem.deliveryType == 1">填写运单号</BmButton> -->
                       <!-- 修改物流单号 -->
-                      <!-- <BmButton :type="'info'" class="h-32 time-out" v-if="orderitem.status == 3 && orderitem.deliveryType == 1">修改物流单号</BmButton> -->
+                      <!-- <BmButton :type="'info'" class="h-32 time-out mt-8" v-if="orderitem.status == 3 && orderitem.deliveryType == 1">修改物流单号</BmButton> -->
                     </div>
                   </div>
                 </div>
@@ -222,6 +222,7 @@ export default {
     this.lists = this.pageNum == 1 ? listData.data.records : this.lists.concat(listData.data.records);
     this.$toast.clear();
     this.total = listData.data.total;
+    this.finished = parseFloat(this.total) == this.lists.length ? true: false;
     this.getOrderAfterSalesCount();
   },
   activated() {
@@ -396,5 +397,8 @@ export default {
     padding-left: 10px;
     background-color: rgba(255, 255, 255, .8);
   }
+}
+.mw-50{
+  max-width: 50%;
 }
 </style>

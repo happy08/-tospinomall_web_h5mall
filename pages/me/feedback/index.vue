@@ -24,7 +24,7 @@
         <van-field
           class="bg-grey feedback-pic-field"
           v-model="message"
-          rows="2"
+          rows="3"
           type="textarea"
           maxlength="255"
           :placeholder="$t('feedback_input_hint')"
