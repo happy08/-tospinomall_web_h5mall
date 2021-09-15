@@ -1,7 +1,7 @@
 <template>
   <!-- 店铺-店铺首页 -->
   <div class="vh-100 bg-grey pb-70">
-    <div :class="{'store-container-headr': storeBgdUrl != '', 'bg-white': storeBgdUrl == ''}" :style="storeBgdUrl != '' ? 'background-image: url(' + storeBgdUrl + ')' : ''">
+    <div :class="{'store-container-headr': true, 'bg-white': storeBgdUrl == ''}" :style="storeBgdUrl != '' ? 'background-image: url(' + storeBgdUrl + ')' : ''">
       <div class="flex vcenter plr-12 h-46">
         <van-icon name="arrow-left" color="#383838" size="18px" @click="leftBack"></van-icon>
         <van-search
@@ -31,9 +31,9 @@
                   :alt="detailData.storeName"
                 />
                 <!-- 店铺名、关注数 -->
-                <dl class="ml-12 fm-helvetica">
-                  <dt class="fs-14 fw color-23">{{ detailData.storeName }}</dt>
-                  <dd class="fs-12 light-grey mt-4">{{ $t('shop_follower', { replace_tip: detailData.collectNum }) }}</dd>
+                <dl class="ml-12 fm-helvetica white">
+                  <dt class="fs-14 fw">{{ detailData.storeName }}</dt>
+                  <dd class="fs-12 mt-4">{{ $t('shop_follower', { replace_tip: detailData.collectNum }) }}</dd>
                 </dl>
               </div>
             </nuxt-link>
@@ -41,7 +41,7 @@
           <!-- 取消订阅 -->
           <van-button  v-if="detailData && detailData.isAttention == 1" color="#FC2B31" class="round-8 h-26 plr-8 ws-nowrap" @click="onSubscribe(false)">{{ $t('unsubscribe') }}</van-button>
           <!-- 订阅 -->
-          <van-button plain color="#FC2B31" class="round-8 h-26 plr-8 ws-nowrap" @click="onSubscribe(true)" v-else>{{ $t('add_subscribe') }}</van-button>
+          <van-button plain color="#FC2B31" class="round-8 h-26 plr-8 ws-nowrap bg-transparent" @click="onSubscribe(true)" v-else>{{ $t('add_subscribe') }}</van-button>
           
         </div>
         <van-tabs v-if="tabbarActive == 1" sticky swipeable animated color="#42B7AE" class="customs-van-tabs bg-white plr-20" v-model="productTabActive" line-height="0" line-width="0" :before-change="beforeChange">
@@ -210,6 +210,7 @@
         finished-text=""
         @load="onLoad"
         v-else
+        class="mt-48"
       >
         <nuxt-link
           class="flex bg-white p-20"
@@ -603,5 +604,8 @@ export default {
   background-repeat: no-repeat;
   width: 100%;
   max-height: 114px;
+}
+.mt-48{
+  margin-top: 48px;
 }
 </style>

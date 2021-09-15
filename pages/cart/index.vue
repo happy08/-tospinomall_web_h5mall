@@ -17,7 +17,7 @@
       </van-sticky>
     </div>
 
-    <PullRefresh :refreshing="refreshing" @refresh="onRefresh">
+    <PullRefresh :refreshing="refreshing" @refresh="onRefresh" class="custom-min-height-94">
       <!-- 空数据 -->
       <empty-status v-if="list.length === 0 && $store.state.user.authToken" :image="require('@/assets/images/empty/cart.png')" :description="$t('cart_empty_tip')" :btn="{ btn: $t('shop_now'), isEmit: true }" @emptyClick="goHome" />
       <!-- 数据列表展示 -->
