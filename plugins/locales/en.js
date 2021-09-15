@@ -620,13 +620,13 @@ const en = {
   un_rejected: 'Rejected',
   after_sale_status: ['After sales application', 'Processing', 'Application record'],
   watch_detail: 'View details',
-  processReturnShopStep: ['Submit application', 'Merchant processing', 'Return goods', 'Merchant refund', 'Refund successful'],
-  processplantformReturnShopStep: ['Submit application', 'Platform processing', 'Return goods', 'Platform refund', 'Refund successful'],
-  processPlatformStep: ['Application platform intervention', 'Waiting for proof', 'Platform arbitration'],
-  processStep: ['Submit application', 'Processing', 'Refund successful'],
-  applyReason: 'Reason for application',
-  applyReturn: 'Apply for refund',
-  returnMethodList: [
+  process_return_shop_step: ['Submit application', 'Merchant processing', 'Return goods', 'Merchant refund', 'Refund successful'],
+  process_plantform_return_shop_step: ['Submit application', 'Platform processing', 'Return goods', 'Platform refund', 'Refund successful'],
+  process_platform_step: ['Application platform intervention', 'Waiting for proof', 'Platform arbitration'],
+  process_step: ['Submit application', 'Processing', 'Refund successful'],
+  apply_reason: 'Reason for application',
+  apply_return: 'Apply for refund',
+  return_method_list: [
     {
       title: 'Door to door pick-up',
       desc: 'After the merchant agrees to return the goods, he will pick it up for you. The specific date will be notified by SMS or phone. You can modify or cancel it at any time'
@@ -636,9 +636,9 @@ const en = {
       desc: 'It is up to you to choose express delivery and mail to the third-party seller or designated address. After mailing, you need to fill in the waybill number and pay / advance the freight by yourself'
     }
   ],
-  selectReason: ['I want a refund (no return required)', 'I want a refund'],
-  stateGoodsList: ['Goods not received', 'Received goods'],
-  returnMethodTitle: 'Select application type',
+  select_reason: ['I want a refund (no return required)', 'I want a refund'],
+  state_goods_list: ['Goods not received', 'Received goods'],
+  return_method_title: 'Select application type',
   search_filter_overall: 'All',
   search_filter_price: [{text: 'Comprehensive sorting', value: 0}, {text: 'Price ascending order', value: 1}, {text: 'Price descending order', value: 2}],
   gander: ['Male', 'Female', 'Bisexuality', 'Secrecy'],

@@ -285,7 +285,7 @@
       <!-- 货品状态 -->
       <van-cell class="ptb-20 plr-20" :title="$t('goods_status')" title-class="fs-14 black flex-2" value-class="tl flex-3 light-grey" :value="detail.goodState === 0 ? $t('not_yet_received_the_goods') : $t('have_received_the_goods')"/>
       <!-- 申请原因 -->
-      <van-cell class="ptb-20 plr-20" :title="$t('applyReason')" title-class="fs-14 black flex-2" value-class="tl flex-3 light-grey" :value="detail.applyReason"/>
+      <van-cell class="ptb-20 plr-20" :title="$t('apply_reason')" title-class="fs-14 black flex-2" value-class="tl flex-3 light-grey" :value="detail.applyReason"/>
       <!-- 退款金额 -->
       <van-cell class="ptb-20 plr-20" :title="$t('refund_amount')" title-class="fs-14 black flex-2" value-class="tl flex-3 light-grey" :value="$store.state.rate.currency + detail.returnAmount" />
       <!-- 申请时间 -->
@@ -441,14 +441,14 @@ export default {
             } else {
               this.stepActive = 1;
             }
-            this.stepList = this.$t('processStep');
+            this.stepList = this.$t('process_step');
           } else { // 申请平台介入
-            this.stepList = this.$t('processPlatformStep');
+            this.stepList = this.$t('process_platform_step');
             this.stepActive = res.data.involvedStatus == 1 ? 1 : res.data.involvedStatus == 2 ? 2: 2;
           }
         } else if (res.data.returnType == 1) { // 退货退款
           this.stepActive = res.data.status == 1 ? 1 : res.data.status == 2 ? 2 : (res.data.status == 4 || res.data.status == 3) ? 3 : res.data.status == 5 ? 4 : 0;
-          this.stepList = res.data.orderType == 1 ? this.$t('processReturnShopStep') : this.$t('processplantformReturnShopStep');
+          this.stepList = res.data.orderType == 1 ? this.$t('process_return_shop_step') : this.$t('process_plantform_return_shop_step');
         }
         
       })

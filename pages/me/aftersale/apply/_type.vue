@@ -61,7 +61,7 @@
       <!-- 货物状态 -->
       <van-cell class="ptb-20 plr-20" :title="$t('state_of_the_goods')" title-class="fs-14 black" :is-link="parseFloat(this.$route.params.type) == 1 && detail.status == 1 ? false: true" @click="selectPopup('status')" :value="goodsStatusLabel" />
       <!-- 申请原因 -->
-      <van-cell class="ptb-20 plr-20" :title="$t('applyReason')" title-class="fs-14 black" is-link @click="selectPopup('reason')" :value="applyReasonLabel" />
+      <van-cell class="ptb-20 plr-20" :title="$t('apply_reason')" title-class="fs-14 black" is-link @click="selectPopup('reason')" :value="applyReasonLabel" />
       <!-- 换货商品 仅换货时展示 -->
       <!-- <van-cell class="ptb-20 plr-20" v-if="$route.params.type == 3" :title="$t('me.afterSale.replacementGoods')" title-class="fs-14 black" is-link @click="productShow = true" /> -->
     </van-cell-group>
@@ -203,8 +203,8 @@
     <van-popup v-model="returnMethod" position="bottom" closeable>
       <van-radio-group v-model="returnMethodRadio" :border="false">
         <van-cell-group>
-          <van-cell class="p-20" :title="$t('returnMethodTitle')" title-class="black fw fs-18" />
-          <van-cell class="p-20" :title="returnItem.title" clickable v-for="(returnItem, returnIndex) in $t('returnMethodList')" :key="returnIndex" @click="returnMethodRadio = returnIndex" title-class="fs-14 lh-20" :label="returnItem.desc" label-class="mt-20 w-90">
+          <van-cell class="p-20" :title="$t('return_method_title')" title-class="black fw fs-18" />
+          <van-cell class="p-20" :title="returnItem.title" clickable v-for="(returnItem, returnIndex) in $t('return_method_list')" :key="returnIndex" @click="returnMethodRadio = returnIndex" title-class="fs-14 lh-20" :label="returnItem.desc" label-class="mt-20 w-90">
             <template #right-icon>
               <van-radio :name="returnIndex" icon-size="0.48rem">
                 <template #icon="props">
@@ -335,10 +335,10 @@ export default {
       }
       return false;
     }
-    if (this.$route.params.type == 1) this.title = 'applyReturn'; // 仅退款
+    if (this.$route.params.type == 1) this.title = 'apply_return'; // 仅退款
     if (this.$route.params.type == 2) this.title = 'return_refund'; // 退货退款
     // if (this.$route.params.type == 3) this.title = 'me.afterSale.exchange'; // 换货
-    this.returnMethodTitle = this.$t('returnMethodList')[this.returnMethodRadio].title;
+    this.returnMethodTitle = this.$t('return_method_list')[this.returnMethodRadio].title;
 
     this.$toast.loading({
       forbidClick: true,
@@ -368,15 +368,15 @@ export default {
         this.applyReasonLabel = res.data.applyReason;
         // 申请类型
         this.applyType = res.data.returnType;
-        this.applyTypeLabel = this.$t('selectReason')[res.data.returnType];
+        this.applyTypeLabel = this.$t('select_reason')[res.data.returnType];
         // 货品状态
         this.goodsStatus = res.data.goodState;
-        this.goodsStatusLabel = this.$t('stateGoodsList')[res.data.goodState];
+        this.goodsStatusLabel = this.$t('state_goods_list')[res.data.goodState];
         // 申请信息
         this.applyMessage = res.data.applyDesc;
         if (res.data.returnType == 1) { // 退货退款
           this.returnMethodRadio = res.data.deliveryType == 1 ? 1 : 0;
-          this.returnMethodTitle = this.$t('returnMethodList')[this.returnMethodRadio].title;
+          this.returnMethodTitle = this.$t('return_method_list')[this.returnMethodRadio].title;
           this.concatName = res.data.contactPerson;
           this.concatCell = res.data.contactPhone;
           this.isGreenment = res.data.deliveryType == 1 ? false: true;
@@ -429,10 +429,10 @@ export default {
       if (parseFloat(this.$route.params.type) == 1 && res.data.order.status == 1) { // 代发货仅退款
         // 申请类型
         this.applyType = parseFloat(this.$route.params.type) - 1;
-        this.applyTypeLabel = this.$t('selectReason')[parseFloat(this.$route.params.type) - 1];
+        this.applyTypeLabel = this.$t('select_reason')[parseFloat(this.$route.params.type) - 1];
         // 货品状态
         this.goodsStatus = parseFloat(this.$route.params.type) - 1;
-        this.goodsStatusLabel = this.$t('stateGoodsList')[parseFloat(this.$route.params.type) - 1];
+        this.goodsStatusLabel = this.$t('state_goods_list')[parseFloat(this.$route.params.type) - 1];
       }
 
       if (this.$route.query.address) {
@@ -464,11 +464,11 @@ export default {
       }
       if (this.currentSelect.type == 'type') { // 申请类型
         this.applyType = this.typeRadio;
-        this.applyTypeLabel = this.$t('selectReason')[this.typeRadio]
+        this.applyTypeLabel = this.$t('select_reason')[this.typeRadio]
       }
       if (this.currentSelect.type == 'status') { // 货物状态
         this.goodsStatus = this.typeRadio;
-        this.goodsStatusLabel = this.$t('stateGoodsList')[this.typeRadio]
+        this.goodsStatusLabel = this.$t('state_goods_list')[this.typeRadio]
       }
       if (this.currentSelect.type == 'reason') { // 申请原因
         this.applyReason = this.typeRadio;
@@ -497,7 +497,7 @@ export default {
           this.cancelReasonList = res.data;
           this.currentSelect = {
             type: type,
-            title: this.$t('applyReason'),
+            title: this.$t('apply_reason'),
             list: res.data.map((item, index) => {
               return item.applyReason;
             })
@@ -509,9 +509,9 @@ export default {
 
       this.currentSelect = {
         type: type,
-        title: type === 'type' ? this.$t('returnMethodTitle') : type === 'status' ? this.$t('state_of_the_goods') : type === 'reason' ? this.$t('applyReason') : '',
-        // list: type === 'type' ? this.detail.status == 1 ? [this.$t('selectReason')[0]] : this.$t('returnMethodList') : type === 'status' ? this.$t('stateGoodsList') : this.$t('selectReason')
-        list: type === 'type' ? parseFloat(this.$route.params.type) == 1 && this.detail.status == 1 ? [this.$t('selectReason')[0]] : this.$t('selectReason') : type === 'status' ? this.$t('stateGoodsList') : this.$t('selectReason')
+        title: type === 'type' ? this.$t('return_method_title') : type === 'status' ? this.$t('state_of_the_goods') : type === 'reason' ? this.$t('apply_reason') : '',
+        // list: type === 'type' ? this.detail.status == 1 ? [this.$t('select_reason')[0]] : this.$t('return_method_list') : type === 'status' ? this.$t('state_goods_list') : this.$t('select_reason')
+        list: type === 'type' ? parseFloat(this.$route.params.type) == 1 && this.detail.status == 1 ? [this.$t('select_reason')[0]] : this.$t('select_reason') : type === 'status' ? this.$t('state_goods_list') : this.$t('select_reason')
       }
       if (parseFloat(this.$route.params.type) == 1 && (type == 'type' || type == 'status') && this.detail.status == 1) { // 待发货仅退款,申请原因和状态不可选
         return false;
@@ -669,7 +669,7 @@ export default {
       })
     },
     onReturnConfirm() { // 选择退货方式
-      this.returnMethodTitle = this.$t('returnMethodList')[this.returnMethodRadio].title;
+      this.returnMethodTitle = this.$t('return_method_list')[this.returnMethodRadio].title;
       this.returnMethod = false;
     },
     onChangeQuantity(value) { // 修改售后数量

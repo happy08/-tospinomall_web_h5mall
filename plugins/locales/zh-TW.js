@@ -620,13 +620,13 @@ const tw = {
   un_rejected: '已拒收',
   after_sale_status: ['售後申請', '處理中', '申請記錄'],
   watch_detail: '查看詳情',
-  processReturnShopStep: ['提交申請', '商家處理', '寄回商品', '商家退款', '退款成功'],
-  processplantformReturnShopStep: ['提交申請', '平臺處理', '寄回商品', '平臺退款', '退款成功'],
-  processPlatformStep: ['申請平臺介入', '等待舉證', '平臺仲裁'],
-  processStep: ['提交申請', '處理中', '退款成功'],
-  applyReason: '申請原因',
-  applyReturn: '申請退款',
-  returnMethodList: [
+  process_return_shop_step: ['提交申請', '商家處理', '寄回商品', '商家退款', '退款成功'],
+  process_plantform_return_shop_step: ['提交申請', '平臺處理', '寄回商品', '平臺退款', '退款成功'],
+  process_platform_step: ['申請平臺介入', '等待舉證', '平臺仲裁'],
+  process_step: ['提交申請', '處理中', '退款成功'],
+  apply_reason: '申請原因',
+  apply_return: '申請退款',
+  return_method_list: [
     {
       title: '上門取件',
       desc: '商家同意退貨後，將為您上門取件，具體日期將以簡訊或電話形式通知，您可隨時修改或取消'
@@ -636,9 +636,9 @@ const tw = {
       desc: '由您自行選擇快遞，郵寄協力廠商賣家或指定地址，郵寄後需要您自行填寫運單號運費自行支付/墊付'
     }
   ],
-  selectReason: ['我要退款（無需退貨）', '我要退貨退款'],
-  stateGoodsList: ['未收到貨', '已收到貨'],
-  returnMethodTitle: '選擇申請類型',
+  select_reason: ['我要退款（無需退貨）', '我要退貨退款'],
+  state_goods_list: ['未收到貨', '已收到貨'],
+  return_method_title: '選擇申請類型',
   search_filter_overall: '全部',
   search_filter_price: [{text: '綜合排序', value: 0}, {text: '價格昇冪', value: 1}, {text: '價格降序', value: 2}],
   gander: ['男', '女', '雙性', '保密'],
