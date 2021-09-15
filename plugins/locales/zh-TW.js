@@ -655,7 +655,7 @@ const tw = {
   add_picture_6: '最多6張圖',
   add_picture_5: '最多5張圖',
   add_picture_9: '最多9張圖',
-  apply_reason: '請選擇申請原因',
+  select_apply_reason: '請選擇申請原因',
   count_down_format_label: 'DD天HH小時mm分ss秒',
   choose_proof_reason: '請選擇舉證原因',
   proof_input_question: '請輸入問題描述',
