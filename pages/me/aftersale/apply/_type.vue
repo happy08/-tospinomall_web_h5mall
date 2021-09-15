@@ -9,8 +9,8 @@
     <!-- 订单详情 -->
     <div class="bg-white p-20">
       <template v-if="orderList.length == 1">
-        <OrderSingle :image="detailItem.productImage" :product_num="$route.params.type == 2 ? $route.query.edit ? detail.totalreturnQuantity: detailItem.canAfterApplyNum : detailItem.returnQuantity" :product_desc="detailItem.productName" :product_size="detailItem.productAttr" :price="detailItem.productPrice"  v-for="(detailItem, orderIndex) in orderList" :key="'order-item-' + orderIndex" />
-        <div class="flex between mt-14 vcenter" v-if="$route.params.type == 2">
+        <OrderSingle :image="detailItem.productImage" :product_num="detail.status != 1 ? $route.query.edit ? detail.totalreturnQuantity: detailItem.canAfterApplyNum : detailItem.returnQuantity" :product_desc="detailItem.productName" :product_size="detailItem.productAttr" :price="detailItem.productPrice"  v-for="(detailItem, orderIndex) in orderList" :key="'order-item-' + orderIndex" />
+        <div class="flex between mt-14 vcenter" v-if="detail.status != 1">
           <span class="fs-14 light-grey">{{ $t('aftersale_apply_num') }}</span>
           <van-stepper
             v-model="applyNum"
@@ -57,7 +57,7 @@
     
     <van-cell-group class="mt-12">
       <!-- 申请类型 -->
-      <van-cell class="ptb-20 plr-20" :title="$t('application_type')" title-class="fs-14 black" :is-link="parseFloat(this.$route.params.type) == 1 && detail.status == 1 ? false: true" @click="selectPopup('type')" :value="applyTypeLabel" />
+      <van-cell class="ptb-20 plr-20" :title="$t('application_type')" title-class="fs-14 black" :value="applyTypeLabel" />
       <!-- 货物状态 -->
       <van-cell class="ptb-20 plr-20" :title="$t('state_of_the_goods')" title-class="fs-14 black" :is-link="parseFloat(this.$route.params.type) == 1 && detail.status == 1 ? false: true" @click="selectPopup('status')" :value="goodsStatusLabel" />
       <!-- 申请原因 -->
@@ -426,10 +426,10 @@ export default {
           productRealAmount: item.realAmount
         }
       });
+      // 申请类型
+      this.applyType = parseFloat(this.$route.params.type) - 1;
+      this.applyTypeLabel = this.$t('select_reason')[parseFloat(this.$route.params.type) - 1];
       if (parseFloat(this.$route.params.type) == 1 && res.data.order.status == 1) { // 代发货仅退款
-        // 申请类型
-        this.applyType = parseFloat(this.$route.params.type) - 1;
-        this.applyTypeLabel = this.$t('select_reason')[parseFloat(this.$route.params.type) - 1];
         // 货品状态
         this.goodsStatus = parseFloat(this.$route.params.type) - 1;
         this.goodsStatusLabel = this.$t('state_goods_list')[parseFloat(this.$route.params.type) - 1];
@@ -462,10 +462,10 @@ export default {
       if (this.typeRadio == 100) { // 100表示未选择状态，不可提交
         return false;
       }
-      if (this.currentSelect.type == 'type') { // 申请类型
-        this.applyType = this.typeRadio;
-        this.applyTypeLabel = this.$t('select_reason')[this.typeRadio]
-      }
+      // if (this.currentSelect.type == 'type') { // 申请类型
+      //   this.applyType = this.typeRadio;
+      //   this.applyTypeLabel = this.$t('select_reason')[this.typeRadio]
+      // }
       if (this.currentSelect.type == 'status') { // 货物状态
         this.goodsStatus = this.typeRadio;
         this.goodsStatusLabel = this.$t('state_goods_list')[this.typeRadio]
@@ -551,7 +551,7 @@ export default {
     applyAfterSale() { // 申请售后/修改售后申请
       // 选择申请原因
       if (this.applyReasonLabel == '') {
-        this.$toast(this.$t('apply_reason'));
+        this.$toast(this.$t('select_apply_reason'));
         return false;
       }
       // 输入申请信息
