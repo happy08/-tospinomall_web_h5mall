@@ -1,61 +1,61 @@
 <template>
   <!-- 店铺-店铺首页 -->
   <div class="vh-100 bg-grey pb-70">
-    <div class="flex vcenter plr-12 bg-white h-46">
-      <van-icon name="arrow-left" color="#383838" size="18px" @click="leftBack"></van-icon>
-      <van-search
-        shape="round"
-        class="w-100 ml-20"
-        disabled
-        slot="header-title"
-        :placeholder="$t('search_our_products')"
-        @click="$router.replace({ name: 'search', query: { shopId: $route.params.id, back: 'cart-store-id', backId: $route.params.id, backQuery: $route.query } })"
-      />
-    </div>
-    <van-sticky offset-top="0">
-      <div class="flex between plr-12 bg-white ptb-10 vcenter">
-        <div class="flex vcenter w-100">
-          <!-- 店铺详情 -->
-          <nuxt-link :to="{ name: 'cart-store-detail-id', params: { id: $route.params.id }, query: $route.query }" v-slot="{ navigate }" class="flex vcenter w-100">
-            <div @click="navigate" role="link">
-              <!-- 店铺logo -->
-              <BmImage
-                :url="detailData.storeLogoUrl"
-                :width="'0.96rem'" 
-                :height="'0.96rem'"
-                :isLazy="false"
-                :isShow="true"
-                class="round-8 hidden"
-                :errorUrl="require('@/assets/images/store-bgd.png')"
-                :alt="detailData.storeName"
-              />
-              <!-- 店铺名、关注数 -->
-              <dl class="ml-12 fm-helvetica">
-                <dt class="fs-14 fw color-23">{{ detailData.storeName }}</dt>
-                <dd class="fs-12 light-grey mt-4">{{ $t('shop_follower', { replace_tip: detailData.collectNum }) }}</dd>
-              </dl>
-            </div>
-          </nuxt-link>
-        </div>
-        
-        
-        <!-- 取消订阅 -->
-        <van-button  v-if="detailData && detailData.isAttention == 1" color="#FC2B31" class="round-8 h-26 plr-8 ws-nowrap" @click="onSubscribe(false)">{{ $t('unsubscribe') }}</van-button>
-        <!-- 订阅 -->
-        <van-button plain color="#FC2B31" class="round-8 h-26 plr-8 ws-nowrap" @click="onSubscribe(true)" v-else>{{ $t('add_subscribe') }}</van-button>
-        
+    <div :class="{'store-container-headr': storeBgdUrl != '', 'bg-white': storeBgdUrl == ''}" :style="storeBgdUrl != '' ? 'background-image: url(' + storeBgdUrl + ')' : ''">
+      <div class="flex vcenter plr-12 h-46">
+        <van-icon name="arrow-left" color="#383838" size="18px" @click="leftBack"></van-icon>
+        <van-search
+          shape="round"
+          class="w-100 ml-20"
+          disabled
+          slot="header-title"
+          :placeholder="$t('search_our_products')"
+          @click="$router.replace({ name: 'search', query: { shopId: $route.params.id, back: 'cart-store-id', backId: $route.params.id, backQuery: $route.query } })"
+        />
       </div>
-      <van-tabs v-if="tabbarActive == 1" sticky swipeable animated color="#42B7AE" class="customs-van-tabs bg-white plr-20" v-model="productTabActive" line-height="0" line-width="0" :before-change="beforeChange">
-        <van-tab v-for="tabItem, tabIndex in $t('store_product_tab')" :key="tabIndex">
-          <template #title="props" :class="{'flex vcenter': true}">
-            <div :class="{'flex vcenter': true}">
-              {{ tabItem }} {{ props }}
-              <BmIcon v-if="tabIndex === 2" :name="priceSortType == 0 ? 'sort-default': priceSortType == 1 ? 'sort-up' : 'sort-down'" :width="'0.4rem'" :height="'0.4rem'" />
-            </div>
-          </template>
-        </van-tab>
-      </van-tabs>
-    </van-sticky>
+      <van-sticky offset-top="0" @scroll="onScroll">
+        <div :class="{'flex between plr-12 ptb-10 vcenter': true, 'bg-white': storeBgdUrl == '', 'store-container-headr': scrollTop > 40 && storeBgdUrl != ''}" :style="scrollTop > 40 && storeBgdUrl != '' ? 'background-image: url(' + storeBgdUrl + ')' : ''">
+          <div class="flex vcenter w-100">
+            <!-- 店铺详情 -->
+            <nuxt-link :to="{ name: 'cart-store-detail-id', params: { id: $route.params.id }, query: $route.query }" v-slot="{ navigate }" class="flex vcenter w-100">
+              <div @click="navigate" role="link">
+                <!-- 店铺logo -->
+                <BmImage
+                  :url="detailData.storeLogoUrl"
+                  :width="'0.96rem'" 
+                  :height="'0.96rem'"
+                  :isLazy="false"
+                  :isShow="true"
+                  class="round-8 hidden"
+                  :errorUrl="require('@/assets/images/store-bgd.png')"
+                  :alt="detailData.storeName"
+                />
+                <!-- 店铺名、关注数 -->
+                <dl class="ml-12 fm-helvetica">
+                  <dt class="fs-14 fw color-23">{{ detailData.storeName }}</dt>
+                  <dd class="fs-12 light-grey mt-4">{{ $t('shop_follower', { replace_tip: detailData.collectNum }) }}</dd>
+                </dl>
+              </div>
+            </nuxt-link>
+          </div>
+          <!-- 取消订阅 -->
+          <van-button  v-if="detailData && detailData.isAttention == 1" color="#FC2B31" class="round-8 h-26 plr-8 ws-nowrap" @click="onSubscribe(false)">{{ $t('unsubscribe') }}</van-button>
+          <!-- 订阅 -->
+          <van-button plain color="#FC2B31" class="round-8 h-26 plr-8 ws-nowrap" @click="onSubscribe(true)" v-else>{{ $t('add_subscribe') }}</van-button>
+          
+        </div>
+        <van-tabs v-if="tabbarActive == 1" sticky swipeable animated color="#42B7AE" class="customs-van-tabs bg-white plr-20" v-model="productTabActive" line-height="0" line-width="0" :before-change="beforeChange">
+          <van-tab v-for="tabItem, tabIndex in $t('store_product_tab')" :key="tabIndex">
+            <template #title="props" :class="{'flex vcenter': true}">
+              <div :class="{'flex vcenter': true}">
+                {{ tabItem }} {{ props }}
+                <BmIcon v-if="tabIndex === 2" :name="priceSortType == 0 ? 'sort-default': priceSortType == 1 ? 'sort-up' : 'sort-down'" :width="'0.4rem'" :height="'0.4rem'" />
+              </div>
+            </template>
+          </van-tab>
+        </van-tabs>
+      </van-sticky>
+    </div>
     
 
     <!-- 导航栏 -->
@@ -150,7 +150,7 @@
               :alt="moduleItem.moduleTitle"
             />
             <!-- 图片坐标 -->
-            <div v-for="hotItem, hotIndex in moduleItem.componentDetails" :key="'hot-picture-' + hotIndex" class="bg-white hot-container__position" :ref="'hotPosition' + moduleIndex + hotIndex" :style="hotStyle(hotItem, 'hotPosition' + moduleIndex + hotIndex, 'hotContainer' + moduleIndex)" @click="onHotDetail(hotItem)"></div>
+            <div v-for="hotItem, hotIndex in moduleItem.componentDetails" :key="'hot-picture-' + hotIndex" class="hot-container__position" :ref="'hotPosition' + moduleIndex + hotIndex" :style="hotStyle(hotItem, 'hotPosition' + moduleIndex + hotIndex, 'hotContainer' + moduleIndex)" @click="onHotDetail(hotItem)"></div>
           </div>
         </template>
         
@@ -333,7 +333,9 @@ export default {
       total: 0,
       priceSortType: 0, // 价格筛选类型 0 默认未选中，1选中升序，2选中降序
       sort: {},
-      isTabbarShow: false
+      isTabbarShow: false,
+      storeBgdUrl: '',
+      scrollTop: 0
     }
   },
   async fetch() {
@@ -368,6 +370,10 @@ export default {
       const moduleData = await this.$api.getStoreIndex({shopId: this.$route.params.id});
       if (!moduleData.data) return false;
       this.moduleData = moduleData.data.components;
+      let storeBgdArr = moduleData.data.components.filter(item => {
+        return item.type == 7;
+      })
+      this.storeBgdUrl = storeBgdArr.length > 0 ? storeBgdArr[0].imageUrl : '';
     // }
   },
   activated() {
@@ -549,6 +555,9 @@ export default {
 
         this.productList = list;
       });
+    },
+    onScroll(scrollTop) {
+      this.scrollTop = scrollTop.scrollTop;
     }
   },
 }
@@ -587,5 +596,12 @@ export default {
 }
 .pb-70{
   padding-bottom: 70px;
+}
+.store-container-headr{
+  background-position: center bottom;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  width: 100%;
+  max-height: 114px;
 }
 </style>
