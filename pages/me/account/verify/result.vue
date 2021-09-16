@@ -25,14 +25,15 @@ export default {
   middleware: 'authenticated',
   data() {
     return {
-      countDown: 5
+      countDown: 5,
+      timer: null
     }
   },
   activated() {
     this.countDown = 5;
-    let timer = setInterval(() => {
+    this.timer = setInterval(() => {
       if (this.countDown <= 1) {
-        clearInterval(timer);
+        clearInterval(this.timer);
         this.onConfirm();
         return false;
       }
@@ -41,16 +42,21 @@ export default {
   },
   methods: {
     onConfirm() { // 点击登录
+      clearInterval(this.timer);
       this.$toast.loading({
         forbidClick: true,
         loadingType: 'spinner',
         duration: 0
       });
-      this.$api.logout().then(res => {
-        if (res.code != 0) return false;
-        this.$store.commit('SET_TOKEN', null);
-        this.login();
-      })
+      this.$store.commit('SET_TOKEN', null);
+      this.login();
+      // this.$api.logout().then(() => {
+      //   this.$store.commit('SET_TOKEN', null);
+      //   this.login();
+      // }).catch(() => {
+      //   this.$store.commit('SET_TOKEN', null);
+      //   this.login();
+      // })
     },
     login() {
       authLogin({ username: this.$store.state.user.account_phone && this.$store.state.user.account_phone != '' ? this.$store.state.user.account_phone : this.$store.state.user.account_email, password: this.$route.query.pwd, grant_type: 'password' }).then(res => {
