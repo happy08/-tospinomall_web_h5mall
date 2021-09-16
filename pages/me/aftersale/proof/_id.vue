@@ -16,7 +16,7 @@
         <div class="black">{{ $t('appeal_reason_') }}</div>
         <p class="ml-12" v-if="$route.query.add">{{ detail.workName }}</p>
         <div class="ml-12 flex-1 flex between" v-else @click="isChooseReason = true">
-          <p>{{ currentReason.label }}</p>
+          <p>{{ currentReason.applyReason }}</p>
           <van-icon name="arrow-down" />
         </div>
       </div>
@@ -74,8 +74,8 @@
 
 <script>
 import { NoticeBar, Field, Uploader, CountDown, Picker, Popup } from 'vant';
-import { getReturnDetail, applyMallIntervene, returnWorkDetail, addToProof } from '@/api/order';
-import { getDictList, getPicUrl } from '@/api/user';
+import { getReturnDetail, applyMallIntervene, returnWorkDetail, addToProof, getOrderReasonList } from '@/api/order';
+import { getPicUrl } from '@/api/user';
 
 export default {
   middleware: 'authenticated',
@@ -109,22 +109,51 @@ export default {
     };
 
     if (this.$route.query.add) { // 追加举证
+      this.$toast.loading({
+        forbidClick: true,
+        loadingType: 'spinner',
+        duration: 0
+      });
       const returnData = await returnWorkDetail(this.$route.query.add);
+      this.$toast.clear();
       this.detail = { // 订单详情
         ...this.detail,
         ...returnData.data
       };
+      this.question = returnData.data.workDesc;
+      this.imgList = returnData.data.omsOrderReturnWorkAlleges[0].workMustVoucher != '' ? returnData.data.omsOrderReturnWorkAlleges[0].workMustVoucher.split(',') : [];
+      this.fileList = returnData.data.omsOrderReturnWorkAlleges[0].workMustVoucher != '' ? returnData.data.omsOrderReturnWorkAlleges[0].workMustVoucher.split(',').map(item => {
+        return {
+          url: item,
+          isImage: true
+        }
+      }): []
+      this.changeImgList = returnData.data.omsOrderReturnWorkAlleges[0].workOptionalVoucher != '' ? returnData.data.omsOrderReturnWorkAlleges[0].workOptionalVoucher.split(',') : [];
+      this.fileChangeList = returnData.data.omsOrderReturnWorkAlleges[0].workOptionalVoucher != '' ? returnData.data.omsOrderReturnWorkAlleges[0].workOptionalVoucher.split(',').map(item => {
+        return {
+          url: item,
+          isImage: true
+        }
+      }): []
     }
     
     
     // 获取举证原因
-    getDictList('return_work_apply_reason').then(res => {
+    getOrderReasonList({ orderType: 2, applyType: 0, goodsStatus: 0 }).then(res => {
       this.reasonList = res.data.map(item => {
         return {
           ...item,
-          text: item.label
+          text: item.applyReason
         }
       });
+    })
+  },
+  beforeRouteEnter (to, from, next) {
+    next(vm => {
+      if ((from.name == 'me-aftersale-detail-id' || from.name == 'me-aftersale') && !to.query.add) {
+        vm.imgList = [];
+        vm.fileList = [];
+      }
     })
   },
   methods: {
@@ -146,18 +175,22 @@ export default {
         return false;
       }
 
-      const workMustVoucher = this.fileList.map(item => { // 必须凭证
+      let workMustVoucher = this.fileList.map(item => { // 必须凭证
         return item.url;
       })
-      const workOptionalVoucher = this.fileChangeList.map(item => { // 可选凭证
+      let workOptionalVoucher = this.fileChangeList.map(item => { // 可选凭证
         return item.url;
       })
       if (this.$route.query.add) {
-        addToProof({ orderWorkId: this.$route.query.add, workDesc: this.question, workMustVoucher: workMustVoucher.join(','), workName: this.currentReason.label, workOptionalVoucher: workOptionalVoucher.join(',') }).then(res => {
+        addToProof({ orderWorkId: this.$route.query.add, workDesc: this.question, workMustVoucher: workMustVoucher.join(','), workName: this.currentReason.applyReason, workOptionalVoucher: workOptionalVoucher.join(',') }).then(res => {
+          this.fileList = [];
+          this.imgList = [];
           this.$router.go(-1);
         })
       } else {
-        applyMallIntervene({ returnApplyId: this.detail.id, workDesc: this.question, workMustVoucher: workMustVoucher.join(','), workName: this.currentReason.label, workOptionalVoucher: workOptionalVoucher.join(',') }).then(() => {
+        applyMallIntervene({ returnApplyId: this.detail.id, workDesc: this.question, workMustVoucher: workMustVoucher.join(','), workName: this.currentReason.applyReason, workOptionalVoucher: workOptionalVoucher.join(',') }).then(() => {
+          this.fileList = [];
+          this.imgList = [];
           this.$router.go(-1);
         })
       }

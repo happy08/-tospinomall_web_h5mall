@@ -80,7 +80,7 @@ export default {
         omsOrderReturnWorkAlleges: res.data.omsOrderReturnWorkAlleges.map(item => {
           return {
             ...item,
-            workMustVoucher: item.workMustVoucher.split(','),
+            workMustVoucher: item.workMustVoucher != '' ? item.workMustVoucher.split(',') : [],
             workOptionalVoucher: item.workOptionalVoucher !== '' ? item.workOptionalVoucher.split(',') : []
           }
         })
