@@ -1,7 +1,7 @@
 <template>
   <!-- 店铺-店铺首页 -->
   <div class="vh-100 bg-grey pb-70">
-    <div :class="{'store-container-headr': true, 'bg-white': storeBgdUrl == ''}" :style="storeBgdUrl != '' ? 'background-image: url(' + storeBgdUrl + ')' : ''">
+    <div :class="{'store-container-headr': true}" :style="storeBgdUrl != '' ? 'background-image: url(' + storeBgdUrl + ')' : ''">
       <div :class="{'bg-black-65': scrollTop < 40}">
         <div class="flex vcenter plr-12 h-46">
           <van-icon name="arrow-left" color="#fff" size="18px" @click="leftBack"></van-icon>
@@ -15,7 +15,7 @@
           />
         </div>
         <van-sticky offset-top="0" @scroll="onScroll">
-          <div :class="{'bg-white': storeBgdUrl == '', 'store-container-headr': scrollTop > 40 && storeBgdUrl != ''}" :style="scrollTop > 40 && storeBgdUrl != '' ? 'background-image: url(' + storeBgdUrl + ')' : ''">
+          <div :class="{'store-container-headr': scrollTop > 40 && storeBgdUrl != ''}" :style="scrollTop > 40 && storeBgdUrl != '' ? 'background-image: url(' + storeBgdUrl + ')' : ''">
             <div :class="{'w-100 flex between plr-12 ptb-10 vcenter': true, 'bg-black-65': scrollTop > 40 && storeBgdUrl != ''}">
               <div class="flex vcenter w-100">
                 <!-- 店铺详情 -->
@@ -363,7 +363,6 @@ export default {
     }
     // 商品列表数据
     const listData = await this.$api.getProductSearch(this.sort);
-    if (listData.code != 0) return false;
     this.total = listData.data.total;
     this.productList = listData.data.items.map(item => {
       return {
@@ -373,21 +372,30 @@ export default {
     });
 
     // 店铺组件数据,店铺有装修才可看
-    // if (String(this.$route.query.hasAdornment) == 'true') {
-      const moduleData = await this.$api.getStoreIndex({shopId: this.$route.params.id});
-      if (!moduleData.data) return false;
-      this.moduleData = moduleData.data.components;
-      let storeBgdArr = moduleData.data.components.filter(item => {
-        return item.type == 7;
-      })
-      this.storeBgdUrl = storeBgdArr.length > 0 ? storeBgdArr[0].imageUrl : '';
-    // }
+    const moduleData = await this.$api.getStoreIndex({shopId: this.$route.params.id});
+    if (!moduleData.data) {
+      this.tabbarActive = 1;
+      this.isTabbarShow = false;
+      return false;
+    };
+    this.moduleData = moduleData.data.components;
+    // 判断是不是有店铺背景图
+    let storeBgdArr = moduleData.data.components.filter(item => {
+      return item.type == 7;
+    })
+    this.storeBgdUrl = storeBgdArr.length > 0 ? storeBgdArr[0].imageUrl : '';
+    // 判断店铺有没有装修
+    const store_components = moduleData.data.components.filter(item => {
+      return item.type == 2;
+    })
+    this.tabbarActive = store_components.length > 1 ? 0 : 1;
+    this.isTabbarShow = store_components.length > 1 ? true: false;
   },
   activated() {
     this.isTabbarShow = false;
     if (this.$route.query.tabbarActive) this.tabbarActive = parseFloat(this.$route.query.tabbarActive);
-    if (String(this.$route.query.hasAdornment) == 'false') this.tabbarActive = 1;
-    this.isTabbarShow = String(this.$route.query.hasAdornment) == 'false' ? false : true;
+    // if (String(this.$route.query.hasAdornment) == 'false') this.tabbarActive = 1;
+    // this.isTabbarShow = String(this.$route.query.hasAdornment) == 'false' ? false : true;
     this.$fetch();
   },
   methods: {
@@ -609,7 +617,7 @@ export default {
   background-size: 100% 100%;
   background-repeat: no-repeat;
   width: 100%;
-  max-height: 114px;
+  height: 114px;
 }
 .mt-48{
   margin-top: 48px;

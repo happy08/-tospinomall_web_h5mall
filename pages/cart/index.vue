@@ -36,7 +36,7 @@
                 :alt="'choose icon'"
               />
               <!-- 店铺 -->
-              <OrderStoreSingle class="pl-16 pr-30" :logo="item.storeLogo" :name="item.storeName" :showArrow="false" />
+              <OrderStoreSingle class="pl-16 pr-30" :logo="item.storeLogo" :name="item.storeName" @goStoreDetail="goStoreDetail(item)" />
             </div>
             <van-swipe-cell class="pl-12" v-for="singleItem in item.products" :key="'single-' + singleItem.id">
               <div class="flex vcenter">
@@ -428,11 +428,14 @@ export default {
         name: 'login'
       })
     },
-    goStoreDetail(storeId) { // 跳转到店铺详情
+    goStoreDetail(storeInfo) { // 跳转到店铺详情
+      if (!storeInfo.sellerId || !storeInfo.storeId) {
+        return false;
+      }
       this.$router.push({
         name: 'cart-store-id',
         params: {
-          id: storeId
+          id: storeInfo.storeId
         },
         query: {
           sellerId: storeInfo.sellerId
