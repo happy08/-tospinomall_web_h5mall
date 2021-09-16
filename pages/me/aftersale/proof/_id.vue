@@ -129,7 +129,6 @@ export default {
   },
   methods: {
     onReasonConfirm(item) { // 确认选择原因
-      console.log(item)
       this.currentReason = item;
       this.isChooseReason = false;
     },

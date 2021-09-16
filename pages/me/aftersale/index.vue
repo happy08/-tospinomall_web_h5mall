@@ -187,7 +187,7 @@ export default {
         vm.isTab = false;
         vm.lists = [];
       }
-      if (from.name === 'me' || from.name === 'me-order' || from.name === 'me-order-detail-id' || from.name == null || from.name === 'me-aftersale-detail-id') {
+      if (from.name === 'me' || from.name === 'me-order' || from.name === 'me-order-detail-id' || from.name == null || from.name === 'me-aftersale-detail-id' || from.name == 'me-aftersale-proof-id') {
         vm.pageNum = 1;
         vm.$fetch();
       }
