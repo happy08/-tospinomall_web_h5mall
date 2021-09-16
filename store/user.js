@@ -8,7 +8,8 @@ export const state = () => ({
   scope: null,
   websocketMsg: null,
   isNewMessage: false,
-  account: null, // 登陆账号
+  account_email: null, // 登陆账号邮箱
+  account_phone: null, // 登陆账号手机号
   nowTime: null
 });
 
@@ -53,8 +54,8 @@ export const mutations = {
     this.$cookies.set('isNewWebsocketMsg', isNewMessage);
   },
   SET_ACCOUNT(state, account) {
-    state.account = account;
-    this.$cookies.set('account', account);
+    state.account_email = account.email;
+    state.account_phone = account.phone;
   },
   SET_NOWTIME(state, nowTime) {
     state.nowTime = nowTime;

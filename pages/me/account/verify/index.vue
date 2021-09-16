@@ -54,6 +54,7 @@ import { Field } from 'vant';
 import { checkPassword } from '@/api/user';
 
 export default {
+  middleware: 'authenticated',
   components: {
     vanField: Field
   },

@@ -118,7 +118,7 @@ export default {
       this.isNextFlag = true;
 
       let _axios;
-      _axios = this.$route.query.changeWay === 'email' ? checkCurrentCode({ code: this.code, type: 2 }) : checkCurrentCode({ code: this.code, type: 1 });
+      _axios = this.$route.query.changeWay === 'email' ? checkCurrentCode({ code: this.code, type: 2, isDelCode: 0 }) : checkCurrentCode({ code: this.code, type: 1, isDelCode: 0 });
       
       _axios.then(() => {
         this.isNextFlag = false;
@@ -136,7 +136,8 @@ export default {
         this.$router.push({
           name: 'me-account-verify-verifypwd',
           query: {
-            code: this.code
+            code: this.code,
+            changeWay: this.$route.query.changeWay === 'email' ? 'email': 'phone'
           }
         })
       }).catch(() => {

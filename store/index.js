@@ -3,7 +3,9 @@ import { vantLocales } from '@/plugins/vue-i18n';
 export const state = () => ({
   locales: ['en', 'zh-CN', 'zh-TW', 'fr', 'es', 'ms', 'vi'],
   locale: 'zh-CN',
-  rate: null,
+  rate: {
+    currency: ''
+  },
   searchProductList: [], // 商品搜索历史
 });
 
@@ -60,7 +62,7 @@ export const actions = {
       // 消息信息
       commit('user/SET_WEBSOCKET', $cookies.get('websocketMsg'));
       // 当前账户名
-      commit('user/SET_ACCOUNT', $cookies.get('account'));
+      commit('user/SET_ACCOUNT', { email: authTokenData.data.user_info.email, phone: authTokenData.data.user_info.phone });
     }
     
     // 获取当前语言货币汇率

@@ -69,14 +69,14 @@ export default {
         // 获取消息信息
         this.$store.commit('user/SET_WEBSOCKET', res.data.user_info.passUrl);
         // 当前登录账号
-        this.$store.commit('user/SET_ACCOUNT', this.$route.query.phone ? this.$route.query.phone : this.$route.query.email);
+        this.$store.commit('user/SET_ACCOUNT', { email: res.data.user_info.email, phone: res.data.user_info.phone });
         this.$toast.clear();
         // 登录成功跳转到首页
         setTimeout(() => {
           this.$router.push({
             name: 'home'
           })
-        }, 300);
+        }, 100);
       })
     }
   }
