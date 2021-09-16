@@ -19,16 +19,23 @@
             v-show="!isScroll"
             @click="leftBack"
           />
-          <div class="sticky-opacity ml-14" @click="$router.push({ name: 'search' })">
+          <div class="sticky-opacity ml-14" @click="$router.replace({ name: 'search', query: { back: 'cart-product-id', backId: $route.params.id } })">
             <van-search v-model="searchVal" disabled class="round-20 hidden" />
           </div>
         </div>
 
-        <div slot="header-right" @click="$router.push({ name: 'cart', query: { isBar: 1 } })">
+        <div slot="header-right">
           <van-icon
-            :name="require('@/assets/images/icon/cart-bgd.svg')"
+            :name="!isScroll ? require('@/assets/images/icon/share-icon.png') : require('@/assets/images/icon/share-icon-white.png')"
             size="0.64rem"
             class="mt-6"
+            @click="showShare = true"
+          />
+          <van-icon
+            :name="!isScroll ? require('@/assets/images/icon/cart-icon.png') : require('@/assets/images/icon/cart-icon-white.png')"
+            size="0.64rem"
+            class="mt-6 ml-12"
+            @click="$router.push({ name: 'cart', query: { isBar: 1 } })"
           />
         </div>
       </BmHeaderNav>
@@ -45,6 +52,7 @@
       title-inactive-color="#383838"
       class="product-tab-content"
       ref="detailTabContainer"
+      :ellipsis="false"
     >
       <van-tab :title="$t('shot')" name="Short">
         <div>
@@ -94,15 +102,22 @@
             <template #title>
               <div class="flex vcenter">
                 <span class="fw fs-12 block">{{ $t("freight") }}</span>
-                <span class="ml-12 fs-12 grey fm-helvetica" v-if="deliveryInfo.length > 0">{{ $t("freight") }}: {{ $store.state.rate.currency }}{{ deliveryInfo[0].freightPrice }}</span>
-                <span class="ml-12 fs-12 grey fm-helvetica" v-if="deliveryInfo.length == 0">{{ completeAddress ? completeAddress : $t('please_choose_address')}}</span>
+                <span class="ml-12 fs-12 grey fm-helvetica" v-if="deliveryInfo.length > 0 && completeAddress">
+                  <!-- 包邮 -->
+                  <span v-if="deliveryInfo[0].type == 1">{{ $t('free_freight') }}</span>
+                  <!-- 不配送 -->
+                  <span v-else-if="deliveryInfo[0].type == 3">{{ $t('not_sale') }}</span>
+                  <!-- 不包邮 -->
+                  <span v-else>{{ $t("freight") }}: {{ $store.state.rate.currency }}{{ deliveryInfo[0].freightPrice }}</span>
+                </span>
+                <span class="ml-12 fs-12 grey fm-helvetica" v-else>{{ completeAddress ? completeAddress : $t('please_choose_address')}}</span>
               </div>
             </template>
           </van-cell>
           <!-- 货源地到收货地 -->
-          <template v-if="deliveryInfo.length > 0">
+          <template v-if="deliveryInfo.length > 0 && completeAddress">
             <!-- 步骤条 -->
-            <van-steps :active="freightActive" class="mt-20 plr-0">
+            <van-steps :active="freightActive" class="plr-20">
               <!-- 发货地址 -->
               <van-step>
                 {{ storeInfo.deliveryCountryName }}
@@ -237,8 +252,7 @@
               {{ hotEvaluates.total | reviewNumFormat }}</span
             >
             <!-- 更多评论 -->
-            <span v-if="hotEvaluates.total == 0" class="fs-14">{{ $t("more") }}</span>
-            <nuxt-link v-else class="fs-14" :to="{ name: 'me-order-rate-detail-list', query: { id: goodSpuVo.id } }">{{ $t("more") }}</nuxt-link>
+            <nuxt-link class="fs-14" :to="{ name: 'me-order-rate-detail-list', query: { id: goodSpuVo.id } }">{{ $t("more") }}</nuxt-link>
           </h3>
           <!-- 评论展示 -->
           <div
@@ -268,7 +282,6 @@
                   <van-rate
                     class="mt-4"
                     v-model="reviewItem.goodsScores"
-                    allow-half
                     size="0.24rem"
                     color="#F7B500"
                     readonly
@@ -331,7 +344,7 @@
         <div class="mt-12 bg-white ptb-20">
           <h3 class="black flex between vcenter plr-20 fn fm-helvetica">
             <span class="fs-16">{{ $t("just_for_you") }}</span>
-            <nuxt-link class="fs-14" :to="{ name: 'cart-store-id', params: { id: storeInfo.storeId }, query: { sellerId: storeInfo.sellerId, hasAdornment: storeInfo.hasAdornment} }">{{ $t("more") }}</nuxt-link>
+            <nuxt-link class="fs-14" :to="{ name: 'cart-store-id', params: { id: storeInfo.storeId }, query: { sellerId: storeInfo.sellerId, tabbarActive: 1 } }">{{ $t("more") }}</nuxt-link>
           </h3>
           <!-- 推荐商品 -->
           <div>
@@ -462,7 +475,7 @@
       <div class="mt-20 plr-24">
         <p class="fs-14 grey-1">{{ chooseTitle }}</p>
         <ul class="plr-24 fs-16 black">
-          <li class="mt-20" v-for="city, cityIndex in chooseList" :key="'city-' + cityIndex" @click="changeCity(city)">{{ city.name }}</li>
+          <li :class="{'mt-20': true, 'green': stepArr.length > 0 && city.name == stepArr[stepArr.length - 1].name}" v-for="city, cityIndex in chooseList" :key="'city-' + cityIndex" @click="changeCity(city)">{{ city.name }}</li>
         </ul>
       </div>
     </van-popup>
@@ -476,7 +489,7 @@
           size="0.6rem"
         /> -->
         <!-- 店铺 -->
-        <nuxt-link :to="{ name: 'cart-store-id', params: { id: storeInfo.storeId }, query: { sellerId: storeInfo.sellerId, hasAdornment: storeInfo.hasAdornment} }">
+        <nuxt-link :to="{ name: 'cart-store-id', params: { id: storeInfo.storeId }, query: { sellerId: storeInfo.sellerId, tabbarActive: 0} }">
           <van-icon :name="require('@/assets/images/icon/store-icon.png')" size="0.6rem" />
         </nuxt-link>
         <!-- 收藏 0未关注 1已关注 -->
@@ -484,24 +497,32 @@
       </div>
       <div class="flex">
         <!-- 加入购物车 -->
-        <BmButton :type="'info'" class="fs-16 round-0 w-130 h-56 add-cart-btn border-no" @click="onAddCart">{{ $t('add_to_cart') }}</BmButton>
+        <BmButton :type="'info'" class="fs-16 round-0 w-130 h-56 add-cart-btn border-no" :disabled="goodSpuVo.inSale == 0" @click="onAddCart">{{ $t('add_to_cart') }}</BmButton>
         <!-- 立即购买 -->
-        <BmButton class="fs-16 round-0 w-130 h-56" @click="onBuySku">{{ $t('buy_now') }}</BmButton>
+        <BmButton class="fs-16 round-0 w-130 h-56" :disabled="goodSpuVo.inSale == 0" @click="onBuySku">{{ $t('buy_now') }}</BmButton>
       </div>
     </div>
 
     <!-- 产品规格 -->
     <ProductSku :productShow="productShow" :goodSpuVo="goodSpuVo" :initialSku="initialSku" :sku="sku" :type="skuType" @onSkuInfo="onSkuInfo" @onSelectedSkuCombId="selectedSkuCombId = $event" />
+
+    <!-- 分享 -->
+    <van-share-sheet v-model="showShare" :options="shareOptions" :title="$t('share_title')" :cancel-text="$t('cancel')" @select="onShare" />
   </div>
 </template>
 
 <script>
-import { ImagePreview, Cell, Step, Steps, Rate, Sticky, Search, Tab, Tabs, Popup, Stepper } from 'vant';
-import { getDeliveryInfo, attentionProduct } from '@/api/cart';
+import { ImagePreview, Cell, Step, Steps, Rate, Sticky, Search, Tab, Tabs, Popup, Stepper, ShareSheet } from 'vant';
+import { getDeliveryInfo, attentionProduct, cancelAttentionProduct } from '@/api/cart';
 import { getCurrentDefaultAddress, getNextArea } from '@/api/address';
 import ProductSku from '@/components/ProductSku';
 import 'swiper/css/swiper.css';
 import { Swiper, SwiperSlide } from 'vue-awesome-swiper';
+import ClipboardJS from 'clipboard';
+import { getShareDetail } from '@/api/user';
+import shareFacebook from '@/assets/images/icon/share-facebook.png';
+import shareInfo from '@/assets/images/icon/share-info.png';
+import shareLink from '@/assets/images/icon/share-link.png';
 
 export default {
   components: {
@@ -517,6 +538,7 @@ export default {
     vanStepper: Stepper,
     swiper: Swiper,
     swiperSlide: SwiperSlide,
+    vanShareSheet: ShareSheet,
     ProductSku
   },
   data() {
@@ -582,17 +604,38 @@ export default {
       skuType: '', // cart 操作区按钮为确认，''操作区按钮为加入购物车/立即购买
       goodAttr: [], // 商品选中的属性规格展示
       selectedSkuCombId: null,
-      deliveryInfo: []
+      deliveryInfo: [],
+      showShare: false,
+      shareOptions: [
+        {
+          name: this.$t('share_facebook'),
+          icon: shareFacebook
+        },
+        {
+          name: this.$t('share_copy_link'),
+          icon: shareLink
+        },
+        {
+          name: this.$t('share_content'),
+          icon: shareInfo
+        }
+      ],
+      shareDetail: {}
     }
   },
   async fetch() {
     // 判断登录之后，获取详情时要带userid
+    this.$toast.loading({
+      forbidClick: true,
+      loadingType: 'spinner',
+      duration: 0
+    });
     let _detailParams = {};
     if (this.$store.state.user.userInfo) {
       _detailParams.userId = this.$store.state.user.userInfo.id
     }
     const detailData = await this.$api.getProductDetail(this.$route.params.id, _detailParams); // 获取商品详情;
-
+    this.$toast.clear();
     if (!detailData.data) return false;
 
     this.carouselMapUrls = detailData.data.carouselMapUrls; // 商品轮播图
@@ -711,7 +754,7 @@ export default {
       }
     })
     
-    this.initialSku = this.selectSku = {
+    this.initialSku = {
       ...initArr[0],
       selectedNum: 1,
       selectedSkuComb: {
@@ -725,7 +768,7 @@ export default {
     this.likeList = [];
     // 获取商品推荐列表
     if (this.storeInfo.storeId) {
-      const recommendData = await this.$api.getRecommendList({ shopId: this.storeInfo.storeId, categoryId: 7 });
+      const recommendData = await this.$api.getRecommendList({ shopId: this.storeInfo.storeId, categoryId: this.goodSpuVo.categoryId });
       if (!recommendData.data) return false;
       this.likeList = recommendData.data;
     }
@@ -757,6 +800,11 @@ export default {
       this.getNextArea({ id: 0 });
     }
     this.$fetch();
+    // 获取分享内容
+    getShareDetail(this.$route.params.id).then(res => {
+      this.shareDetail = res.data;
+    })
+    
     // this.$refs.productSku.resetSelectedSku();
   },
   head() {
@@ -942,15 +990,15 @@ export default {
       })
     },
     onSelect() { // 选择产品规格
-      if (this.$store.state.user.authToken) {
+      // if (this.$store.state.user.authToken) {
         this.skuType = '';
         this.productShow.show = true;
-        return false;
-      }
-      // 未登录情况下跳转到登录页面
-      this.$router.push({
-        name: 'login'
-      })
+      //   return false;
+      // }
+      // // 未登录情况下跳转到登录页面
+      // this.$router.push({
+      //   name: 'login'
+      // })
     },
     attentionProduct() { // 关注商品
       if (!this.$store.state.user.authToken) {
@@ -959,6 +1007,13 @@ export default {
         })
         return false;
       }
+      if (this.goodSpuVo.isAttention == 1) { // 取消关注
+        cancelAttentionProduct([this.goodSpuVo.id]).then(() => {
+          this.goodSpuVo.isAttention = 0;
+        })
+        return false;
+      }
+      
       attentionProduct(this.goodSpuVo.id).then(() => {
         this.goodSpuVo.isAttention = 1;
       })
@@ -973,6 +1028,43 @@ export default {
         params: {
           id: id
         }
+      })
+    },
+    onShare(option, index) { // 分享操作
+      if (index == 0) { // facebook
+        window.open("https://www.facebook.com/share.php?u=".concat(encodeURIComponent(this.shareDetail.url)));
+        return false;
+      }
+      if (index == 1) { // 复制链接
+        this.onCopy(this.shareDetail.urlContent);
+        return false;
+      }
+      if (index == 2) { // 分享内容
+        this.onCopy(this.shareDetail.textContent);
+        return false;
+      }
+    },
+    onCopy(value) {
+      let clipboard = new ClipboardJS('.van-share-sheet__option', {
+        text: () => {
+          return value;
+        }
+      })
+      clipboard.on('success', () => {
+        let msg = this.$t('t_copied_to_clipboard');
+        this.$toast({
+          message: msg,
+          type: 'success'
+        })
+        clipboard.destroy();
+      })
+      clipboard.on('error', () => {
+        let msg = this.$t('fail_copied_to_clipboard');
+        this.$toast({
+          message: msg,
+          type: 'fail'
+        })
+        clipboard.destroy();
       })
     }
   },
@@ -1098,7 +1190,7 @@ export default {
     display: none;
   }
   .van-nav-bar__left{
-    width: 88%;
+    width: 76%;
     &>div, .sticky-opacity{
       width: 100%;
     }

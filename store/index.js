@@ -3,8 +3,10 @@ import { vantLocales } from '@/plugins/vue-i18n';
 export const state = () => ({
   locales: ['en', 'zh-CN', 'zh-TW', 'fr', 'es', 'ms', 'vi'],
   locale: 'zh-CN',
-  rate: null,
-  nowTime: null
+  rate: {
+    currency: ''
+  },
+  searchProductList: [], // 商品搜索历史
 });
 
 export const mutations = {
@@ -20,18 +22,24 @@ export const mutations = {
     state.rate = rate;
     // this.$cookies.set('rate', rate);
   },
-  SET_NOWTIME(state, nowTime) {
-    state.nowTime = nowTime;
-    this.$cookies.set('nowTime', nowTime);
-  }
+  SET_SEARCHPRODUCTLIST(state, searchItem) {
+    if (searchItem == null) {
+      state.searchProductList = [];
+    } else {
+      if (Array.isArray(searchItem)) { // 主要是刷新页面时从cookie中获取数据
+        state.searchProductList = state.searchProductList.concat(searchItem);
+      } else {
+        state.searchProductList.unshift(searchItem);
+      }
+      state.searchProductList = [...new Set(state.searchProductList)]; // 去重
+    }
+    this.$cookies.set('searchProductList', encodeURI(state.searchProductList));
+  },
 };
 
 export const actions = {
   // 数据持久化
   async nuxtServerInit ({ commit }, { $cookies, $api }) {
-    const lang = $cookies.get('lang'); // 语言
-    commit('SET_LANG', lang);
-    
     const authToken = $cookies.get('authToken'); // 用户token
     console.log('持久化')
     console.log(authToken)
@@ -49,30 +57,34 @@ export const actions = {
       // 获取用户信息
       const userInfo = await $api.getUserInfo();
       commit('user/SET_USERINFO', userInfo.data);
-      commit('SET_NOWTIME', userInfo.data.nowTime);
+      commit('user/SET_NOWTIME', userInfo.data.nowTime);
 
       // 消息信息
       commit('user/SET_WEBSOCKET', $cookies.get('websocketMsg'));
       // 当前账户名
-      commit('user/SET_ACCOUNT', $cookies.get('account'));
+      commit('user/SET_ACCOUNT', { email: authTokenData.data.user_info.email, phone: authTokenData.data.user_info.phone });
     }
+    
+    // 获取当前语言货币汇率
+    const rateData = await $api.getCurrentRate();
+    commit('SET_RATE', rateData.data);
+    // 回去当前语言
+    const lang = $cookies.get('lang');
+    commit('SET_LANG', lang);
+    
+    
 
     // 是否有未读消息
     commit('user/SET_ISNEWMESSAGE', Boolean($cookies.get('isNewWebsocketMsg')));
 
-    const searchList = decodeURI($cookies.get('searchList')); // 商品搜索历史
-    if (searchList != 'undefined') {
-      commit('user/SET_SEARCHLIST', searchList.split(','));
+    const searchProductList = decodeURI($cookies.get('searchProductList')); // 商品搜索历史
+    if (searchProductList != 'undefined' && searchProductList != '') {
+      commit('SET_SEARCHPRODUCTLIST', searchProductList.split(','));
     }
 
-    const orderSearchList = decodeURI($cookies.get('orderSearchList')); // 订单搜索历史
-    if (orderSearchList != 'undefined') {
-      commit('user/SET_ORDERSEARCHLIST', orderSearchList.split(','));
+    const searchOrderList = decodeURI($cookies.get('searchOrderList')); // 订单搜索历史
+    if (searchOrderList != 'undefined' && searchOrderList != '') {
+      commit('user/SET_SEARCHORDERLIST', searchOrderList.split(','));
     }
-    
-
-    // 获取当前语言货币汇率
-    const rateData = await $api.getCurrentRate();
-    commit('SET_RATE', rateData.data);
   }
 }

@@ -57,7 +57,7 @@
       </div>
       <!-- 评分 -->
       <div class="mt-14 flex vcenter">
-        <van-rate v-model="rate" allow-half size="14" color="#F7B500" void-color="#DDDDDD" void-icon="star" />
+        <van-rate v-model="rate" size="14" color="#F7B500" void-color="#DDDDDD" void-icon="star" />
         <div class="grey ml-12">{{ detailData.saleAttr }}</div>
       </div>
       <!-- 描述 -->

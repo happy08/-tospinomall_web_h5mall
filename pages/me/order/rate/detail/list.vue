@@ -1,9 +1,9 @@
 <template>
   <!-- 订单评价列表/商品-商品详情-评价列表 -->
-  <div class="v-percent-100 bg-grey pt-46">
-    <BmHeaderNav :left="{ isShow: true }" :title="$t('product_evaluation')" :fixed="true" />
+  <div class="v-percent-100 bg-grey">
+    <van-sticky>
+      <BmHeaderNav :left="{ isShow: true }" :title="$t('product_evaluation')" />
 
-    <PullRefresh :refreshing="refreshing" @refresh="onRefresh">
       <!-- 评价列表分类 -->
       <div class="plr-20 bg-white">
         <!-- 是否只看当前商品的评价 -->
@@ -31,11 +31,14 @@
         </div> -->
 
         <!-- 评价分类 -->
-        <van-tabs sticky swipeable animated :offset-top="44" color="#42B7AE" class="customs-van-tabs" :ellipsis="false" @change="getList" v-model="tabActive">
+        <van-tabs sticky swipeable animated :offset-top="44" color="#42B7AE" class="customs-van-tabs" :ellipsis="false" @change="onChangeTab" v-model="tabActive">
           <van-tab v-for="(categoryItem, tabIndex) in $t('product_rate_tab')" :title="categoryItem" :key="'scroll-tab-' + tabIndex" title-class="pb-0" :name="tabIndex">
           </van-tab>
         </van-tabs>
       </div>
+    </van-sticky>
+
+    <PullRefresh :refreshing="refreshing" @refresh="onRefresh" class="custom-min-height-94">
       <!-- 无数据时展示 -->
       <empty-status v-if="list.length === 0" :image="require('@/assets/images/empty/order.png')" />
       <!-- 评价列表 -->
@@ -67,7 +70,7 @@
           </div>
           <!-- 评分 -->
           <div class="mt-14 flex vcenter plr-20" @click="goDetail(item)">
-            <van-rate v-model="item.goodsScores" allow-half readonly size="14" color="#F7B500" void-color="#DDDDDD" void-icon="star" />
+            <van-rate v-model="item.goodsScores" readonly size="14" color="#F7B500" void-color="#DDDDDD" void-icon="star" />
             <div class="grey ml-12">{{ item.saleAttr }}</div>
           </div>
           <!-- 描述 -->
@@ -155,7 +158,7 @@
 </template>
 
 <script>
-import { Checkbox, Cell, Tab, Tabs, Rate, CellGroup, List, ImagePreview } from 'vant';
+import { Checkbox, Cell, Tab, Tabs, Rate, CellGroup, List, ImagePreview, Sticky } from 'vant';
 import { getRateList, addGive } from '@/api/product';
 import PullRefresh from '@/components/PullRefresh';
 import EmptyStatus from '@/components/EmptyStatus';
@@ -169,6 +172,7 @@ export default {
     vanRate: Rate,
     vanCellGroup: CellGroup,
     vanList: List,
+    vanSticky: Sticky,
     PullRefresh,
     EmptyStatus
   },
@@ -188,19 +192,28 @@ export default {
       finished: false,
     }
   },
+  beforeRouteEnter (to, from, next) {
+    next(vm => {
+      if (from.name === 'cart-product-id') {
+        vm.tabActive = 0;
+      }
+    });
+  },
   activated() {
+    this.pageNum = 1;
     this.getList();
   },
   methods: {
     getList() { // 获取数据
-      this.$toast.loading({
-        forbidClick: true,
-        loadingType: 'spinner',
-        duration: 0
-      });
-      this.pageNum = 1;
-      this.finished = false;
-      let _params = { goodsId: this.$route.query.id, pageNum: this.pageNum, pageSize: this.pageSize }
+      if (this.pageNum == 1) {
+        this.$toast.loading({
+          forbidClick: true,
+          loadingType: 'spinner',
+          duration: 0
+        });
+      }
+
+      let _params = { goodsId: this.$route.query.id, pageNum: this.pageNum, pageSize: this.pageSize, createUser: this.$store.state.user.userInfo.id }
       if (this.tabActive == 1) {
         _params.sortType = 1; // 最新创建时间排序
       }
@@ -231,12 +244,14 @@ export default {
             sellerReplyList: item.sellerReplyList.length > 0 ? [item.sellerReplyList[0]] : []
           }
         });
+        
         this.list = this.pageNum == 1 ? list : this.list.concat(list);
         this.total = res.data.total;
         this.loading = false;
         this.refreshing.isFresh = false;
-      }).catch(() => {
-        this.list = [];
+        if (parseFloat(this.total) > this.list.length) {
+          this.finished = false;
+        }
       })
     },
     onReport(id) { // 举报
@@ -287,13 +302,14 @@ export default {
       this.getList();
     },
     onLoad() { // 加载更多
-      if (this.total == this.list.length) {
+      this.finished = false;
+      if (parseFloat(this.total) == this.list.length) {
         this.loading = false;
         this.finished = true;
         return false;
       }
       this.pageNum += 1;
-      this.getRateList();
+      this.getList();
     },
     onPreview(item, index) { // 图片预览
       const imgs = item.map(picItem => {
@@ -304,6 +320,15 @@ export default {
         startPosition: index,
         loop: false
       })
+    },
+    onChangeTab() { // tab切换
+      this.pageNum = 1;
+      if (process.client) {
+        window.scrollTo({
+          top: 0
+        });
+      }
+      this.getList();
     }
   },
 }

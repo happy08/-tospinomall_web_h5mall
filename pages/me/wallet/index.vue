@@ -9,11 +9,14 @@
 
     <div class="mlr-12 mt-4">
       <!-- 总金额展示 -->
-      <div class="purse-total w-100 flex hcenter">
-        <div class="flex column white fw purse-total__container tc">
-          <span class="fs-30" v-show="pwdType === 'text'"><span class="fm-menlo">{{ $store.state.rate.currency }}</span><span class="fm-din">{{ detail.balance }}</span></span>
-          <span class="fs-30" v-show="pwdType === 'password'">****</span>
-          <span class="fs-18 mt-10">{{ $t('balance') }}</span>
+      <div class="purse-total w-100 flex hcenter hidden">
+        <div class="flex column white fw purse-total__container tc w-100 hidden">
+          <div class="fs-30 lh-36 plr-12 flex w-100 center" v-show="pwdType === 'text'">
+            <span class="fm-menlo">{{ $store.state.rate.currency }}</span>
+            <span class="fm-din hidden-1">{{ detail.balance }}</span>
+          </div>
+          <div class="fs-30 lh-36" v-show="pwdType === 'password'">****</div>
+          <div class="fs-18 mt-10 lh-1">{{ $t('balance') }}</div>
         </div>
         <div class="purse-total__show">
           <!-- 睁眼 -->
@@ -30,7 +33,7 @@
         </li>
       </ul>
       <!-- 自定义金额 -->
-      <van-field class="mt-24 border round-8" v-model="amount" type="number" :placeholder="$t('enter_a_custom_amount')" :formatter="formatter" />
+      <van-field class="mt-24 border round-8" v-model="amount" type="number" maxlength="15" :placeholder="$t('enter_a_custom_amount')" :formatter="formatter" />
     </div>
     
     <!-- 充值按钮 -->
@@ -83,7 +86,7 @@ export default {
       
       this.detail = {
         ...rechargeData.data,
-        balance: this.$utils.numberFormat(rechargeData.data.balance, 2)
+        balance: rechargeData.data.balance
       };
     },
     onRecharge(type, amount) { // 充值
@@ -110,14 +113,13 @@ export default {
   background-position: center center;
   position: relative;
   .purse-total__container{
-    margin-top: 34px;
+    margin-top: 40px;
     line-height: 34px;
   }
   .purse-total__show{
     position: absolute;
     right: 16px;
-    top: 50%;
-    transform: translateY(-50%);
+    top: 16px;
   }
 }
 .perse-li{
@@ -133,5 +135,9 @@ export default {
 }
 .mt-8{
   margin-top: 8px;
+}
+.lh-36{
+  line-height: 36px;
+  height: 36px;
 }
 </style>

@@ -72,7 +72,7 @@ export default {
       if (this.password.length >= 5) { // 判断密码是否相等，提交支付密码
         setTimeout(() => { // 得到数据有延迟
           if (this.password !== this.$route.query.pwd) { // 密码错误
-            this.errorInfo = this.$t('me.pay.pwdError');
+            this.errorInfo = this.$t('the_two_passwords_entered_are_inconsistent');
             return false;
           }
           

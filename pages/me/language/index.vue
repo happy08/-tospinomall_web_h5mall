@@ -11,7 +11,6 @@
 
 <script>
 import { Cell, CellGroup } from 'vant';
-import { getLangList } from '@/api/user';
 
 export default {
   components: {
@@ -24,18 +23,20 @@ export default {
     }
   },
   activated() {
-    this.getLangList();
+    // 加载图标
+    this.$toast.loading({
+      forbidClick: true,
+      loadingType: 'spinner',
+      duration: 0
+    });
+    this.$api.getLangs().then(res => {
+      this.$toast.clear();
+      this.langList = res.data.localeList;
+    });
   },
   methods: {
     changeLang(lang) { // 切换语言
-      console.log(lang)
       this.$store.commit('SET_LANG', lang);
-    },
-    async getLangList() {
-      const langData = await getLangList();
-      if (langData.code != 0) return false;
-
-      this.langList = langData.data;
     }
   },
 }

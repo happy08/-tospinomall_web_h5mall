@@ -28,7 +28,7 @@
       <!-- 评分 -->
       <van-cell class="plr-20 ptb-20" :title="$t('product_evaluation')" title-class="black fs-14">
         <template #label>
-          <van-rate class="mt-10" v-model="goodsScores" allow-half size="14" color="#F7B500" void-color="#DDDDDD" void-icon="star" />
+          <van-rate class="mt-10" v-model="goodsScores" size="14" color="#F7B500" void-color="#DDDDDD" void-icon="star" />
         </template>
       </van-cell>
       <van-field class="p-20" v-model="content" :placeholder="$t('comment_upload_photo_tip')" :border="false" type="textarea" rows="1" :autosize="{maxHeight: 60}" />
@@ -64,19 +64,19 @@
       <!-- 包装 -->
       <van-cell class="plr-20 ptb-20" :title="$t('fedex_packing')" title-class="black fs-14">
         <template #label>
-          <van-rate class="mt-10" v-model="expressPackingScores" allow-half size="14" color="#F7B500" void-color="#DDDDDD" void-icon="star" />
+          <van-rate class="mt-10" v-model="expressPackingScores" size="14" color="#F7B500" void-color="#DDDDDD" void-icon="star" />
         </template>
       </van-cell>
       <!-- 送货速度 -->
       <van-cell class="plr-20 ptb-20" :title="$t('delivery_speed')" title-class="black fs-14">
         <template #label>
-          <van-rate class="mt-10" v-model="logisticsScores" allow-half size="14" color="#F7B500" void-color="#DDDDDD" void-icon="star" />
+          <van-rate class="mt-10" v-model="logisticsScores" size="14" color="#F7B500" void-color="#DDDDDD" void-icon="star" />
         </template>
       </van-cell>
       <!-- 快递人员服务 -->
       <van-cell class="plr-20 ptb-20" :title="$t('delivery_personnel_service')" title-class="black fs-14">
         <template #label>
-          <van-rate class="mt-10" v-model="distServiceScores" allow-half size="14" color="#F7B500" void-color="#DDDDDD" void-icon="star" />
+          <van-rate class="mt-10" v-model="distServiceScores" size="14" color="#F7B500" void-color="#DDDDDD" void-icon="star" />
         </template>
       </van-cell>
     </van-cell-group>

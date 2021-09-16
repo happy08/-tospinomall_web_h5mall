@@ -12,7 +12,7 @@
         :alt="'Tospino logo'"
       />
       <!-- 搜索框 -->
-      <div class="mlr-12 home-page-nav__search" ref="homeSearch" @click="$router.push({ name: 'search' })">
+      <div class="mlr-12 home-page-nav__search" ref="homeSearch" @click="$router.push({ name: 'search', query: { back: 'home' } })">
         <van-search
           v-model="searchVal"
           :placeholder="$t('search_product_of_interest')"
@@ -378,6 +378,7 @@ export default {
     ];
 
     const searchList = await this.$api.getProductSearch({ pageSize: this.pageSize, pageIndex: this.pageIndex }); // 搜索商品列表
+    if (!searchList.data) return false;
     
     let list = searchList.data.items.map(item => { // 搜索商品列表
       return {
@@ -535,14 +536,18 @@ export default {
         })
 
         this.searchList = this.searchList.concat(list);
-        this.$redrawVueMasonry();
+        setTimeout(() => {
+          if (typeof this.$redrawVueMasonry === 'function') {
+            this.$redrawVueMasonry();
+          }
+        }, 50)
         
         // 加载状态结束
         this.loading = false;
       });
     }
   },
-  beforeDestroy(){
+  deactivated() {
     window.removeEventListener('scroll', this.stickyScroll); // 离开页面清除滚动事件
   }
 };

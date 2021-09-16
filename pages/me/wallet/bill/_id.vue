@@ -38,13 +38,13 @@
       </van-cell> -->
 
       <!-- 支付方式 -->
-      <van-cell center class="ptb-20 plr-20" :title="$t('method_of_payment')" :value="detail.payTypeLabel" />
+      <van-cell center class="ptb-20 plr-20 between" value-class="f-auto" title-class="f-auto" :title="$t('method_of_payment')" :value="detail.payTypeLabel" />
       <!-- 交易时间 -->
-      <van-cell center class="ptb-20 plr-20" :title="$t('transaction_hour')" :value="detail.createTime" />
+      <van-cell center class="ptb-20 plr-20 between" value-class="f-auto" title-class="f-auto" :title="$t('transaction_hour')" :value="detail.createTime" />
       <!-- 订单号 -->
-      <van-cell center class="ptb-20 plr-20" :title="$t('order_number')" :value="detail.tradeNo" />
+      <van-cell center class="ptb-20 plr-20 between" value-class="f-auto" title-class="f-auto" :title="$t('order_number')" :value="detail.tradeNo" />
       <!-- 商户订单号 -->
-      <van-cell center class="ptb-20 plr-20" :title="$t('merchant_order_number')" :value="detail.merchantNumber" />
+      <van-cell center class="ptb-20 plr-20 between" value-class="f-auto" title-class="f-auto" :title="$t('merchant_order_number')" :value="detail.merchantNumber" />
     </van-cell-group>
   </div>
 </template>
@@ -81,5 +81,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-
+.f-auto{
+  flex: auto!important;
+}
 </style>

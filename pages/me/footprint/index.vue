@@ -12,7 +12,7 @@
     </BmHeaderNav>
 
     <!-- 下拉刷新 -->
-    <PullRefresh :refreshing="refreshing" @refresh="onRefresh">
+    <PullRefresh :refreshing="refreshing" @refresh="onRefresh" class="custom-min-height-46">
       <van-list
         v-model="loading"
         :finished="finished"
@@ -163,6 +163,7 @@ export default {
 
     this.total = listData.data.total;
     this.list = listData.data.records;
+    this.finished = false;
   },
   beforeRouteEnter (to, from, next) {
     next(vm => {
@@ -215,6 +216,7 @@ export default {
           })
           this.checkResult = [];
           this.edit = false;
+          this.isAll = !this.isAll;
         })
       }).catch(() => {
 

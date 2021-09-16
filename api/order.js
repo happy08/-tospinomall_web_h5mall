@@ -273,3 +273,27 @@ export function updateLogisticsOrder(data) {
     }
   })
 }
+
+/**
+ * 获取售后订单明细
+ */
+export function aftersaleOrderItem(itemId) {
+  return request({
+    url: `/order/omsorder/buyer/afterSale/orderItem/${itemId}`,
+    method: 'get'
+  })
+}
+
+/**
+ * 计算邮费
+ */
+export function getFreightPrice(data) {
+  return request({
+    url: '/basics/base/logistics/buyer/calculteFreightPrice',
+    method: 'post',
+    data: data,
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+}

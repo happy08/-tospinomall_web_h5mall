@@ -10,16 +10,17 @@
     <!-- 收货地址 -->
     <div class="bg-white">
       <!-- 收货人姓名 -->
-      <van-field v-model="form.name" class="p-20" :placeholder="$t('the_consignee')" />
+      <van-field v-model="form.name" class="p-20" :placeholder="$t('the_consignee')" maxlength="30" />
       <!-- 收货人电话号码 -->
       <van-field
         v-model="form.phone"
         :placeholder="$t('phone_number')"
         class="p-20"
-        type="tel"
+        type="number"
+        maxlength="20"
       >
         <template #right-icon>
-          <nuxt-link class="flex grey" :to="{ name: 'me-address-areacode' }">
+          <nuxt-link class="flex grey" replace :to="{ name: 'me-address-areacode', query: $route.query }">
             {{ form.phonePrefix }}
             <van-icon name="arrow" />
           </nuxt-link>
@@ -46,6 +47,7 @@
         type="textarea"
         class="p-20"
         :placeholder="$t('detailde_address_such_as_road_building_number')"
+        maxlength="255"
       />
       <!-- 标签 -->
       <van-field v-model="form.tag" :label="$t('label')" label-width="0.72rem">
@@ -120,7 +122,7 @@
       <div class="mt-20 plr-24">
         <p class="fs-14 grey-1">{{ chooseTitle }}</p>
         <ul class="plr-24 fs-16 black">
-          <li class="mt-20" v-for="city, cityIndex in chooseList" :key="cityIndex" @click="changeCity(city)">{{ city.name }}</li>
+          <li :class="{'mt-20': true, 'green': stepArr.length > 0 && city.name == stepArr[stepArr.length - 1].name}" v-for="city, cityIndex in chooseList" :key="cityIndex" @click="changeCity(city)">{{ city.name }}</li>
         </ul>
       </div>
     </van-popup>
@@ -181,44 +183,67 @@ export default {
       return emptyArr.length > 0 ? true : false;
     },
     chooseTitle() {
-      if (this.form.countryCode === '') {
-        return '选择国家';
+      if (this.stepArr.length == 0) {
+        return this.$t('please_select_a_country');
       }
-      if (this.form.provinceCode === '') {
-        return '选择州/省/地区';
+      if (this.stepArr.length == 1) {
+        return this.$t('please_select_a_state_province_region');
       }
-      if (this.form.cityCode === '') {
-        return '选择城市';
+      if (this.stepArr.length == 2) {
+        return this.$t('Please_select_city');
       }
-      return '选择街道或城镇';
+      return this.$t('please_select_district_county');
     }
   },
+  beforeRouteEnter (to, from, next) {
+    next(vm => {
+      if (from.name !== 'me-address-areacode') { // 从选择手机号前缀页面回退
+        vm.form = {
+          name: '',
+          phone: '',
+          phonePrefix: '',
+          address: '', // 详细地址
+          countryCode: '', //国家编码
+          provinceCode: '', // 省份编码
+          cityCode: '', // 市编码
+          districtCode: '', //区编码
+          isDefault: false, // 是否为默认地址
+          tag: '', // 标签
+          tagEditor: '', // 自定义标签
+        }
+        vm.allAddress = '';
+        vm.chooseList = [];
+        vm.stepArr = [];
+        vm.stepActive = -1;
+        vm.isShowChooseTitle = true;
+      }
+    });
+  },
   activated() {
-    // 获取手机号前缀
-    if (this.$route.query.phonePrefix) {
-      this.form.phonePrefix = this.$route.query.phonePrefix;
-    } else {
-      this.getPhonePrefix();
-    }
-
     // 修改地址时要先获取用户的数据
     if (this.$route.query.id) {
       this.getAddressDetail();
     } else { // 新建页面
-      this.form = {
-        name: '',
-        phone: '',
-        phonePrefix: '',
-        address: '', // 详细地址
-        countryCode: '', //国家编码
-        provinceCode: '', // 省份编码
-        cityCode: '', // 市编码
-        districtCode: '', //区编码
-        isDefault: false, // 是否为默认地址
-        tag: '', // 标签
-        tagEditor: '', // 自定义标签
-      }
+      // this.form = {
+      //   name: '',
+      //   phone: '',
+      //   phonePrefix: '',
+      //   address: '', // 详细地址
+      //   countryCode: '', //国家编码
+      //   provinceCode: '', // 省份编码
+      //   cityCode: '', // 市编码
+      //   districtCode: '', //区编码
+      //   isDefault: false, // 是否为默认地址
+      //   tag: '', // 标签
+      //   tagEditor: '', // 自定义标签
+      // }
       this.isEmit = 0;
+      // 获取手机号前缀
+      if (this.$route.query.phonePrefix) {
+        this.form.phonePrefix = this.$route.query.phonePrefix;
+      } else {
+        this.getPhonePrefix();
+      }
       this.getNextArea({ id: 0 });
     }
   },
@@ -288,7 +313,7 @@ export default {
     },
     getAddressDetail() { // 查看地址信息
       getAddressDetail(this.$route.query.id).then(res => {
-        this.allAddress = res.data.completeAddress
+        this.allAddress = res.data.completeAddress;
         this.form = {
           name: res.data.name,
           phone: res.data.phone,
@@ -304,6 +329,10 @@ export default {
         }
 
         this.isEmit = res.data.tagEditor ? 2 : 0;
+        // 获取手机号前缀
+        if (this.$route.query.phonePrefix) {
+          this.form.phonePrefix = this.$route.query.phonePrefix;
+        }
 
         this.stepArr = res.data.areaList;
         this.assgnStepList = res.data.areaList;
@@ -358,7 +387,6 @@ export default {
     closePopup() { // 关闭修改地址弹窗时触发, 数据处理
       if (!this.isNext) {
         this.assgnStepList = this.stepArr; // 更新地址数据
-        console.log('---更新地址')
         let _address = '';
         this.stepArr.map(item => {
           _address += item.name;

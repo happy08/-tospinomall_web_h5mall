@@ -2,18 +2,18 @@
   <!-- 首页-头部-搜索页面 -->
   <div :class="{'v-percent-100': true, 'bg-grey': !isShowTip}">
     <van-sticky class="bg-white border-b">
-      <BmHeaderNav :left="{ isShow: true }" :title="title" :border="false" />
+      <BmHeaderNav :left="{ isShow: true, isEmit: true }" :title="title" :border="false" @leftClick="leftClick" />
 
       <!-- 搜索 -->
       <van-search
-        v-model="searchVal"
+        v-model="orderVal"
         shape="round"
         :placeholder="$t('enter_key_words')"
         class="plr-20 bg-white ptb-12"
-        @search="onSearch"
+        @search="onOrderSearch"
         @focus="onFocus"
         @input="inputChange"
-        @clear="isShowTip = true"
+        @clear="onClear"
         ref="searchContainer"
       />
     </van-sticky>
@@ -26,7 +26,7 @@
           <BmIcon :name="'shanchu'" :width="'0.32rem'" :height="'0.32rem'" @iconClick="deleteFn" />
         </h2>
         <div class="mt-12 flex flex-wrap">
-          <span class="plr-10 round-8 mr-10 iblock mb-10 lh-20 tag-name" v-for="(tagItem, tagIndex) in searchHistoryList" :key="tagIndex" @click="onSearch(tagItem)">{{ tagItem }}</span>
+          <span class="plr-10 round-8 mr-10 iblock mb-10 lh-20 tag-name" v-for="(tagItem, tagIndex) in searchHistoryList" :key="tagIndex" @click="onOrderSearch(tagItem)">{{ tagItem }}</span>
           <BmIcon :name="'down-icon'" :width="'0.64rem'" :height="'0.64rem'" v-if="historyNum" @iconClick="showMoreHistory" />
         </div>
       </div>
@@ -77,9 +77,7 @@
                 ref="swiperComponentRef"
                 :class="{ 'swiper mt-20 order-page__global-swiper': true, 'swiper-no-swiping' : item.totalQuantity <= 4 }"
                 :options="{
-                  ...swiperComponentOption,
-                  loop: item.totalQuantity > 4,
-                  loopFillGroupWithBlank: item.totalQuantity > 4
+                  ...swiperComponentOption
                 }"
               >
                 <swiper-slide v-for="(productItem,productIndex) in item.items" :key="'swiper-' + productIndex">
@@ -107,15 +105,15 @@
               <!-- 售后状态showAfterSale：0->不可售后 1->可以售后 -->
 
               <!-- 取消订单：在线支付[待付款0]；货到付款[待发货1且未支付0] -->
-              <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" v-if="(item.paymentType == 1 && item.status == 0) || (item.paymentType == 0 && item.status == 1 && item.payState == 0)" @btnClick="onCancel(item)">{{ $t('cancel_order') }}</BmButton>
+              <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" v-if="(item.paymentType == 1 && item.status == 0) || (item.paymentType == 2 && item.status == 1 && item.payState == 0)" @btnClick="onCancel(item)">{{ $t('cancel_order') }}</BmButton>
               <!-- 去支付：在线支付[待付款0] -->
               <BmButton class="fs-14 ml-10 round-8 plr-12 h-32" :type="'info'" v-if="item.paymentType == 1 && item.status == 0" @btnClick="onPay(item)">{{ $t('payment') }}</BmButton>
               <!-- 去评价：在线支付[已完成4且未评价0]；货到付款[已完成4且未评价0] -->
               <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" v-if="item.hasComment == 0 && item.status == 4" @btnClick="onEvaluate(item)">{{ $t('evaluation') }}</BmButton>
               <!-- 退款/售后：在线支付[待发货1且已支付1且可售后1,待收货2且已支付1且可售后1,已完成4且可售后1]；货到付款[待发货1且已支付1且可售后1,待收货2且可售后1,已完成4且可售后1] -->
-              <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" v-if="(item.paymentType == 1 && (((item.status == 1 || item.status == 2) && item.payState == 1) || item.status == 4)  && item.showAfterSale == 1) || (item.paymentType == 0 && ((item.status == 1 && item.payState == 1) || item.status == 2 || item.status == 4) && item.showAfterSale == 1)">{{ $t('refund_after_sale') }}</BmButton>
+              <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" v-if="(item.paymentType == 1 && (((item.status == 1 || item.status == 2) && item.payState == 1) || item.status == 4)  && item.showAfterSale == 1) || (item.paymentType == 2 && ((item.status == 1 && item.payState == 1) || item.status == 2 || item.status == 4) && item.showAfterSale == 1)" @btnClick="onAfterSale(item)">{{ $t('refund_after_sale') }}</BmButton>
               <!-- 确认收货：在线支付[待收货2且已支付1]；货到付款[待收货2] -->
-              <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" v-if="(item.paymentType == 1 && item.status == 2 && item.payState == 1) || (item.paymentType == 0 && item.status == 2)">{{ $t('confirm_receipt') }}</BmButton>
+              <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" v-if="(item.paymentType == 1 && item.status == 2 && item.payState == 1) || (item.paymentType == 2 && item.status == 2)" @btnClick="onReceipt(item)">{{ $t('confirm_receipt') }}</BmButton>
               <!-- 去购买：待发货1,待收货2,待评价3,已完成4,已取消5,超时未付款6,已拒收7,其他8 -->
               <BmButton class="fs-14 ml-10 round-8 plr-12 h-32" :type="'info'" v-if="item.status != 0" @btnClick="onBuy(item)">{{ $t('buy_again') }}</BmButton>
             </div>
@@ -173,12 +171,13 @@
 import { Search, List, Popup, Cell, CellGroup, RadioGroup, Radio, Sticky } from 'vant';
 import OrderSingle from '@/components/OrderSingle';
 import OrderStoreSingle from '@/components/OrderStoreSingle';
-import { cancelOrder, getOrderReasonList, deleteOrder } from '@/api/order';
+import { cancelOrder, getOrderReasonList, deleteOrder, confirmReceiptOrder } from '@/api/order';
 import PullRefresh from '@/components/PullRefresh';
 import 'swiper/css/swiper.css';
 import { Swiper, SwiperSlide } from 'vue-awesome-swiper';
 
 export default {
+  name: 'meOrderSearch',
   middleware: 'authenticated',
   components: {
     vanSearch: Search,
@@ -197,7 +196,7 @@ export default {
   },
   data() {
     return {
-      searchVal: '',
+      orderVal: '',
       isShowTip: true,
       lists: [],
       searchHistoryList: [],
@@ -225,89 +224,127 @@ export default {
       refreshing: {
         isFresh: false
       },
+      isRouteBack: 0,
+      total: 0,
+      backName: ''
     }
   },
   async fetch() {
-    this.searchVal = this.$route.query.val || ''; // 搜索value
-    this.isShowTip = this.searchVal.length > 0 ? false : true;
-
-    let _params = this.$route.query;
-    delete _params.val;
+    this.orderVal = this.$route.query.orderVal || ''; // 搜索value
+    this.isShowTip = this.orderVal.length > 0 ? false : true;
+    if (this.$route.query.back) {
+      this.backName = this.$route.query.back;
+    }
 
     // 如果带着搜索的参数跳转过来的需要先获取相对应的搜索数据
-    if (this.searchVal != '') {
-      this.$store.commit('user/SET_ORDERSEARCHLIST', this.searchVal); // 搜索历史存储
-      // 获取搜索列表数据
-      const listData = await this.$api.getProductSearch(_params);
-      // 数据列表需要格式化
-      this.list = listData.data.items.map(item => {
-        return {
-          ...item,
-          starLevel: parseFloat(item.starLevel)
-        }
-      });
+    if (this.orderVal != '') {
+      this.$store.commit('user/SET_SEARCHORDERLIST', this.orderVal); // 搜索历史存储
+      this.pageNum = 1;
+      this.isRouteBack = 1;
+      this.lists = [];
+      const orderData = await this.$api.getOrderList({ pageNum: this.pageNum, pageSize: this.pageSize, keyword: this.orderVal });
+      this.total = orderData.data.total;
+      this.lists = orderData.data.records;
+      this.isShowTip = false;
+      this.loading = false;
+      this.refreshing.isFresh = false;
+      this.finished = parseFloat(orderData.data.total) == this.lists.length;
       // 更新页面展示
-      this.searchHistoryList = this.$store.state.user.orderSearchList.filter((item, index) => {
+      this.searchHistoryList = this.$store.state.user.searchOrderList.filter((item, index) => {
         return index < 6;
       });
     }
+  },
+  watch: {
+    '$route'() {
+      this.$fetch();
+    }
+  },
+  activated() {
+    this.$fetch();
     // 取消订单原因，因为整个列表都是同一种类型，所以就只在全局引入一次就好了
     getOrderReasonList({ orderType: 1, applyType: 0, goodsStatus: 0 }).then(res => {
       if (res.code != 0) return false;
 
       this.cancelReasonList = res.data;
     })
-  },
-  activated() {
-    this.$fetch();
-    if (this.searchVal == '') { // 没有带参数进来的时候，搜索输入框需要自动聚焦
+    if (this.orderVal == '') { // 没有带参数进来的时候，搜索输入框需要自动聚焦
+      this.isRouteBack = 0;
       this.title = this.$t('search');
       this.$nextTick(() => {
         this.$refs.searchContainer.querySelector('input').focus();
       })
+    } else {
+      this.isRouteBack = 1;
+      this.title = this.$t('my_order');
     }
-    this.searchHistoryList = this.$store.state.user.orderSearchList.filter((item, index) => {
+    this.searchHistoryList = this.$store.state.user.searchOrderList.filter((item, index) => {
       return index < 6;
     });
-    this.historyNum = this.$store.state.user.orderSearchList.length > 6 ? true: false;
+    this.historyNum = this.$store.state.user.searchOrderList.length > 6 ? true: false;
     // 搜索防抖
     this.inputChange = this.$utils.debounce((e) => {
       this.isShowTip = true;
       // this.getSearchList();
     }, 300);
   },
+  deactivated() {
+    this.backName = '';
+  },
   methods: {
     deleteFn() { // 删除历史记录
       this.$dialog.confirm({
-        message: '确认删除全部历史记录',
+        message: this.$t('delete_all_search_history_tips'),
+        confirmButtonText: this.$t('confirm'),
+        confirmButtonColor: '#42B7AE',
+        cancelButtonText: this.$t('cancel'),
+        cancelButtonColor: '#383838'
       }).then(() => { // 确认删除历史记录
-        this.$store.commit('user/SET_ORDERSEARCHLIST', null);
+        this.$store.commit('user/SET_SEARCHORDERLIST', null);
         this.searchHistoryList = [];
+        this.historyNum = false;
       })
     },
-    onSearch(val) { // 获取搜索结果
+    onOrderSearch(val) { // 获取搜索结果
       if (val == '') return false;
-      let value = val;
+      // let value = val;
       if (!val && this.hintName) value = this.hintName;
-      this.$store.commit('user/SET_ORDERSEARCHLIST', value); // 搜索历史存储
-      // 更新页面展示
-      this.searchHistoryList = this.$store.state.user.orderSearchList.filter((item, index) => {
-        return index < 6;
-      });
-      this.searchVal = value;
-      this.pageNum = 1;
-      // this.title = this.$t('bill');
-      this.isShowTip = false;
-      this.lists = [];
-      // 获取搜索列表
-      this.getSearchList();
+      if (this.isRouteBack != 0) {
+        this.$router.replace({
+          name: 'me-order-search',
+          query: {
+            orderVal: val,
+            // searchKeyword: val
+          }
+        })
+      } else {
+        this.$router.push({
+          name: 'me-order-search',
+          query: {
+            orderVal: val,
+            // searchKeyword: val
+          }
+        })
+      }
+      // this.$store.commit('user/SET_SEARCHORDERLIST', value); // 搜索历史存储
+      // // 更新页面展示
+      // this.searchHistoryList = this.$store.state.user.searchOrderList.filter((item, index) => {
+      //   return index < 6;
+      // });
+      // this.orderVal = value;
+      // this.pageNum = 1;
+      // // this.title = this.$t('bill');
+      // this.isShowTip = false;
+      // this.lists = [];
+      // // 获取搜索列表
+      // this.getSearchList();
     },
     showMoreHistory() { // 展示更多的搜索历史
       this.historyNum = false;
-      this.searchHistoryList = this.$store.state.user.orderSearchList;
+      this.searchHistoryList = this.$store.state.user.searchOrderList;
     },
     onFocus() { // 获取焦点之后，不展示数据列表和历史数据
-      this.isShowTip = this.searchVal.length > 0 ? false : this.searchVal.length === 0;
+      this.isShowTip = this.orderVal.length > 0 ? false : this.orderVal.length === 0;
     },
     onDeleteFn(orderId) { // 删除订单
       // 加载图标
@@ -340,11 +377,12 @@ export default {
     },
     onRefresh() { // 下拉刷新
       this.pageNum = 1;
+      this.finished = false;
       this.getSearchList();
     },
     onLoad() {
       this.finished = false;
-      if (this.total == this.lists.length) {
+      if (parseFloat(this.total) == this.lists.length) {
         this.loading = false;
         this.finished = true;
         return false;
@@ -392,18 +430,21 @@ export default {
       })
     },
     getSearchList() {
-      this.$toast.loading({
-        forbidClick: true,
-        loadingType: 'spinner',
-        duration: 0
-      });
-
-      if (this.searchVal == '') {
+      if (this.pageNum == 1) {
+        this.$toast.loading({
+          forbidClick: true,
+          loadingType: 'spinner',
+          duration: 0
+        });
+      }
+      
+      if (this.orderVal == '') {
         this.isShowTip = true;
         return false;
       }
-      this.$api.getOrderList({ pageNum: this.pageNum, pageSize: this.pageSize, keyword: this.searchVal }).then(res => {
+      this.$api.getOrderList({ pageNum: this.pageNum, pageSize: this.pageSize, keyword: this.orderVal }).then(res => {
         this.$toast.clear();
+        this.total = res.data.total;
         this.lists = this.pageNum == 1 ? res.data.records : this.lists.concat(res.data.records);
         this.isShowTip = false;
         this.loading = false;
@@ -420,7 +461,62 @@ export default {
           orderId: orderItem.id
         }
       })
-    }
+    },
+    onClear() { // 点击清除按钮
+      this.$router.replace({
+        name: 'me-order-search'
+      })
+    },
+    leftClick() { // 页面回退
+      if (!this.$route.query.orderVal && this.backName != '') {
+        this.$router.replace({
+          name: this.backName
+        });
+        return false;
+      }
+      if (window.history.length < 2) { //解决部分机型拿不到history
+        console.log('go home');
+        this.$router.replace('/');
+      } else {
+        console.log('back');
+        history.back();
+      }
+    },
+    onReceipt(orderItem) { // 确认收货
+      this.$dialog.confirm({
+        message: this.$t('confirm_receipt_tips'),
+        onfirmButtonText: this.$t('confirm_receipt'),
+        confirmButtonColor: '#42B7AE',
+        cancelButtonText: this.$t('cancel'),
+        cancelButtonColor: '#383838'
+      }).then(() => {
+        // 加载图标
+        this.$toast.loading({
+          forbidClick: true,
+          loadingType: 'spinner',
+          duration: 0
+        });
+
+        confirmReceiptOrder(orderItem.id).then(res => {
+          this.$toast.clear();
+          this.lists.forEach((item, index) => {
+            if (item.id == orderItem.id) {
+              this.lists.splice(index, 1);
+            }
+          })
+        })
+      }).catch(() => {
+
+      })
+    },
+    onAfterSale(orderItem) { // 退款售后
+      this.$router.push({
+        name: 'me-aftersale',
+        query: {
+          orderId: orderItem.id
+        }
+      })
+    },
   },
 }
 </script>
@@ -447,6 +543,10 @@ export default {
     position: absolute;
     right: 0;
     top: 0;
+    z-index: 1000;
+    height: 84px;
+    padding-left: 10px;
+    background-color: rgba(255, 255, 255, .8);
   }
 }
 </style>

@@ -134,22 +134,29 @@
       </div>
     </div>
 
-    <!-- 已发起退款申请，请耐心等待商家处理 -->
-    <div class="bg-white plr-12 ptb-20" v-if="detail.status == 1 && detail.orderType == 1">
-      <h4 class="fs-14 fw">{{ $t('refund_return_state_tip_2', { replace_tip: detail.orderType == 1 ? $t('merchant'): $t('platform') }) }}</h4>
-      <!-- 退款 -->
-      <p class="mt-12 fs-12 light-grey pre-wrap" v-if="detail.returnType == 0" v-html="$t('refund_return_state_tip_4', { replace_tip: detail.orderType == 1 ? $t('merchant'): $t('platform') })"></p>
+    <!-- 已发起退款/退货退款申请，请耐心等待商家处理 -->
+    <div class="bg-white plr-12 ptb-20" v-if="detail.status == 1 && (detail.orderType == 1 || detail.orderType == 2)">
+      <!-- 仅退款 -->
+      <h4 class="fs-14 fw" v-if="detail.returnType == 0">{{ $t('refund_return_state_tip_2', { replace_tip: detail.orderType == 1 ? $t('merchant'): $t('platform') }) }}</h4>
       <!-- 退货退款 -->
-      <p class="mt-12 fs-12 light-grey" v-if="detail.returnType == 1">
+      <h4 class="fs-14 fw" v-if="detail.returnType == 1">{{ $t('refund_return_state_tip_50', { replace_tip: detail.orderType == 1 ? $t('merchant'): $t('platform') }) }}</h4>
+      <!-- 退款 -->
+      <p class="mt-12 fs-12 light-grey pre-wrap" v-if="detail.returnType == 0 && detail.orderType == 1" v-html="$t('refund_return_state_tip_4', { replace_tip: detail.orderType == 1 ? $t('merchant'): $t('platform') })"></p>
+      <p class="mt-12 fs-12 light-grey pre-wrap" v-if="detail.returnType == 0 && detail.orderType == 2" v-html="$t('refund_return_state_tip_3', { replace_tip: detail.orderType == 1 ? $t('merchant'): $t('platform') })"></p>
+      <!-- 退货退款 -->
+      <!-- FBT -->
+      <p class="mt-12 fs-12 light-grey" v-if="detail.returnType == 1 && detail.orderType == 1">
         <span class="pre-wrap" v-html="$t('refund_return_state_tip_4', { replace_tip: detail.orderType == 1 ? $t('merchant'): $t('platform') })"></span>
         <span class="pre-wrap" v-html="$t('refund_return_state_tip_6', { replace_tip: detail.orderType == 1 ? $t('merchant'): $t('platform') })"></span>
       </p>
+      <!-- FBM -->
+      <p class="mt-12 fs-12 light-grey" v-if="detail.returnType == 1 && detail.orderType == 2">{{ $t('refund_return_state_tip_51') }}</p>
     </div>
 
-    <!-- 商家同意退货申请 -->
-    <!-- <div class="bg-white plr-12 ptb-20" v-if="detail.status == 2 && detail.orderType == 1">
-      <p class="fs-12 black">{{ $t('refund_return_state_tip_7', { replace_tip: detail.orderType == 1 ? $t('merchant'): $t('platform') }) }}</p>
-    </div> -->
+    <!-- 商家同意退货申请, 自行邮寄 -->
+    <div class="bg-white plr-12 ptb-20" v-if="detail.status == 2 && detail.deliveryType == 1">
+      <h4 class="fs-12 black">{{ $t('refund_return_state_tip_7', { replace_tip: detail.orderType == 1 ? $t('merchant'): $t('platform') }) }}</h4>
+    </div>
 
     <!-- 已关闭工单 -->
     <div class="bg-white plr-12 ptb-20" v-if="detail.status == 6">
@@ -268,7 +275,7 @@
     <!-- 订单展示 -->
     <div class="mt-12 bg-white pt-24 plr-20 pb-20">
       <OrderStoreSingle :name="detail.storeName" :showArrow="false" />
-      <OrderSingle class="mt-20" :product_num="detail.returnQuantity" :product_desc="detail.productName" :product_size="detail.productAttr" :price="detail.productPrice" :image="detail.productImage" />
+      <OrderSingle class="mt-20" :product_num="orderItem.returnQuantity" :product_desc="orderItem.productName" :product_size="orderItem.productAttr" :price="orderItem.productPrice" :image="orderItem.productImage" v-for="orderItem, orderIndex in orderList" :key="'store-product-' + orderIndex" />
     </div>
 
     <!-- 具体明细 -->
@@ -278,7 +285,7 @@
       <!-- 货品状态 -->
       <van-cell class="ptb-20 plr-20" :title="$t('goods_status')" title-class="fs-14 black flex-2" value-class="tl flex-3 light-grey" :value="detail.goodState === 0 ? $t('not_yet_received_the_goods') : $t('have_received_the_goods')"/>
       <!-- 申请原因 -->
-      <van-cell class="ptb-20 plr-20" :title="$t('applyReason')" title-class="fs-14 black flex-2" value-class="tl flex-3 light-grey" :value="detail.applyReason"/>
+      <van-cell class="ptb-20 plr-20" :title="$t('apply_reason')" title-class="fs-14 black flex-2" value-class="tl flex-3 light-grey" :value="detail.applyReason"/>
       <!-- 退款金额 -->
       <van-cell class="ptb-20 plr-20" :title="$t('refund_amount')" title-class="fs-14 black flex-2" value-class="tl flex-3 light-grey" :value="$store.state.rate.currency + detail.returnAmount" />
       <!-- 申请时间 -->
@@ -294,8 +301,8 @@
       </van-cell>
       <!-- 退货方式 -->
       <van-cell class="ptb-20 plr-20" :title="$t('return_method')" title-class="fs-14 black flex-2" value-class="tl flex-3 light-grey" :value="detail.deliveryType == 1 ? $t('self_return') : $t('pick_up')" v-if="detail.returnType == 1" />
-      <!-- 姓名、电话、地址 -->
-      <van-cell class="ptb-20 plr-20" v-if="detail.returnType == 1">
+      <!-- 上门取件 -->
+      <van-cell class="ptb-20 plr-20" v-if="detail.returnType == 1 && detail.deliveryType == 2">
         <template #default>
           <div class="flex between">
             <p class="fs-14 black">{{ detail.sendName }}  {{ detail.sendPhone }}</p>
@@ -304,7 +311,8 @@
           <p class="black fs-14 mt-12">{{ $t('address') }}: {{ detail.sendCompleteAddress }}</p>
         </template>
       </van-cell>
-      <van-cell class="ptb-20 plr-20" v-if="detail.returnType == 1 && detail.deliveryType == 2 && detail.receiverName != ''">
+      <!-- 退货地址 -->
+      <van-cell class="ptb-20 plr-20" v-if="detail.returnType == 1 && (detail.deliveryType == 1 || detail.deliveryType == 2) && detail.receiverName != ''">
         <template #default>
           <div class="flex between">
             <p class="fs-14 black">{{ detail.receiverName }}  {{ detail.receiverPhone }}</p>
@@ -368,7 +376,8 @@ export default {
     return {
       stepActive: 1,
       detail: {},
-      stepList: []
+      stepList: [],
+      orderList: []
     }
   },
   activated() {
@@ -423,6 +432,7 @@ export default {
           ...res.data,
           surplusTime: res.data.surplusTime * 1000
         };
+        this.orderList = res.data.orderReturnItems;
         // 状态: 1->商家/运营待处理 2->待自行寄回/待上门取件 3商家/运营待收货 4->待退款 5->退款成功 6->关闭售后单 7->商家/运营驳回申请 8->商家/运营拒收退货商品
         if (res.data.returnType == 0) { // 退款
           if (res.data.involvedStatus == 0) {
@@ -431,33 +441,37 @@ export default {
             } else {
               this.stepActive = 1;
             }
-            this.stepList = this.$t('processStep');
+            this.stepList = this.$t('process_step');
           } else { // 申请平台介入
-            this.stepList = this.$t('processPlatformStep');
+            this.stepList = this.$t('process_platform_step');
             this.stepActive = res.data.involvedStatus == 1 ? 1 : res.data.involvedStatus == 2 ? 2: 2;
           }
         } else if (res.data.returnType == 1) { // 退货退款
           this.stepActive = res.data.status == 1 ? 1 : res.data.status == 2 ? 2 : (res.data.status == 4 || res.data.status == 3) ? 3 : res.data.status == 5 ? 4 : 0;
-          this.stepList = res.data.orderType == 1 ? this.$t('processReturnShopStep') : this.$t('processplantformReturnShopStep');
+          this.stepList = res.data.orderType == 1 ? this.$t('process_return_shop_step') : this.$t('process_plantform_return_shop_step');
         }
         
       })
     },
     onEditApply() { // 修改申请
-      this.$router.push({
+      this.$router.replace({
         name: 'me-aftersale-apply-type',
         params: {
           type: this.detail.returnType + 1
         },
         query: {
           itemId: this.detail.id,
-          edit: 1
+          edit: 1,
+          back: this.$route.fullPath,
+          backOrderId: this.$route.query.back && this.$route.query.back.indexOf('orderId') ? this.$route.query.back.split('orderId=')[1] : null
         }
       })
     },
     leftClick() { // 回退，解决由申请页面提交跳转到详情页面，回退时需要回退到列表页面
-      if (this.$route.query.back && this.$route.query.back == 'me-aftersale') {
-        this.$router.go(-3);
+      // if (this.$route.query.back && this.$route.query.back == 'me-aftersale') {
+      if (this.$route.query.back) {
+        // this.$router.go(-3);
+        this.$router.replace(this.$route.query.back);
         return false;
       }
 

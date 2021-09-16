@@ -4,14 +4,14 @@
     <!-- 头部 -->
     <div class="bg-green-linear">
       <van-sticky @scroll="stickyScroll" ref="headerStickyContainer">
-        <BmHeaderNav :left="{ isShow: true, isEmit: true }" :border="false" :title="$t(title)" :color="isScrollShow ? 'white' : 'black'" :bg_color="isScrollShow ? 'bg-green-linear' : 'white'" @leftClick="leftClick" />
+        <BmHeaderNav :left="{ isShow: true, isEmit: true }" :border="false" :title="$t(title)" :color="isScrollShow ? 'white' : 'black'" :bg_color="isScrollShow ? 'bg-green-linear bg-transparent' : 'white'" @leftClick="leftClick" />
       </van-sticky>
 
       <div class="min-h-95">
         <!-- 待付款0倒计时，在线支付 -->
         <div class="mt-14 tc white fs-14 pb-40 flex center plr-20" v-if="detail.status == 0 && detail.paymentType == 1 && detail.remainCloseMills > 0">
-          {{ $t('refund_countdown') }}:
-          <van-count-down :time="detail.remainCloseMills" format="HH:mm:ss" class="white" /> 
+          {{ $t('refund_countdown') }}
+          <van-count-down :time="detail.remainCloseMills" format="HH:mm:ss" class="white" @finish="getOrderDetail" /> 
           {{ $t('automatically_closed') }}
         </div>
         <!-- 待发货 -->
@@ -46,7 +46,7 @@
     </div>
     
     <!-- 运输方式，待收货时展示 -->
-    <van-cell class="p-20" :title="detail.latestLogistics" is-link title-class="fw black ml-12" :to="{ name: 'me-order-detail-logistics', query: { deliverySn: detail.deliverySn } }" v-if="detail.status == 2">
+    <van-cell class="p-20" :title="detail.latestLogistics" is-link title-class="fw black ml-12 hidden-1" :to="{ name: 'me-order-detail-logistics', query: { deliverySn: detail.deliverySn } }" v-if="detail.status == 2 && detail.latestLogistics != ''">
       <!-- 左侧图标 -->
       <template #icon>
         <van-icon :name="require('@/assets/images/icon/car-icon.png')" size="0.48rem" />
@@ -73,19 +73,21 @@
 
     <!-- 订单详情 -->
     <div class="bg-white p-20 tr mt-12">
-      <OrderStoreSingle :name="detail.storeName" @goStoreDetail="goStoreDetail" />
+      <OrderStoreSingle :name="detail.storeName" :showArrow="false" />
       <div v-for="(item, index) in detail.items" :key="'order-product-' + index">
         <OrderSingle class="mt-20 w-100" :product_num="item.goodQuantity" :product_desc="item.goodName" :product_size="item.goodAttr" :price="item.goodPrice" :image="item.goodImg" @onClick="onClick(item.goodId)" />
 
         <!-- 待付款状态/待发货/已取消/超时关闭/已拒收 -->
-        <BmButton v-if="detail.status == 0 || detail.status == 1 || detail.status == 5 || detail.status == 6 || detail.status == 7" type="info" plain class="plr-12 round-8 h-30 mt-24" @click="addCart(item)">{{ $t('add_shopping_cart') }}</BmButton>
+        <!-- <BmButton v-if="detail.status == 0 || detail.status == 1 || detail.status == 5 || detail.status == 6 || detail.status == 7" type="info" plain class="plr-12 round-8 h-30 mt-24" @click="addCart(item)">{{ $t('add_shopping_cart') }}</BmButton> -->
 
         
         <!-- 待收货状态 / 已完成状态 -->
         <!-- 退款/售后：在线支付[待发货1且已支付1且可售后1,待收货2且已支付1且可售后1,已完成4且可售后1]；货到付款[待发货1且已支付1且可售后1,待收货2且可售后1,已完成4且可售后1] -->
         
-        <div v-else-if="detail.status == 2 || detail.status == 4" class="mt-24">
-          <BmButton class="fs-14 ml-10 round-8 plr-12 h-30 gery-border" :type="'info'" v-if="(detail.paymentType == 1 && (((detail.status == 1 || detail.status == 2) && detail.payState == 1) || detail.status == 4)  && detail.showAfterSale == 1) || (detail.paymentType == 0 && ((detail.status == 1 && detail.payState == 1) || detail.status == 2 || detail.status == 4) && detail.showAfterSale == 1)" @btnClick="onApplyAfterSale(item)">{{ $t('apply_for_after_sales') }}</BmButton>
+        <!-- <div v-else-if="detail.status == 2 || detail.status == 4" class="mt-24"> -->
+        <div class="mt-24">
+          <!-- <BmButton class="fs-14 ml-10 round-8 plr-12 h-30 gery-border" :type="'info'" v-if="(detail.paymentType == 1 && (((detail.status == 1 || detail.status == 2) && detail.payState == 1) || detail.status == 4)  && item.showAfterSale == 1) || (detail.paymentType == 2 && ((detail.status == 1 && detail.payState == 1) || detail.status == 2 || detail.status == 4) && item.showAfterSale == 1)" @btnClick="onApplyAfterSale(item)">{{ $t('apply_for_after_sales') }}</BmButton> -->
+          <BmButton class="fs-14 ml-10 round-8 plr-12 h-30 gery-border" :type="'info'" v-if="item.showAfterSale == 1" @btnClick="onApplyAfterSale(item)">{{ $t('apply_for_after_sales') }}</BmButton> 
           <BmButton :type="'info'" class="h-30 ml-10" @click="addCart(item)">{{ $t('add_shopping_cart') }}</BmButton>
         </div>
       </div>
@@ -98,7 +100,7 @@
         <van-icon :name="require('@/assets/images/icon/copy-icon.png')" size="0.48rem" class="ml-24 copy-order" @click="copy" />
       </p>
       <p class="fs-14 black flex vcenter">{{ $t('start_from') }}{{ detail.createTime }}</p>
-      <p class="fs-14 black flex vcenter">{{ $t('pay_by') }}{{ detail.paymentType | paymentTypeFormat}}</p>
+      <p class="fs-14 black flex vcenter">{{ $t('pay_by') }}{{ detail.paymentTypeLabel }}</p>
       <p class="fs-14 black flex vcenter" v-if="detail.paymentTime">{{ $t('time_of_payment') }}{{ detail.paymentTime }}</p>
       <p class="fs-14 black flex vcenter" v-if="detail.deliveryCompany">{{ $t('delivery_method') }}{{ detail.deliveryCompany }}</p>
     </div>
@@ -106,7 +108,7 @@
     <!-- 订单价格 -->
     <div class="plr-20 mt-12 bg-white order-price">
       <p class="flex between black fs-14 lh-36">
-        <span>{{ $t('subtotal') }}:</span>
+        <span>{{ $t('subtotal_') }}</span>
         <span class="fw">{{ $store.state.rate.currency }}{{ detail.productAmount }}</span>
       </p>
       <p class="flex between black fs-14 lh-36">
@@ -114,7 +116,7 @@
         <span class="fw">{{ $store.state.rate.currency }}{{ detail.buyerFreightAmount }}</span>
       </p>
       <p class="flex between black fs-14 lh-36">
-        <span>{{ $t('total') }}:</span>
+        <span>{{ $t('total') }}</span>
         <span class="red fw">{{ $store.state.rate.currency }}{{ detail.payAmount }}</span>
       </p>
     </div>
@@ -158,15 +160,15 @@
       <!-- 售后状态showAfterSale：0->不可售后 1->可以售后 -->
 
       <!-- 取消订单：在线支付[待付款0]；货到付款[待发货1且未支付0] -->
-      <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" v-if="(detail.paymentType == 1 && detail.status == 0) || (detail.paymentType == 0 && detail.status == 1 && detail.payState == 0)" @btnClick="onCancel(detail)">{{ $t('cancel_order') }}</BmButton>
+      <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" v-if="(detail.paymentType == 1 && detail.status == 0) || (detail.paymentType == 2 && detail.status == 1 && detail.payState == 0)" @btnClick="onCancel(detail)">{{ $t('cancel_order') }}</BmButton>
       <!-- 去支付：在线支付[待付款0] -->
       <BmButton class="fs-14 ml-10 round-0 plr-30 v-100" v-if="detail.paymentType == 1 && detail.status == 0" @btnClick="onPay(detail)">{{ $t('pay_now')}}</BmButton>
       <!-- 去评价：在线支付[已完成4且未评价0]；货到付款[已完成4且未评价0] -->
       <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" v-if="detail.hasComment == 0 && detail.status == 4" @btnClick="onRate(detail)">{{ $t('evaluation') }}</BmButton>
       <!-- 退款/售后：在线支付[待发货1且已支付1且可售后1, 该处2/4不展示[待收货2且已支付1且可售后1,已完成4且可售后1]]；货到付款[待发货1且已支付1且可售后1,该地方不展示[待收货2且可售后1,已完成4且可售后1]] -->
-      <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" v-if="(detail.paymentType == 1 && (((detail.status == 1) && detail.payState == 1))  && detail.showAfterSale == 1) || (detail.paymentType == 0 && ((detail.status == 1 && detail.payState == 1)) && detail.showAfterSale == 1)" @btnClick="onAfterSale(detail)">{{ $t('refund_after_sale') }}</BmButton>
+      <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" v-if="(detail.paymentType == 1 && (((detail.status == 1) && detail.payState == 1))  && detail.showAfterSale == 1) || (detail.paymentType == 2 && ((detail.status == 1 && detail.payState == 1)) && detail.showAfterSale == 1)" @btnClick="onAfterSale(detail)">{{ $t('refund_after_sale') }}</BmButton>
       <!-- 确认收货：在线支付[待收货2且已支付1]；货到付款[待收货2] -->
-      <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" v-if="(detail.paymentType == 1 && detail.status == 2 && detail.payState == 1) || (detail.paymentType == 0 && detail.status == 2)" @btnClick="onReceipt(detail)">{{ $t('confirm_receipt') }}</BmButton>
+      <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" v-if="(detail.paymentType == 1 && detail.status == 2 && detail.payState == 1) || (detail.paymentType == 2 && detail.status == 2)" @btnClick="onReceipt(detail)">{{ $t('confirm_receipt') }}</BmButton>
       <!-- 去购买：待发货1,待收货2,待评价3,已完成4,已取消5,超时未付款6,已拒收7,其他8 -->
       <BmButton class="fs-14 ml-10 round-0 plr-30 v-100" v-if="detail.status != 0" @btnClick="onBuy(detail)">{{ $t('buy_again') }}</BmButton>
     </div>
@@ -274,11 +276,6 @@ export default {
       this.$fetch();
     }
   },
-  filters: {
-    paymentTypeFormat(val) { // 支付方式
-      return val == 1 ? '在线支付' : val == 2 ? '货到付款' : '';
-    }
-  },
   methods: {
     cancelConfirm() { // 提交取消订单
       const reason = this.cancelReasonList.filter(item => {
@@ -352,14 +349,17 @@ export default {
         history.back();
       }
     },
-    goStoreDetail() { // 跳转到店铺首页
-      this.$router.push({
-        name: 'cart-store-id',
-        params: {
-          id: this.detail.storeId
-        }
-      })
-    },
+    // goStoreDetail() { // 跳转到店铺首页
+    //   this.$router.push({
+    //     name: 'cart-store-id',
+    //     params: {
+    //       id: this.detail.storeId
+    //     },
+    //     query: {
+    //       tabbarActive: 0
+    //     }
+    //   })
+    // },
     onClick(goodId) { // 跳转到商品详情页
       this.$router.push({
         name: 'cart-product-id',
@@ -404,7 +404,8 @@ export default {
         this.title = title;
         this.detail = {
           ...res.data,
-          remainCloseMills: parseFloat(res.data.remainCloseMills)
+          remainCloseMills: parseFloat(res.data.remainCloseMills),
+          paymentTypeLabel: res.data.paymentType == 1 ? this.$t('online') : res.data.paymentType == 2 ? this.$t('cash_on_delivery') : ''
         };
         this.$toast.clear();
       })
@@ -481,7 +482,7 @@ export default {
       this.$fetch();
     }
   },
-  beforeDestroy(){
+  deactivated(){
     window.removeEventListener('scroll', this.stickyScroll); // 离开页面清除滚动事件
   }
 }

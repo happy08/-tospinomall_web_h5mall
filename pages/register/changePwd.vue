@@ -11,6 +11,7 @@
         :placeholder="$t('enter_password_6_20')"
         :type="pwdType"
         class="field-container"
+        maxlength="20"
       >
         <template #button>
           <!-- 睁眼 -->
@@ -26,6 +27,7 @@
         :placeholder="$t('enter_again')"
         :type="confirmPwdType"
         class="field-container"
+        maxlength="20"
       >
         <template #button>
           <!-- 睁眼 -->

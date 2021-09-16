@@ -75,7 +75,7 @@
 <script>
 import { NoticeBar, Field, Uploader, CountDown, Picker, Popup } from 'vant';
 import { getReturnDetail, applyMallIntervene, returnWorkDetail, addToProof } from '@/api/order';
-import { getLangList, getPicUrl } from '@/api/user';
+import { getDictList, getPicUrl } from '@/api/user';
 
 export default {
   middleware: 'authenticated',
@@ -118,7 +118,7 @@ export default {
     
     
     // 获取举证原因
-    getLangList('return_work_apply_reason').then(res => {
+    getDictList('return_work_apply_reason').then(res => {
       this.reasonList = res.data.map(item => {
         return {
           ...item,
@@ -129,7 +129,6 @@ export default {
   },
   methods: {
     onReasonConfirm(item) { // 确认选择原因
-      console.log(item)
       this.currentReason = item;
       this.isChooseReason = false;
     },

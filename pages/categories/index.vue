@@ -175,7 +175,7 @@ export default {
       this.$router.push({
         name: 'search',
         query: {
-          categoryIds: [data.id],
+          navCategoryIds: [data.id],
           val: data.name
         }
       })

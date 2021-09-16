@@ -14,8 +14,9 @@
       <van-field
         class="mt-10 bg-grey round-8"
         v-model="phone"
-        type="text"
+        type="number"
         :placeholder="$t('feedback_contact_tip')"
+        maxlength="30"
       />
 
       <!-- 反馈意见 -->
@@ -23,9 +24,9 @@
         <van-field
           class="bg-grey feedback-pic-field"
           v-model="message"
-          rows="2"
+          rows="3"
           type="textarea"
-          maxlength="500"
+          maxlength="255"
           :placeholder="$t('feedback_input_hint')"
         />
         <!-- 上传图片 -->
@@ -42,7 +43,7 @@
         </van-uploader>
       </div>
       <!-- 提交 -->
-      <BmButton @click.stop="submit" :disabled="this.activeTag == '' || this.message == '' || this.phone == ''" class="w-100 feedback-btn round-8">{{ $t('submit') }}</BmButton>
+      <BmButton @click.stop="submit" :disabled="this.activeTag == '' || this.message.length < 3 || this.phone == ''" class="w-100 feedback-btn round-8">{{ $t('submit') }}</BmButton>
     </div>
   </div>
 </template>
@@ -104,6 +105,12 @@ export default {
       operateFeedback({ content: this.message, feedbackCategoryId: this.activeTag, phone: this.phone, imgUrls: this.imgList.join(',') }).then(res => {
         if (res.code != 0) return false;
 
+        this.message = '';
+        this.phone = '';
+        this.fileList = [];
+        this.feedbackType = [];
+        this.activeTag = '';
+        this.imgList = [];
         this.$router.push({
           name: 'me-feedback-result'
         })

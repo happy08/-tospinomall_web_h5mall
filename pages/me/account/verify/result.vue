@@ -22,6 +22,7 @@
 import { authLogin } from '@/api/login';
 
 export default {
+  middleware: 'authenticated',
   data() {
     return {
       countDown: 5
@@ -52,8 +53,7 @@ export default {
       })
     },
     login() {
-      authLogin({ username: this.$store.state.user.account, password: this.$route.query.pwd, grant_type: 'password' }).then(res => {
-        this.$toast.clear();
+      authLogin({ username: this.$store.state.user.account_phone && this.$store.state.user.account_phone != '' ? this.$store.state.user.account_phone : this.$store.state.user.account_email, password: this.$route.query.pwd, grant_type: 'password' }).then(res => {
         this.$store.commit('user/SET_TOKEN', res.data.token_type + ' ' + res.data.access_token);
         this.$store.commit('user/SET_REFRESHTOKEN', res.data.refresh_token);
         this.$store.commit('user/SET_SCOPE', res.data.scope);
@@ -61,6 +61,8 @@ export default {
         this.$store.dispatch('user/GetUserInfo', res.data.token_type + ' ' + res.data.access_token);
         // 获取消息信息
         this.$store.commit('user/SET_WEBSOCKET', res.data.user_info.passUrl);
+        // 当前登录账号
+        this.$store.commit('user/SET_ACCOUNT', { email: res.data.user_info.email, phone: res.data.user_info.phone });
         this.$toast.clear();
         // 登录成功跳转到首页
         setTimeout(() => {
@@ -69,7 +71,7 @@ export default {
           this.$router.push({
             name: 'home'
           })
-        }, 300);
+        }, 100);
       })
     }
   }

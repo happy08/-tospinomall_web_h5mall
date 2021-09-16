@@ -44,7 +44,7 @@
         <nuxt-link :to="$store.state.user.authToken ? { name: 'me-likes' } : { name: 'login' }" v-slot="{ navigate }" class="tc">
           <dl @click="navigate" role="link">
             <dt class="fs-24 black fw">{{ $store.state.user.userInfo ? $store.state.user.userInfo.attentionProductNum : 0 }}</dt>
-            <dd class="fs-12 grey mt-4">{{ $t('collect') }}</dd>
+            <dd class="fs-12 grey mt-4">{{ $t('collection') }}</dd>
           </dl>
         </nuxt-link>
         <nuxt-link :to="$store.state.user.authToken ? { name: 'me-wallet' }: { name: 'login' }" v-slot="{ navigate }" class="tc">
@@ -66,7 +66,7 @@
     <div class="bg-white mlr-12 round-8 plr-12 pb-20 user-page__order">
       <van-cell class="ptb-12 plr-0" :border="false" :title="$t('my_order')" is-link :value="$t('view_all')" value-class="green" title-class="black" :to="$store.state.user.authToken ? { name: 'me-order' } : { name: 'login' }" />
       <div class="flex between tc">
-        <nuxt-link v-for="(orderItem, orderIndex) in orderList" :key="'oder-' + orderIndex" :to="$store.state.user.authToken ? { name: orderItem.name, query: { type: orderItem.type } } : { name: 'login' }" >
+        <nuxt-link v-for="(orderItem, orderIndex) in orderList" :key="'oder-' + orderIndex" :to="$store.state.user.authToken ? { name: orderItem.name, query: { type: orderItem.type } } : { name: 'login' }" class="flex-1 plr-4">
           <van-badge :content="orderItem.count" max="99" :class="{'custom-badge': true, 'isNo-badge': orderItem.count == 0}">
             <BmImage 
               :url="require('@/assets/images/icon/' + orderItem.icon + '.png')"
@@ -77,7 +77,7 @@
               :alt="'Tospino '+ $t(orderItem.text) +' icon'"
             />
           </van-badge>
-          <p>{{ $t(orderItem.text) }}</p>
+          <p class="fs-14 black">{{ $t(orderItem.text) }}</p>
         </nuxt-link>
       </div>
     </div>
@@ -165,7 +165,7 @@ export default {
           icon: 'address-management'
         },
         {
-          text: 'my_shop', // 我的店铺
+          text: 'shop_follow', // 店铺关注
           name: 'me-likes',
           query: {
             active: 1
@@ -193,9 +193,10 @@ export default {
   },
   activated() {
     if (process.client) {
-      this.walletNum = this.$store.state.user.userInfo && this.$store.state.rate ? this.$store.state.rate.currency + this.$utils.numberFormat(this.$store.state.user.userInfo.balance) : 0;
+      this.walletNum = this.$store.state.user.userInfo && this.$store.state.rate ? this.$store.state.rate.currency + this.$store.state.user.userInfo.balance : 0;
     }
     if (this.$store.state.user.authToken) {
+      this.$store.dispatch('user/GetUserInfo');
       getOrderCount().then(res => {
         this.orderList[0].count = res.data.await_pay_count; // 待支付订单数
         this.orderList[1].count = res.data.await_take_good_count; // 待收货订单数
@@ -241,6 +242,9 @@ export default {
 }
 .user-page__other{
   box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.09);
+}
+.flex-1{
+  flex: 1;
 }
 </style>
 

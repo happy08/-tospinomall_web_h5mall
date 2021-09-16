@@ -3,15 +3,16 @@ import VueI18n from 'vue-i18n';
 import { Locale } from 'vant';
 import enLocale from 'vant/lib/locale/lang/en-US';
 import zhCNLocale from 'vant/lib/locale/lang/zh-CN';
-import zhTWLocale from 'vant/lib/locale/lang/zh-TW'; // 中文繁体
+// import zhTWLocale from 'vant/lib/locale/lang/zh-TW'; // 中文繁体
 // import frLocale from 'vant/lib/locale/lang/fr-FR'; // 法语
-import esLocale from 'vant/lib/locale/lang/es-ES'; // 西班牙语
+// import esLocale from 'vant/lib/locale/lang/es-ES'; // 西班牙语
+import viLocale from './locales/vant-vi'; // vant ui 越南语
 import en from './locales/en.js';
 import zhCN from './locales/zh-CN.js';
-import zhTW from './locales/zh-TW.js';
-import fr from './locales/fr.js';
-import es from './locales/es.js';
-import ms from './locales/ms.js';
+// import zhTW from './locales/zh-TW.js'; // 中文繁体
+// import fr from './locales/fr.js'; // 法语
+// import es from './locales/es.js'; // 西班牙语
+// import ms from './locales/ms.js'; // 马来西亚语
 import vi from './locales/vi.js';
 
 Vue.use(VueI18n);
@@ -23,7 +24,7 @@ export function vantLocales(lang) {
     Locale.use(lang, enLocale);
   } else if (lang === 'zh-CN') {
     Locale.use(lang, zhCNLocale);
-  } else if (lang === 'zh-TW') {
+  } /*else if (lang === 'zh-TW') {
     Locale.use(lang, zhTWLocale);
   } else if (lang === 'fr') {
     Locale.use(lang, esLocale);
@@ -31,17 +32,26 @@ export function vantLocales(lang) {
     Locale.use(lang, esLocale);
   } else if (lang === 'ms') {
     Locale.use(lang, esLocale);
-  } else if (lang === 'vi') {
-    Locale.use(lang, esLocale);
+  } */else if (lang === 'vi') {
+    Locale.use(lang, viLocale);
   }
 }
 
 // 导出语言数据
-export default ({ app, store }) => {
+export default async ({ app, store }) => {
+  // 获取默认站点语言
+  const defaultLocale = function () {
+    return new Promise(resolve => {
+      app.$api.getLangs().then(res => {
+        resolve(res.data.defaultLocale);
+      });
+    })
+  }
+  
   app.i18n = new VueI18n({
-    locale: store.state.locale,
+    locale: store.state.locale || await defaultLocale(),
     // fallbackLocale: store.state.locale || 'en',
-    fallbackLocale: 'zh-CN', // 没有文案的时候默认英文语言
+    fallbackLocale: await defaultLocale(),
     messages: {
       'zh-CN': {
         ...zhCNLocale,
@@ -51,28 +61,28 @@ export default ({ app, store }) => {
         ...enLocale,
         ...en
       },
-      'zh-TW': {
-        ...zhTWLocale,
-        ...zhTW
-      },
-      'fr': {
-        ...esLocale,
-        ...fr
-      },
-      'es': {
-        ...esLocale,
-        ...es
-      },
-      'ms': {
-        ...esLocale,
-        ...ms
-      },
+      // 'zh-TW': {
+      //   ...zhTWLocale,
+      //   ...zhTW
+      // },
+      // 'fr': {
+      //   ...esLocale,
+      //   ...fr
+      // },
+      // 'es': {
+      //   ...esLocale,
+      //   ...es
+      // },
+      // 'ms': {
+      //   ...esLocale,
+      //   ...ms
+      // },
       'vi': {
-        ...esLocale,
+        ...viLocale,
         ...vi
       }
     }
   });
   
-  vantLocales(store.state.locale || 'zh-CN');
+  vantLocales(store.state.locale || await defaultLocale());
 };

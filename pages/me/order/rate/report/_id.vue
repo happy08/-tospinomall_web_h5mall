@@ -47,7 +47,7 @@
 
 <script>
 import { RadioGroup, Radio, Cell, CellGroup, Field } from 'vant';
-import { getLangList } from '@/api/user';
+import { getDictList } from '@/api/user';
 import { reportEvaluate } from '@/api/product';
 
 export default {
@@ -67,7 +67,7 @@ export default {
     }
   },
   activated() {
-    getLangList('product_goods_evaluate_scene').then(res => {
+    getDictList('product_goods_evaluate_scene').then(res => {
       this.reasonList = res.data;
     })
   },

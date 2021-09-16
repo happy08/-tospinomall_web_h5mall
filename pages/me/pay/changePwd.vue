@@ -49,7 +49,7 @@ export default {
   },
   beforeRouteEnter(to, from, next) { // 从初始页面进入重置值为空
     next(vm => {
-      if (from.name === 'me-pay-password' || from.name === 'me-pay-code') {
+      if (from.name === 'me-pay-password' || from.name === 'me-pay-code' || from.name === 'me-pay-payment') {
         vm.value = '';
       }
     });

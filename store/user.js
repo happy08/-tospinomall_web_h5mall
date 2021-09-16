@@ -3,13 +3,14 @@
 export const state = () => ({
   authToken: null,
   userInfo: null,
-  searchList: [], // 商品搜索历史
-  orderSearchList: [], // 订单搜索历史
+  searchOrderList: [], // 订单搜索历史
   refreshToken: null,
   scope: null,
   websocketMsg: null,
   isNewMessage: false,
-  account: null // 登陆账号
+  account_email: null, // 登陆账号邮箱
+  account_phone: null, // 登陆账号手机号
+  nowTime: null
 });
 
 export const mutations = {
@@ -31,31 +32,18 @@ export const mutations = {
     state.scope = scope;
     this.$cookies.set('scope', scope);
   },
-  SET_SEARCHLIST(state, searchItem) {
+  SET_SEARCHORDERLIST(state, searchItem) {
     if (searchItem == null) {
-      state.searchList = [];
+      state.searchOrderList = [];
     } else {
       if (Array.isArray(searchItem)) { // 主要是刷新页面时从cookie中获取数据
-        state.searchList = state.searchList.concat(searchItem);
+        state.searchOrderList = state.searchOrderList.concat(searchItem);
       } else {
-        state.searchList.unshift(searchItem);
+        state.searchOrderList.unshift(searchItem);
       }
-      state.searchList = [...new Set(state.searchList)]; // 去重
+      state.searchOrderList = [...new Set(state.searchOrderList)]; // 去重
     }
-    this.$cookies.set('searchList', encodeURI(state.searchList));
-  },
-  SET_ORDERSEARCHLIST(state, searchItem) {
-    if (searchItem == null) {
-      state.orderSearchList = [];
-    } else {
-      if (Array.isArray(searchItem)) { // 主要是刷新页面时从cookie中获取数据
-        state.orderSearchList = state.orderSearchList.concat(searchItem);
-      } else {
-        state.orderSearchList.unshift(searchItem);
-      }
-      state.orderSearchList = [...new Set(state.orderSearchList)]; // 去重
-    }
-    this.$cookies.set('orderSearchList', encodeURI(state.orderSearchList));
+    this.$cookies.set('searchOrderList', encodeURI(state.searchOrderList));
   },
   SET_WEBSOCKET(state, websocketMsg) {
     state.websocketMsg = websocketMsg;
@@ -66,8 +54,12 @@ export const mutations = {
     this.$cookies.set('isNewWebsocketMsg', isNewMessage);
   },
   SET_ACCOUNT(state, account) {
-    state.account = account;
-    this.$cookies.set('account', account);
+    state.account_email = account.email;
+    state.account_phone = account.phone;
+  },
+  SET_NOWTIME(state, nowTime) {
+    state.nowTime = nowTime;
+    this.$cookies.set('nowTime', nowTime);
   }
 };
 
@@ -80,6 +72,7 @@ export const actions = {
           if (res.code != 0) return false;
           
           commit('SET_USERINFO', res.data);
+          commit('SET_NOWTIME', res.data.nowTime);
  
           resolve(res);
         }).catch(error => {

@@ -39,26 +39,17 @@
           v-model="item.phone"
           :placeholder="$t('phone_number')"
           :class="{'field-container phone-code-field pt-0 pb-20': true, 'is-active': payRadio == item.label}"
-          type="tel"
+          type="number"
+          maxlength="20"
           v-if="item.label != 'balance'"
         >
           <template #label>
-            <span @click="showPicker = true" class="iblock fs-14 black lh-20 pl-4">
-              {{ prefixCode }}
+            <span @click="$router.push({ name: 'me-address-areacode', query: { ...$route.query, paymentWay: item.label } })" class="iblock fs-14 black lh-20 pl-4">
+              {{ item.prefixCode }}
               <img class="prefix-container--icon" src="@/assets/images/triangle-icon.png">
             </span>
           </template>
         </van-field>
-        <!-- 手机前缀选择 -->
-        <van-popup v-model="showPicker" round position="bottom">
-          <van-picker
-            show-toolbar
-            :columns="phonePrefixs"
-            value-key="phonePrefix"
-            @cancel="showPicker = false"
-            @confirm="onConfirm"
-          />
-        </van-popup>
       </van-cell-group>
     </van-radio-group>
 
@@ -92,7 +83,6 @@
 
 <script>
 import { RadioGroup, Radio, Cell, CellGroup, Field, Popup, Picker, NumberKeyboard, PasswordInput } from 'vant';
-import { getPhonePrefix } from '@/api/login';
 import { getAvailable, buyerRecharge, payOrder } from '@/api/pay';
 
 export default {
@@ -112,8 +102,6 @@ export default {
     return {
       payRadio: 100,
       list: [],
-      showPicker: false,
-      prefixCode: '',
       phonePrefixs: [],
       isBackDialog: false,
       balanceShow: false,
@@ -122,32 +110,44 @@ export default {
   },
   beforeRouteEnter(to, from, next) { // 从初始页面进入重置值为空
     next(vm => {
-      if (from.name === 'me-wallet' || from.name == 'me-order') {
+      if (from.name === 'me-wallet' || from.name == 'me-order' || from.name == 'cart-order-id') {
         vm.payRadio = 100;
         vm.isBackDialog = false;
-        vm.balanceShow = false;
-        vm.showPicker = false;
         vm.payPwd = '';
+        vm.balanceShow = false;
       } else if (from.name === 'me-pay-wait') { // 从确认订单页面回来
         vm.isBackDialog = true;
       }
     });
   },
   activated() {
-    this.getPhonePrefix();
+    if (this.$route.query.phonePrefix && this.list.length > 0) { // 从选择电话的页面回跳回来的
+      this.list = this.list.map(item => {
+        return {
+          ...item,
+          prefixCode: this.$route.query.phonePrefix && item.label == this.$route.query.paymentWay ? this.$route.query.phonePrefix : item.prefixCode
+        }
+      });
+      return false;
+    }
     this.$toast.loading({
       forbidClick: true,
       loadingType: 'spinner',
       duration: 0
     });
+    this.list = [];
+    if (this.payRadio == 100) {
+      this.balanceShow = false;
+    }
     getAvailable().then(res => {
       this.$toast.clear();
-      if (res.code != 0) return false;
+      if (!res.data) return false;
 
       this.list = res.data.map(item => {
         return {
           label: item,
-          phone: ''
+          phone: '',
+          prefixCode: this.$route.query.phonePrefix && item == this.$route.query.paymentWay ? this.$route.query.phonePrefix : this.$t('prefix_tip')
         }
       });
 
@@ -167,13 +167,10 @@ export default {
     })
   },
   methods: {
-    getPhonePrefix() {
-      getPhonePrefix().then(res => {
-        this.phonePrefixs = res.data;
-        this.prefixCode = this.$t('prefix_tip');
-      })
-    },
     onPay() { // 提交支付,成功跳转到确认订单页面
+      if (this.payRadio == 100) {
+        return false;
+      }
       if (this.payRadio == 'balance') { // 余额支付
         if (this.$store.state.user.userInfo.payPassword == '') { // 未设置支付密码
           this.$router.push({
@@ -191,6 +188,10 @@ export default {
       let phone = this.list.filter(item => {
         return item.label === this.payRadio;
       })[0].phone;
+
+      let phonePrefix = this.list.filter(item => {
+        return item.label === this.payRadio;
+      })[0].prefixCode;
       
       if (phone.length == 0) {
         return false;
@@ -198,7 +199,7 @@ export default {
 
       // 订单支付
       if (this.$route.query.orderIds) {
-        this.payOrder({ payType: 2, network: this.payRadio, phone: phone, phonePrefix: this.prefixCode, sourceType: 4, orderIds: JSON.parse(this.$route.query.orderIds).orderIds });
+        this.payOrder({ payType: 2, network: this.payRadio, phone: phone, phonePrefix: phonePrefix, sourceType: 4, orderIds: JSON.parse(this.$route.query.orderIds).orderIds });
         return false;
       }
 
@@ -215,10 +216,6 @@ export default {
           }
         })
       })
-    },
-    onConfirm(event) { // 选择手机号前缀
-      this.prefixCode = event.phonePrefix;
-      this.showPicker = false;
     },
     leftClick() {
       if (this.$route.query.comfirmOrder) { // 从确认订单页面进来，返回的时候1个订单返回订单详情，2个及以上跳到订单列表
@@ -247,19 +244,19 @@ export default {
         return false;
       }
 
-      this.$dialog({
-        title: 'Are you sure want to leave',
-        message: 'This order will automatically be can-celed if not paid within 30 mins.',
-        confirmButtonText: 'Reconsider',
-        confirmButtonColor: '#42B7AE',
-        showCancelButton: true,
-        cancelButtonText: 'Leave',
-        cancelButtonColor: '#383838'
-      }).then(res => { // on confirm
+      // this.$dialog({
+      //   title: this.$t('are_you_sure_want_to_leave'),
+      //   message: this.$t('paid_wait_time_tip'),
+      //   confirmButtonText: this.$t('reconsider'),
+      //   confirmButtonColor: '#42B7AE',
+      //   showCancelButton: true,
+      //   cancelButtonText: this.$t('leave'),
+      //   cancelButtonColor: '#383838'
+      // }).then(() => { // on confirm
 
-      }).catch(() => { // on leave
+      // }).catch(() => { // on leave
         this.$router.go(-1);
-      })
+      // })
     },
     onInput() { // 密码按键时触发
       if (this.payPwd.length >= 5) {
@@ -298,16 +295,25 @@ export default {
           return false;
         }
         // 不是余额支付的话，需要先跳转到收银台
-        this.$router.push({
-          name: 'me-pay-wait',
-          query: {
-            network: this.payRadio,
-            phone: phone,
-            amount: this.$route.query.amount,
-            refNo: res.data.refNo,
-            orderId: JSON.stringify({orderId: res.data.orderIds})
-          }
-        })
+        if (res.data.refNo) { // 有流水号跳转到收银台
+          this.$router.push({
+            name: 'me-pay-wait',
+            query: {
+              network: this.payRadio,
+              phone: phone,
+              amount: this.$route.query.amount,
+              refNo: res.data.refNo,
+              orderId: JSON.stringify({orderId: res.data.orderIds})
+            }
+          })
+        } else { // 没有流水号直接成功
+          this.$router.push({ // 校验之后成功跳转到订单支付结果页面
+            name: 'cart-order-confirm',
+            query: {
+              orderId: JSON.stringify({orderId: res.data.orderIds})
+            }
+          })
+        }
       }).catch(error => {
         if (error.code == 11000) { // 支付失败
           if (this.payRadio === 'balance') { // 余额支付，直接跳转到支付订单结果页
@@ -315,7 +321,7 @@ export default {
               name: 'cart-order-confirm',
               query: {
                 orderId: JSON.stringify({orderId: error.data.orderIds}),
-                isSuccess: 0
+                isSuccess: 2
               }
             })
             return false;

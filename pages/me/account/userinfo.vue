@@ -57,6 +57,7 @@
         :cancel-button-text="$t('cancel')"
         @confirm="onBirthdayConfirm"
         @cancel="isPickerShow = false"
+        :min-date="minDate"
       />
       <!-- 性别选择 1男，2女，3双性，4保密-->
       <van-picker v-if="changeCurrentType === 'sex'" :default-index="$store.state.user.userInfo.sex - 1" show-toolbar :columns="$t('gander')" @confirm="onSexConfirm" @cancel="isPickerShow = false" />
@@ -88,7 +89,8 @@ export default {
         headPictureUrl: require('@/assets/images/icon/user-icon.png')
       },
       isPickerShow: false,
-      changeCurrentType: null
+      changeCurrentType: null,
+      minDate: new Date(1900, 0, 1)
     }
   },
   activated() {

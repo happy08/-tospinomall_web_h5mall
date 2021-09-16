@@ -1,12 +1,12 @@
 <template>
   <!-- 购物车-确认订单 -->
   <div class="v-percent-100 bg-grey pb-68 pb-46" v-if="detail.storeSaleInfoList">
-    <BmHeaderNav :left="{ isShow: true }" :fixed="true" :title="$t('confirm_the_order')" />
+    <BmHeaderNav :left="{ isShow: true, isEmit: true }" :fixed="true" :title="$t('confirm_the_order')" @leftClick="leftClick" />
 
     <div v-if="codeData.code == 0">
       <!-- 个人信息 -->
       <div class="bg-white">
-        <van-cell :label="address.completeAddress" is-link :to="{ name: 'me-address' }" title-class="fs-14 black" label-class="fs-14 light-grey" class="pt-20 pl-20 pr-14 pb-30" :border="false" >
+        <van-cell :label="address.completeAddress" is-link :to="{ name: 'me-address', query: { back: 'car-order-id', cartOrderId: this.$route.params.id, otherQuery: $route.query } }" title-class="fs-14 black" label-class="fs-14 light-grey" class="pt-20 pl-20 pr-14 pb-30" :border="false" >
           <template #title>
             {{ address.name }} {{ address.phonePrefix }}-{{ address.phone }}
           </template>
@@ -69,7 +69,7 @@
             
           </div>
           <!-- 留言 -->
-          <van-field class="plr-20 mt-12 mb-12" v-model="item.message" :label="$t('leave_message')" input-align="right" label-class="fs-14 color-black-85" label-width="2rem" />
+          <van-field class="plr-20 mt-12 mb-12" v-model="item.message" :label="$t('leave_message')" input-align="right" label-class="fs-14 w-auto  color-black-85" maxlength="255" />
         </div>
       </div>
 
@@ -89,7 +89,7 @@
           </template>
         </van-cell>
         <!-- 支付方式 -->
-        <van-cell :title="$t('pay_by')" :value="$t('online')" title-class="color-black-85" value-class="color-black-85" is-link @click="onChangePayment" />
+        <van-cell :title="$t('pay_by')" :value="paymentRadio == 2 ? $t('cash_on_delivery') : $t('online')" title-class="color-black-85" value-class="color-black-85" is-link @click="onChangePayment" />
       </van-cell-group>
 
       <!-- 提交 -->
@@ -124,25 +124,25 @@
 
     <!-- 支付方式 -->
     <van-popup v-model="paymentShow" position="bottom" closeable class="pb-20">
-      <h4 class="fs-18 black fw p-20 border-b">Method of payment</h4>
+      <h4 class="fs-18 black fw p-20 border-b">{{ $t('method_of_payment') }}</h4>
       <!-- 选择方式 -->
-      <van-radio-group v-model="paymentRadio">
-        <van-radio name="0" shape="square" class="iblock lh-12 plr-24 mt-30" >
+      <van-radio-group v-model="paymentRadio" class="mt-30 plr-24">
+        <van-radio name="1" shape="square" class="iblock lh-12 h-48" >
           <template #icon="props">
-            <BmButton :type="'info'" :class="{ 'round-8 h-30': true, 'unchecked-radio': !props.checked ? true: false }">Normal distribution</BmButton>
+            <BmButton :type="'info'" :class="{ 'round-8 h-30': true, 'unchecked-radio': !props.checked ? true: false }">{{ $t('online') }}</BmButton>
           </template>
-          <p class="light-grey fs-14 mt-10">Estimated time of delivery: 9:00-21:00 on The 21st[Monday]</p>
+          <!-- <p class="light-grey fs-14 mt-10">Estimated time of delivery: 9:00-21:00 on The 21st[Monday]</p> -->
         </van-radio>
-        <van-radio name="1" shape="square" class="iblock lh-12 plr-24 mt-30" >
+        <van-radio name="2" shape="square" class="iblock lh-12 pl-12 h-48" >
           <template #icon="props">
-            <BmButton :type="'info'" :class="{ 'round-8 h-30': true, 'unchecked-radio': !props.checked ? true: false }">international direct mail</BmButton>
+            <BmButton :type="'info'" :class="{ 'round-8 h-30': true, 'unchecked-radio': !props.checked ? true: false }">{{ $t('cash_on_delivery') }}</BmButton>
           </template>
-          <p class="light-grey fs-14 mt-10">Estimated time of delivery: 9:00-21:00 on The 21st[Monday]</p>
+          <!-- <p class="light-grey fs-14 mt-10">Estimated time of delivery: 9:00-21:00 on The 21st[Monday]</p> -->
         </van-radio>
       </van-radio-group>
 
-      <div class="mt-30 plr-20">
-        <BmButton class="round-8 w-100 h-48" @click="onChangePayment">{{ $t('confirm') }}</BmButton>
+      <div class="plr-20 mt-30">
+        <BmButton class="round-8 w-100 h-48" @click="onConfirmPayment">{{ $t('confirm') }}</BmButton>
       </div>
     </van-popup>
 
@@ -192,7 +192,7 @@ export default {
       address: {},
       deliveryList: [],
       paymentShow: false,
-      paymentRadio: '0',
+      paymentRadio: '1',
       confirmTransportModes: [], // 配送方式
       currentChangeModeStoreId: '',
       codeData: {
@@ -203,26 +203,33 @@ export default {
   },
   async activated() {
     // 获取默认地址
-    const addressData = await getCurrentDefaultAddress();
-    if (addressData.code != 0) return false;
+    if (this.$route.query.address) { // 如果是从地址管理页面回跳回来的
+      this.address = JSON.parse(this.$route.query.address);
+    } else {
+      const addressData = await getCurrentDefaultAddress();
+      if (addressData.code != 0) return false;
 
-    if (!addressData.data) { // 还没有设置地址
-      this.$dialog.confirm({
-        message: this.$t('go_set_address'),
-        confirmButtonText: this.$t('go_seeting'),
-        confirmButtonColor: '#42B7AE',
-        cancelButtonText: this.$t('cancel'),
-        cancelButtonColor: '#383838'
-      }).then(() => {
-        this.$router.push({
-          name: 'me-address'
+      if (!addressData.data) { // 还没有设置地址
+        this.$dialog.confirm({
+          message: this.$t('go_set_address'),
+          confirmButtonText: this.$t('go_seeting'),
+          confirmButtonColor: '#42B7AE',
+          cancelButtonText: this.$t('cancel'),
+          cancelButtonColor: '#383838'
+        }).then(() => {
+          this.$router.push({
+            name: 'me-address'
+          })
+        }).catch(() => {
+          this.$router.go(-1);
         })
-      }).catch(() => {
-        this.$router.go(-1);
-      })
-      return false;
+        return false;
+      }
+      this.address = {
+        ...addressData.data,
+        completeAddress: addressData.data.completeAddressDetail
+      };
     }
-    this.address = addressData.data;
 
     // 获取销售信息
     this.getSaleInfo();
@@ -277,9 +284,18 @@ export default {
         duration: 0
       });
 
-      submitOrder({ addressId: this.address.id, sourceType: 4, skuItems: skuItems, isCart: this.$route.params.isCart ? 1 : 0, leaveMessages: leaveMessages, confirmTransportModes: confirmTransportModes, orderToken: this.detail.orderToken }).then(res => {
+      submitOrder({ addressId: this.address.id, sourceType: 4, skuItems: skuItems, isCart: this.$route.params.isCart ? 1 : 0, leaveMessages: leaveMessages, confirmTransportModes: confirmTransportModes, orderToken: this.detail.orderToken, paymentType: this.paymentRadio }).then(res => {
         this.$toast.clear();
-
+        if (this.paymentRadio == 2) { // 货到付款
+          this.$router.push({ // 校验之后成功跳转到订单支付结果页面
+            name: 'cart-order-confirm',
+            query: {
+              orderId: JSON.stringify({orderId: res.data.orderIds}),
+              isSuccess: 2
+            }
+          })
+          return false;
+        }
         this.$router.push({
           name: 'me-pay-payment',
           query: {
@@ -337,7 +353,6 @@ export default {
         }
       });
       getSaleInfo({ skuItems: skuItems, addressId: this.address.id, confirmTransportModes: confirmTransportModes ? confirmTransportModes : [] }).then(res => {
-        console.log(res)
         this.codeData = {
           code: res.code,
           msg: res.msg
@@ -373,7 +388,7 @@ export default {
         this.confirmTransportModes = res.data.storeSaleInfoList.map(item => {
           return {
             storeId: item.storeId,
-            sendType:  Object.values(item.deliveryTypeSkuItemMap)[0].sendTypeEstimateVoList.length > 0 ? Object.values(item.deliveryTypeSkuItemMap)[0].sendTypeEstimateVoList.filter(sendItem => sendItem.sendType === Object.values(item.deliveryTypeSkuItemMap)[0].choiceSendType)[0].sendType : ''
+            sendType:  Object.values(item.deliveryTypeSkuItemMap)[0].sendTypeEstimateVoList.length > 0 ? Object.values(item.deliveryTypeSkuItemMap)[0].sendTypeEstimateVoList.filter(sendItem => sendItem.sendType === Object.values(item.deliveryTypeSkuItemMap)[0].choiceSendType)[0].sendType : 0
           }
         })
       }).catch(error => {
@@ -386,11 +401,23 @@ export default {
     },
     onChangePayment() { // 选择支付方式
       if (this.detail.isCashDelivery == 1) { // 支持货到付款，才可以选择付款方式
-        this.paymentShow = true
+        this.paymentShow = true;
       }
     },
     onConfirmPayment() { // 确认修改支付方式
       this.paymentShow = false;
+    },
+    leftClick() { // 回退页面
+      if (this.$route.query.address) { // 说明是从地址管理页面回退回来的
+        this.$router.go(-2);
+        return false;
+      }
+      console.log(window.history)
+      if(window.history.length < 2){ //解决部分机型拿不到history
+        this.$router.replace('/');
+      }else{
+        history.back();
+      }
     }
   },
 }
@@ -451,5 +478,8 @@ export default {
 }
 .flex-2{
   flex: 2!important;
+}
+.w-auto{
+  width: auto!important;
 }
 </style>

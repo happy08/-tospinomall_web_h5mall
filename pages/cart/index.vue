@@ -17,7 +17,7 @@
       </van-sticky>
     </div>
 
-    <PullRefresh :refreshing="refreshing" @refresh="onRefresh">
+    <PullRefresh :refreshing="refreshing" @refresh="onRefresh" class="custom-min-height-94">
       <!-- 空数据 -->
       <empty-status v-if="list.length === 0 && $store.state.user.authToken" :image="require('@/assets/images/empty/cart.png')" :description="$t('cart_empty_tip')" :btn="{ btn: $t('shop_now'), isEmit: true }" @emptyClick="goHome" />
       <!-- 数据列表展示 -->
@@ -36,7 +36,7 @@
                 :alt="'choose icon'"
               />
               <!-- 店铺 -->
-              <OrderStoreSingle class="pl-16 pr-30" @goStoreDetail="goStoreDetail(item.storeId)" :logo="item.storeLogo" :name="item.storeName" />
+              <OrderStoreSingle class="pl-16 pr-30" :logo="item.storeLogo" :name="item.storeName" @goStoreDetail="goStoreDetail(item)" />
             </div>
             <van-swipe-cell class="pl-12" v-for="singleItem in item.products" :key="'single-' + singleItem.id">
               <div class="flex vcenter">
@@ -45,7 +45,7 @@
                   <template #icon="props">
                     <div>
                       <BmImage
-                        :url="!singleItem.stock ? require('@/assets/images/icon/unchoose-icon.png') : props.checked ? require('@/assets/images/icon/choose-icon.png') : require('@/assets/images/icon/choose-default-icon.png')"
+                        :url="singleItem.status != 1 ? require('@/assets/images/icon/unchoose-icon.png') : props.checked ? require('@/assets/images/icon/choose-icon.png') : require('@/assets/images/icon/choose-default-icon.png')"
                         :width="'0.32rem'" 
                         :height="'0.32rem'"
                         :isLazy="false"
@@ -55,12 +55,10 @@
                     </div>
                   </template>
                 </van-checkbox>
-                <van-card
-                  class="bg-white pt-24 ml-12 plr-0 pb-0 lh-20 width-313 fm-helvetica"
-                >
+                <van-card class="bg-white pt-24 ml-12 plr-0 pb-0 lh-20 width-313 fm-helvetica">
                   <!-- 自定义图片 -->
                   <template #thumb>
-                    <SoldOut :isShow="singleItem.stock ? false: true" @onClick="goProductDetail(singleItem.productId)">
+                    <SoldOut :isShow="singleItem.status == 1 ? false: true" @onClick="goProductDetail(singleItem.productId)">
                       <BmImage
                         :url="singleItem.mainPictureUrl"
                         :width="'1.8rem'" 
@@ -87,7 +85,7 @@
                   </template>
                   <!-- 标签 -->
                   <template #tags>
-                    <div class="flex mt-8 vcenter hidden round-8 product-tag" v-if="singleItem.stock" @click="goProductDetail(singleItem.productId)">
+                    <div class="flex mt-8 vcenter hidden round-8 product-tag" v-if="singleItem.status == 1" @click="goProductDetail(singleItem.productId)">
                       <BmImage
                         :url="require('@/assets/images/icon/plane-icon.png')"
                         :width="'0.36rem'" 
@@ -102,14 +100,14 @@
                   </template>
                   <!-- 自定义数量,有库存显示数量，没有去看相似物品 -->
                   <template #num>
-                    <van-stepper v-if="singleItem.stock" v-model="singleItem.quantity" input-width="0.796rem" button-size="0.42rem" :integer="true" class="mt-6 custom-stepper" @change="onChangeNum(singleItem)" />
-                    <div v-else class="border fs-12 black round-8 ptb-4 plr-8 mt-6 lh-1" @click="goSimilar(singleItem.productId)">相似商品</div>
+                    <van-stepper v-if="singleItem.status == 1" v-model="singleItem.quantity" input-width="0.796rem" button-size="0.42rem" :integer="true" class="mt-6 custom-stepper" @change="onChangeNum(singleItem)" :max="singleItem.stock" />
+                    <div v-else class="border fs-12 black round-8 ptb-4 plr-8 mt-6 lh-1" @click="goSimilar(singleItem.productId)">{{ $t('similar_goods') }}</div>
                   </template>
                   <!-- 自定义价格 -->
                   <template #price>
                     <div class="mt-8" @click="goProductDetail(singleItem.productId)">
-                      <span class="red fs-16 fw" v-if="$store.state.rate">{{ $store.state.rate.currency }}{{ tabActive == 1 ? singleItem.productPrice : singleItem.addCartPrice }}</span>
-                      <span class="grey fs-12 ml-4 line-through" v-if="tabActive == 1">{{ $store.state.rate.currency }}{{ singleItem.addCartPrice }}</span>
+                      <span class="red fs-16 fw" v-if="$store.state.rate">{{ $store.state.rate.currency }}{{ singleItem.isPriceReduction == 1 ? singleItem.productPrice : singleItem.addCartPrice }}</span>
+                      <span class="grey fs-12 ml-4 line-through" v-if="singleItem.isPriceReduction == 1">{{ $store.state.rate.currency }}{{ singleItem.addCartPrice }}</span>
                     </div>
                   </template>
                 </van-card>
@@ -118,9 +116,9 @@
               <template #right>
                 <div class="v-100 flex">
                   <!-- 设置经常购买 -->
-                  <van-button v-if="singleItem.stock" @click="onOftenBy(singleItem)" square :text="singleItem.isOftenBuy ? $t('cancel_often_buy'): $t('often_buy2')" class="v-100 w-70 bg-f0 black plr-12 fs-14 border-no pre-wrap" />
+                  <van-button v-if="singleItem.status == 1" @click="onOftenBy(singleItem)" square :text="singleItem.isOftenBuy ? $t('cancel_often_buy'): $t('often_buy2')" class="v-100 w-70 bg-f0 black plr-12 fs-14 border-no pre-wrap" />
                   <!-- 移入收藏夹 -->
-                  <van-button v-if="singleItem.stock" @click="moveToFavorite(singleItem.productSku)" square :text="$t('goods_add_follow')" class="v-100 w-70 bg-yellow white plr-12 fs-14 border-no" />
+                  <van-button v-if="singleItem.status == 1" @click="moveToFavorite(singleItem.productSku)" square :text="$t('goods_add_follow')" class="v-100 w-70 bg-yellow white plr-12 fs-14 border-no" />
                   <!-- 删除订单 -->
                   <van-button square :text="$t('delete')" @click="onDelete(singleItem.productSku)" class="v-100 w-70 bg-red white plr-12 fs-14 border-no" />
                 </div>
@@ -190,7 +188,7 @@
       </div>
       <!-- 编辑 -->
       <div v-show="isEdit">
-        <BmButton :type="'info'" class="round-8 h-32 orange bg-white orange-border" @click="onMove">{{ $t('move_to_favorites') }}</BmButton>
+        <BmButton :type="'info'" class="round-8 h-32 orange bg-white orange-border" @click="onMove">{{ $t('goods_add_follow') }}</BmButton>
         <BmButton :type="'info'" class="round-8 h-32 orange bg-white orange-border ml-12" @click="onEmitDelete">{{ $t('delete') }}</BmButton>
       </div>
     </div>
@@ -269,25 +267,29 @@ export default {
     }
   },
   async fetch() {
-    // 获取商品推荐列表
-    const recommendData = await this.$api.getRecommend({type: 0, pageNum: this.pageNum, pageSize: this.pageSize});
-    if (recommendData.code != 0) return false;
-    this.recommendList = recommendData.data.items;
-    this.total = recommendData.data.total;
-    if (typeof this.$redrawVueMasonry === 'function') {
-      this.$redrawVueMasonry();
-    }
     // 未登录情况下不获取数据
     if (!this.$store.state.user.authToken) return false;
     this.listTotal = 0;
     this.result = [];
+    this.productResult = [];
     const listData = await this.$api.getCartList({ queryType: this.queryType });
     this.list = listData.data.storeList.map(storeItem => { // 购物车列表
+
       this.result = this.result.concat(storeItem.products.filter(selectItem => { // 是否选中
-        return selectItem.isSelect == 1;
+        return selectItem.isSelect == 1 && selectItem.status == 1;
       }).map(resultItem => {
         return resultItem.productSku;
       }));
+
+      this.productResult = this.productResult.concat(storeItem.products.filter(selectItem => { // 已选择商品
+        return selectItem.isSelect == 1 && selectItem.status == 1;
+      }).map(resultItem => {
+        return {
+          skuId: resultItem.productSku,
+          quantity: resultItem.quantity
+        };
+      }));
+
       let result = storeItem.products.filter(selectItem => { // 是否选中
         return selectItem.isSelect == 1;
       }).map(resultItem => {
@@ -298,7 +300,7 @@ export default {
         result: result,
         isAll: result.length == storeItem.products.length ? true : false, // 是否全选
         isEmpty: storeItem.products.filter(selectItem => { // 是否选中
-          return selectItem.stock == '' || selectItem.stock == 0;
+          return selectItem.status != 1;
         })
       }
     });
@@ -310,6 +312,21 @@ export default {
     this.totalAmount = listData.data.totalAmount;
     // this.onCountPrice();
     this.refreshing.isFresh = false;
+
+    // 获取商品推荐列表
+    const recommendData = await this.$api.getRecommend({type: 0, pageNum: this.pageNum, pageSize: this.pageSize});
+    if (recommendData.code != 0) return false;
+    this.recommendList = recommendData.data.items;
+    this.total = recommendData.data.total;
+    if (typeof this.$redrawVueMasonry === 'function') {
+      this.$redrawVueMasonry();
+    }
+    this.finished = false;
+    if (process.client) {
+      window.scrollTo({
+        top: 0
+      });
+    }
   },
   activated() {
     if (this.$store.state.user.authToken) { // 登录的情况下才请求数据
@@ -379,6 +396,9 @@ export default {
       this.checkAll(check.length === 0, check.length === 0); // 判断是否全部选中
     },
     onEmitDelete() { // 确认删除订单
+      if (this.productResult.length === 0) {
+        return false;
+      }
       this.$dialog.confirm({
         message: this.$t('delete_cart_tips', { replace_tip: this.productResult.length }),
         onfirmButtonText: this.$t('confirm'),
@@ -408,11 +428,17 @@ export default {
         name: 'login'
       })
     },
-    goStoreDetail(storeId) { // 跳转到店铺详情
+    goStoreDetail(storeInfo) { // 跳转到店铺详情
+      if (!storeInfo.sellerId || !storeInfo.storeId) {
+        return false;
+      }
       this.$router.push({
         name: 'cart-store-id',
         params: {
-          id: storeId
+          id: storeInfo.storeId
+        },
+        query: {
+          sellerId: storeInfo.sellerId
         }
       })
     },
@@ -447,7 +473,7 @@ export default {
       moveToFavorite({ skuIds: skuIds }).then(res => {
         if (res.code != 0) return false;
 
-        this.$toast(this.$t('move_to_favorites_success'))
+        this.$toast(this.$t('t_operation_successful'))
         this.$fetch();
         this.getCartCount();
       })
@@ -468,17 +494,18 @@ export default {
     onCountPrice() { // 计算购物车总价格
       let productResult = []; // 选中的数据集合
       let cancelResult = []; // 取消选中的数据集合
-      this.list.map(item => {
-        productResult = productResult.concat(item.result.map(resultItem => {
-          return {
-            skuId: item.products.filter(productItem => {
-              return productItem.id === resultItem;
-            })[0].productSku,
-            quantity: item.products.filter(productItem => {
-              return productItem.id === resultItem;
-            })[0].quantity
+      this.list.forEach(item => {
+        item.result.forEach(resultItem => {
+          let _filterResult = item.products.filter(productItem => {
+            return productItem.id === resultItem && productItem.status == 1;
+          });
+          if (_filterResult.length > 0) {
+            productResult.push({
+              skuId: _filterResult[0].productSku,
+              quantity: _filterResult[0].quantity
+            })
           }
-        }));
+        });
       })
       this.productResult = productResult; // 选中的商品
       // 判断是否有取消计算的商品
@@ -493,6 +520,9 @@ export default {
       }
     },
     onChangeNum(item) { // 修改商品数量
+      if (item.quantity == '' || parseFloat(item.quantity) < 1) {
+        return false;
+      }
       updateCartNum({ quantity: item.quantity, skuId: item.productSku }).then(res => {
         if (res.code != 0) return false;
         
@@ -500,6 +530,9 @@ export default {
       })
     },
     onMove() { // 移入收藏夹
+      if (this.productResult.length == 0) {
+        return false;
+      }
       let skuIds = this.productResult.map(item => {
         return item.skuId;
       })
@@ -604,7 +637,11 @@ export default {
       this.$api.getRecommend({ type: 0, pageNum: this.pageNum, pageSize: this.pageSize}).then(res => { // 搜索商品列表
         
         this.recommendList = this.recommendList.concat(res.data.items);
-        this.$redrawVueMasonry();
+        setTimeout(() => {
+          if (typeof this.$redrawVueMasonry === 'function') {
+            this.$redrawVueMasonry();
+          }
+        }, 50)
         this.total = res.data.total;
         
         // 加载状态结束
@@ -660,7 +697,7 @@ export default {
   border-color: #FF8248!important;
 }
 .custom-submit-bar{
-  bottom: 50px;
+  bottom: 49px;
   left: 0;
   right: 0;
   height: 56px;

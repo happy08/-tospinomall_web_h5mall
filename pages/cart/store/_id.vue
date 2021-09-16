@@ -1,60 +1,67 @@
 <template>
   <!-- 店铺-店铺首页 -->
   <div class="vh-100 bg-grey pb-70">
-    <div class="flex vcenter plr-12 bg-white h-46">
-      <van-icon name="arrow-left" color="#383838" size="18px" @click="leftBack"></van-icon>
-      <van-search
-        shape="round"
-        class="w-100 ml-20"
-        disabled
-        slot="header-title"
-        :placeholder="$t('search_our_products')"
-        @click="$router.push({ name: 'search' })"
-      />
-    </div>
-    <van-sticky offset-top="0">
-      <div class="flex between plr-12 bg-white ptb-10 vcenter">
-        <div class="flex vcenter">
-          <!-- 店铺详情 -->
-          <nuxt-link :to="{ name: 'cart-store-detail-id', params: { id: $route.params.id }, query: $route.query }" v-slot="{ navigate }" class="flex vcenter">
-            <div @click="navigate" role="link">
-              <!-- 店铺logo -->
-              <BmImage
-                :url="detailData.storeLogoUrl"
-                :width="'0.96rem'" 
-                :height="'0.96rem'"
-                :isLazy="false"
-                :isShow="true"
-                class="round-8 hidden"
-                :alt="detailData.storeName"
-              />
-              <!-- 店铺名、关注数 -->
-              <dl class="ml-12 fm-helvetica">
-                <dt class="fs-14 fw color-23">{{ detailData.storeName }}</dt>
-                <dd class="fs-12 light-grey mt-4">{{ $t('shop_follower', { replace_tip: detailData.collectNum }) }}</dd>
-              </dl>
-            </div>
-          </nuxt-link>
+    <div :class="{'store-container-headr': true}" :style="storeBgdUrl != '' ? 'background-image: url(' + storeBgdUrl + ')' : ''">
+      <div :class="{'bg-black-65': scrollTop < 40}">
+        <div class="flex vcenter plr-12 h-46">
+          <van-icon name="arrow-left" color="#fff" size="18px" @click="leftBack"></van-icon>
+          <van-search
+            shape="round"
+            class="w-100 ml-20"
+            disabled
+            slot="header-title"
+            :placeholder="$t('search_our_products')"
+            @click="$router.replace({ name: 'search', query: { shopId: $route.params.id, back: 'cart-store-id', backId: $route.params.id, backQuery: $route.query } })"
+          />
         </div>
-        
-        
-        <!-- 取消订阅 -->
-        <van-button  v-if="detailData && detailData.isAttention == 1" color="#FC2B31" class="round-8 h-26 plr-8" @click="onSubscribe(false)">{{ $t('unsubscribe') }}</van-button>
-        <!-- 订阅 -->
-        <van-button plain color="#FC2B31" class="round-8 h-26 plr-8" @click="onSubscribe(true)" v-else>{{ $t('add_subscribe') }}</van-button>
-        
-      </div>
-      <van-tabs v-if="tabbarActive == 1" sticky swipeable animated color="#42B7AE" class="customs-van-tabs bg-white plr-20" v-model="productTabActive" line-height="0" line-width="0" :before-change="beforeChange">
-        <van-tab v-for="tabItem, tabIndex in $t('store_product_tab')" :key="tabIndex">
-          <template #title="props" :class="{'flex vcenter': true}">
-            <div :class="{'flex vcenter': true}">
-              {{ tabItem }} {{ props }}
-              <BmIcon v-if="tabIndex === 2" :name="priceSortType == 0 ? 'sort-default': priceSortType == 1 ? 'sort-up' : 'sort-down'" :width="'0.4rem'" :height="'0.4rem'" />
+        <van-sticky offset-top="0" @scroll="onScroll">
+          <div :class="{'store-container-headr': scrollTop > 40 && storeBgdUrl != ''}" :style="scrollTop > 40 && storeBgdUrl != '' ? 'background-image: url(' + storeBgdUrl + ')' : ''">
+            <div :class="{'w-100 flex between plr-12 ptb-10 vcenter': true, 'bg-black-65': scrollTop > 40 && storeBgdUrl != ''}">
+              <div class="flex vcenter w-100">
+                <!-- 店铺详情 -->
+                <nuxt-link :to="{ name: 'cart-store-detail-id', params: { id: $route.params.id }, query: $route.query }" v-slot="{ navigate }" class="flex vcenter w-100">
+                  <div @click="navigate" role="link">
+                    <!-- 店铺logo -->
+                    <BmImage
+                      :url="detailData.storeLogoUrl"
+                      :width="'0.96rem'" 
+                      :height="'0.96rem'"
+                      :isLazy="false"
+                      :isShow="true"
+                      class="round-8 hidden"
+                      :errorUrl="require('@/assets/images/store-bgd.png')"
+                      :alt="detailData.storeName"
+                    />
+                    <!-- 店铺名、关注数 -->
+                    <dl class="ml-12 fm-helvetica white">
+                      <dt class="fs-14 fw">{{ detailData.storeName }}</dt>
+                      <dd class="fs-12 mt-4">{{ $t('shop_follower', { replace_tip: detailData.collectNum }) }}</dd>
+                    </dl>
+                  </div>
+                </nuxt-link>
+              </div>
+
+              <!-- 取消订阅 -->
+              <van-button  v-if="detailData && detailData.isAttention == 1" color="#FC2B31" plain class="round-8 h-26 plr-8 ws-nowrap bg-transparent" @click="onSubscribe(false)">{{ $t('followed') }}</van-button>
+              <!-- 订阅 -->
+              <van-button  color="#FC2B31" class="round-8 h-26 plr-8 ws-nowrap" @click="onSubscribe(true)" v-else>{{ $t('add_subscribe') }}</van-button>
+              
             </div>
-          </template>
-        </van-tab>
-      </van-tabs>
-    </van-sticky>
+          </div>
+          <van-tabs v-if="tabbarActive == 1" sticky swipeable animated color="#42B7AE" class="customs-van-tabs bg-white plr-20" v-model="productTabActive" line-height="0" line-width="0" :before-change="beforeChange">
+            <van-tab v-for="tabItem, tabIndex in $t('store_product_tab')" :key="tabIndex">
+              <template #title="props" :class="{'flex vcenter': true}">
+                <div :class="{'flex vcenter': true}">
+                  {{ tabItem }} {{ props }}
+                  <BmIcon v-if="tabIndex === 2" :name="priceSortType == 0 ? 'sort-default': priceSortType == 1 ? 'sort-up' : 'sort-down'" :width="'0.4rem'" :height="'0.4rem'" />
+                </div>
+              </template>
+            </van-tab>
+          </van-tabs>
+        </van-sticky>
+      </div>
+      
+    </div>
     
 
     <!-- 导航栏 -->
@@ -149,7 +156,7 @@
               :alt="moduleItem.moduleTitle"
             />
             <!-- 图片坐标 -->
-            <div v-for="hotItem, hotIndex in moduleItem.componentDetails" :key="'hot-picture-' + hotIndex" class="bg-white hot-container__position" :ref="'hotPosition' + moduleIndex + hotIndex" :style="hotStyle(hotItem, 'hotPosition' + moduleIndex + hotIndex, 'hotContainer' + moduleIndex)" @click="onHotDetail(hotItem)"></div>
+            <div v-for="hotItem, hotIndex in moduleItem.componentDetails" :key="'hot-picture-' + hotIndex" class="hot-container__position" :ref="'hotPosition' + moduleIndex + hotIndex" :style="hotStyle(hotItem, 'hotPosition' + moduleIndex + hotIndex, 'hotContainer' + moduleIndex)" @click="onHotDetail(hotItem)"></div>
           </div>
         </template>
         
@@ -209,6 +216,7 @@
         finished-text=""
         @load="onLoad"
         v-else
+        class="mt-48"
       >
         <nuxt-link
           class="flex bg-white p-20"
@@ -227,7 +235,7 @@
           <!-- 商品详情 -->
           <div class="ml-14 w-230">
             <h4 class="hidden-2 black fs-14 lh-20 fm-helvetica">{{ productItem.productTitle }}</h4>
-            <van-rate disabled class="mt-10" v-model="productItem.starLevel" allow-half size="0.24rem" color="#F1520D" void-color="#DDDDDD" void-icon="star" />
+            <van-rate disabled class="mt-10" v-model="productItem.starLevel" size="0.24rem" color="#F1520D" void-color="#DDDDDD" void-icon="star" />
             <div class="flex between mt-10">
               <div>
                 <span class="red fs-18 fw"><span class="fm-menlo">{{ $store.state.rate.currency }}</span><span>{{ productItem.minPrice }}</span></span>
@@ -332,29 +340,29 @@ export default {
       total: 0,
       priceSortType: 0, // 价格筛选类型 0 默认未选中，1选中升序，2选中降序
       sort: {},
-      isTabbarShow: false
+      isTabbarShow: false,
+      storeBgdUrl: '',
+      scrollTop: 0
     }
   },
   async fetch() {
     // 获取店铺详情
-    const detailData = await this.$api.getStoreInfo({ sellerId: this.$route.query.sellerId, storeId: this.$route.params.id });
+    let _detailParams = {};
+    if (this.$store.state.user.userInfo) {
+      _detailParams.userId = this.$store.state.user.userInfo.id
+    }
+    const detailData = await this.$api.getStoreInfo({ sellerId: this.$route.query.sellerId, storeId: this.$route.params.id, ..._detailParams });
     if (detailData.code != 0) return false;
     this.detailData = {
       ...detailData.data,
       collectNum: detailData.data.collectNum == '' ? 0 : detailData.data.collectNum
     };
-    // 店铺组件数据,店铺有装修才可看
-    if (Boolean(this.$route.query.hasAdornment) == true) {
-      const moduleData = await this.$api.getStoreIndex({shopId: this.$route.params.id});
-      if (moduleData.code != 0) return false;
-      this.moduleData = moduleData.data.components;
-    }
+    
     this.sort = {
       shopId: this.$route.params.id, pageIndex: this.pageIndex, pageSize: this.pageSize
     }
     // 商品列表数据
     const listData = await this.$api.getProductSearch(this.sort);
-    if (listData.code != 0) return false;
     this.total = listData.data.total;
     this.productList = listData.data.items.map(item => {
       return {
@@ -362,13 +370,32 @@ export default {
         starLevel: parseFloat(item.starLevel)
       }
     });
+
+    // 店铺组件数据,店铺有装修才可看
+    const moduleData = await this.$api.getStoreIndex({shopId: this.$route.params.id});
+    if (!moduleData.data) {
+      this.tabbarActive = 1;
+      this.isTabbarShow = false;
+      return false;
+    };
+    this.moduleData = moduleData.data.components;
+    // 判断是不是有店铺背景图
+    let storeBgdArr = moduleData.data.components.filter(item => {
+      return item.type == 7;
+    })
+    this.storeBgdUrl = storeBgdArr.length > 0 ? storeBgdArr[0].imageUrl : '';
+    // 判断店铺有没有装修
+    const store_components = moduleData.data.components.filter(item => {
+      return item.type == 2;
+    })
+    this.tabbarActive = store_components.length > 1 ? 0 : 1;
+    this.isTabbarShow = store_components.length > 1 ? true: false;
   },
   activated() {
-    this.tabbarActive = 0;
     this.isTabbarShow = false;
-    if (this.$route.query.tabbarActive) this.tabbarActive = this.$route.query.tabbarActive;
-    if (Boolean(this.$route.query.hasAdornment) == false) this.tabbarActive = 1;
-    this.isTabbarShow = Boolean(this.$route.query.hasAdornment);
+    if (this.$route.query.tabbarActive) this.tabbarActive = parseFloat(this.$route.query.tabbarActive);
+    // if (String(this.$route.query.hasAdornment) == 'false') this.tabbarActive = 1;
+    // this.isTabbarShow = String(this.$route.query.hasAdornment) == 'false' ? false : true;
     this.$fetch();
   },
   methods: {
@@ -380,9 +407,19 @@ export default {
         return false;
       }
 
+      let _detailParams = {};
+      if (this.$store.state.user.userInfo) {
+        _detailParams.userId = this.$store.state.user.userInfo.id
+      }
+
       let _axios = flag ? storeFollow({ sellerId: this.$route.query.sellerId, storeId: this.$route.params.id }) : storeCancelFollow([this.$route.params.id]);
       _axios.then(() => {
-        this.$fetch();
+        this.$api.getStoreInfo({ sellerId: this.$route.query.sellerId, storeId: this.$route.params.id, ..._detailParams }).then(res => {
+          this.detailData = {
+            ...res.data,
+            collectNum: res.data.collectNum == '' ? 0 : res.data.collectNum
+          };
+        })
       })
     },
     leftBack() { // 返回上一页
@@ -490,7 +527,7 @@ export default {
       this.finished = false;
       if (index == 0) { // 推荐列表
         this.sort = {
-          shopId: this.$route.params.id, pageIndex: this.pageIndex, pageSize: this.pageSize, recommend: 1
+          shopId: this.$route.params.id, pageIndex: this.pageIndex, pageSize: this.pageSize
         }
       }
       if (index == 1) { // 销量列表
@@ -533,6 +570,9 @@ export default {
 
         this.productList = list;
       });
+    },
+    onScroll(scrollTop) {
+      this.scrollTop = scrollTop.scrollTop;
     }
   },
 }
@@ -571,5 +611,18 @@ export default {
 }
 .pb-70{
   padding-bottom: 70px;
+}
+.store-container-headr{
+  background-position: center bottom;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  width: 100%;
+  height: 114px;
+}
+.mt-48{
+  margin-top: 48px;
+}
+.bg-black-65{
+  background-color: rgba(0, 0, 0, .65);
 }
 </style>

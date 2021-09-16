@@ -78,9 +78,9 @@ export function checkCurrentCode(data) {
 }
 
 /**
- * 获取语言列表-查询字典接口
+ * 查询字典接口
  */
-export function getLangList(type = 'sys_language_type') {
+export function getDictList(type) {
   return request({
     // url: `/admin/dict/type/${type}`,
     url: `/basics/dict/type/${type}`,
@@ -120,5 +120,18 @@ export function getService(params) {
     url: '/basics/operateSinglePage/findByQuery',
     method: 'get',
     params
+  })
+}
+
+/**
+ * 商品详情获取分享内容
+ */
+export function getShareDetail(goodsId) {
+  return request({
+    url: '/basics/mmsoperateenjoy/findByGoodsId',
+    method: 'post',
+    data: qs.stringify({
+      goodsId: goodsId
+    })
   })
 }

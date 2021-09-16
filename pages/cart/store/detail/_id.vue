@@ -14,6 +14,7 @@
           :isLazy="false"
           :isShow="true"
           class="round-8 hidden"
+          :errorUrl="require('@/assets/images/store-bgd.png')"
           :alt="detailData.storeName"
         />
         <!-- 店铺名、关注数 -->
@@ -33,7 +34,7 @@
       <!-- 店铺星级 -->
       <!-- <van-cell title="Star Shop" title-class="black fs-14" class="p-20">
         <template #default>
-          <van-rate class="mt-10" v-model="rate" readonly allow-half size="0.24rem" color="#F7B500" void-color="#DDDDDD" void-icon="star" />
+          <van-rate class="mt-10" v-model="rate" readonly size="0.24rem" color="#F7B500" void-color="#DDDDDD" void-icon="star" />
         </template>
       </van-cell> -->
       <!-- 用户评价 -->
@@ -46,13 +47,9 @@
 
     <van-cell-group class="mt-20" :border="false">
       <!-- 开店时间 -->
-      <van-cell :title="$t('open_a_shop_time')" title-class="black fs-14" class="p-20" :value="detailData.createTime" value-class="light-grey" />
+      <van-cell :title="$t('open_a_shop_time')" title-class="black fs-14 f-auto" class="p-20" :value="detailData.createTime" value-class="light-grey f-auto max-w-70" />
       <!-- 品牌销售 -->
-      <van-cell :title="$t('sales_of_the_brand')" title-class="black fs-14" class="p-20" value-class="light-grey">
-        <template #default>
-          <span v-for="(item, index) in detailData.brandNameList" :key="index">{{ item }}</span>
-        </template>
-      </van-cell>
+      <van-cell :title="$t('sales_of_the_brand')" title-class="black fs-14 f-auto" class="p-20" value-class="light-grey f-auto max-w-70" :value="detailData.brandNameLabelList" />
     </van-cell-group>
 
     <!-- 所有商品 -->
@@ -82,13 +79,21 @@ export default {
     }
   },
   async fetch() {
-    const detailData = await this.$api.getStoreInfo({ sellerId: this.$route.query.sellerId, storeId: this.$route.params.id });
-    if (detailData.code != 0) return false;
+    let _detailParams = {};
+    if (this.$store.state.user.userInfo) {
+      _detailParams.userId = this.$store.state.user.userInfo.id;
+    }
+    const detailData = await this.$api.getStoreInfo({ sellerId: this.$route.query.sellerId, storeId: this.$route.params.id, ..._detailParams });
+    if (!detailData.data) return false;
 
     this.detailData = {
       ...detailData.data,
-      collectNum: detailData.data.collectNum
+      collectNum: detailData.data.collectNum,
+      brandNameLabelList: detailData.data.brandNameList.join('、')
     };
+  },
+  activated() {
+    this.$fetch();
   },
   methods: {
     onSubscribe(flag) { // 订阅/取消订阅 flag: true 订阅 false 取消订阅
@@ -114,5 +119,12 @@ export default {
 }
 .max-w-160{
   max-width: 160px;
+}
+.f-auto{
+  flex: auto!important;
+  width: fit-content;
+}
+.max-w-70{
+  max-width: 70%!important;
 }
 </style>

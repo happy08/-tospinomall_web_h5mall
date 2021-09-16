@@ -458,7 +458,7 @@ svg {
   flex-direction: column;
 }
 .between {
-  justify-content: space-between;
+  justify-content: space-between!important;
 }
 .arround {
   justify-content: space-around;
@@ -583,6 +583,9 @@ svg {
 .bg-grey-f5 {
   background-color: #F5F5F5!important;
 }
+.bg-transparent {
+  background-color: transparent!important;
+}
 
 .border {
   border: solid 1px #E5E5E5!important;
@@ -664,7 +667,11 @@ svg {
   text-overflow: ellipsis;
   display: -webkit-box;
   -webkit-box-orient: vertical;
+  word-break: break-word;
   -webkit-line-clamp: 2;
+}
+.ws-nowrap{
+  white-space: nowrap;
 }
 // 删除线
 .line-through {
@@ -722,8 +729,9 @@ svg {
 
 // 按钮样式
 .button-container{
+  height: 32px!important;
   &.small{
-    padding: 0 14px;
+    padding: 0 20px;
   }
 }
 
@@ -829,16 +837,19 @@ html, body, #__nuxt, #__layout{
   // max-width: 750PX!important;
 }
 .custom-min-height-46{
-  min-height: calc(100vh - 46px - 30px - 34px - 44px - 20px);
+  min-height: calc(100vh - 46px - 30px - 44px);
 }
 .custom-min-height-66{
-  min-height: calc(100vh - 66px - 30px - 34px - 44px);
+  min-height: calc(100vh - 66px - 30px - 44px);
+}
+.custom-min-height-94{
+  min-height: calc(100vh - 94px - 30px - 44px);
 }
 .custom-min-height-154{
-  min-height: calc(100vh - 154px - 30px - 34px - 44px);
+  min-height: calc(100vh - 154px - 30px - 44px);
 }
 .custom-min-height-128{
-  min-height: calc(100vh - 128px - 30px - 34px - 44px);
+  min-height: calc(100vh - 128px - 30px - 44px);
 }
 
 // 适配

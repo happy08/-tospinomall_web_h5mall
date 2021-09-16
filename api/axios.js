@@ -23,7 +23,7 @@ export default function({ $axios, app, redirect, store }) {
     } else {
       config.headers['Content-Type'] = config.headers['Content-Type'] || 'application/json';
     }
-    console.log(22222222222222222)
+    console.log(2222222222)
     // 登录之后要重新复值token
     // if (store.state.user.authToken && config.url != '/auth/oauth/token?grant_type=refresh_token') {
     //   config.headers['Authorization'] = `${store.state.user.authToken}`;
@@ -60,8 +60,12 @@ export default function({ $axios, app, redirect, store }) {
     if (res) {
       if (res.data.code === 0) {
         return res.data; //Promise.resolve(res.data);
-      } else if (res.data.code === 10401) { // 用户凭证过期跳转到登录页面
+      } else if (res.data.code == 10401) { // 用户凭证过期跳转到登录页面
+        console.log('响应成功')
         store.commit('user/SET_TOKEN', null);
+        redirect({
+          name: 'login'
+        })
       } else {
         if (res.data.msg) {
           console.log(res.data.msg)
@@ -78,10 +82,12 @@ export default function({ $axios, app, redirect, store }) {
   $axios.onError(error => {
     if (error.code > 0) {
       if (error.code === 10401) { // 用户凭证过期跳转到登录页面
+        console.log('响应失败')
+        console.log(error)
         store.commit('user/SET_TOKEN', null);
-        // redirect({
-        //   name: 'login'
-        // })
+        redirect({
+          name: 'login'
+        })
       }
       tip(error.msg);
       

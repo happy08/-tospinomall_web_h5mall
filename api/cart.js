@@ -153,3 +153,17 @@ export function modifySku(data) {
     }
   })
 }
+
+/**
+ * 取消关注商品
+ */
+export function cancelAttentionProduct(goodIdList) {
+  return request({
+    url: '/admin/buyerAttention/cancel/attention/good',
+    method: 'post',
+    data: goodIdList,
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+}

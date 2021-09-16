@@ -24,7 +24,7 @@
         <div class="tc login-page__container">
           <!-- 验证码 -->
           <van-field class="field-container" v-model="account" :placeholder="$t('phone_number_or_email')" />
-          <van-field class="field-container" v-model="password" type="password" :placeholder="$t('your_password_6_20')" />
+          <van-field class="field-container" v-model="password" type="password" :placeholder="$t('your_password_6_20')" maxlength="20" />
           <!-- 忘记密码 -->
           <nuxt-link :to="{ name: 'register', query: { type: 'forgot' } }" class="fs-14 tr block mt-12 lh-20 login-page__container--forgot">{{ $t('forgot_password') }}</nuxt-link>
           <!-- 登录 -->
@@ -35,7 +35,7 @@
             @click="login">
             {{ $t('log_in') }}
           </van-button>
-          <nuxt-link class="green iblock mt-10 lh-20 fs-14 login-page__container--register" :to="{ name: 'register' }">立即注册</nuxt-link>
+          <nuxt-link class="green iblock mt-10 lh-20 fs-14 login-page__container--register" :to="{ name: 'register' }">{{ $t('sign_up_now') }}</nuxt-link>
         </div>
       </div>
 
@@ -135,7 +135,7 @@ export default {
         // 获取消息信息
         this.$store.commit('user/SET_WEBSOCKET', res.data.user_info.passUrl);
         // 当前登录账号
-        this.$store.commit('user/SET_ACCOUNT', this.account);
+        this.$store.commit('user/SET_ACCOUNT', { email: res.data.user_info.email, phone: res.data.user_info.phone });
         this.$toast.clear();
         // 登录成功跳转到首页
         setTimeout(() => {
