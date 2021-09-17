@@ -7,6 +7,7 @@ import zhCNLocale from 'vant/lib/locale/lang/zh-CN';
 // import frLocale from 'vant/lib/locale/lang/fr-FR'; // 法语
 // import esLocale from 'vant/lib/locale/lang/es-ES'; // 西班牙语
 import viLocale from './locales/vant-vi'; // vant ui 越南语
+import ptLocale from './locales/vant-pt'; // vant ui 葡萄牙语
 import en from './locales/en.js';
 import zhCN from './locales/zh-CN.js';
 // import zhTW from './locales/zh-TW.js'; // 中文繁体
@@ -14,6 +15,7 @@ import zhCN from './locales/zh-CN.js';
 // import es from './locales/es.js'; // 西班牙语
 // import ms from './locales/ms.js'; // 马来西亚语
 import vi from './locales/vi.js';
+import pt from './locales/pt.js';
 
 Vue.use(VueI18n);
 
@@ -34,6 +36,8 @@ export function vantLocales(lang) {
     Locale.use(lang, esLocale);
   } */else if (lang === 'vi') {
     Locale.use(lang, viLocale);
+  } else if (lang === 'pt') {
+    Locale.use(lang, ptLocale);
   }
 }
 
@@ -80,6 +84,10 @@ export default async ({ app, store }) => {
       'vi': {
         ...viLocale,
         ...vi
+      },
+      'pt': {
+        ...ptLocale,
+        ...pt
       }
     }
   });
