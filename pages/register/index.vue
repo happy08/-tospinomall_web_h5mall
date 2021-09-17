@@ -60,7 +60,7 @@
         <van-button class="mt-60 btn_h48 fw fs-16 w-100" color="linear-gradient(270deg, #3EB5AE 0%, #70CEB6 100%)" :disabled="(isType == 'email' && account_email.length === 0) || (isType != 'email' && account.length === 0) || code.length === 0" @click="jumpPwd">
           {{ $t('next') }}
         </van-button> 
-        <van-checkbox v-model="checked" class="mt-20">
+        <van-checkbox v-model="checked" class="mt-20" v-if="!$route.query.type && $route.query.type != 'forgot'">
           <template #icon="props">
             <BmImage
               :url="props.checked ? require('@/assets/images/icon/choose-icon.png') : require('@/assets/images/icon/choose-default-icon.png')"
@@ -232,7 +232,7 @@ export default {
       })
     },
     jumpPwd() { // 验证手机/邮箱号码，成功后跳转到设置密码页面 userType: 'buyer' 买家 seller 卖家 operator 运营
-      if (!this.checked) {
+      if (!this.checked && !this.$route.query.type) {
         this.$toast({
           message: this.$t('please_read_checked')
         })

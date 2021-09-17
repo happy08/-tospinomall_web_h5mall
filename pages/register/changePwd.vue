@@ -70,6 +70,12 @@ export default {
       this[key] = val;
     },
     submit() { // 忘记密码 提交新密码
+      const reg = /^(?![\d]+$)(?![a-zA-Z]+$)(?![^\da-zA-Z]+$)(?=[\w!@~#\$%\^&\*\(\)\-\+=\{\}\[\]\|\\,\.<>\?/:;"']+$).{6,20}$/;
+
+      if (!reg.test(this.confirmPwd) || !reg.test(this.pwd)) {
+        this.$toast(this.$t('t_format_error'));
+        return false;
+      }
       if (this.pwd !== this.confirmPwd) {
         this.$Toast('密码不相等');
         return false;
