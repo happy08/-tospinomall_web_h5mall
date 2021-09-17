@@ -1,7 +1,7 @@
 <template>
   <!-- 店铺-店铺首页 -->
   <div class="vh-100 bg-grey pb-70">
-    <div :class="{'store-container-headr': true}" :style="storeBgdUrl != '' ? 'background-image: url(' + storeBgdUrl + ')' : ''">
+    <div :class="{'store-container-headr': true, 'h-68': scrollTop > 40}" :style="storeBgdUrl != '' ? 'background-image: url(' + storeBgdUrl + ')' : ''">
       <div :class="{'bg-black-65': scrollTop < 40}">
         <div class="flex vcenter plr-12 h-46">
           <van-icon name="arrow-left" color="#fff" size="18px" @click="leftBack"></van-icon>
@@ -15,7 +15,7 @@
           />
         </div>
         <van-sticky offset-top="0" @scroll="onScroll">
-          <div :class="{'store-container-headr': scrollTop > 40 && storeBgdUrl != ''}" :style="scrollTop > 40 && storeBgdUrl != '' ? 'background-image: url(' + storeBgdUrl + ')' : ''">
+          <div :class="{'store-container-headr': scrollTop > 40 && storeBgdUrl != '', 'h-68': scrollTop > 40}" :style="scrollTop > 40 && storeBgdUrl != '' ? 'background-image: url(' + storeBgdUrl + ')' : ''">
             <div :class="{'w-100 flex between plr-12 ptb-10 vcenter': true, 'bg-black-65': scrollTop > 40 && storeBgdUrl != ''}">
               <div class="flex vcenter w-100">
                 <!-- 店铺详情 -->
@@ -618,6 +618,9 @@ export default {
   background-repeat: no-repeat;
   width: 100%;
   height: 114px;
+}
+.h-68{
+  height: 68px;
 }
 .mt-48{
   margin-top: 48px;
