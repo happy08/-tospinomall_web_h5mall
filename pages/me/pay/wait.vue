@@ -75,13 +75,11 @@ export default {
           }
         })
       } else {
-        callBackRecharge(this.$route.query.refNo).then(res => {
-          if (res.code != 0) return false;
-
+        // callBackRecharge(this.$route.query.refNo).then(res => {
           this.$router.replace({
             name: 'me-wallet'
           })
-        })
+        // })
       }
     },
     onChangePayMethod() { // 修改支付方式时, 要先取消该订单再返回上一级
