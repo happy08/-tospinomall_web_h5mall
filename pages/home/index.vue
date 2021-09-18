@@ -408,14 +408,12 @@ export default {
   },
   methods: {
     stickyScroll(scrollObj) { // 吸顶滚动事件
-      if (scrollObj.isFixed) {
-        // 滚动时格式化样式 sticky-scroll
-        if (scrollObj.scrollTop > 2) {
-          this.$refs.headerStickyContainer.$el.classList.add('sticky-scroll')
-        }
-        if (scrollObj.scrollTop < 50) {
-          this.$refs.headerStickyContainer.$el.classList.remove('sticky-scroll');
-        }
+      // 滚动时格式化样式 sticky-scroll
+      if (scrollObj.scrollTop > 2) {
+        this.$refs.headerStickyContainer.$el.classList.add('sticky-scroll')
+      }
+      if (scrollObj.scrollTop < 50) {
+        this.$refs.headerStickyContainer.$el.classList.remove('sticky-scroll');
       }
     },
     getSearchList(name, title) { // 获取搜索商品列表

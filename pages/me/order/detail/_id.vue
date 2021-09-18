@@ -31,9 +31,9 @@
           {{ $t('completed') }}
         </div> -->
         <!-- 已取消 -->
-        <div class="fs-14 white mt-14 pb-40 plr-30 tc lh-20" v-else-if="detail.status == 5">
+        <!-- <div class="fs-14 white mt-14 pb-40 plr-30 tc lh-20" v-else-if="detail.status == 5">
           {{ $t('cancelled') }}
-        </div>
+        </div> -->
         <!-- 超时取消 -->
         <div class="fs-14 white mt-14 pb-40 plr-30 tc lh-20" v-else-if="detail.status == 6">
           {{ $t('time_out_cancel') }}
@@ -411,16 +411,14 @@ export default {
       })
     },
     stickyScroll(scrollObj) { // 吸顶滚动事件
-      if (scrollObj.isFixed) {
-        // 滚动时格式化样式 head-sticky-scroll
-        if (scrollObj.scrollTop > 2) {
-          this.$refs.headerStickyContainer.$el.classList.add('head-sticky-scroll');
-          this.isScrollShow = false;
-        }
-        if (scrollObj.scrollTop < 90) {
-          this.$refs.headerStickyContainer.$el.classList.remove('head-sticky-scroll');
-          this.isScrollShow = true;
-        }
+      // 滚动时格式化样式 head-sticky-scroll
+      if (scrollObj.scrollTop > 2) {
+        this.$refs.headerStickyContainer.$el.classList.add('head-sticky-scroll');
+        this.isScrollShow = false;
+      }
+      if (scrollObj.scrollTop < 90) {
+        this.$refs.headerStickyContainer.$el.classList.remove('head-sticky-scroll');
+        this.isScrollShow = true;
       }
     },
     onBuy(orderItem) { // 再次购买,跳转到确认订单页面
