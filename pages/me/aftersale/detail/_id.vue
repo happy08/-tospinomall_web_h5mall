@@ -434,23 +434,18 @@ export default {
         };
         this.orderList = res.data.orderReturnItems;
         // 状态: 1->商家/运营待处理 2->待自行寄回/待上门取件 3商家/运营待收货 4->待退款 5->退款成功 6->关闭售后单 7->商家/运营驳回申请 8->商家/运营拒收退货商品
-        if (res.data.returnType == 0) { // 退款
-          if (res.data.involvedStatus == 0) {
-            if (res.data.status == 5) {
-              this.stepActive = 2;
-            } else {
-              this.stepActive = 1;
-            }
+        if (res.data.involvedStatus == 0) {
+          if (res.data.returnType == 0) { // 退款
+            this.stepActive = res.data.status == 5 ? 2 : 1;
             this.stepList = this.$t('process_step');
-          } else { // 申请平台介入
-            this.stepList = this.$t('process_platform_step');
-            this.stepActive = res.data.involvedStatus == 1 ? 1 : res.data.involvedStatus == 2 ? 2: 2;
+          } else if (res.data.returnType == 1) { // 退货退款
+            this.stepActive = res.data.status == 1 ? 1 : res.data.status == 2 ? 2 : (res.data.status == 4 || res.data.status == 3) ? 3 : res.data.status == 5 ? 4 : 0;
+            this.stepList = res.data.orderType == 1 ? this.$t('process_return_shop_step') : this.$t('process_plantform_return_shop_step');
           }
-        } else if (res.data.returnType == 1) { // 退货退款
-          this.stepActive = res.data.status == 1 ? 1 : res.data.status == 2 ? 2 : (res.data.status == 4 || res.data.status == 3) ? 3 : res.data.status == 5 ? 4 : 0;
-          this.stepList = res.data.orderType == 1 ? this.$t('process_return_shop_step') : this.$t('process_plantform_return_shop_step');
+        } else { // 申请平台介入
+          this.stepList = this.$t('process_platform_step');
+          this.stepActive = res.data.involvedStatus == 1 ? 1 : res.data.involvedStatus == 2 ? 2: 2;
         }
-        
       })
     },
     onEditApply() { // 修改申请
