@@ -382,6 +382,9 @@ export default {
         name: 'cart-order-id',
         params: {
           id: JSON.stringify({skuItems: this.productResult})
+        },
+        query: {
+          isCart: 1
         }
       })
     },
