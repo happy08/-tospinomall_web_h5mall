@@ -284,7 +284,7 @@ export default {
         duration: 0
       });
 
-      submitOrder({ addressId: this.address.id, sourceType: 4, skuItems: skuItems, isCart: this.$route.params.isCart ? 1 : 0, leaveMessages: leaveMessages, confirmTransportModes: confirmTransportModes, orderToken: this.detail.orderToken, paymentType: this.paymentRadio }).then(res => {
+      submitOrder({ addressId: this.address.id, sourceType: 4, skuItems: skuItems, isCart: this.$route.query.isCart ? 1 : 0, leaveMessages: leaveMessages, confirmTransportModes: confirmTransportModes, orderToken: this.detail.orderToken, paymentType: this.paymentRadio }).then(res => {
         this.$toast.clear();
         if (this.paymentRadio == 2) { // 货到付款
           this.$router.push({ // 校验之后成功跳转到订单支付结果页面
