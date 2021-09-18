@@ -62,7 +62,7 @@
         </div>
       </div>
 
-      <PullRefresh v-show="!isShowTip" :refreshing="refreshing" @refresh="onRefresh" class="pb-20 custom-min-height-154">
+      <PullRefresh v-show="!isShowTip" :refreshing="refreshing" @refresh="onRefresh" class="pb-20 custom-min-height-154 bg-white">
         <div :class="{'w-100': true, 'plr-20 bg-white': arrangeType == 1 && list.length > 0, 'plr-12': arrangeType == 2} ">
           <!-- 空状态  -->
           <empty-status v-if="list.length === 0" :image="require('@/assets/images/empty/order.png')" />
@@ -104,20 +104,17 @@
                 v-for="(searchItem, searchIndex) in list" 
                 :key="'search-list-' + searchIndex"
                 :to="{ name: 'cart-product-id', params: { id: searchItem.productId } }"
-                class="mt-12"
               >
-                <div :class="{'flex vcenter pt-20 pb-30 hidden bg-white': true, 'border-229': searchIndex !== list.length - 1} ">
-                  <div>
-                    <BmImage 
-                      :url="searchItem.mainPictureUrl"
-                      :width="'1.8rem'" 
-                      :height="'1.8rem'"
-                      :fit="'cover'"
-                      :isShow="true"
-                      class="border round-4"
-                      :alt="searchItem.productTitle"
-                    />
-                  </div>
+                <div :class="{'flex vcenter pt-20 pb-30 hidden bg-white': true, 'border-229 border-b': searchIndex !== list.length - 1} ">
+                  <BmImage 
+                    :url="searchItem.mainPictureUrl"
+                    :width="'1.8rem'" 
+                    :height="'1.8rem'"
+                    :fit="'cover'"
+                    :isShow="true"
+                    class="border round-4 flex-shrink"
+                    :alt="searchItem.productTitle"
+                  />
                   <div class="ml-14 w-230 hidden-1">
                     <p class="fs-14 black hidden-1" v-html="searchItem.productTitle"></p>
                     <p class="mt-8 fs-14 light-grey">{{ $t('ship_from_', { replace_tip: searchItem.supplyCountryName }) }}</p>
@@ -733,6 +730,11 @@ export default {
   color: #42B7AE!important;
   background-color: rgba(66, 183, 174, 0.05)!important;
   border: 1px solid #42B7AE!important;
+}
+.border-229::after{
+  width: 229px;
+  left: auto;
+  right: 0;
 }
 </style>
 <style lang="less">
