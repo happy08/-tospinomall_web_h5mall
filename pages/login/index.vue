@@ -114,7 +114,7 @@ export default {
 
     let fScript = document.createElement('script');
     fScript.src = 'https://connect.facebook.net/en_US/sdk.js';
-    document.head.append(fScript);
+    document.head.appendChild(fScript);
   },
   methods: {
     login() {
