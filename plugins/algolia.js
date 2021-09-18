@@ -1,4 +1,4 @@
 import Vue from 'vue';
-import InstantSearch from 'vue-instantsearch';
+import { AisInstantSearch, AisHits, AisSearchBox } from 'vue-instantsearch';
 
-Vue.use(InstantSearch);
+Vue.use(AisInstantSearch).use(AisHits).use(AisSearchBox);

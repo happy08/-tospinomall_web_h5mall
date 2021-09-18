@@ -1,104 +1,96 @@
 <template>
-  <div class="p-20 algolia-container">
-    <ais-instant-search index-name="demo_ecommerce" :search-client="searchClient">
-      <!-- <div class="top-panel"> -->
-        <!-- 清除按钮，清除当前的细化 -->
-        <!-- <ais-clear-refinements /> -->
-        <!-- <h2>Brands</h2> -->
-        <!-- 显示品牌列表过滤搜索 -->
-        <ais-refinement-list attribute="categories" :sortBy="['name']" searchable />
-        <!-- 允许传递搜索参数，在这里设置每页显示的点击次数 -->
-        <!-- 该ais-configure部件是renderless，没有做任何输出到DOM -->
-        <!-- <ais-configure :hitsPerPage="8" /> -->
-      <!-- </div> -->
-      <div class="result-panel">
-        <!-- 搜索框，供用户输入关键字查询 -->
-        <!-- <ais-search-box /> -->
-        <!-- 显示查询结果 -->
-        <!-- <ais-hits> -->
-          <!-- <div slot="item" class="result-panel__item" slot-scope="{ item }">
-            <h2>{{ item.name }}</h2>
-          </div> -->
-        <!-- </ais-hits> -->
-      </div>
-    </ais-instant-search>
-  </div>
+  <ais-instant-search-ssr>
+    <ais-search-box />
+    <ais-stats />
+    <ais-refinement-list attribute="brand" />
+    <ais-hits>
+      <template v-slot:item="{ item }">
+        <p>
+          <ais-highlight attribute="name" :hit="item" />
+        </p>
+        <p>
+          <ais-highlight attribute="brand" :hit="item" />
+        </p>
+      </template>
+    </ais-hits>
+    <ais-pagination />
+  </ais-instant-search-ssr>
 </template>
 
 <script>
+import {
+  AisInstantSearchSsr,
+  AisRefinementList,
+  AisHits,
+  AisHighlight,
+  AisSearchBox,
+  AisStats,
+  AisPagination,
+  createServerRootMixin,
+} from 'vue-instantsearch';
 import algoliasearch from 'algoliasearch/lite';
-import 'instantsearch.css/themes/reset.css';
-import 'instantsearch.css/themes/satellite-min.css';
+import _renderToString from 'vue-server-renderer/basic';
+
+function renderToString(app) {
+  return new Promise((resolve, reject) => {
+    _renderToString(app, (err, res) => {
+      if (err) reject(err);
+      resolve(res);
+    });
+  });
+}
+
+const searchClient = algoliasearch(
+  '62MLEBY33X',
+  'b8f81ef6a145b0e57dd10b020d1c0c54'
+);
 
 export default {
-  data() {
+  mixins: [
+    // 创建可重用的搜索实例 考虑SEO所以我们需要替换ais-instant-search为ais-instant-search-ssr,移除props, 传值使用函数createServerRootMixin
+    createServerRootMixin({ 
+      searchClient,
+      indexName: 'tospinoMall',
+    }),
+  ],
+  serverPrefetch() {
+    return this.instantsearch
+      .findResultsState({
+        component: this,
+        renderToString,
+      }).then(algoliaState => {
+        this.$ssrContext.nuxt.algoliaState = algoliaState;
+      });
+  },
+  beforeMount() {
+    const results =
+      (this.$nuxt.context && this.$nuxt.context.nuxtState.algoliaState) ||
+      window.__NUXT__.algoliaState;
+
+    this.instantsearch.hydrate(results);
+
+    // Remove the SSR state so it can't be applied again by mistake
+    delete this.$nuxt.context.nuxtState.algoliaState;
+    delete window.__NUXT__.algoliaState;
+  },
+  components: {
+    AisInstantSearchSsr,
+    AisRefinementList,
+    AisHits,
+    AisHighlight,
+    AisSearchBox,
+    AisStats,
+    AisPagination,
+  },
+  head() {
     return {
-      searchClient: algoliasearch(
-        '62MLEBY33X',
-        'b8f81ef6a145b0e57dd10b020d1c0c54',
+      link: [
         {
-          timeout: {
-            read: 20 // 时间设置为20秒
-          }
-        }
-      ).initIndex('tospinoMall'),
+          rel: 'stylesheet',
+          href: 'https://cdn.jsdelivr.net/npm/instantsearch.css@7.4.5/themes/satellite-min.css',
+        },
+      ],
     };
   },
-  mounted() {
-    // 覆盖默认的请求超时时间
-    // this.searchClient.search('query string', {
-    //   timeout: {
-    //     read: 20 // 时间设置为20秒
-    //   },
-    //   headers: {
-    //     // language: 'en'
-    //   }
-    // }).then(({ hits }) => {
-    //   console.log('成功-')
-    //   console.log(hits)
-    // }).catch(error => {
-    //   console.log('失败-')
-    //   console.log(error)
-    // })
-
-  }
 };
 </script>
-
-<style lang="less">
-.algolia-container{
-  .ais-RefinementList-searchBox, .ais-SearchBox{
-    height: 40px;
-    .ais-SearchBox-form{
-      height: 100%;
-      &::before{
-        left: 10px;
-        height: 20px;
-        width: 20px;
-        margin-top: 0;
-        transform: translateY(-50%);
-        background-repeat: no-repeat;
-      }
-      .ais-SearchBox-input{
-        font-size: 14px;
-        padding-left: 40px;
-      }
-    }
-  }
-  .ais-Hits-item{
-    padding: 10px;
-    font-size: 14px;
-    h2{
-      line-height: 20px;
-    }
-  }
-  // .ais-HierarchicalMenu-item, .ais-Menu-item, .ais-NumericMenu-label, .ais-RatingMenu-item, .ais-RefinementList-item, .ais-ToggleRefinement-label{
-  //   font-size: 16px;
-  // }
-  .ais-RefinementList-list{
-    .ais-RefinementList-item, .ais-RefinementList-label{
-      font-size: 16px;
-    }
-  }
-}
-</style>

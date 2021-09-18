@@ -1,6 +1,6 @@
 <template>
   <div class="algolia-container">
-    <ais-instant-search
+    <ais-instant-search-ssr
       :search-client="searchClient"
       index-name="tospinoMall"
     >
@@ -8,7 +8,7 @@
       <BmHeaderNav :left="{ isShow: true, isEmit: true }" :title="$t('search')" :border="false" @leftClick="leftClick" />
       <div class="border-b ptb-12">
         <!-- 搜索入口 -->
-        <ais-search-box class="mlr-20" />
+        <ais-search-box class="mlr-20" placeholder="搜索关键字" />
       </div>
       <!-- 搜索 -->
       <!-- <van-search
@@ -59,38 +59,63 @@
         
         <!-- 显示查询结果 -->
         <ais-hits>
+          <template v-if="arrangeType == 2" v-slot="{ items }">
+            <empty-status v-if="items.length === 0" :image="require('@/assets/images/empty/order.png')" />
+            <div 
+              class="mx-auto my-2"
+              v-masonry
+              item-selector=".custom-grid-item"
+              fit-width="true"
+              transition-duration="0s"
+              stagger="0.03s"
+              gutter="10"
+            >
+              <nuxt-link 
+                v-for="(searchItem, searchIndex) in items" 
+                :key="'search-list-' + searchIndex"
+                :to="{ name: 'cart-product-id', params: { id: 0 } }"
+                class="mt-12 custom-grid-item"
+              >
+                <ProductTopBtmSingle
+                  :img="{ url: searchItem.image, width: '3.4rem', height: '3.4rem', loadImage: require('@/assets/images/product-bgd-170.png') }" 
+                  :detail="{ desc: searchItem.name, price: searchItem.price, rate: 0, volumn: 20, ellipsis: 2, country: '', country_url: '' }"
+                  class="round-4 bg-white hidden v-100"
+                ></ProductTopBtmSingle>
+              </nuxt-link>
+            </div>
+          </template>
           <!-- <div > -->
             <!-- <ProductTopBtmSingle
               :img="{ url: item.image, width: '3.4rem', height: '3.4rem', loadImage: require('@/assets/images/product-bgd-170.png') }" 
               :detail="{ desc: item.description, price: item.price, rate: 0, volumn: 0, ellipsis: 2, country: '', country_url: '' }"
               class="round-4 bg-white hidden v-100"
             ></ProductTopBtmSingle> -->
-            <div slot="item" slot-scope="{ item }" :class="{'flex vcenter pt-20 pb-30 hidden bg-white': true, 'border-229': true} ">
-              <BmImage 
-                :url="item.image"
-                :width="'1.8rem'" 
-                :height="'1.8rem'"
-                :fit="'cover'"
-                :isShow="true"
-                class="border round-4 flex-shrink"
-                :alt="item.name"
-              />
-              <div class="ml-14 w-230 hidden-1">
-                <p class="fs-14 black hidden-1" v-html="item.name"></p>
-                <p class="mt-8 fs-14 light-grey">{{ $t('ship_from_', { replace_tip: '北京' }) }}</p>
-                <div class="mt-16 flex vcenter between">
-                  <div>
-                    <span class="red fs-18">{{ $store.state.rate.currency }}{{ item.price }}</span>
-                    <!-- <span class="fs-10 line-through bg-grey ml-8">{{ $store.state.rate.currency }}{{ 0 }}</span> -->
-                  </div>
-                  <div class="fs-14 black">{{ 10 }}{{ $t('add_sold') }}</div>
+          <div slot="item" slot-scope="{ item }" :class="{'flex vcenter pt-20 pb-30 hidden bg-white': true, 'border-229': true} " v-else>
+            <BmImage 
+              :url="item.image"
+              :width="'1.8rem'" 
+              :height="'1.8rem'"
+              :fit="'cover'"
+              :isShow="true"
+              class="border round-4 flex-shrink"
+              :alt="item.name"
+            />
+            <div class="ml-14 w-230 hidden-1">
+              <p class="fs-14 black hidden-1" v-html="item.name"></p>
+              <p class="mt-8 fs-14 light-grey">{{ $t('ship_from_', { replace_tip: '北京' }) }}</p>
+              <div class="mt-16 flex vcenter between">
+                <div>
+                  <span class="red fs-18">{{ $store.state.rate.currency }}{{ item.price }}</span>
+                  <!-- <span class="fs-10 line-through bg-grey ml-8">{{ $store.state.rate.currency }}{{ 0 }}</span> -->
                 </div>
+                <div class="fs-14 black">{{ 10 }}{{ $t('add_sold') }}</div>
               </div>
             </div>
+          </div>
           <!-- </div> -->
         </ais-hits>
       </div>
-    </ais-instant-search>
+    </ais-instant-search-ssr>
   </div>
 </template>
 

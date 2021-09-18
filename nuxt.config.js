@@ -47,7 +47,7 @@ export default {
     { src: "@/plugins/utils", ssr: false },
     "@/plugins/routeguard.js",
     { src: '@/plugins/vconsole', ssr: false },
-    { src: '@/plugins/algolia', ssr: false },
+    // { src: '@/plugins/algolia', ssr: false },
     { src: '@/plugins/vue-masonry', ssr: false }
   ],
 
@@ -95,7 +95,7 @@ export default {
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
-    transpile: [/vant.*?less/],
+    transpile: [/vant.*?less/, 'vue-instantsearch', 'instantsearch.js/es'], // 为node使用转义文件
     //vant按需引入
     babel: {
       plugins: [
