@@ -1,7 +1,7 @@
 <template>
   <!-- 店铺-店铺首页 -->
   <div class="vh-100 bg-grey pb-70">
-    <div :class="{'store-container-headr': true, 'h-68': scrollTop > 40}" :style="storeBgdUrl != '' ? 'background-image: url(' + storeBgdUrl + ')' : ''">
+    <div :class="{'store-container-headr': true, 'h-68': scrollTop > 40}" :style="storeBgdUrl != '' ? 'background-image: url(' + storeBgdUrl + ')' : 'background-color: #000'">
       <div :class="{'bg-black-65': scrollTop < 40}">
         <div class="flex vcenter plr-12 h-46">
           <van-icon name="arrow-left" color="#fff" size="18px" @click="leftBack"></van-icon>
@@ -15,11 +15,11 @@
           />
         </div>
         <van-sticky offset-top="0" @scroll="onScroll">
-          <div :class="{'store-container-headr': scrollTop > 40 && storeBgdUrl != '', 'h-68': scrollTop > 40}" :style="scrollTop > 40 && storeBgdUrl != '' ? 'background-image: url(' + storeBgdUrl + ')' : ''">
-            <div :class="{'w-100 flex between plr-12 ptb-10 vcenter': true, 'bg-black-65': scrollTop > 40 && storeBgdUrl != ''}">
+          <div :class="{'store-container-headr': scrollTop > 40 && storeBgdUrl != '', 'h-68': scrollTop > 40, 'bg-black': scrollTop > 40 && storeBgdUrl == ''}" :style="scrollTop > 40 && storeBgdUrl != '' ? 'background-image: url(' + storeBgdUrl + ')' : ''">
+            <div :class="{'w-100 flex between plr-12 ptb-10 vcenter': true, 'bg-black-65': scrollTop > 40}">
               <div class="flex vcenter w-100">
                 <!-- 店铺详情 -->
-                <nuxt-link :to="{ name: 'cart-store-detail-id', params: { id: $route.params.id }, query: $route.query }" v-slot="{ navigate }" class="flex vcenter w-100">
+                <nuxt-link replace :to="{ name: 'cart-store-detail-id', params: { id: $route.params.id }, query: $route.query }" v-slot="{ navigate }" class="flex vcenter w-100">
                   <div @click="navigate" role="link">
                     <!-- 店铺logo -->
                     <BmImage
@@ -44,7 +44,7 @@
               <!-- 取消订阅 -->
               <van-button  v-if="detailData && detailData.isAttention == 1" color="#FC2B31" plain class="round-8 h-26 plr-8 ws-nowrap bg-transparent" @click="onSubscribe(false)">{{ $t('followed') }}</van-button>
               <!-- 订阅 -->
-              <van-button  color="#FC2B31" class="round-8 h-26 plr-8 ws-nowrap" @click="onSubscribe(true)" v-else>{{ $t('add_subscribe') }}</van-button>
+              <van-button color="#FC2B31" class="round-8 h-26 plr-8 ws-nowrap" @click="onSubscribe(true)" v-else>{{ $t('add_subscribe') }}</van-button>
               
             </div>
           </div>
@@ -352,30 +352,43 @@ export default {
       _detailParams.userId = this.$store.state.user.userInfo.id
     }
     const detailData = await this.$api.getStoreInfo({ sellerId: this.$route.query.sellerId, storeId: this.$route.params.id, ..._detailParams });
-    if (detailData.code != 0) return false;
-    this.detailData = {
-      ...detailData.data,
-      collectNum: detailData.data.collectNum == '' ? 0 : detailData.data.collectNum
-    };
+    console.log(detailData.data)
+    if (!detailData.data) {
+      this.detailData = { // 店铺详情
+        storeLogoUrl: ''
+      }
+    } else { // 初始化
+      this.detailData = {
+        ...detailData.data,
+        collectNum: detailData.data.collectNum == '' ? 0 : detailData.data.collectNum
+      };
+    }
     
     this.sort = {
       shopId: this.$route.params.id, pageIndex: this.pageIndex, pageSize: this.pageSize
     }
     // 商品列表数据
     const listData = await this.$api.getProductSearch(this.sort);
-    this.total = listData.data.total;
-    this.productList = listData.data.items.map(item => {
-      return {
-        ...item,
-        starLevel: parseFloat(item.starLevel)
-      }
-    });
+    if (!listData.data) {
+      this.productList = [];
+      this.total = 0;
+    } else {
+      this.total = listData.data.total;
+      this.productList = listData.data.items.map(item => {
+        return {
+          ...item,
+          starLevel: parseFloat(item.starLevel)
+        }
+      });
+    }
 
     // 店铺组件数据,店铺有装修才可看
     const moduleData = await this.$api.getStoreIndex({shopId: this.$route.params.id});
     if (!moduleData.data) {
       this.tabbarActive = 1;
       this.isTabbarShow = false;
+      this.storeBgdUrl = '';
+      this.moduleData = [];
       return false;
     };
     this.moduleData = moduleData.data.components;
@@ -388,14 +401,14 @@ export default {
     const store_components = moduleData.data.components.filter(item => {
       return item.type == 2;
     })
-    this.tabbarActive = store_components.length > 1 ? 0 : 1;
     this.isTabbarShow = store_components.length > 1 ? true: false;
+    if (!this.$route.query.tabbarActive) {
+      this.tabbarActive = store_components.length > 1 ? 0 : 1;
+    }
   },
   activated() {
     this.isTabbarShow = false;
     if (this.$route.query.tabbarActive) this.tabbarActive = parseFloat(this.$route.query.tabbarActive);
-    // if (String(this.$route.query.hasAdornment) == 'false') this.tabbarActive = 1;
-    // this.isTabbarShow = String(this.$route.query.hasAdornment) == 'false' ? false : true;
     this.$fetch();
   },
   methods: {
@@ -430,12 +443,16 @@ export default {
       }
     },
     hotStyle(hotItem, ele, container) { // 热区图位置计算 todo
-      if (process.client) {
+      if (process.client && this.$refs[container] && this.$refs[container].length > 0) {
         this.$nextTick(() => {
           let _w = this.$refs[container][0].clientWidth;
           let _h = this.$refs[container][0].clientHeight;
           
           let timer = setInterval(() => { // 防止元素container的宽高获取不到，添加定时器，获取到定时器取消
+            if (this.tabbarActive != 0) {
+              clearInterval(timer);
+              return false;
+            }
             _w = this.$refs[container][0].clientWidth;
             _h = this.$refs[container][0].clientHeight;
             if (_w > 0 && _h > 0) {
@@ -575,6 +592,9 @@ export default {
       this.scrollTop = scrollTop.scrollTop;
     }
   },
+  deactivated() {
+    window.removeEventListener('scroll', this.onScroll); // 离开页面清除滚动事件
+  },
 }
 </script>
 
@@ -627,5 +647,8 @@ export default {
 }
 .bg-black-65{
   background-color: rgba(0, 0, 0, .65);
+}
+.bg-black{
+  background-color: #000;
 }
 </style>

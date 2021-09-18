@@ -844,18 +844,16 @@ export default {
   },
   methods: {
     stickyScroll(scrollObj) { // 吸顶滚动事件
-      if (scrollObj.isFixed) {
-        // 滚动时格式化样式 sticky-scroll
-        if (scrollObj.scrollTop > 2) {
-          this.$refs.detailStickyContainer.$el.classList.add('detail-sticky-scroll');
-          this.$refs.detailTabContainer.$el.classList.add('sticky-nav');
-          this.isScroll = true;
-        }
-        if (scrollObj.scrollTop < 46) {
-          this.$refs.detailStickyContainer.$el.classList.remove('detail-sticky-scroll');
-          this.$refs.detailTabContainer.$el.classList.remove('sticky-nav');
-          this.isScroll = false;
-        }
+      // 滚动时格式化样式 sticky-scroll
+      if (scrollObj.scrollTop > 2) {
+        this.$refs.detailStickyContainer.$el.classList.add('detail-sticky-scroll');
+        this.$refs.detailTabContainer.$el.classList.add('sticky-nav');
+        this.isScroll = true;
+      }
+      if (scrollObj.scrollTop < 46) {
+        this.$refs.detailStickyContainer.$el.classList.remove('detail-sticky-scroll');
+        this.$refs.detailTabContainer.$el.classList.remove('sticky-nav');
+        this.isScroll = false;
       }
     },
     async onBuyNow() { // 立即购买 num大于0才可以进行下一步操作

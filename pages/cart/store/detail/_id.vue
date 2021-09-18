@@ -1,7 +1,7 @@
 <template>
   <!-- 店铺-店铺详情 -->
   <div class="bg-grey vh-100">
-    <BmHeaderNav :left="{ isShow: true }" :title="$t('store_information')" />
+    <BmHeaderNav :left="{ isShow: true, isEmit: true }" :title="$t('store_information')" @leftClick="leftClick" />
 
     <!-- 关注店铺 -->
     <div class="bg-white pr-12 pl-20 ptb-14 flex between vcenter">
@@ -24,9 +24,9 @@
         </dl>
       </div>
       <!-- 取消订阅 -->
-      <van-button  v-if="detailData && detailData.isAttention == 1" color="#FC2B31" class="round-8 h-26 plr-8" @click="onSubscribe(false)">{{ $t('unsubscribe') }}</van-button>
+      <van-button  v-if="detailData && detailData.isAttention == 1" color="#FC2B31" plain class="round-8 h-26 plr-8" @click="onSubscribe(false)">{{ $t('followed') }}</van-button>
       <!-- 订阅 -->
-      <van-button plain color="#FC2B31" class="round-8 h-26 plr-8" @click="onSubscribe(true)" v-else>{{ $t('add_subscribe') }}</van-button>
+      <van-button color="#FC2B31" class="round-8 h-26 plr-8" @click="onSubscribe(true)" v-else>{{ $t('add_subscribe') }}</van-button>
     </div>
 
     <!-- 详情 -->
@@ -109,6 +109,22 @@ export default {
         this.$fetch();
       })
     },
+    leftClick() {
+      if(window.history.length < 3){ //解决部分机型拿不到history
+        console.log('go home');
+        this.$router.replace('/');
+      }else{
+        this.$router.replace({
+          name: 'cart-store-id',
+          params: {
+            id: this.$route.params.id
+          },
+          query: {
+            ...this.$route.query
+          }
+        })
+      }
+    }
   },
 }
 </script>
