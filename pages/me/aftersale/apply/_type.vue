@@ -203,7 +203,7 @@
     <van-popup v-model="returnMethod" position="bottom" closeable>
       <van-radio-group v-model="returnMethodRadio" :border="false">
         <van-cell-group>
-          <van-cell class="p-20" :title="$t('return_method_title')" title-class="black fw fs-18" />
+          <van-cell class="p-20" :title="$t('return_method')" title-class="black fw fs-18" />
           <van-cell class="p-20" :title="returnItem.title" clickable v-for="(returnItem, returnIndex) in $t('return_method_list')" :key="returnIndex" @click="returnMethodRadio = returnIndex" title-class="fs-14 lh-20" :label="returnItem.desc" label-class="mt-20 w-90">
             <template #right-icon>
               <van-radio :name="returnIndex" icon-size="0.48rem">
