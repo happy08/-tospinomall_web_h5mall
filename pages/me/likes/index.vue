@@ -486,6 +486,7 @@ export default {
   bottom: 0;
   left: 0;
   height: 56px;
+  z-index: 100;
 }
 .h-25{
   height: 25px!important;
