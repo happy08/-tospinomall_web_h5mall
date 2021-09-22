@@ -25,7 +25,7 @@
           </dl>
           <div v-else class="ml-10 fs-16" @click="goLogin">{{ $t('login_register') }}</div>
         </div>
-        <nuxt-link :to="{ name: $store.state.user.authToken ? 'me-message' : 'login' }">
+        <nuxt-link :to="{ name: 'me-message' }">
           <van-badge :dot="$store.state.user.isNewMessage" class="custom-me-dot">
             <BmImage
               :url="require('@/assets/images/message-icon.png')"
@@ -41,13 +41,13 @@
 
       <!-- 收藏信息 -->
       <div class="p-30 flex between">
-        <nuxt-link :to="$store.state.user.authToken ? { name: 'me-likes' } : { name: 'login' }" v-slot="{ navigate }" class="tc">
+        <nuxt-link :to="{ name: 'me-likes' }" v-slot="{ navigate }" class="tc">
           <dl @click="navigate" role="link">
             <dt class="fs-24 black fw">{{ $store.state.user.userInfo ? $store.state.user.userInfo.attentionProductNum : 0 }}</dt>
             <dd class="fs-12 grey mt-4">{{ $t('collection') }}</dd>
           </dl>
         </nuxt-link>
-        <nuxt-link :to="$store.state.user.authToken ? { name: 'me-wallet' }: { name: 'login' }" v-slot="{ navigate }" class="tc">
+        <nuxt-link :to="{ name: 'me-wallet' }" v-slot="{ navigate }" class="tc">
           <dl @click="navigate" role="link">
             <dt class="fs-24 black fw">{{ walletNum }}</dt>
             <dd class="fs-12 grey mt-4">{{ $t('wallet') }}</dd>
@@ -64,9 +64,9 @@
 
     <!-- 我的订单 -->
     <div class="bg-white mlr-12 round-8 plr-12 pb-20 user-page__order">
-      <van-cell class="ptb-12 plr-0" :border="false" :title="$t('my_order')" is-link :value="$t('view_all')" value-class="green" title-class="black" :to="$store.state.user.authToken ? { name: 'me-order' } : { name: 'login' }" />
+      <van-cell class="ptb-12 plr-0" :border="false" :title="$t('my_order')" is-link :value="$t('view_all')" value-class="green" title-class="black" :to="{ name: 'me-order' }" />
       <div class="flex between tc">
-        <nuxt-link v-for="(orderItem, orderIndex) in orderList" :key="'oder-' + orderIndex" :to="$store.state.user.authToken ? { name: orderItem.name, query: { type: orderItem.type } } : { name: 'login' }" class="flex-1 plr-4">
+        <nuxt-link v-for="(orderItem, orderIndex) in orderList" :key="'oder-' + orderIndex" :to="{ name: orderItem.name, query: { type: orderItem.type } }" class="flex-1 plr-4">
           <van-badge :content="orderItem.count" max="99" :class="{'custom-badge': true, 'isNo-badge': orderItem.count == 0}">
             <BmImage 
               :url="require('@/assets/images/icon/' + orderItem.icon + '.png')"
@@ -84,7 +84,7 @@
     <div class="clearfix"></div>
     <!-- 其他设置项 -->
     <div class="round-8 bg-white mlr-12 mt-12 hidden user-page__other">
-      <van-cell class="ptb-14 plr-12" :title="$t(otherItem.text)" title-class="pl-12" v-for="(otherItem, otherIndex) in otherList" :key="'other-list-' + otherIndex" :to="($store.state.user.authToken || otherItem.name === 'me-about') ? { name: otherItem.name, query: otherItem.query } : { name: 'login' }">
+      <van-cell class="ptb-14 plr-12" :title="$t(otherItem.text)" title-class="pl-12" v-for="(otherItem, otherIndex) in otherList" :key="'other-list-' + otherIndex" :to="{ name: otherItem.name, query: otherItem.query }">
         <template #icon>
           <BmIcon :name="otherItem.icon" :width="'0.48rem'" :height="'0.48rem'"></BmIcon>
         </template>
