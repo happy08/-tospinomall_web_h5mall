@@ -12,11 +12,11 @@ export default {
   props: {
     width: {
       type: String,
-      default: '90px'
+      default: '1.8rem'
     },
     height: {
       type: String,
-      default: '90px'
+      default: '1.8rem'
     },
     isShow: {
       type: Boolean,
