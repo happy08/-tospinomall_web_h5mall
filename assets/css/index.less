@@ -837,24 +837,39 @@ html, body, #__nuxt, #__layout{
   // max-width: 750PX!important;
 }
 .custom-min-height-46{
-  min-height: calc(100vh - 46px - 30px - 44px);
+  min-height: calc(100vh - 46px);
 }
 .custom-min-height-66{
-  min-height: calc(100vh - 66px - 30px - 44px);
+  min-height: calc(100vh - 66px);
 }
 .custom-min-height-94{
-  min-height: calc(100vh - 94px - 30px - 44px);
+  min-height: calc(100vh - 94px);
 }
 .custom-min-height-154{
-  min-height: calc(100vh - 154px - 30px - 44px);
+  min-height: calc(100vh - 154px);
 }
 .custom-min-height-128{
-  min-height: calc(100vh - 128px - 30px - 44px);
+  min-height: calc(100vh - 128px);
 }
 
 // 适配
 @supports (bottom: constant(safe-area-inset-bottom)) or (bottom: env(safe-area-inset-bottom)) {
   .van-tabbar{
     padding-bottom: 0!important;
+  }
+  .custom-min-height-46{
+    min-height: calc(100vh - 46px - 30px - 44px);
+  }
+  .custom-min-height-66{
+    min-height: calc(100vh - 66px - 30px - 44px);
+  }
+  .custom-min-height-94{
+    min-height: calc(100vh - 94px - 30px - 44px);
+  }
+  .custom-min-height-154{
+    min-height: calc(100vh - 154px - 30px - 44px);
+  }
+  .custom-min-height-128{
+    min-height: calc(100vh - 128px - 30px - 44px);
   }
 }
