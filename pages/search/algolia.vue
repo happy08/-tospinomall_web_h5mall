@@ -1,10 +1,10 @@
 <template>
   <div>
-    <ais-instant-search-ssr :class-names="{'ais-InstantSearch': 'myAisInstantSearch'}">
+    <!-- <ais-instant-search-ssr :class-names="{'ais-InstantSearch': 'myAisInstantSearch'}"> -->
       <van-sticky :offset-top="0">
         <BmHeaderNav :left="{ isShow: true, isEmit: true }" :title="$t('search')" :border="false" @leftClick="leftClick" />
         <!-- 搜索 -->
-        <!-- <van-search
+        <van-search
           v-model="searchVal"
           shape="round"
           :placeholder="hintName"
@@ -15,10 +15,19 @@
           @clear="onClear"
           ref="searchContainer"
           maxlength="200"
-        /> -->
-        <div class="plr-20 ptb-12 border-b bg-white">
-          <ais-search-box :class-names="{'ais-SearchBox-form': 'myAisSearchBoxForm', 'ais-SearchBox-input': 'myAisSearchBoxInput'}" />
-        </div>
+        />
+        <!-- <div class="plr-20 ptb-12 border-b bg-white">
+          <ais-search-box :class-names="{'ais-SearchBox-form': 'myAisSearchBoxForm', 'ais-SearchBox-input': 'myAisSearchBoxInput'}" placeholder="">
+            <template v-slot="{ currentRefinement, isSearchStalled, refine }">
+              <input
+                type="search"
+                :value="currentRefinement"
+                @search="refine($event.currentTarget.value)"
+              />
+              <span :hidden="!isSearchStalled">Loading...</span>
+            </template>
+          </ais-search-box>
+        </div> -->
         
         <!-- 分类 -->
         <div class="flex between vcenter plr-20 bg-white">
@@ -44,8 +53,8 @@
       
       <!-- <ais-stats /> -->
       <!-- <ais-refinement-list attribute="brand" /> -->
-      <ais-hits>
-        <template v-slot="{ items }">
+      <!-- <ais-hits>
+        <template v-slot="{ items }"> -->
           <div 
             class="mx-auto my-2 plr-12 bg-grey"
             v-masonry
@@ -57,7 +66,7 @@
             v-if="arrangeType == 2"
           >
             <nuxt-link 
-              v-for="(searchItem, searchIndex) in items" 
+              v-for="(searchItem, searchIndex) in list" 
               :key="'search-list-' + searchIndex"
               :to="{ name: 'cart-product-id', params: { id: 0 } }"
               class="mt-12 custom-grid-item"
@@ -71,7 +80,7 @@
           </div>
           <nuxt-link 
             v-else
-            v-for="(searchItem, searchIndex) in items" 
+            v-for="(searchItem, searchIndex) in list" 
             :key="'search-list-' + searchIndex"
             :to="{ name: 'cart-product-id', params: { id: 0 } }"
           >
@@ -100,10 +109,10 @@
               </div>
             </div>
           </nuxt-link>
-        </template>
-      </ais-hits>
+        <!-- </template>
+      </ais-hits> -->
       <!-- <ais-pagination /> -->
-    </ais-instant-search-ssr>
+    <!-- </ais-instant-search-ssr> -->
 
     <!-- 弹窗筛选 -->
     <van-popup
@@ -163,13 +172,13 @@ import EmptyStatus from '@/components/EmptyStatus';
 import PullRefresh from '@/components/PullRefresh';
 
 import {
-  AisInstantSearchSsr,
-  AisRefinementList,
-  AisHits,
-  AisHighlight,
-  AisSearchBox,
-  AisStats,
-  AisPagination,
+//   AisInstantSearchSsr,
+//   AisRefinementList,
+//   AisHits,
+//   AisHighlight,
+//   AisSearchBox,
+//   AisStats,
+//   AisPagination,
   createServerRootMixin,
 } from 'vue-instantsearch';
 import algoliasearch from 'algoliasearch/lite';
@@ -275,13 +284,13 @@ export default {
     delete window.__NUXT__.algoliaState;
   },
   components: {
-    AisInstantSearchSsr,
-    AisRefinementList,
-    AisHits,
-    AisHighlight,
-    AisSearchBox,
-    AisStats,
-    AisPagination,
+    // AisInstantSearchSsr,
+    // AisRefinementList,
+    // AisHits,
+    // AisHighlight,
+    // AisSearchBox,
+    // AisStats,
+    // AisPagination,
     vanSearch: Search,
     vanTab: Tab,
     vanTabs: Tabs,
@@ -301,9 +310,28 @@ export default {
       link: [
         {
           rel: 'stylesheet',
-          href: 'https://cdn.jsdelivr.net/npm/instantsearch.css@7.4.5/themes/satellite-min.css',
+          href: 'https://cdn.jsdelivr.net/npm/instantsearch.css@7.3.1/themes/reset-min.css',
         },
+        {
+          rel: 'stylesheet',
+          href: 'https://cdn.jsdelivr.net/npm/instantsearch.css@7.4.5/themes/satellite-min.css',
+        }
       ],
+      script: [
+        {
+          type: 'text/javascript',
+          charset: 'utf-8',
+          src: 'https://cdn.jsdelivr.net/npm/algoliasearch@4.5.1/dist/algoliasearch-lite.umd.js'
+        },
+        {
+          type: 'text/javascript',
+          charset: 'utf-8',
+          src: 'https://cdn.jsdelivr.net/npm/instantsearch.js@4.8.3/dist/instantsearch.production.min.js'
+        },
+        {
+          src: 'https://polyfill.io/v3/polyfill.min.js?features=default%2CArray.prototype.find%2CArray.prototype.includes%2CPromise%2CObject.assign%2CObject.entries'
+        }
+      ]
     };
   },
   deactivated() {
@@ -393,24 +421,30 @@ export default {
     },
     onSearch(val) { // 搜索
       // let value = val;
-      if (!val && this.hintName) value = this.hintName;
-      if (this.isRouteBack != 0) {
-        this.$router.replace({
-          name: 'search',
-          query: {
-            val: val,
-            searchKeyword: val
-          }
-        })
-      } else {
-        this.$router.push({
-          name: 'search',
-          query: {
-            val: val,
-            searchKeyword: val
-          }
-        })
-      }
+      // if (!val && this.hintName) value = this.hintName;
+      // if (this.isRouteBack != 0) {
+      //   this.$router.replace({
+      //     name: 'search',
+      //     query: {
+      //       val: val,
+      //       searchKeyword: val
+      //     }
+      //   })
+      // } else {
+      //   this.$router.push({
+      //     name: 'search',
+      //     query: {
+      //       val: val,
+      //       searchKeyword: val
+      //     }
+      //   })
+      // }
+      searchClient.search(this.searchVal, {
+        page: this.pageIndex,
+        hitsPerPage: this.pageSize
+      }).then(({hits}) => {
+        this.list = hits;
+      })
       // this.$store.commit('SET_SEARCHPRODUCTLIST', value); // 搜索历史存储
       // // 更新页面展示
       // this.searchHistoryList = this.$store.state.searchProductList.filter((item, index) => {
@@ -424,7 +458,7 @@ export default {
     },
     onFocus() { // 获取焦点之后，不展示数据列表和历史数据
       this.isShowTip = this.searchVal.length > 0 ? -1 : this.searchVal.length === 0;
-      this.getSearchPull();
+      // this.getSearchPull();
     },
     onFilter() { // 筛选
       let _data = {
@@ -500,10 +534,10 @@ export default {
       }
     },
     getSearchPull() {
-      getSearchPull({ queryName: this.searchVal, hits: 10 }).then(res => {
-        this.searchPullList = res.data.suggestions;
-        this.list = [];
-      })
+      // getSearchPull({ queryName: this.searchVal, hits: 10 }).then(res => {
+      //   this.searchPullList = res.data.suggestions;
+      //   this.list = [];
+      // })
     },
     getProductList() { // 获取商品列表
       this.params = {

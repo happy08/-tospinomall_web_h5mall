@@ -1,17 +1,10 @@
 <template>
-  <div class="algolia-container">
-    <ais-instant-search-ssr
-      :search-client="searchClient"
-      index-name="tospinoMall"
-    >
-      <van-sticky :offset-top="0">
+  <!-- 首页-头部-搜索页面 -->
+  <div :class="{'bg-grey': !isShowTip, 'v-percent-100': true}">
+    <van-sticky :offset-top="0">
       <BmHeaderNav :left="{ isShow: true, isEmit: true }" :title="$t('search')" :border="false" @leftClick="leftClick" />
-      <div class="border-b ptb-12">
-        <!-- 搜索入口 -->
-        <ais-search-box class="mlr-20" placeholder="搜索关键字" />
-      </div>
       <!-- 搜索 -->
-      <!-- <van-search
+      <van-search
         v-model="searchVal"
         shape="round"
         :placeholder="hintName"
@@ -22,7 +15,7 @@
         @clear="onClear"
         ref="searchContainer"
         maxlength="200"
-      /> -->
+      />
       <!-- 分类 -->
       <div class="flex between vcenter plr-20 bg-white" v-show="!isShowTip">
         <van-tabs swipeable animated color="#42B7AE"  @change="getSearchList" @disabled="filterPopup = true" class="customs-van-tabs underline w-100" v-model="typeActive" line-height="0" line-width="0" :ellipsis="false">
@@ -44,92 +37,182 @@
         <van-icon :name="require('@/assets/images/icon/arrange-'+arrangeType+'.svg')" size="0.38rem" @click="changeArrange" />
       </div>
     </van-sticky>
-      <!-- <div class="top-panel"> -->
-        <!-- 清除按钮，清除当前的细化 -->
-        <!-- <ais-clear-refinements /> -->
-        <!-- <h2>Brands</h2> -->
-        <!-- 显示品牌列表过滤搜索 -->
-        <!-- <ais-refinement-list attribute="categories" :sortBy="['name']" searchable /> -->
-        <!-- 允许传递搜索参数，在这里设置每页显示的点击次数 -->
-        <!-- 该ais-configure部件是renderless，没有做任何输出到DOM -->
-        <!-- <ais-configure :hitsPerPage="8" /> -->
-      <!-- </div> -->
-      <div class="plr-20 result-panel">
-        <!-- 搜索框，供用户输入关键字查询 -->
-        
-        <!-- 显示查询结果 -->
-        <ais-hits>
-          <template v-if="arrangeType == 2" v-slot="{ items }">
-            <empty-status v-if="items.length === 0" :image="require('@/assets/images/empty/order.png')" />
-            <div 
-              class="mx-auto my-2"
-              v-masonry
-              item-selector=".custom-grid-item"
-              fit-width="true"
-              transition-duration="0s"
-              stagger="0.03s"
-              gutter="10"
-            >
-              <nuxt-link 
-                v-for="(searchItem, searchIndex) in items" 
-                :key="'search-list-' + searchIndex"
-                :to="{ name: 'cart-product-id', params: { id: 0 } }"
-                class="mt-12 custom-grid-item"
+    <!-- 搜索列表展示 -->
+    <template v-if="isShowTip === -1">
+      <div class="bg-white">
+        <van-cell class="ptb-20 plr-20" v-for="(pullItem, pullIndex) in searchPullList" :key="pullIndex" :title="pullItem.suggestion" :value="''" value-class="light-grey lh-1" title-class="black lh-1" @click="toSearch(pullItem)" />
+      </div>
+    </template>
+
+    <template v-if="isShowTip != -1">
+      <div class="mlr-20 mt-12" v-show="isShowTip">
+        <!-- 搜索历史 -->
+        <h2 class="fs-14 black flex between vcenter" v-if="searchHistoryList.length > 0">
+          <span>{{ $t('search_for_history') }}</span>
+          <BmIcon :name="'shanchu'" :width="'0.32rem'" :height="'0.32rem'" @iconClick="deleteFn" />
+        </h2>
+        <div class="mt-12 flex flex-wrap">
+          <span class="plr-10 round-8 mr-10 iblock mb-10 lh-20 tag-name" v-for="(tagItem, tagIndex) in searchHistoryList" :key="tagIndex" @click="onSearch(tagItem)">{{ tagItem }}</span>
+          <BmIcon :name="'down-icon'" :width="'0.64rem'" :height="'0.64rem'" v-if="historyNum" @iconClick="showMoreHistory" />
+        </div>
+        <!-- 搜索发现 -->
+        <h2 class="fs-14 black mt-30">{{ $t('search_found') }}</h2>
+        <div class="mt-12">
+          <span class="plr-10 round-8 mr-12 iblock mb-10 tag-name" v-for="(tag, index) in searchFindList" :key="index" @click="onSearch(tag.name)">{{ tag.name }}</span>
+        </div>
+      </div>
+
+      <PullRefresh v-show="!isShowTip" :refreshing="refreshing" @refresh="onRefresh" class="pb-20 custom-min-height-154 bg-white">
+        <div :class="{'w-100': true, 'plr-20 bg-white': arrangeType == 1 && list.length > 0, 'plr-12': arrangeType == 2} ">
+          <!-- 空状态  -->
+          <empty-status v-if="list.length === 0" :image="require('@/assets/images/empty/order.png')" />
+          <van-list
+            v-else
+            v-model="loading"
+            :finished="finished"
+            finished-text=""
+            @load="onLoad"
+          >
+            <!-- 商品展示两列 -->
+            <template v-if="arrangeType == 2">
+              <div 
+                class="mx-auto my-2"
+                v-masonry
+                item-selector=".custom-grid-item"
+                fit-width="true"
+                transition-duration="0s"
+                stagger="0.03s"
+                gutter="10"
               >
-                <ProductTopBtmSingle
-                  :img="{ url: searchItem.image, width: '3.4rem', height: '3.4rem', loadImage: require('@/assets/images/product-bgd-170.png') }" 
-                  :detail="{ desc: searchItem.name, price: searchItem.price, rate: 0, volumn: 20, ellipsis: 2, country: '', country_url: '' }"
-                  class="round-4 bg-white hidden v-100"
-                ></ProductTopBtmSingle>
+                <nuxt-link 
+                  v-for="(searchItem, searchIndex) in list" 
+                  :key="'search-list-' + searchIndex"
+                  :to="{ name: 'cart-product-id', params: { id: searchItem.productId } }"
+                  class="mt-12 custom-grid-item"
+                >
+                  <ProductTopBtmSingle
+                    :img="{ url: searchItem.mainPictureUrl, width: '3.4rem', height: '3.4rem', loadImage: require('@/assets/images/product-bgd-170.png') }" 
+                    :detail="{ desc: searchItem.productTitle, price: searchItem.productPrice, rate: searchItem.starLevel, volumn: searchItem.saleCount, ellipsis: 2, country: searchItem.supplyCountryName, country_url: searchItem.supplyCountryIcon }"
+                    class="round-4 bg-white hidden v-100"
+                  ></ProductTopBtmSingle>
+                </nuxt-link>
+              </div>
+            </template>
+            <!-- 商品展示一列 -->
+            <div v-else>
+              <nuxt-link 
+                v-for="(searchItem, searchIndex) in list" 
+                :key="'search-list-' + searchIndex"
+                :to="{ name: 'cart-product-id', params: { id: searchItem.productId } }"
+              >
+                <div :class="{'flex vcenter pt-20 pb-30 hidden bg-white': true, 'border-229 border-b': searchIndex !== list.length - 1} ">
+                  <BmImage 
+                    :url="searchItem.mainPictureUrl"
+                    :width="'1.8rem'" 
+                    :height="'1.8rem'"
+                    :fit="'cover'"
+                    :isShow="true"
+                    class="border round-4 flex-shrink"
+                    :alt="searchItem.productTitle"
+                  />
+                  <div class="ml-14 w-230 hidden-1">
+                    <p class="fs-14 black hidden-1" v-html="searchItem.productTitle"></p>
+                    <p class="mt-8 fs-14 light-grey">{{ $t('ship_from_', { replace_tip: searchItem.supplyCountryName }) }}</p>
+                    <div class="mt-16 flex vcenter between">
+                      <div>
+                        <span class="red fs-18">{{ $store.state.rate.currency }}{{ searchItem.productPrice }}</span>
+                        <!-- <span class="fs-10 line-through bg-grey ml-8">{{ $store.state.rate.currency }}{{ searchItem.promotionPrice }}</span> -->
+                      </div>
+                      <div class="fs-14 black">{{ searchItem.saleCount }}{{ $t('add_sold') }}</div>
+                    </div>
+                  </div>
+                </div>
               </nuxt-link>
             </div>
-          </template>
-          <!-- <div > -->
-            <!-- <ProductTopBtmSingle
-              :img="{ url: item.image, width: '3.4rem', height: '3.4rem', loadImage: require('@/assets/images/product-bgd-170.png') }" 
-              :detail="{ desc: item.description, price: item.price, rate: 0, volumn: 0, ellipsis: 2, country: '', country_url: '' }"
-              class="round-4 bg-white hidden v-100"
-            ></ProductTopBtmSingle> -->
-          <div slot="item" slot-scope="{ item }" :class="{'flex vcenter pt-20 pb-30 hidden bg-white': true, 'border-229': true} " v-else>
-            <BmImage 
-              :url="item.image"
-              :width="'1.8rem'" 
-              :height="'1.8rem'"
-              :fit="'cover'"
-              :isShow="true"
-              class="border round-4 flex-shrink"
-              :alt="item.name"
-            />
-            <div class="ml-14 w-230 hidden-1">
-              <p class="fs-14 black hidden-1" v-html="item.name"></p>
-              <p class="mt-8 fs-14 light-grey">{{ $t('ship_from_', { replace_tip: '北京' }) }}</p>
-              <div class="mt-16 flex vcenter between">
-                <div>
-                  <span class="red fs-18">{{ $store.state.rate.currency }}{{ item.price }}</span>
-                  <!-- <span class="fs-10 line-through bg-grey ml-8">{{ $store.state.rate.currency }}{{ 0 }}</span> -->
-                </div>
-                <div class="fs-14 black">{{ 10 }}{{ $t('add_sold') }}</div>
-              </div>
+          </van-list>
+        </div>
+      </PullRefresh>
+    </template>
+
+    <!-- 弹窗筛选 -->
+    <van-popup
+      v-model="filterPopup"
+      position="right"
+      class="product-search"
+    >
+      <div class="v-100">
+        <div class="plr-12 product-search-filter">
+          <h3 class="fs-16 black fw">{{ $t('price_range') }}</h3>
+          <!-- 价格区间 -->
+          <div class="mt-20 flex between vcenter">
+            <van-field v-model="minPrice" type="number" size="small" class="bg-grey-f5 round-8 mr-8 lh-1 ptb-6" :placeholder="$t('minimum_price')" />
+            -
+            <van-field v-model="maxPrice" type="number" size="small" class="bg-grey-f5 round-8 ml-8 lh-1 ptb-6" :placeholder="$t('maximum_price')" />
+          </div>
+          <!-- 服务/折扣 -->
+          <div class="mt-32">
+            <h3 class="fs-16 black fw">{{ $t('service_discount') }}</h3>
+            <div class="mt-6 flex flex-wrap">
+              <span :class="{'ptb-6 black fs-14 lh-20 tc w-130 mt-14 ml-10 odd-0 plr-4 hidden-1 bg-grey-f5 round-8 border-transparent': true, 'is-active': deliveryType == true}" @click="deliveryType = !deliveryType">{{ $t('tospino_logistics') }}</span>
+              <span :class="{'ptb-6 black fs-14 lh-20 tc w-130 mt-14 ml-10 odd-0 plr-4 hidden-1 bg-grey-f5 round-8 border-transparent': true, 'is-active': available == true}" @click="available = !available">{{ $t('only_see_stock') }}</span>
+              <span :class="{'ptb-6 black fs-14 lh-20 tc w-130 mt-14 ml-10 odd-0 plr-4 hidden-1 bg-grey-f5 round-8 border-transparent': true, 'is-active': overseas == true}" @click="overseas = !overseas">{{ $t('overseas_purchase') }}</span>
             </div>
           </div>
-          <!-- </div> -->
-        </ais-hits>
+          <!-- 品牌 -->
+          <div class="mt-32" v-if="brandList.length > 0">
+            <h3 class="fs-16 black fw">{{ $t('brand') }}</h3>
+            <div class="mt-6 flex flex-wrap">
+              <span :class="{'ptb-6 black fs-14 lh-20 tc w-84 mt-14 ml-10 odd-3 plr-4 hidden-1 bg-grey-f5 round-8 border-transparent': true, 'is-active': brandName == brandItem.value}" v-for="(brandItem, brandIndex) in brandList" :key="'brand-item-' + brandIndex" @click="brandName = brandItem.value">{{ brandItem.value }}</span>
+            </div>
+          </div>
+          <!-- 所有类别 -->
+          <div class="mt-32" v-if="categoryList.length > 0">
+            <h3 class="fs-16 black fw">{{ $t('all_categories') }}</h3>
+            <div class="mt-6 flex flex-wrap">
+              <span :class="{'ptb-6 black fs-14 lh-20 tc w-84 mt-14 ml-10 odd-3 plr-4 hidden-1 bg-grey-f5 round-8 border-transparent': true, 'is-active': categoryName == categoryItem.value}" v-for="(categoryItem, categoryIndex) in categoryList" :key="'category-index-' + categoryIndex" @click="categoryName = categoryItem.value">{{ categoryItem.value }}</span>
+            </div>
+          </div>
+        </div>
       </div>
-    </ais-instant-search-ssr>
+
+      <div class="product-search__btn flex">
+        <button class="red fw fs-16 product-search__btn--reset" @click="onReset">{{ $t('reset') }}</button>
+        <button class="white fw fs-16 bg-green-linear" @click="onFilter">{{ $t('determine') }}</button>
+      </div>
+    </van-popup>
+    
   </div>
 </template>
 
 <script>
-import algoliasearch from 'algoliasearch/lite';
-import 'instantsearch.css/themes/reset.css';
-import 'instantsearch.css/themes/satellite-min.css';
 import { Search, Tab, Tabs, DropdownItem, DropdownMenu, Popup, Field, Cell, Sticky, List } from 'vant';
 import ProductTopBtmSingle from '@/components/ProductTopBtmSingle';
 import EmptyStatus from '@/components/EmptyStatus';
-// import { getSearchPull } from '@/api/search';
+import { getSearchPull } from '@/api/search';
 import PullRefresh from '@/components/PullRefresh';
+// import algoliasearch from 'algoliasearch/lite';
+// import instantsearch from 'instantsearch.js';
+// import { searchBox, hits } from 'instantsearch.js/es/widgets';
+
+// const searchClient = instantsearch({
+//   indexName: 'tospinoMall',
+//   searchClient: algoliasearch(
+//     '62MLEBY33X',
+//     'b8f81ef6a145b0e57dd10b020d1c0c54'
+//   ),
+//   searchFunction(helper) {
+//     if (helper.state.query) {
+//       helper.search();
+//     }
+//   }
+// });
+const algoliasearch = require("algoliasearch");
+
+const client = algoliasearch('62MLEBY33X','b8f81ef6a145b0e57dd10b020d1c0c54');
+const searchClient = client.initIndex("tospinoMall");
 
 export default {
+  name: 'search',
   components: {
     vanSearch: Search,
     vanTab: Tab,
@@ -186,9 +269,9 @@ export default {
       overseas: false,
       deliveryType: false,
       available: false,
-      pageIndex: 1,
+      pageIndex: 0,
       pageSize: 10,
-      params: {},
+      params: null,
       refreshing: {
         isFresh: false
       },
@@ -199,12 +282,128 @@ export default {
       shopId: '',
       backName: '',
       backNameId: '',
-      backQuery: null,
-      searchClient: algoliasearch(
-        '62MLEBY33X', // 62MLEBY33X
-        'b8f81ef6a145b0e57dd10b020d1c0c54', // b8f81ef6a145b0e57dd10b020d1c0c54
-      )
+      backQuery: null
     }
+  },
+  async fetch() {
+    this.searchVal = this.$route.query.val || ''; // 搜索value
+    this.isShowTip = this.searchVal.length > 0 ? false : true;
+
+    let _params = this.$route.query;
+    delete _params.val;
+
+    if (this.$route.query.back) { // 从哪个页面进来的
+      this.backName = this.$route.query.back;
+    }
+    if (this.$route.query.backId) {
+      this.backNameId = this.$route.query.backId;
+      this.isRouteBack = 1;
+    }
+    if (this.$route.query.backQuery) {
+      this.backQuery = this.$route.query.backQuery;
+    }
+
+    // 如果带着搜索的参数跳转过来的需要先获取相对应的搜索数据
+    if (this.searchVal != '') {
+      
+      console.log('------------')
+      // searchClient.start();
+      console.log(searchClient)
+      // searchClient.on('render', res => {
+      //   console.log(res)
+      // })
+      // searchClient.helper.search('').then(({hits}) => {
+      //   console.log(hits)
+      // })
+        this.pageIndex = 0
+        searchClient.search(this.searchVal, {
+          page: this.pageIndex, // 从0开始算起
+          hitsPerPage: this.pageSize
+        }).then(({hits, nbHits}) => {
+          this.total = nbHits;
+          this.list = hits;
+        })
+      
+      this.$store.commit('SET_SEARCHPRODUCTLIST', this.searchVal); // 搜索历史存储
+      this.arrangeType = 2;
+      // this.pageIndex = 1;
+      // // 获取搜索列表数据
+      // this.params = {..._params, pageIndex: this.pageIndex, pageSize: this.pageSize};
+      // if (this.shopId != '') {
+      //   this.params = {
+      //     ...this.params,
+      //     shopId: this.shopId
+      //   }
+      // }
+      // const listData = await this.$api.getProductSearch(this.params);
+      // this.isRouteBack = 1;
+      
+      // // 数据列表需要格式化
+      // this.list = listData.data.items.map(item => {
+      //   return {
+      //     ...item,
+      //     starLevel: parseFloat(item.starLevel),
+      //     saleCount: parseFloat(item.saleCount)
+      //   }
+      // });
+      this.isShowTip = false;
+      this.loading = false;
+      this.finished = false;
+
+      // // 品牌列表
+      // this.brandList = listData.data.brandList;
+      // // 所有分类
+      // this.categoryList = listData.data.categoryList;
+      // this.total = listData.data.total;
+
+      // if (typeof this.$redrawVueMasonry === 'function') {
+      //   this.$redrawVueMasonry();
+      // }
+      
+      // 更新页面展示
+      this.searchHistoryList = this.$store.state.searchProductList.filter((item, index) => {
+        return index < 6;
+      });
+    }
+
+    // 搜索发现数据
+    const findList = await this.$api.getSearchHot();
+    this.searchFindList = findList.data.result;
+
+    // 获得底纹词
+    const hintList = await this.$api.getHintResult();
+    this.hintName = hintList.data.result[0].name;
+  },
+  watch: {
+    '$route'() {
+      this.$fetch();
+    }
+  },
+  activated() {
+    this.$fetch();
+    if (this.$route.query.shopId) { // 从店铺搜索跳转过来的
+      this.shopId = this.$route.query.shopId;
+    }
+    if (this.searchVal == '') { // 没有带参数进来的时候，搜索输入框需要自动聚焦
+      this.$nextTick(() => {
+        this.$refs.searchContainer.querySelector('input').focus();
+      })
+      this.isRouteBack = this.$route.query.backId ? 1 : 0;
+    } else {
+      this.isRouteBack = 1;
+    }
+    this.searchHistoryList = this.$store.state.searchProductList.filter((item, index) => {
+      return index < 6;
+    });
+    this.historyNum = this.$store.state.searchProductList.length > 6 ? true: false;
+    // 搜索防抖
+    this.inputChange = this.$utils.debounce((e) => {
+      this.isShowTip = e[0].length > 0 && this.list.length === 0 ? -1 : e[0].length === 0;
+      if (!this.searchVal) {
+        return false;
+      }
+      this.getSearchPull();
+    }, 300);
   },
   deactivated() {
     this.shopId = '';
@@ -232,35 +431,38 @@ export default {
       }
     },
     getSearchList(index, title) { // 获取分类列表
-      this.pageIndex = 1;
+      this.pageIndex = 0;
       this.finished = false;
-      this.params = { pageIndex: this.pageIndex, pageSize: this.pageSize, searchKeyword: this.searchVal };
+      // this.params = { pageIndex: this.pageIndex, pageSize: this.pageSize, searchKeyword: this.searchVal };
       if (index == 1) { // 销量
         this.params = {
-          ...this.params,
-          sortMap: {
-            key: 'sale_count',
-            value: 0
-          }
+          // ...this.params,
+          // sortMap: {
+          //   key: 'sale_count',
+          //   value: 0
+          // }
+          customRanking: ['desc(popularity)']
         }
       } else if (index == 0) { 
         if (this.dropdownVal == 0) { // 综合排序
           // this.typeActive = this.$t('search_filter_overall');
         } else if (this.dropdownVal == 1) { // 价格升序
           this.params = {
-            ...this.params,
-            sortMap: {
-              key: 'promotion_price',
-              value: 1
-            }
+            // ...this.params,
+            // sortMap: {
+            //   key: 'promotion_price',
+            //   value: 1
+            // }
+            customRanking: ['asc(price)']
           }
         } else if (this.dropdownVal == 2) { // 价格降序
           this.params = {
-            ...this.params,
-            sortMap: {
-              key: 'promotion_price',
-              value: 0
-            }
+            // ...this.params,
+            // sortMap: {
+            //   key: 'promotion_price',
+            //   value: 0
+            // }
+            customRanking: ['desc(price)']
           }
         }
       }
@@ -270,23 +472,25 @@ export default {
       // if (value == 0) { // 综合排序
       //   this.typeActive = this.$t('search_filter_overall');
       // }
-      this.pageIndex = 1;
+      this.pageIndex = 0;
       this.params = { pageIndex: this.pageIndex, pageSize: this.pageSize, searchKeyword: this.searchVal };
       if (value == 1) { // 价格升序
         this.params = {
-          ...this.params,
-          sortMap: {
-            key: 'promotion_price',
-            value: 1
-          }
+          // ...this.params,
+          // sortMap: {
+          //   key: 'promotion_price',
+          //   value: 1
+          // }
+          customRanking: ['asc(price)']
         }
       } else if (value == 2) { // 价格降序
         this.params = {
-          ...this.params,
-          sortMap: {
-            key: 'promotion_price',
-            value: 0
-          }
+          // ...this.params,
+          // sortMap: {
+          //   key: 'promotion_price',
+          //   value: 0
+          // }
+          customRanking: ['desc(price)']
         }
       }
       this.getProductList();
@@ -406,47 +610,92 @@ export default {
       })
     },
     getProductList() { // 获取商品列表
-      this.params = {
-        ...this.params,
-        pageIndex: this.pageIndex
-      }
-      if (this.shopId != '') {
-        this.params = {
-          ...this.params,
-          shopId: this.shopId
-        }
-      }
-      this.$api.getProductSearch(this.params).then(res => {
-        let list = res.data.items.map(item => {
-          return {
-            ...item,
-            starLevel: parseFloat(item.starLevel)
-          }
-        });
-        this.list = this.pageIndex == 1 ? list : this.list.concat(list);
-        // 品牌列表
-        this.brandList = res.data.brandList;
-        // 所有分类
-        this.categoryList = res.data.categoryList;
-        this.total = res.data.total;
-        this.isShowTip = false;
-        this.filterPopup = false; // 筛选窗口隐藏
-        this.refreshing.isFresh = false;
-        this.loading = false;
-        this.finished = false;
-        setTimeout(() => {
-          if (typeof this.$redrawVueMasonry === 'function') {
-            this.$redrawVueMasonry();
-          }
-        }, 50)
-      })
+      // if (this.params) {
+      //   searchClient.setSettings(this.params);
+      // }
+      // searchClient.setSettings({
+      //   ranking: [
+      //     // 'desc(popularity)',
+      //     'desc(price)'
+      //   ]
+      // }).then(() => {
+        searchClient.search(this.searchVal, {
+          page: this.pageIndex, // 从0开始算起
+          hitsPerPage: this.pageSize,
+          ranking: 'asc(price)'
+        }).then(({hits, nbHits}) => {
+          this.total = nbHits;
+          this.list = this.pageIndex == 0 ? hits : this.list.concat(hits);
+          this.isShowTip = false;
+          this.filterPopup = false; // 筛选窗口隐藏
+          this.refreshing.isFresh = false;
+          this.loading = false;
+          this.finished = this.total == this.list.length ? true : false;
+          setTimeout(() => {
+            if (typeof this.$redrawVueMasonry === 'function') {
+              this.$redrawVueMasonry();
+            }
+          }, 50)
+        })
+      // })
+      // searchClient.search(this.searchVal, {
+      //   page: this.pageIndex, // 从0开始算起
+      //   hitsPerPage: this.pageSize,
+      //   customRanking: ['asc(price)']
+      // }).then(({hits, nbHits}) => {
+      //   this.total = nbHits;
+      //   this.list = this.pageIndex == 0 ? hits : this.list.concat(hits);
+      //   this.isShowTip = false;
+      //   this.filterPopup = false; // 筛选窗口隐藏
+      //   this.refreshing.isFresh = false;
+      //   this.loading = false;
+      //   this.finished = this.total == this.list.length ? true : false;
+      //   setTimeout(() => {
+      //     if (typeof this.$redrawVueMasonry === 'function') {
+      //       this.$redrawVueMasonry();
+      //     }
+      //   }, 50)
+      // })
+      // this.params = {
+      //   ...this.params,
+      //   pageIndex: this.pageIndex
+      // }
+      // if (this.shopId != '') {
+      //   this.params = {
+      //     ...this.params,
+      //     shopId: this.shopId
+      //   }
+      // }
+      // this.$api.getProductSearch(this.params).then(res => {
+      //   let list = res.data.items.map(item => {
+      //     return {
+      //       ...item,
+      //       starLevel: parseFloat(item.starLevel)
+      //     }
+      //   });
+      //   this.list = this.pageIndex == 1 ? list : this.list.concat(list);
+      //   // 品牌列表
+      //   this.brandList = res.data.brandList;
+      //   // 所有分类
+      //   this.categoryList = res.data.categoryList;
+      //   this.total = res.data.total;
+      //   this.isShowTip = false;
+      //   this.filterPopup = false; // 筛选窗口隐藏
+      //   this.refreshing.isFresh = false;
+      //   this.loading = false;
+      //   this.finished = false;
+      //   setTimeout(() => {
+      //     if (typeof this.$redrawVueMasonry === 'function') {
+      //       this.$redrawVueMasonry();
+      //     }
+      //   }, 50)
+      // })
     },
     onRefresh() { // 刷新
-      this.pageIndex = 1;
+      this.pageIndex = 0;
       this.getProductList();
     },
     onLoad() { // 加载更多
-      this.finished = false;
       if (this.total == this.list.length) { // 没有下一页了
         this.finished = true;
         this.loading = false;
@@ -496,35 +745,88 @@ export default {
 }
 </script>
 
+<style lang="less" scoped>
+.tag-name{
+  padding-top: 6px;
+  padding-bottom: 6px;
+  background-color: #F8F8F8;
+}
+.delete-style{
+  color: rgba(0, 0, 0, .45);
+  font-size: 14px;
+}
+.w-230{
+  width: 230px;
+}
+.product-search{
+  width: 79%;
+  height: 100%;
+  .product-search-filter{
+    padding-top: 60px;
+    padding-bottom: 60px;
+  }
+  .product-search__btn{
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background-color: #fff;
+    button{
+      width: 50%;
+      height: 48px;
+      outline: none;
+      border: none;
+    }
+    .product-search__btn--reset{
+      background-color: rgba(255, 102, 102, 0.05);
+    }
+  }
+}
+.ptb-6{
+  padding-top: 6px!important;
+  padding-bottom: 6px!important;
+}
+.mt-32{
+  margin-top: 32px;
+}
+.w-130{
+  width: 130px;
+}
+.mt-6{
+  margin-top: 6px;
+}
+.w-84{
+  width: 84px;
+}
+.odd-0{
+  &:nth-child(odd) {
+    margin-left: 0!important;
+  }
+}
+.odd-3{
+  &:nth-child(3n+1) {
+    margin-left: 0!important;
+  }
+}
+.v-100{
+  height: 100%;
+  overflow: scroll;
+}
+.border-transparent{
+  border: 1px solid transparent;
+}
+.is-active{
+  color: #42B7AE!important;
+  background-color: rgba(66, 183, 174, 0.05)!important;
+  border: 1px solid #42B7AE!important;
+}
+.border-229::after{
+  width: 229px;
+  left: auto;
+  right: 0;
+}
+</style>
 <style lang="less">
-.algolia-container{
-  [class^=ais-]{
-    font-size: 12px!important;
-  }
-  .ais-SearchBox-form{
-    height: 34px;
-    line-height: 34px;
-    &::before{
-      width: 20px;
-      height: 20px;
-      background-repeat: no-repeat;
-      background-size: 100% 100%;
-      left: 10px;
-      margin-top: -10px;
-    }
-    .ais-SearchBox-input{
-      padding-left: 46px;
-      border-radius: 20px;
-    }
-  }
-  .ais-Hits-item, .ais-InfiniteHits-item{
-    padding: 0;
-    line-height: auto;
-    box-shadow: none;
-    line-height: 1.2;
-  }
-  .ais-SearchBox-reset{
-    right: 10px;
-  }
+.pr-60{
+  padding-right: 60px!important;
 }
 </style>
