@@ -257,7 +257,7 @@
     <!-- 平台处理中，请耐心等待 -->
     <div class="bg-white plr-12 ptb-20" v-if="detail.status == 7 && detail.involvedStatus == 2">
       <h4 class="fs-14 fw">{{ $t('refund_return_state_tip_49') }}</h4>
-      <p class="mt-12 fs-12 light-grey pre-wrap" v-html="$t('refund_return_state_tip_50')"></p>
+      <p class="mt-12 fs-12 light-grey pre-wrap" v-html="$t('refund_return_state_tip_50', { replace_tip: detail.orderType == 1 ? $t('merchant'): $t('platform') })"></p>
     </div>
 
     <!-- 退货退款/换货 成功, 换货暂时不做 -->
