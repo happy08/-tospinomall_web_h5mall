@@ -1,7 +1,7 @@
 <template>
   <!-- 首页-头部-搜索页面 -->
   <div :class="{'bg-grey': !isShowTip, 'v-percent-100': true}">
-    <van-sticky :offset-top="0">
+    <van-sticky :offset-top="0" class="home-search-sticky">
       <BmHeaderNav :left="{ isShow: true, isEmit: true }" :title="$t('search')" :border="false" @leftClick="leftClick" />
       <!-- 搜索 -->
       <van-search
@@ -740,5 +740,8 @@ export default {
 <style lang="less">
 .pr-60{
   padding-right: 60px!important;
+}
+.home-search-sticky .van-sticky{
+  background-color: #fff;
 }
 </style>
