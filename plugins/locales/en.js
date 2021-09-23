@@ -28,7 +28,7 @@ const en = {
   your_password_6_20: 'Your password (6-20)',
   forgot_password: 'Forgot Password',
   or: 'OR',
-  login_service_privacy: 'By loging in, you agree to {replace_tip} and {replace_tip2}',
+  login_service_privacy: 'By loging in, you agree to',
   enter_verification_code: 'Enter verification code',
   get_it: 'Get It',
   phone_number: 'Phone number',
@@ -668,7 +668,7 @@ const en = {
   take_address: 'Pickup address',
   address: 'Address',
   return_address: 'Return address',
-  me_read_and_agreen_server: 'I have read and agree to the {replace_tip} and the {replace_tip2}',
+  me_read_and_agreen_server: 'I have read and agree to ',
   reply: 'Reply',
   please_choose_address: 'Please select the delivery address',
   bill_search_placeholder: 'Enter bill-related information',
@@ -699,7 +699,8 @@ const en = {
   free_freight: 'Free shipping',
   not_sale: 'The region does not support sales',
   refund_return_state_tip_50: 'You have successfully initiated a return and refund request, please wait patiently for the {replace_tip} to process',
-  refund_return_state_tip_51: 'After the platform agrees, please return the goods according to the return address given, and record the return shipping order number'
+  refund_return_state_tip_51: 'After the platform agrees, please return the goods according to the return address given, and record the return shipping order number',
+  with_and: 'and'
 }
 
 export default en;

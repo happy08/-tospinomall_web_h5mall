@@ -28,7 +28,7 @@ const cn = {
   your_password_6_20: '你的密码（6-20）',
   forgot_password: '忘记密码',
   or: 'OR',
-  login_service_privacy: '登录代表您已阅读并同意{replace_tip}和{replace_tip2}',
+  login_service_privacy: '登录代表您已阅读并同意',
   enter_verification_code: '输入验证码',
   get_it: '获取验证码',
   phone_number: '手机号码',
@@ -668,7 +668,7 @@ const cn = {
   take_address: '取件地址',
   address: '地址',
   return_address: '退货地址',
-  me_read_and_agreen_server: '我已阅读并同意{replace_tip}和{replace_tip2}',
+  me_read_and_agreen_server: '我已阅读并同意',
   please_read_checked: '请阅读并勾选协议',
   reply: '回复',
   please_choose_address: '请选择收货地址',
@@ -700,7 +700,8 @@ const cn = {
   free_freight: '免运费',
   not_sale: '该商品在该地区暂不支持销售',
   refund_return_state_tip_50: '您已成功发起退货退款申请，请耐心等待{replace_tip}处理',
-  refund_return_state_tip_51: '平台同意后，请按照给出的退货地址退货，并记录退货运单号'
+  refund_return_state_tip_51: '平台同意后，请按照给出的退货地址退货，并记录退货运单号',
+  with_and: '和'
 }
 
 export default cn;

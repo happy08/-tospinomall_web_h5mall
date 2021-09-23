@@ -28,7 +28,7 @@ const es = {
   your_password_6_20: 'Tu contraseña (6-20)',
   forgot_password: 'olvida la contraseña',
   or: 'O',
-  login_service_privacy: 'Iniciar sesión significa que ha leído y está de acuerdo con {replace_tip} y {replace_tip2}',
+  login_service_privacy: 'Iniciar sesión significa que ha leído y está de acuerdo con',
   enter_verification_code: 'Introducir el código de confirmación',
   get_it: 'obtener el código de verificación',
   phone_number: 'Número de teléfono móvil',
@@ -668,7 +668,7 @@ const es = {
   take_address: 'Dirección de entrega',
   address: 'Dirección',
   return_address: 'dirección del remitente',
-  me_read_and_agreen_server: 'He leído y estoy de acuerdo con {replace_tip} y {replace_tip2}',
+  me_read_and_agreen_server: 'He leído y estoy de acuerdo con',
   please_read_checked: 'Por favor lea y marque el acuerdo.',
   reply: 'respuesta',
   please_choose_address: 'Por favor seleccione la dirección de entrega.',
@@ -700,7 +700,8 @@ const es = {
   free_freight: 'envío gratis',
   not_sale: 'Este producto no está actualmente disponible para la venta en esta región.',
   refund_return_state_tip_50: 'Ha iniciado con éxito una solicitud de devolución y reembolso, espere pacientemente a que {replace_tip} procese',
-  refund_return_state_tip_51: 'Una vez que la plataforma esté de acuerdo, devuelva los productos de acuerdo con la dirección de devolución proporcionada y registre el número de orden de envío de devolución.'
+  refund_return_state_tip_51: 'Una vez que la plataforma esté de acuerdo, devuelva los productos de acuerdo con la dirección de devolución proporcionada y registre el número de orden de envío de devolución.',
+  with_and: 'y'
 }
 
 export default es;

@@ -270,6 +270,9 @@ export default {
     this.isShowTip = this.searchVal.length > 0 ? false : true;
 
     let _params = this.$route.query;
+    if (this.$route.query.navCategoryIds && !Array.isArray(this.$route.query.navCategoryIds)) {
+      _params.navCategoryIds = [this.$route.query.navCategoryIds];
+    }
     delete _params.val;
 
     if (this.$route.query.back) { // 从哪个页面进来的
@@ -285,7 +288,6 @@ export default {
 
     // 如果带着搜索的参数跳转过来的需要先获取相对应的搜索数据
     if (this.searchVal != '') {
-      console.log('22222222222222222222')
       this.$store.commit('SET_SEARCHPRODUCTLIST', this.searchVal); // 搜索历史存储
       this.arrangeType = 2;
       this.pageIndex = 1;

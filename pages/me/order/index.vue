@@ -317,25 +317,22 @@ export default {
       if (from.name == 'me' || from.name == null || from.name == 'cart-order-confirm' || from.name == 'me-order-detail-id' || from.name == 'me-aftersale') {
         vm.isFirst = true;
         vm.pageNum = 1;
+        vm.filterTimeType = 0;
+        vm.params = {
+          pageNum: 1,
+          pageSize: 10
+        }
         vm.$fetch();
       }
     });
   },
   async fetch() {
-    // if (!this.isTab) {
-    //   this.typeActive = this.$route.query.type ? parseFloat(this.tabs[this.$route.query.type].type) : 100;
-    // }
-    if (this.typeActive == 100) { // 全部
-      this.params = {
-        pageNum: this.params.pageNum,
-        pageSize: this.params.pageSize
-      }
-    } else {
-      this.params = {
-        pageNum: this.params.pageNum,
-        pageSize: this.params.pageSize,
-        status: this.typeActive
-      }
+    if (!this.isTab) {
+      this.typeActive = this.$route.query.type ? parseFloat(this.tabs[this.$route.query.type].type) : 100;
+    }
+
+    if (this.typeActive != 100) { // 全部
+      this.params.status = this.typeActive;
     }
     if (this.params.pageNum == 1 && this.refreshing.isFresh == false) { // 只有请求第一页数据的时候进行loading处理
       // 加载图标
@@ -383,30 +380,38 @@ export default {
         pageNum: 1,
         pageSize: 10
       };
+      if (this.typeActive != 100) { // 订单状态
+        _params.status = this.typeActive;
+      }
       if (this.filterTimeType == 1) _params.beforeDay = 7; // 一周之内
       let datetime = parseInt(this.$store.state.user.nowTime);
       if (this.filterTimeType == 2) { // 一个月内
         _params = {
+          ..._params,
           beginTime: Moment(datetime).subtract(1,'months').format('YYYY-MM-DD HH:mm:ss'),
           endTime: Moment(datetime).format('YYYY-MM-DD HH:mm:ss')
         }
       } else if (this.filterTimeType == 3) { // 3个月内
         _params = {
+          ..._params,
           beginTime: Moment(datetime).subtract(3,'months').format('YYYY-MM-DD HH:mm:ss'),
           endTime: Moment(datetime).format('YYYY-MM-DD HH:mm:ss')
         }
       } else if (this.filterTimeType == 4) { // 今年
         _params = {
+          ..._params,
           beginTime: Moment(Moment(datetime).format('YYYY') + '-01-01').format('YYYY-MM-DD HH:mm:ss'),
           endTime: Moment(datetime).format('YYYY-MM-DD HH:mm:ss')
         }
       } else if (this.filterTimeType == 5) { // 去年
         _params = {
+          ..._params,
           beginTime: Moment( Moment(datetime).subtract(1,'years').format('YYYY') + '-01-01' ).format('YYYY-MM-DD HH:mm:ss'),
           endTime: Moment(Moment(datetime).format('YYYY') + '-01-01').format('YYYY-MM-DD HH:mm:ss')
         }
       } else if (this.filterTimeType == 6) { // 前年
         _params = {
+          ..._params,
           beginTime: Moment( Moment(datetime).subtract(2,'years').format('YYYY') + '-01-01' ).format('YYYY-MM-DD HH:mm:ss'),
           endTime: Moment(Moment(datetime).subtract(1,'years').format('YYYY') + '-01-01').format('YYYY-MM-DD HH:mm:ss')
         }

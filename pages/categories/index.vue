@@ -26,8 +26,8 @@
       <template #content>
         <div class="product-categories__box" v-for="(item, index) in leftLists" :key="index">
           <h4 class="fw fs-10 product-categories__box--title">{{ item.name }}</h4>
-          <div class="flex flex-wrap product-categories__box--caontainer">
-            <div @click="clickItemEvent(childrenItem)" class="tc mr-12 product-single" v-for="(childrenItem, childrenIndex) in item.children" :key="childrenIndex">
+          <div class="flex flex-wrap">
+            <div @click="clickItemEvent(childrenItem)" class="tc mr-12 mt-20 product-single" v-for="(childrenItem, childrenIndex) in item.children" :key="childrenIndex">
               <BmImage 
                 :url="childrenItem.icon"
                 :width="'1.4rem'"
@@ -203,9 +203,6 @@ export default {
   }
   .product-categories__box--title{
     line-height: 10px;
-  }
-  .product-categories__box--caontainer{
-    margin-top: 18px;
   }
 }
 </style>
