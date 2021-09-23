@@ -1,11 +1,11 @@
 <template>
   <!-- 账单 -->
   <div class="bg-grey vh-100">
-    <van-sticky :class="{'is-animate': isHeader}">
+    <van-sticky :class="{'is-animate': isHeader, 'wallet-search-sticky': true}">
       <BmHeaderNav :left="{ isShow: true }" :border="false" :title="$t('bill')" :class="{'is-show': isHeader}" />
 
       <!-- 搜索框 -->
-      <div class="bg-white plr-12 pt-4 pb-10 border-b">
+      <div class="bg-white plr-12 ptb-10 border-b">
         <van-search 
           v-model="searchVal" 
           :placeholder="$t('bill_search_placeholder')"
@@ -184,5 +184,11 @@ export default {
 }
 .is-animate{
   animation: all 1s;
+}
+</style>
+
+<style lang="less">
+.wallet-search-sticky .van-sticky{
+  background-color: #fff;
 }
 </style>
