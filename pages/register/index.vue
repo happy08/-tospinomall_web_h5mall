@@ -1,7 +1,7 @@
 <template>
   <!-- 登录-注册 -->
   <div>
-    <BmHeaderNav :left="{ isShow: true, url: '/login' }" :title="title" />
+    <BmHeaderNav :left="{ isShow: true, url: '/login' }" :title="title" ></BmHeaderNav>
     
     <div class="mlr-20 pb-30 flex between column register-page">
       <div>
@@ -10,37 +10,29 @@
           v-model="account_email"
           :placeholder="$t('enter_your_email')"
           class="field-container phone-code-field"
-          v-if="isType === 'email'"
           maxlength="254"
           type="email"
-        />
+          v-if="isType == 'email'"
+        >
+          <template #label>
+          </template>
+        </van-field>
         <!-- 手机号 --> 
-        <div v-else class="border-b">
-          <van-field
-            v-model="account"
-            :placeholder="$t('phone_number')"
-            class="field-container phone-code-field"
-            maxlength="30"
-            type="number"
-          >
-            <template #label>
-              <span @click="showPicker = true" class="iblock fs-14 black lh-20 prefix-container">
-                {{ prefixCode }}
-                <img class="prefix-container--icon" src="@/assets/images/triangle-icon.png">
-              </span>
-            </template>
-          </van-field>
-          <!-- 手机前缀选择 -->
-          <van-popup v-model="showPicker" round position="bottom">
-            <van-picker
-              show-toolbar
-              :columns="phonePrefixs"
-              value-key="phonePrefix"
-              @cancel="showPicker = false"
-              @confirm="onConfirm"
-            />
-          </van-popup>
-        </div>
+        <van-field
+          v-model="account"
+          :placeholder="$t('phone_number')"
+          class="field-container phone-code-field"
+          maxlength="30"
+          type="number"
+          v-else
+        >
+          <template #label>
+            <span @click="showPicker = true" class="iblock fs-14 black lh-20 prefix-container">
+              {{ prefixCode }}
+              <img class="prefix-container--icon" src="@/assets/images/triangle-icon.png">
+            </span>
+          </template>
+        </van-field>
         <!-- 验证码 -->
         <van-field
           v-model="code"
@@ -60,7 +52,7 @@
         <van-button class="mt-60 btn_h48 fw fs-16 w-100" color="linear-gradient(270deg, #3EB5AE 0%, #70CEB6 100%)" :disabled="(isType == 'email' && account_email.length === 0) || (isType != 'email' && account.length === 0) || code.length === 0" @click="jumpPwd">
           {{ $t('next') }}
         </van-button> 
-        <van-checkbox v-model="checked" class="mt-20" v-if="!$route.query.type && $route.query.type != 'forgot'">
+        <van-checkbox v-model="checked" class="mt-20" v-if="($route.query.type && $route.query.type != 'forgot') || !$route.query.type">
           <template #icon="props">
             <BmImage
               :url="props.checked ? require('@/assets/images/icon/choose-icon.png') : require('@/assets/images/icon/choose-default-icon.png')"
@@ -69,11 +61,11 @@
               :isLazy="false"
               :isShow="false"
               :alt="'Tospino choose icon'"
-            />
+            ></BmImage>
           </template>
           <div v-html="login_service_privacy()"></div>
         </van-checkbox>
-      </div> 
+      </div>
   
       <!-- 忘记密码时 可以切换手机和邮箱两种方式 -->
       <!-- <div class="login-page__btm" v-if="$route.query.type === 'forgot'"> -->
@@ -102,19 +94,33 @@
           </a> -->
           <!-- email -->
           <nuxt-link
-            v-if="$route.query.changeWay === 'phone' || !$route.query.changeWay" 
-            :to="{ name: 'register', query: { type: $route.query.type === 'forgot' ? 'forgot': 'phone', changeWay: 'email' } }"
+            v-if="$route.query.changeWay == 'phone' || !$route.query.changeWay" 
+            :to="{ name: 'register', query: { type: $route.query.type == 'forgot' ? 'forgot': 'phone', changeWay: 'email' } }"
           >
-            <BmIcon :name="'email-icon'" :width="'0.64rem'" :height="'0.64rem'" />
+            <BmIcon :name="'email-icon'" :width="'0.64rem'" :height="'0.64rem'"></BmIcon>
           </nuxt-link>
           <!-- 手机 -->
-          <nuxt-link v-if="$route.query.changeWay === 'email'" :to="{ name: 'register', query: { type: $route.query.type === 'forgot' ? 'forgot': 'phone', changeWay: 'phone' } }">
-            <BmIcon :name="'cellphone'" :width="'0.64rem'" :height="'0.64rem'" />
+          <nuxt-link 
+            v-if="$route.query.changeWay == 'email'" 
+            :to="{ name: 'register', query: { type: $route.query.type == 'forgot' ? 'forgot': 'phone', changeWay: 'phone' } }"
+          >
+            <BmIcon :name="'cellphone'" :width="'0.64rem'" :height="'0.64rem'"></BmIcon>
           </nuxt-link>
         </div>
         <!-- <div class="fs-14 tc mt-20 lh-20 login-page__btm--service" v-html="login_service_privacy()"></div> -->
       </div>
     </div>
+
+    <!-- 手机前缀选择 -->
+    <van-popup v-model="showPicker" round position="bottom">
+      <van-picker
+        show-toolbar
+        :columns="phonePrefixs"
+        value-key="phonePrefix"
+        @cancel="showPicker = false"
+        @confirm="onConfirm"
+      ></van-picker>
+    </van-popup> 
   </div>
 </template>
 
@@ -123,6 +129,7 @@ import { Field, Divider, Picker, Popup, Checkbox } from 'vant';
 import { getPhonePrefix, getPhoneCode, checkPhoneCode, getEmailCode, checkEmailCode } from '@/api/login';
 
 export default {
+  name: 'registerOrForgot',
   components: {
     vanField: Field,
     vanDivider: Divider,
@@ -153,9 +160,10 @@ export default {
         this.account_email = '';
         this.code = '';
         this.countdown = 0;
+        this.checked = false;
       }
       
-      if (to.query.changeWay !== 'email' || !to.query.changeWay) {
+      if (to.query.changeWay != 'email' || !to.query.changeWay) {
         this.getPhonePrefix();
       }
     }
@@ -172,6 +180,7 @@ export default {
         vm.account_email = '';
         vm.code = '';
         vm.countdown = 0;
+        vm.checked = false;
       }
     });
   },
@@ -232,7 +241,7 @@ export default {
       })
     },
     jumpPwd() { // 验证手机/邮箱号码，成功后跳转到设置密码页面 userType: 'buyer' 买家 seller 卖家 operator 运营
-      if (!this.checked && !this.$route.query.type) {
+      if (!this.checked && (!this.$route.query.type || this.$route.query.type && this.$route.query.type != 'forgot')) {
         this.$toast({
           message: this.$t('please_read_checked')
         })
