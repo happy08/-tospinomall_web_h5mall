@@ -28,7 +28,7 @@ const tw = {
   your_password_6_20: '你的密碼（6-20）',
   forgot_password: '忘記密碼',
   or: 'OR',
-  login_service_privacy: '登錄代表您已閱讀並同意{replace_tip}和{replace_tip2}',
+  login_service_privacy: '登錄代表您已閱讀並同意',
   enter_verification_code: '輸入驗證碼',
   get_it: '獲取驗證碼',
   phone_number: '手機號碼',
@@ -668,7 +668,7 @@ const tw = {
   take_address: '取件地址',
   address: '地址',
   return_address: '退貨地址',
-  me_read_and_agreen_server: '我已閱讀並同意{replace_tip}和{replace_tip2}',
+  me_read_and_agreen_server: '我已閱讀並同意',
   please_read_checked: '請閱讀並勾選協定',
   reply: '回復',
   please_choose_address: '請選擇收貨地址',
@@ -700,7 +700,8 @@ const tw = {
   free_freight: '免運費',
   not_sale: '該商品在該地區暫不支持銷售',
   refund_return_state_tip_50: '您已成功發起退貨退款申請，請耐心等待{replace_tip}處理',
-  refund_return_state_tip_51: '平臺同意後，請按照給出的退貨地址退貨，並記錄退貨運單號'
+  refund_return_state_tip_51: '平臺同意後，請按照給出的退貨地址退貨，並記錄退貨運單號',
+  with_and: '和'
 }
 
 export default tw;

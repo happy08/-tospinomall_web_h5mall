@@ -28,7 +28,7 @@ const vi = {
   your_password_6_20: 'Mật khẩu của bạn (6-20)',
   forgot_password: 'quên mật khẩu',
   or: 'HOẶC',
-  login_service_privacy: 'Đăng nhập có nghĩa là bạn đã đọc và đồng ý với {replace_tip} và {replace_tip2}',
+  login_service_privacy: 'Đăng nhập có nghĩa là bạn đã đọc và đồng ý với',
   enter_verification_code: 'Nhập mã xác nhận',
   get_it: 'lấy mã xác minh',
   phone_number: 'số điện thoại',
@@ -668,7 +668,7 @@ const vi = {
   take_address: 'Chọn địa chỉ',
   address: 'Địa chỉ',
   return_address: 'địa chỉ trả lại',
-  me_read_and_agreen_server: 'Tôi đã đọc và đồng ý với {replace_tip} và {replace_tip2}',
+  me_read_and_agreen_server: 'Tôi đã đọc và đồng ý với',
   please_read_checked: 'Vui lòng đọc và đánh dấu vào thỏa thuận',
   reply: 'Đáp lại',
   please_choose_address: 'Vui lòng chọn địa chỉ giao hàng',
@@ -700,7 +700,8 @@ const vi = {
   free_freight: 'miễn phí vận chuyển',
   not_sale: 'Sản phẩm này hiện không có sẵn để bán ở khu vực này',
   refund_return_state_tip_50: 'Bạn đã thực hiện thành công yêu cầu trả lại và hoàn tiền, vui lòng kiên nhẫn đợi {replace_tip} xử lý',
-  refund_return_state_tip_51: 'Sau khi nền tảng đồng ý, vui lòng gửi lại hàng hóa theo địa chỉ trả hàng đã cho, và ghi lại số đơn hàng gửi trả hàng'
+  refund_return_state_tip_51: 'Sau khi nền tảng đồng ý, vui lòng gửi lại hàng hóa theo địa chỉ trả hàng đã cho, và ghi lại số đơn hàng gửi trả hàng',
+  with_and: 'và'
 }
 
 export default vi;

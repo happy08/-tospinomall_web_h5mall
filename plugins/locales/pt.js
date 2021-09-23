@@ -28,7 +28,7 @@
   your_password_6_20: 'Sua senha (6-20)',
   forgot_password: 'Esqueça a senha',
   or: 'OU',
-  login_service_privacy: 'Login significa que você leu e concorda com {replace_tip} e {replace_tip2}',
+  login_service_privacy: 'Login significa que você leu e concorda com',
   enter_verification_code: 'Digite o código de confirmação',
   get_it: 'obter código de verificação',
   phone_number: 'número de celular',
@@ -668,7 +668,7 @@
   take_address: 'Endereço de retirada',
   address: 'endereço',
   return_address: 'endereço de devolução',
-  me_read_and_agreen_server: 'Eu li e concordo com {replace_tip} e {replace_tip2}',
+  me_read_and_agreen_server: 'Eu li e concordo com ',
   please_read_checked: 'Por favor, leia e marque o acordo',
   reply: 'responder',
   please_choose_address: 'Selecione o endereço de entrega',
@@ -700,7 +700,8 @@
   free_freight: 'Envio Grátis',
   not_sale: 'Este produto não está disponível para venda nesta região',
   refund_return_state_tip_50: 'Você iniciou com sucesso uma solicitação de devolução e reembolso, aguarde pacientemente {replace_tip} processar',
-  refund_return_state_tip_51: 'Depois que a plataforma concordar, devolva a mercadoria de acordo com o endereço de retorno fornecido e registre o número do pedido de envio de retorno'
+  refund_return_state_tip_51: 'Depois que a plataforma concordar, devolva a mercadoria de acordo com o endereço de retorno fornecido e registre o número do pedido de envio de retorno',
+  with_and: 'e'
 }
 
 export default por;

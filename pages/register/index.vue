@@ -63,7 +63,9 @@
               :alt="'Tospino choose icon'"
             ></BmImage>
           </template>
-          <div v-html="login_service_privacy()"></div>
+          <div class="fs-14">
+            {{ $t('me_read_and_agreen_server') }}<nuxt-link class="clr-blue" :to="{ name: 'service-type', params: { type: 'serve' }, query: { isH5: 1 } }">Tospino's {{ $t('term_of_service') }}</nuxt-link> {{ $t('with_and') }} <nuxt-link class="clr-blue" :to="{ name: 'service-type', params: { type: 'privacy' }, query: { isH5: 1 } }">{{ $t('privacy_policy') }}</nuxt-link>
+          </div>
         </van-checkbox>
       </div>
   
@@ -107,7 +109,6 @@
             <BmIcon :name="'cellphone'" :width="'0.64rem'" :height="'0.64rem'"></BmIcon>
           </nuxt-link>
         </div>
-        <!-- <div class="fs-14 tc mt-20 lh-20 login-page__btm--service" v-html="login_service_privacy()"></div> -->
       </div>
     </div>
 
@@ -294,9 +295,6 @@ export default {
       }).catch(() => {
         this.isNextFlag = false;
       })
-    },
-    login_service_privacy() {
-      return this.$t('me_read_and_agreen_server', { replace_tip: `<a class="clr-blue" href="/service/serve?isH5=1">Tospino's ${this.$t('term_of_service')}</a>`, replace_tip2: `<a class="clr-blue" href="/service/privacy?isH5=1">${this.$t('privacy_policy')}</a>` });
     }
   },
 }
