@@ -91,8 +91,8 @@
                   class="mt-12 custom-grid-item"
                 >
                   <ProductTopBtmSingle
-                    :img="{ url: searchItem.mainPictureUrl, width: '3.4rem', height: '3.4rem', loadImage: require('@/assets/images/product-bgd-170.png') }" 
-                    :detail="{ desc: searchItem.productTitle, price: searchItem.productPrice, rate: searchItem.starLevel, volumn: searchItem.saleCount, ellipsis: 2, country: searchItem.supplyCountryName, country_url: searchItem.supplyCountryIcon }"
+                    :img="{ url: searchItem.image, width: '3.4rem', height: '3.4rem', loadImage: require('@/assets/images/product-bgd-170.png') }" 
+                    :detail="{ desc: searchItem.name, price: searchItem.price, rate: searchItem.starLevel, volumn: searchItem.saleCount, ellipsis: 2, country: searchItem.supplyCountryName, country_url: searchItem.supplyCountryIcon }"
                     class="round-4 bg-white hidden v-100"
                   ></ProductTopBtmSingle>
                 </nuxt-link>
@@ -107,20 +107,20 @@
               >
                 <div :class="{'flex vcenter pt-20 pb-30 hidden bg-white': true, 'border-229 border-b': searchIndex !== list.length - 1} ">
                   <BmImage 
-                    :url="searchItem.mainPictureUrl"
+                    :url="searchItem.image"
                     :width="'1.8rem'" 
                     :height="'1.8rem'"
                     :fit="'cover'"
                     :isShow="true"
                     class="border round-4 flex-shrink"
-                    :alt="searchItem.productTitle"
+                    :alt="searchItem.name"
                   />
                   <div class="ml-14 w-230 hidden-1">
-                    <p class="fs-14 black hidden-1" v-html="searchItem.productTitle"></p>
+                    <p class="fs-14 black hidden-1" v-html="searchItem.name"></p>
                     <p class="mt-8 fs-14 light-grey">{{ $t('ship_from_', { replace_tip: searchItem.supplyCountryName }) }}</p>
                     <div class="mt-16 flex vcenter between">
                       <div>
-                        <span class="red fs-18">{{ $store.state.rate.currency }}{{ searchItem.productPrice }}</span>
+                        <span class="red fs-18">{{ $store.state.rate.currency }}{{ searchItem.price }}</span>
                         <!-- <span class="fs-10 line-through bg-grey ml-8">{{ $store.state.rate.currency }}{{ searchItem.promotionPrice }}</span> -->
                       </div>
                       <div class="fs-14 black">{{ searchItem.saleCount }}{{ $t('add_sold') }}</div>
@@ -532,32 +532,47 @@ export default {
     },
     onFilter() { // 筛选
       let _data = {
-        searchKeyword: this.searchVal,
-        brandName: this.brandName,
-        categoryName: this.categoryName
+        // searchKeyword: this.searchVal,
+        // brandName: this.brandName,
+        // categoryName: this.categoryName
       }
       if (this.available == true) { // 是否有货
-        _data.available = 1;
+        // _data.available = 1;
+        _data.filters = 'brand:Native Union';
       }
       if (this.overseas == true) { // 是否海外购
-        _data.overseas = 1;
+        // _data.overseas = 1;
+        _data.filters = 'brand:Nomad';
       }
       if (this.deliveryType == true) { // tospino物流
-        _data.deliveryType = 2;
+        // _data.deliveryType = 2;
       }
       if (this.minPrice != '') { // 最低价格
-        _data.queryMinPrice = this.minPrice;
+        // _data.queryMinPrice = this.minPrice;
+        _data.filters = `price >= ${this.minPrice}`;
       }
       if (this.maxPrice != '') { // 最高价格
-        _data.queryMaxPrice = this.maxPrice;
+        // _data.queryMaxPrice = this.maxPrice;
+        _data.filters = `price <= ${this.maxPrice}`;
       }
-      this.pageIndex = 1;
+      if (this.maxPrice != '' && this.minPrice != '') {
+        _data.filters = `price: ${this.minPrice} TO ${this.maxPrice}`;
+      }
+      this.pageIndex = 0;
       this.params = {
         ..._data,
-        pageIndex: this.pageIndex,
-        pageSize: this.pageSize
+        // pageIndex: this.pageIndex,
+        // pageSize: this.pageSize
       };
-      this.getProductList();
+      searchClient.setSettings({
+        attributesForFaceting: [
+          'brand' // or 'filterOnly(brand)' for filtering purposes only
+        ]
+      }).then(() => {
+        // done
+        this.getProductList();
+      });
+      
     },
     onReset() { // 筛选重置
       this.brandName = this.minPrice = this.maxPrice = this.categoryName = '';
@@ -619,29 +634,43 @@ export default {
       //     'desc(price)'
       //   ]
       // }).then(() => {
-        searchClient.search(this.searchVal, {
-          page: this.pageIndex, // 从0开始算起
-          hitsPerPage: this.pageSize,
-          ranking: 'asc(price)'
-        }).then(({hits, nbHits}) => {
-          this.total = nbHits;
-          this.list = this.pageIndex == 0 ? hits : this.list.concat(hits);
-          this.isShowTip = false;
-          this.filterPopup = false; // 筛选窗口隐藏
-          this.refreshing.isFresh = false;
-          this.loading = false;
-          this.finished = this.total == this.list.length ? true : false;
-          setTimeout(() => {
-            if (typeof this.$redrawVueMasonry === 'function') {
-              this.$redrawVueMasonry();
-            }
-          }, 50)
+        console.log(searchClient)
+        searchClient.setSettings({
+          ranking: [
+            'typo',
+            'geo',
+            'words',
+            'filters',
+            'proximity',
+            'attribute',
+            'exact',
+            'custom'
+          ]
+        }).then((res) => {
+          console.log(res)
         })
+        // searchClient.search(this.searchVal, {
+        //   page: this.pageIndex, // 从0开始算起
+        //   hitsPerPage: this.pageSize
+        // }).then(({hits, nbHits}) => {
+        //   this.total = nbHits;
+        //   this.list = this.pageIndex == 0 ? hits : this.list.concat(hits);
+        //   this.isShowTip = false;
+        //   this.filterPopup = false; // 筛选窗口隐藏
+        //   this.refreshing.isFresh = false;
+        //   this.loading = false;
+        //   this.finished = this.total == this.list.length ? true : false;
+        //   setTimeout(() => {
+        //     if (typeof this.$redrawVueMasonry === 'function') {
+        //       this.$redrawVueMasonry();
+        //     }
+        //   }, 50)
+        // })
       // })
       // searchClient.search(this.searchVal, {
       //   page: this.pageIndex, // 从0开始算起
       //   hitsPerPage: this.pageSize,
-      //   customRanking: ['asc(price)']
+      //   ...this.params // 过滤
       // }).then(({hits, nbHits}) => {
       //   this.total = nbHits;
       //   this.list = this.pageIndex == 0 ? hits : this.list.concat(hits);
