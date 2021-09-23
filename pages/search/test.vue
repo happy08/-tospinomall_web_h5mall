@@ -208,7 +208,7 @@ import PullRefresh from '@/components/PullRefresh';
 // });
 const algoliasearch = require("algoliasearch");
 
-const client = algoliasearch('62MLEBY33X','b8f81ef6a145b0e57dd10b020d1c0c54');
+const client = algoliasearch('62MLEBY33X','7a8da9a5fd3f8137ea8cb70b60806e8d');
 const searchClient = client.initIndex("tospinoMall");
 
 export default {
@@ -466,7 +466,14 @@ export default {
           }
         }
       }
-      this.getProductList();
+      searchClient.setSettings({
+        ranking: [
+          'asc(price)'
+        ]
+      }).then(() => {
+        this.getProductList();
+      })
+      
     },
     getDropSearchList(value) {
       // if (value == 0) { // 综合排序
@@ -481,7 +488,7 @@ export default {
           //   key: 'promotion_price',
           //   value: 1
           // }
-          customRanking: ['asc(price)']
+          ranking: ['asc(price)']
         }
       } else if (value == 2) { // 价格降序
         this.params = {
@@ -490,7 +497,7 @@ export default {
           //   key: 'promotion_price',
           //   value: 0
           // }
-          customRanking: ['desc(price)']
+          ranking: ['desc(price)']
         }
       }
       this.getProductList();
@@ -564,6 +571,7 @@ export default {
         // pageIndex: this.pageIndex,
         // pageSize: this.pageSize
       };
+      
       searchClient.setSettings({
         attributesForFaceting: [
           'brand' // or 'filterOnly(brand)' for filtering purposes only
@@ -635,37 +643,24 @@ export default {
       //   ]
       // }).then(() => {
         console.log(searchClient)
-        searchClient.setSettings({
-          ranking: [
-            'typo',
-            'geo',
-            'words',
-            'filters',
-            'proximity',
-            'attribute',
-            'exact',
-            'custom'
-          ]
-        }).then((res) => {
-          console.log(res)
+        searchClient.search(this.searchVal, {
+          page: this.pageIndex, // 从0开始算起
+          hitsPerPage: this.pageSize
+        }).then(({hits, nbHits}) => {
+          console.log(hits)
+          this.total = nbHits;
+          this.list = this.pageIndex == 0 ? hits : this.list.concat(hits);
+          this.isShowTip = false;
+          this.filterPopup = false; // 筛选窗口隐藏
+          this.refreshing.isFresh = false;
+          this.loading = false;
+          this.finished = this.total == this.list.length ? true : false;
+          setTimeout(() => {
+            if (typeof this.$redrawVueMasonry === 'function') {
+              this.$redrawVueMasonry();
+            }
+          }, 50)
         })
-        // searchClient.search(this.searchVal, {
-        //   page: this.pageIndex, // 从0开始算起
-        //   hitsPerPage: this.pageSize
-        // }).then(({hits, nbHits}) => {
-        //   this.total = nbHits;
-        //   this.list = this.pageIndex == 0 ? hits : this.list.concat(hits);
-        //   this.isShowTip = false;
-        //   this.filterPopup = false; // 筛选窗口隐藏
-        //   this.refreshing.isFresh = false;
-        //   this.loading = false;
-        //   this.finished = this.total == this.list.length ? true : false;
-        //   setTimeout(() => {
-        //     if (typeof this.$redrawVueMasonry === 'function') {
-        //       this.$redrawVueMasonry();
-        //     }
-        //   }, 50)
-        // })
       // })
       // searchClient.search(this.searchVal, {
       //   page: this.pageIndex, // 从0开始算起
