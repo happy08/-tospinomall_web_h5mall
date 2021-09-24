@@ -20,6 +20,7 @@
           :placeholder="$t('phone_number')"
           class="field-container phone-code-field"
           type="number"
+          maxlength="30"
         >
           <template #label>
             <span @click="showPicker = true" class="iblock fs-14 black lh-20 prefix-container">
@@ -181,6 +182,12 @@ export default {
 
       let _axios;
       if (this.$route.query.changeWay == 'email') { // 校验邮箱验证码
+        let reg = /^[a-z0-9A-Z]+[- | a-z0-9A-Z . _]+@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\.)+[a-zA-Z]{2,}$/;
+        if (!reg.test(this.account)) {
+          this.isNextFlag = false;
+          this.$toast(this.$t('email_format_error'));
+          return false;
+        }
         _axios = checkEmailCode({ code: this.code, email: this.account, userType: 'buyer', isDelCode: 0 });
       } else { // 校验手机验证码
         _axios = checkPhoneCode({ code: this.code, phone: this.account, phonePrefix: this.prefixCode.split('+')[1], userType: 'buyer', isDelCode: 0 });

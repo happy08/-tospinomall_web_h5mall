@@ -246,6 +246,9 @@ export default {
       return list.length > 0 && list.indexOf(val) > -1;
     },
     onUnsubscribe(item) { // 取消订阅
+      if (item == 'all' && this.checkResult.length == 0) {
+        return false;
+      }
       this.$dialog.confirm({
         message: this.$t('are_you_unsubscribe'),
         onfirmButtonText: this.$t('confirm'),

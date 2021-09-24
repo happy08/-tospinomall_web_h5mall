@@ -687,7 +687,7 @@ const en = {
   axios_tip_504: 'network timeout',
   axios_tip_505: 'HTTP version is not supported',
   axios_tip_10401: 'Login expired, please log in again',
-  email_format_error: 'Email format error',
+  email_format_error: 'E-mail address is incorrect',
   dial_phone: 'Dial number',
   aftersale_apply_num: 'Number of applications',
   total_piece: '{replace_tip} piece',

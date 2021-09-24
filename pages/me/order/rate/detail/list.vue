@@ -179,7 +179,6 @@ export default {
   data() {
     return {
       isCurrent: false,
-      rate: 2.5,
       tabActive: 0,
       list: [],
       refreshing: {

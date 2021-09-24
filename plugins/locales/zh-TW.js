@@ -688,7 +688,7 @@ const tw = {
   axios_tip_504: '網絡超時',
   axios_tip_505: 'HTTP版本不受支持',
   axios_tip_10401: '登入過期，請重新登入',
-  email_format_error: '郵箱格式錯誤',
+  email_format_error: '郵箱地址不正確',
   dial_phone: '撥打電話',
   aftersale_apply_num: '申請數量',
   total_piece: '共{replace_tip}件',

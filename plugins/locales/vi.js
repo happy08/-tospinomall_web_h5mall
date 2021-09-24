@@ -688,7 +688,7 @@ const vi = {
   axios_tip_504: 'hết giờ kết nối',
   axios_tip_505: 'Phiên bản HTTP không được hỗ trợ',
   axios_tip_10401: 'Đăng nhập hết hạn, vui lòng đăng nhập lại',
-  email_format_error: 'Lỗi định dạng email',
+  email_format_error: 'Địa chỉ email không chính xác',
   dial_phone: 'quay số',
   aftersale_apply_num: 'Số lượng đơn đăng ký',
   total_piece: 'Tổng cộng {replace_tip} chiếc',
