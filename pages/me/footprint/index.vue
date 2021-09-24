@@ -186,6 +186,9 @@ export default {
       return list.length > 0 && list.indexOf(val) > -1;
     },
     onDelete() { // 删除
+      if (this.checkResult.length == 0) {
+        return false;
+      }
       this.$dialog.confirm({
         message: this.$t('clear_all_browing_records'),
         onfirmButtonText: this.$t('confirm'),
