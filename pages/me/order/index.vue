@@ -210,7 +210,7 @@
         </van-radio-group>
 
         <!-- 取消之后将订单放入购物车 -->
-        <van-cell class="p-20" title-class="light-grey" :title="$t('cancel_order_tip_footer')" />
+        <van-cell class="p-20" title-class="light-grey" :title="$t('cancel_order_tip_footer')" v-if="currentOrder.status != 0" />
       </div>
       
       <div class="w-100 plr-12 flex between mt-12 pb-10">
