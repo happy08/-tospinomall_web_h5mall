@@ -10,9 +10,10 @@
         :height="'.6rem'"
         :isShow="false"
         :alt="'Tospino logo'"
+        class="home-page-nav-logo"
       />
       <!-- 搜索框 -->
-      <div class="mlr-12 home-page-nav__search" ref="homeSearch" @click="$router.push({ name: 'search', query: { back: 'home' } })">
+      <div class="home-page-nav__search" ref="homeSearch" @click="$router.push({ name: 'search', query: { back: 'home' } })">
         <van-search
           v-model="searchVal"
           :placeholder="$t('search_product_of_interest')"
@@ -20,6 +21,15 @@
           class="search-container"
           disabled
         >
+          <template #left-icon>
+            <BmImage 
+              :url="require('@/assets/images/icon/search-icon.png')"
+              :width="'0.4rem'" 
+              :height="'0.4rem'"
+              :isShow="false"
+              :alt="'Tospino search logo'"
+            />
+          </template>
           <template #right-icon>
             <van-button
               round
@@ -239,7 +249,7 @@
             v-model="loading"
             :finished="finished"
             @load="onLoad"
-            class="mlr-12"
+            class="plr-12 bg-grey"
           >
             <!-- 加载中提示 -->
             <!-- <template #loading>

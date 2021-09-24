@@ -1,6 +1,6 @@
 <template>
   <!-- 我的-订单 -->
-  <div :class="{'v-percent-100 pt-46': true, 'bg-white': lists.length == 0, 'bg-grey': lists.length > 0}">
+  <div :class="{'v-percent-100 pt-46 order-page': true, 'bg-white': lists.length == 0, 'bg-grey': lists.length > 0}">
     <BmHeaderNav :left="{ isShow: true, url: '/me' }" :title="$t('my_order')" :border="false" :fixed="true" />
     <van-sticky class="bg-white" :offset-top="'0.92rem'">
       <!-- 搜索 -->
@@ -9,7 +9,7 @@
           v-model="searchVal"
           shape="round"
           :placeholder="$t('enter_key_words')"
-          class="w-100"
+          class="w-100 search-container"
           @click="goSearch"
         > 
           <!-- 右侧图标-点击拍照 -->
@@ -18,6 +18,15 @@
               <van-icon :name="require('@/assets/images/icon/camera-icon.png')" size="0.46rem" />
             </div>
           </template> -->
+          <template #left-icon>
+            <BmImage 
+              :url="require('@/assets/images/icon/search-icon.png')"
+              :width="'0.4rem'" 
+              :height="'0.4rem'"
+              :isShow="false"
+              :alt="'Tospino search logo'"
+            />
+          </template>
         </van-search>
         <!-- 筛选 -->
         <van-icon :name="require('@/assets/images/icon/filter-icon.png')" class="ml-12" @click="filterPopup = true" size="0.48rem" />
@@ -607,6 +616,23 @@ export default {
 </style>
 
 <style lang="less">
+.order-page{
+  .search-container{
+    height: 34px!important;
+    .van-search__content{
+      height: 34px!important;
+      padding-left: 10px!important;
+    }
+    .van-field__left-icon{
+      height: 20px!important;
+    }
+    .van-cell {
+      padding: 0 !important;
+      align-items: center;
+      height: 100%!important;
+    }
+  }
+}
 .order-search{
   width: 79%;
   height: 100%;

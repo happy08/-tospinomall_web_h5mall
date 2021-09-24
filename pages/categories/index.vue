@@ -2,18 +2,28 @@
   <!-- 分类页面 -->
   <div class="categories-page">
     <!-- 搜索栏 -->
-    <div class="mlr-12 mt-4 mb-4" @click="$router.push({ name: 'search' })">
+    <div class="mlr-20 mt-4 mb-4" @click="$router.push({ name: 'search' })">
       <van-search 
         v-model="searchVal" 
         :placeholder="$t('enter_key_words')"
         shape="round"
         disabled
+        class="search-container"
       >
         <!-- <template #right-icon>
           <div class="search-camera">
             <input class="w-100 h-100 search-camera__ipt" type="file" accept="image/*" capture="camera" />
           </div>
         </template> -->
+        <template #left-icon>
+          <BmImage 
+            :url="require('@/assets/images/icon/search-icon.png')"
+            :width="'0.4rem'" 
+            :height="'0.4rem'"
+            :isShow="false"
+            :alt="'Tospino search logo'"
+          />
+        </template>
       </van-search>
     </div>
     <!-- 侧边栏分类 -->
@@ -232,6 +242,21 @@ export default {
   .van-tree-select__content{
     padding-top: 24px;
     padding-left: 24px;
+  }
+  .search-container{
+    height: 34px!important;
+    .van-search__content{
+      height: 34px!important;
+      padding-left: 10px!important;
+    }
+    .van-field__left-icon{
+      height: 20px!important;
+    }
+    .van-cell {
+      padding: 0 !important;
+      align-items: center;
+      height: 100%!important;
+    }
   }
 }
 </style>

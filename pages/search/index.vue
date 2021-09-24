@@ -8,14 +8,24 @@
         v-model="searchVal"
         shape="round"
         :placeholder="hintName"
-        :class="{'plr-20 bg-white ptb-12': true, 'border-b': isShowTip != -1}"
+        :class="{'search-container plr-20 bg-white ptb-12': true, 'border-b': isShowTip != -1}"
         @input="inputChange"
         @search="onSearch"
         @focus="onFocus"
         @clear="onClear"
         ref="searchContainer"
         maxlength="200"
-      />
+      >
+        <template #left-icon>
+          <BmImage 
+            :url="require('@/assets/images/icon/search-icon.png')"
+            :width="'0.4rem'" 
+            :height="'0.4rem'"
+            :isShow="false"
+            :alt="'Tospino search logo'"
+          />
+        </template>
+      </van-search>
       <!-- 分类 -->
       <div class="flex between vcenter plr-20 bg-white" v-show="!isShowTip">
         <van-tabs swipeable animated color="#42B7AE"  @change="getSearchList" @disabled="filterPopup = true" class="customs-van-tabs underline w-100" v-model="typeActive" line-height="0" line-width="0" :ellipsis="false">
@@ -745,5 +755,21 @@ export default {
 }
 .home-search-sticky .van-sticky{
   background-color: #fff;
+  .search-container{
+    // height: 34px!important;
+    .van-search__content{
+      height: 34px!important;
+      padding-left: 10px!important;
+    }
+    .van-field__left-icon{
+      height: 20px!important;
+    }
+    .van-cell {
+      padding: 0 !important;
+      align-items: center;
+      height: 100%!important;
+    }
+  }
 }
+
 </style>
