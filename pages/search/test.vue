@@ -91,8 +91,8 @@
                   class="mt-12 custom-grid-item"
                 >
                   <ProductTopBtmSingle
-                    :img="{ url: searchItem.image, width: '3.4rem', height: '3.4rem', loadImage: require('@/assets/images/product-bgd-170.png') }" 
-                    :detail="{ desc: searchItem.name, price: searchItem.price, rate: searchItem.starLevel, volumn: searchItem.saleCount, ellipsis: 2, country: searchItem.supplyCountryName, country_url: searchItem.supplyCountryIcon }"
+                    :img="{ url: searchItem.mainPictureUrl, width: '3.4rem', height: '3.4rem', loadImage: require('@/assets/images/product-bgd-170.png') }" 
+                    :detail="{ desc: searchItem.productTitle, price: searchItem.productPrice, rate: searchItem.starLevel, volumn: searchItem.saleCount, ellipsis: 2, country: searchItem.supplyCountryName, country_url: searchItem.supplyCountryIcon }"
                     class="round-4 bg-white hidden v-100"
                   ></ProductTopBtmSingle>
                 </nuxt-link>
@@ -107,20 +107,20 @@
               >
                 <div :class="{'flex vcenter pt-20 pb-30 hidden bg-white': true, 'border-229 border-b': searchIndex !== list.length - 1} ">
                   <BmImage 
-                    :url="searchItem.image"
+                    :url="searchItem.mainPictureUrl"
                     :width="'1.8rem'" 
                     :height="'1.8rem'"
                     :fit="'cover'"
                     :isShow="true"
                     class="border round-4 flex-shrink"
-                    :alt="searchItem.name"
+                    :alt="searchItem.productTitle"
                   />
                   <div class="ml-14 w-230 hidden-1">
-                    <p class="fs-14 black hidden-1" v-html="searchItem.name"></p>
+                    <p class="fs-14 black hidden-1" v-html="searchItem.productTitle"></p>
                     <p class="mt-8 fs-14 light-grey">{{ $t('ship_from_', { replace_tip: searchItem.supplyCountryName }) }}</p>
                     <div class="mt-16 flex vcenter between">
                       <div>
-                        <span class="red fs-18">{{ $store.state.rate.currency }}{{ searchItem.price }}</span>
+                        <span class="red fs-18">{{ $store.state.rate.currency }}{{ searchItem.productPrice }}</span>
                         <!-- <span class="fs-10 line-through bg-grey ml-8">{{ $store.state.rate.currency }}{{ searchItem.promotionPrice }}</span> -->
                       </div>
                       <div class="fs-14 black">{{ searchItem.saleCount }}{{ $t('add_sold') }}</div>
@@ -315,7 +315,7 @@ export default {
       // searchClient.helper.search('').then(({hits}) => {
       //   console.log(hits)
       // })
-        this.pageIndex = 0
+        this.pageIndex = 0;
         searchClient.search(this.searchVal, {
           page: this.pageIndex, // 从0开始算起
           hitsPerPage: this.pageSize
@@ -441,7 +441,7 @@ export default {
           //   key: 'sale_count',
           //   value: 0
           // }
-          customRanking: ['desc(popularity)']
+          ranking: ['desc(saleCount)']
         }
       } else if (index == 0) { 
         if (this.dropdownVal == 0) { // 综合排序
@@ -453,7 +453,7 @@ export default {
             //   key: 'promotion_price',
             //   value: 1
             // }
-            customRanking: ['asc(price)']
+            ranking: ['asc(price)']
           }
         } else if (this.dropdownVal == 2) { // 价格降序
           this.params = {
@@ -462,15 +462,12 @@ export default {
             //   key: 'promotion_price',
             //   value: 0
             // }
-            customRanking: ['desc(price)']
+            ranking: ['desc(price)']
           }
         }
       }
-      searchClient.setSettings({
-        ranking: [
-          'asc(price)'
-        ]
-      }).then(() => {
+      searchClient.setSettings(this.params).wait().then(res => {
+        console.log(res)
         this.getProductList();
       })
       
@@ -500,7 +497,20 @@ export default {
           ranking: ['desc(price)']
         }
       }
-      this.getProductList();
+      searchClient.setSettings(this.params).wait().then(response => {
+        console.log(response)
+        console.log('=====')
+        searchClient.getSettings().then(res => {
+          console.log(res)
+        })
+        searchClient.search(this.searchVal).then(res => {
+          console.log(res)
+        })
+      });
+      // searchClient.setSettings(this.params).wait().then(res => {
+      //   console.log(res)
+      //   this.getProductList();
+      // })
     },
     onSearch(val) { // 搜索
       // let value = val;
