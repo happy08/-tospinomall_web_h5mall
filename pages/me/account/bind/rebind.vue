@@ -20,6 +20,7 @@
           :placeholder="$t('phone_number')"
           class="field-container phone-code-field"
           type="number"
+          maxlength="30"
         >
           <template #label>
             <span @click="showPicker = true" class="iblock fs-14 black lh-20 prefix-container">
