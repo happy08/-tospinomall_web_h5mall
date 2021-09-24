@@ -342,7 +342,8 @@ export default {
       sort: {},
       isTabbarShow: false,
       storeBgdUrl: '',
-      scrollTop: 0
+      scrollTop: 0,
+      isFlag: false
     }
   },
   async fetch() {
@@ -425,8 +426,15 @@ export default {
         _detailParams.userId = this.$store.state.user.userInfo.id
       }
 
+      if (this.isFlag) {
+        return false;
+      }
+      this.isFlag = true;
+
       let _axios = flag ? storeFollow({ sellerId: this.$route.query.sellerId, storeId: this.$route.params.id }) : storeCancelFollow([this.$route.params.id]);
       _axios.then(() => {
+        this.detailData.isAttention = this.detailData.isAttention == 1 ? 0 : 1;
+        this.isFlag = false;
         this.$api.getStoreInfo({ sellerId: this.$route.query.sellerId, storeId: this.$route.params.id, ..._detailParams }).then(res => {
           this.detailData = {
             ...res.data,
