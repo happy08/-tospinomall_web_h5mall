@@ -698,7 +698,7 @@ const vi = {
   share_content: 'Chia sẻ nội dung',
   inventory_shortage: 'Thiếu hàng tồn kho',
   free_freight: 'miễn phí vận chuyển',
-  not_sale: 'Sản phẩm này hiện không có sẵn để bán ở khu vực này',
+  not_sale: 'Bán hàng trong khu vực này hiện không được hỗ trợ',
   refund_return_state_tip_50: 'Bạn đã thực hiện thành công yêu cầu trả lại và hoàn tiền, vui lòng kiên nhẫn đợi {replace_tip} xử lý',
   refund_return_state_tip_51: 'Sau khi nền tảng đồng ý, vui lòng gửi lại hàng hóa theo địa chỉ trả hàng đã cho, và ghi lại số đơn hàng gửi trả hàng',
   with_and: 'và'

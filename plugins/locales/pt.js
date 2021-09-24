@@ -698,7 +698,7 @@
   share_content: 'Compartilhe conteúdo',
   inventory_shortage: 'Falta de estoque',
   free_freight: 'Envio Grátis',
-  not_sale: 'Este produto não está disponível para venda nesta região',
+  not_sale: 'As vendas nesta área não são suportadas no momento',
   refund_return_state_tip_50: 'Você iniciou com sucesso uma solicitação de devolução e reembolso, aguarde pacientemente {replace_tip} processar',
   refund_return_state_tip_51: 'Depois que a plataforma concordar, devolva a mercadoria de acordo com o endereço de retorno fornecido e registre o número do pedido de envio de retorno',
   with_and: 'e'

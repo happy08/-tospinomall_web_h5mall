@@ -698,7 +698,7 @@ const es = {
   share_content: 'Compartir contenido',
   inventory_shortage: 'Escasez de inventario',
   free_freight: 'envío gratis',
-  not_sale: 'Este producto no está actualmente disponible para la venta en esta región.',
+  not_sale: 'Actualmente, las ventas en esta área no son compatibles',
   refund_return_state_tip_50: 'Ha iniciado con éxito una solicitud de devolución y reembolso, espere pacientemente a que {replace_tip} procese',
   refund_return_state_tip_51: 'Una vez que la plataforma esté de acuerdo, devuelva los productos de acuerdo con la dirección de devolución proporcionada y registre el número de orden de envío de devolución.',
   with_and: 'y'
