@@ -133,7 +133,7 @@
                         <span class="red fs-18">{{ $store.state.rate.currency }}{{ searchItem.productPrice }}</span>
                         <!-- <span class="fs-10 line-through bg-grey ml-8">{{ $store.state.rate.currency }}{{ searchItem.promotionPrice }}</span> -->
                       </div>
-                      <div class="fs-14 black">{{ searchItem.saleCount }}{{ $t('add_sold') }}</div>
+                      <!-- <div class="fs-14 black">{{ searchItem.saleCount }}{{ $t('add_sold') }}</div> -->
                     </div>
                   </div>
                 </div>
