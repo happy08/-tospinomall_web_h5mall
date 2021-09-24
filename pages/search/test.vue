@@ -92,7 +92,7 @@
                 >
                   <ProductTopBtmSingle
                     :img="{ url: searchItem.mainPictureUrl, width: '3.4rem', height: '3.4rem', loadImage: require('@/assets/images/product-bgd-170.png') }" 
-                    :detail="{ desc: searchItem.productTitle, price: searchItem.productPrice, rate: searchItem.starLevel, volumn: searchItem.saleCount, ellipsis: 2, country: searchItem.supplyCountryName, country_url: searchItem.supplyCountryIcon }"
+                    :detail="{ desc: searchItem.name, price: searchItem.price, rate: searchItem.starLevel, volumn: searchItem.saleCount, ellipsis: 2, country: searchItem.supplyCountryName, country_url: searchItem.supplyCountryIcon }"
                     class="round-4 bg-white hidden v-100"
                   ></ProductTopBtmSingle>
                 </nuxt-link>
@@ -499,10 +499,7 @@ export default {
       }
       searchClient.setSettings(this.params).wait().then(response => {
         console.log(response)
-        console.log('=====')
-        searchClient.getSettings().then(res => {
-          console.log(res)
-        })
+        console.log('=========')
         searchClient.search(this.searchVal).then(res => {
           console.log(res)
         })
@@ -655,7 +652,8 @@ export default {
         console.log(searchClient)
         searchClient.search(this.searchVal, {
           page: this.pageIndex, // 从0开始算起
-          hitsPerPage: this.pageSize
+          hitsPerPage: this.pageSize,
+          ...this.params
         }).then(({hits, nbHits}) => {
           console.log(hits)
           this.total = nbHits;
