@@ -193,6 +193,12 @@ export default {
   },
   methods: {
     goCart() { // 加入购物车
+      if (!this.$store.state.user.authToken) {
+        this.$router.push({
+          name: 'login'
+        })
+        return false;
+      }
       getGoodAttr(this.detailData.goodsId).then(res => {
         if (res.code != 0) return false;
 
