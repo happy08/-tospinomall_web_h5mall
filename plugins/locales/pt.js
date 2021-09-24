@@ -688,7 +688,7 @@
   axios_tip_504: 'tempo limite da rede',
   axios_tip_505: 'A versão HTTP não é compatível',
   axios_tip_10401: 'Login expirou, por favor faça login novamente',
-  email_format_error: 'Erro de formato de email',
+  email_format_error: 'Endereço de e-mail incorreto',
   dial_phone: 'discar o número',
   aftersale_apply_num: 'Número de aplicações',
   total_piece: '{replace_tip} peças no total',

@@ -688,7 +688,7 @@ const es = {
   axios_tip_504: 'tiempo de espera de la red',
   axios_tip_505: 'La versión HTTP no es compatible',
   axios_tip_10401: 'Inicio de sesión caducado, inicie sesión de nuevo',
-  email_format_error: 'Error de formato de correo electrónico',
+  email_format_error: 'Dirección de E-Mail incorrecta',
   dial_phone: 'marque el número',
   aftersale_apply_num: 'Numero de aplicaciones',
   total_piece: '{replace_tip} piezas en total',
