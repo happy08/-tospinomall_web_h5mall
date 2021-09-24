@@ -75,7 +75,8 @@ export default {
   data() {
     return {
       rate: 4,
-      detailData: {}
+      detailData: {},
+      isFlag: false
     }
   },
   async fetch() {
@@ -84,6 +85,7 @@ export default {
       _detailParams.userId = this.$store.state.user.userInfo.id;
     }
     const detailData = await this.$api.getStoreInfo({ sellerId: this.$route.query.sellerId, storeId: this.$route.params.id, ..._detailParams });
+    this.isFlag = false;
     if (!detailData.data) return false;
 
     this.detailData = {
@@ -103,9 +105,14 @@ export default {
         })
         return false;
       }
-      
+      if (this.isFlag) {
+        return false;
+      }
+      this.isFlag = true;
       let _axios = flag ? storeFollow({ sellerId: this.$route.query.sellerId, storeId: this.$route.params.id }) : storeCancelFollow([this.$route.params.id]);
-      _axios.then(res => {
+      _axios.then(() => {
+        this.detailData.isAttention = this.detailData.isAttention == 1 ? 0 : 1;
+        this.isFlag = false;
         this.$fetch();
       })
     },
