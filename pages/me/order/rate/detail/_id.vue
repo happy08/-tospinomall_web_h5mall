@@ -17,7 +17,7 @@
             class="border round-2 flex-shrink"
             :alt="detailData.goodTitle"
           />
-          <p class="fs-14 black ml-12 lh-20 hidden-2">{{ detailData.goodTitle }}</p>
+          <p class="fs-14 black mlr-12 lh-20 hidden-2">{{ detailData.goodTitle }}</p>
         </div>
         <!-- 加入购物车 -->
         <BmImage
