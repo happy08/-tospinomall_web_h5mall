@@ -342,7 +342,13 @@ export default {
 
     if (this.typeActive != 100) { // 全部
       this.params.status = this.typeActive;
+    } else {
+      this.params = {
+        pageNum: this.params.pageNum,
+        pageSize: this.params.pageSize
+      }
     }
+
     if (this.params.pageNum == 1 && this.refreshing.isFresh == false) { // 只有请求第一页数据的时候进行loading处理
       // 加载图标
       this.$toast.loading({

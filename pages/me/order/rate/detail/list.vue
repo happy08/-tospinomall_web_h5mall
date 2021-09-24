@@ -294,9 +294,9 @@ export default {
         params: {
           id: item.id
         },
-        query: {
-          buyerId: item.buyerId
-        }
+        // query: {
+        //   buyerId: item.buyerId
+        // }
       })
     },
     onRefresh() { // 下拉刷新
