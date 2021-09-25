@@ -18,7 +18,7 @@
           v-model="searchVal"
           :placeholder="$t('search_product_of_interest')"
           shape="round"
-          class="search-container"
+          class="search-container-home"
           disabled
         >
           <template #left-icon>
