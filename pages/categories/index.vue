@@ -35,7 +35,7 @@
     >
       <template #content>
         <div class="product-categories__box" v-for="(item, index) in leftLists" :key="index">
-          <h4 class="fw fs-10 product-categories__box--title">{{ item.name }}</h4>
+          <h4 class="fw fs-14 black">{{ item.name }}</h4>
           <div class="flex flex-wrap">
             <div @click="clickItemEvent(childrenItem)" class="tc mr-12 mt-20 product-single" v-for="(childrenItem, childrenIndex) in item.children" :key="childrenIndex">
               <BmImage 
@@ -44,8 +44,9 @@
                 :height="'1.28rem'"
                 :isShow="true"
                 :alt="childrenItem.name"
+                :fit="'fill'"
               />
-              <h5 class="fs-12 mt-8 product-single__name" v-html="childrenItem.name"></h5>
+              <h5 class="fs-12 mt-8 lh-1 clr-grey" v-html="childrenItem.name"></h5>
             </div>
           </div>
         </div>
@@ -197,12 +198,10 @@ export default {
 <style lang="less" scoped>
 .product-single{
   width: 70px;
+  font-size: 0;
+  word-break: break-all;
   &:nth-child(3n+3){
     margin-right: 0!important;
-  }
-  .product-single__name{
-    color: rgba(0, 0, 0, .65);
-    line-height: 12px;
   }
 }
 .product-categories__box{
@@ -214,9 +213,9 @@ export default {
   &:last-child{
     padding-bottom: 60px;
   }
-  .product-categories__box--title{
-    line-height: 10px;
-  }
+}
+.clr-grey{
+  color: #666;
 }
 </style>
 
@@ -237,21 +236,26 @@ export default {
   }
   .van-tree-select__nav{
     flex: inherit;
-    width: 94px;
+    width: 100px;
     background-color: #fff;
+    &::-webkit-scrollbar{
+      display: none;
+    }
     .van-sidebar-item--select::before{
       background: linear-gradient(14deg, #70CEB6 0%, #3EB5AE 100%);
     }
     .van-tree-select__nav-item{
       margin-top: 1px;
+      color: #383838;
+      text-align: center;
       &:first-child{
         margin-top: 0;
       }
     }
   }
   .van-tree-select__content{
-    padding-top: 24px;
-    padding-left: 24px;
+    padding-top: 20px;
+    padding-left: 22px;
   }
   .search-container{
     height: 34px!important;
