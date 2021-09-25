@@ -1,6 +1,6 @@
 <template>
   <!-- 首页 -->
-  <div class="home-page">
+  <div class="bg-grey home-page">
     <!-- 一级导航栏 -->
     <van-sticky ref="headerStickyContainer" class="w-100 home-page-nav" @scroll="stickyScroll">
       <!-- logo -->
@@ -61,7 +61,7 @@
     <!-- 下拉刷新 -->
     <PullRefresh :refreshing="refreshing" @refresh="onRefresh">
       <!-- 热门搜索种类列表 -->
-      <div class="flex popular-search-list">
+      <div class="flex bg-white popular-search-list">
         <nuxt-link class="black round-10 fm-pf-r small-single-tag" v-for="(hotItem, index) in hotSearch" :key="'hot-search-' + index" :to="{ name: 'search', query: { val: hotItem.name, searchKeyword: hotItem.name } }">
           {{ hotItem.name }}
         </nuxt-link>
@@ -126,7 +126,7 @@
           <!-- 轮播展示 -->
           <swiper
             ref="swiperComponentRef"
-            :class="{ 'swiper home-page__global-swiper': true, 'swiper-no-swiping' : moduleItem.componentDetails.length <= 3 }"
+            :class="{ 'swiper home-page__global-swiper': true, 'swiper-no-swiping' : moduleItem.componentDetails.length <= 3, 'pb-34': moduleItem.effect }"
             :options="{
               ...swiperComponentOption,
               loop: moduleItem.componentDetails.length > 3,
@@ -140,6 +140,7 @@
                   class="m-auto"
                   :img="{ url: productItem.mainPictureUrl, width: '2.24rem', height: '2.24rem', loadImage: require('@/assets/images/product-bgd-90.png') }" 
                   :detail="{ desc: productItem.goodTitle, price: productItem.price, ellipsis: 2 }"
+                  :isHeight="true"
                 />
               </nuxt-link>
             </swiper-slide>
@@ -153,7 +154,7 @@
 
         <!-- 一行两列 -->
         <template v-if="moduleItem.type === 4">
-          <div class="mlr-12 mt-20 flex between">
+          <div class="mlr-12 mt-12 flex between">
             <nuxt-link 
               :to="{ name: 'cart-product-id', params: { id: productType4Item.goodsId } }"
               class="iblock" 
@@ -163,6 +164,7 @@
               <ProductTopBtmSingle
                 :img="{ url: productType4Item.mainPictureUrl, width: '3.4rem', height: '3.4rem', loadImage: require('@/assets/images/product-bgd-170.png') }" 
                 :detail="{ desc: productType4Item.goodTitle, price: parseFloat(productType4Item.price), rate: parseFloat(productType4Item.starLevel), volumn: parseFloat(productType4Item.salesVolume), ellipsis: 2 }"
+                :isHeight="true"
               />
             </nuxt-link>
           </div>
@@ -241,7 +243,7 @@
         </div>
       </div> -->
       <!-- 滚动标签栏部分 -->
-      <van-tabs sticky swipeable animated :offset-top="'0.88rem'" color="#42B7AE" v-model="tabCategoryActive" @change="getSearchList" class="mt-20 mh-60 custom-home-tab" :ellipsis="false">
+      <van-tabs sticky swipeable animated :offset-top="'0.88rem'" color="#42B7AE" v-model="tabCategoryActive" @change="getSearchList" class="mt-12 mh-60 custom-home-tab" :ellipsis="false">
         <van-tab v-for="(categoryItem, tabIndex) in categoryList" :title="categoryItem.name" :key="'scroll-tab-' + tabIndex" :name="categoryItem.id">
           <empty-status v-if="searchList.length === 0" :image="require('@/assets/images/empty/order.png')" class="mh-60" />
           <van-list
@@ -249,7 +251,7 @@
             v-model="loading"
             :finished="finished"
             @load="onLoad"
-            class="plr-12 bg-grey pb-10"
+            class="plr-12 pb-10"
           >
             <!-- 加载中提示 -->
             <!-- <template #loading>

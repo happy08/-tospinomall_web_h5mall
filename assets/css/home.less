@@ -136,7 +136,8 @@
     }
   }
   .popular-search-list{
-    margin-top: 7px;
+    padding-top: 6px;
+    padding-bottom: 12px;
     padding-left: 6px;
     overflow-x: auto;
     scrollbar-width: none; /* firefox */
@@ -160,10 +161,11 @@
   // 轮播
   .swiper{
     // height: 200px;
+    font-size: 0;
     &.home-banner-swiper{
       height: 186px;
       .swiper-pagination-bullet{
-        background: rgba(255, 255, 255, .37);
+        background: rgba(255, 255, 255, .8);
       }
       .swiper-pagination-bullet-active{
         background: #fff;
@@ -184,6 +186,14 @@
   .home-page__global{
     .home-page__global-swiper, .home-page__global--3column{
       margin-top: 12px;
+      .swiper-pagination-bullets{
+        bottom: 0;
+      }
+      .swiper-pagination-bullet{
+        opacity: 1;
+        width: 6px;
+        height: 6px;
+      }
     }
     .pic-title-price{
       margin-left: 7px;
@@ -214,8 +224,8 @@
     bottom: 0!important;
   }
   .van-tabs__wrap--scrollable{
-    border-bottom: 0.5px solid #eee;
-    height: 40px!important;
+    // border-bottom: 0.5px solid #eee;
+    height: 50px!important;
   }
 }
 // 搜索框样式修改
@@ -238,4 +248,7 @@
     align-items: center;
     height: 100%!important;
   }
+}
+.pb-34{
+  padding-bottom: 18px;
 }
