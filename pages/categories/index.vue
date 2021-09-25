@@ -2,7 +2,7 @@
   <!-- 分类页面 -->
   <div class="categories-page">
     <!-- 搜索栏 -->
-    <div class="mlr-20 mt-4 mb-4" @click="$router.push({ name: 'search' })">
+    <div class="plr-20 ptb-4 border-b" @click="$router.push({ name: 'search' })">
       <van-search 
         v-model="searchVal" 
         :placeholder="$t('enter_key_words')"
@@ -31,7 +31,7 @@
       :items="catrgorieList" 
       :main-active-index.sync="treeActive"
       @click-nav="changeNavEvent"
-      height="100vh"
+      class="custom-select-tree-container"
     >
       <template #content>
         <div class="product-categories__box" v-for="(item, index) in leftLists" :key="index">
@@ -211,6 +211,9 @@ export default {
   &:first-child{
     margin-top: 0;
   }
+  &:last-child{
+    padding-bottom: 60px;
+  }
   .product-categories__box--title{
     line-height: 10px;
   }
@@ -235,8 +238,15 @@ export default {
   .van-tree-select__nav{
     flex: inherit;
     width: 94px;
+    background-color: #fff;
     .van-sidebar-item--select::before{
       background: linear-gradient(14deg, #70CEB6 0%, #3EB5AE 100%);
+    }
+    .van-tree-select__nav-item{
+      margin-top: 1px;
+      &:first-child{
+        margin-top: 0;
+      }
     }
   }
   .van-tree-select__content{
@@ -257,6 +267,9 @@ export default {
       align-items: center;
       height: 100%!important;
     }
+  }
+  .custom-select-tree-container{
+    height: calc(100vh - 34px - 58px)!important;
   }
 }
 </style>
