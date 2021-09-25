@@ -1,6 +1,6 @@
 <template>
   <!-- 我的-关注 -->
-  <div class="bg-grey v-percent-100 pt-46 pb-56">
+  <div class="bg-grey v-percent-100 pt-46">
     <BmHeaderNav :left="{ isShow: true }" :fixed="true">
       <!-- tab切换 -->
       <van-tabs v-model="active" slot="header-title" class="customs-van-tabs likes-tabs" @click="getTabList">
@@ -16,7 +16,7 @@
       </div>
     </BmHeaderNav>
 
-    <PullRefresh :refreshing="refreshing" @refresh="onRefresh" class="custom-min-height-46">
+    <PullRefresh :refreshing="refreshing" @refresh="onRefresh" class="custom-min-height-46 pb-56">
       <van-list
         v-model="loading"
         :finished="finished"
@@ -228,8 +228,28 @@ export default {
     this.list = listData.data.records; // 关注商品/店铺列表
     this.total = listData.data.total; // 商品/店铺总数
     this.isFirst = false;
-    if (typeof this.$redrawVueMasonry === 'function') {
-      this.$redrawVueMasonry();
+    if (this.active == 0) {
+      const recommendData = await this.$api.getRecommend({ type: 1, pageNum: this.pageNum, pageSize: this.pageSize});
+      if (!recommendData.data) {
+        this.isLoadRecommend = true;
+        return false;
+      };
+
+      this.recommendList = this.pageNum == 1 ? recommendData.data.items : this.recommendList.concat(recommendData.data.items);
+      setTimeout(() => {
+        if (typeof this.$redrawVueMasonry === 'function') {
+          this.$redrawVueMasonry();
+        }
+      }, 50)
+      this.recommendTotal = recommendData.data.total;
+      // 加载状态结束
+      this.loading = false;
+      if (parseFloat(res.data.total) == this.recommendList.length) {
+        this.isLoadRecommend = true;
+      }
+      if (typeof this.$redrawVueMasonry === 'function') {
+        this.$redrawVueMasonry();
+      }
     }
   },
   activated() {
@@ -276,8 +296,10 @@ export default {
     },
     getTabList() { // 切换tab时数据要初始化
       this.pageNum = 1;
-      this.finished = false;
-      // this.list = [];
+      // this.finished = false;
+      this.list = [];
+      this.recommendList = [];
+      this.recommendTotal = 0;
       this.getList();
     },
     onTop(item) { // 置顶 取消置顶
@@ -319,7 +341,8 @@ export default {
       if (parseFloat(this.total) == this.list.length) { // 没有下一页了
         if (this.active == 0 && !this.edit) {
           this.pageNum = this.recommendList.length > 0 && this.pageNum >= 1 ? this.pageNum : 0;
-          if (!this.isLoadRecommend && this.recommendList.length == parseFloat(this.recommendTotal)) {
+          console.log(this.pageNum)
+          if (!this.isLoadRecommend && this.recommendList.length == parseFloat(this.recommendTotal) && this.pageNum > 0) {
             this.finished = true;
             this.loading = false;
             return false;
@@ -331,19 +354,20 @@ export default {
         }
         return false;
       }
+      console.log(this.pageNum)
       this.pageNum += 1;
+      console.log(this.pageNum)
       const listData = this.active == 0 ? await this.$api.getLikeProduct({ pageNum: this.pageNum, pageSize: this.pageSize }) : await this.$api.getLikeStoreList({ pageNum: this.pageNum, pageSize: this.pageSize }); // 获取关注商品/店铺列表
       if (!listData.data) return false;
 
       this.total = listData.data.total;
-      let list = listData.data.records;
-
-      this.list = this.list.concat(list);
+      this.list = this.list.concat(listData.data.records);
+      this.finished = parseFloat(this.total) == this.list.length ? true: false;
       // 加载状态结束
       this.loading = false;
     },
     async onRecommendLoad() { // 加载推荐商品列表
-      if (this.recommendTotal == this.recommendList.length && this.pageNum > 0) { // 没有下一页了
+      if (this.recommendTotal == this.recommendList.length && this.pageNum > 1) { // 没有下一页了
         this.finished = true;
         this.loading = false;
         return false;
@@ -362,9 +386,10 @@ export default {
         }
       }, 50)
       this.recommendTotal = recommendData.data.total;
+      this.finished = this.recommendTotal == this.recommendList.length && this.pageNum > 0 ? true : false;
       // 加载状态结束
       this.loading = false;
-      if (parseFloat(res.data.total) == this.recommendList.length) {
+      if (parseFloat(recommendData.data.total) == this.recommendList.length) {
         this.isLoadRecommend = true;
       }
     },
@@ -452,13 +477,13 @@ export default {
       // 获取商品列表
       const listData = this.active == 0 ? await this.$api.getLikeProduct({ pageNum: this.pageNum, pageSize: this.pageSize }) : await this.$api.getLikeStoreList({ pageNum: this.pageNum, pageSize: this.pageSize }); // 获取关注商品/店铺列表
       this.refreshing.isFresh = false;
-      if (listData.code != 0) return false;
-      
+      if (!listData.data) return false;
       this.list = this.pageNum <= 1 ? listData.data.records : this.list.concat(listData.data.records); // 关注商品/店铺列表
       this.total = listData.data.total; // 商品/店铺总数
+      this.finished = parseFloat(this.total) == this.list.length ? true: false;
       this.isFirst = false;
-      if (typeof this.$redrawVueMasonry === 'function') {
-        this.$redrawVueMasonry();
+      if (this.active == 0) {
+        this.onLoad();
       }
     }
   },
