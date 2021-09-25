@@ -5,27 +5,29 @@
       <BmHeaderNav :left="{ isShow: true, isEmit: true }" :title="title" :border="false" @leftClick="leftClick" />
 
       <!-- 搜索 -->
-      <van-search
-        v-model="orderVal"
-        shape="round"
-        :placeholder="$t('enter_key_words')"
-        class="plr-20 bg-white ptb-12 search-container"
-        @search="onOrderSearch"
-        @focus="onFocus"
-        @input="inputChange"
-        @clear="onClear"
-        ref="searchContainer"
-      >
-        <template #left-icon>
-          <BmImage 
-            :url="require('@/assets/images/icon/search-icon.png')"
-            :width="'0.4rem'" 
-            :height="'0.4rem'"
-            :isShow="false"
-            :alt="'Tospino search logo'"
-          />
-        </template>
-      </van-search>
+      <div class="plr-20 bg-white ptb-12">
+        <van-search
+          v-model="orderVal"
+          shape="round"
+          :placeholder="$t('enter_key_words')"
+          class="search-container"
+          @search="onOrderSearch"
+          @focus="onFocus"
+          @input="inputChange"
+          @clear="onClear"
+          ref="searchContainer"
+        >
+          <template #left-icon>
+            <BmImage 
+              :url="require('@/assets/images/icon/search-icon.png')"
+              :width="'0.4rem'" 
+              :height="'0.4rem'"
+              :isShow="false"
+              :alt="'Tospino search logo'"
+            />
+          </template>
+        </van-search>
+      </div>
     </van-sticky>
     
     <template v-if="isShowTip != -1">
@@ -573,7 +575,7 @@ export default {
       height: 20px!important;
     }
     .van-cell {
-      padding: 0 !important;
+      // padding: 0 !important;
       align-items: center;
       height: 100%!important;
     }

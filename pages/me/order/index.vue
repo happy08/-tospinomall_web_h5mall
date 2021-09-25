@@ -633,7 +633,7 @@ export default {
       height: 20px!important;
     }
     .van-cell {
-      padding: 0 !important;
+      // padding: 0 !important;
       align-items: center;
       height: 100%!important;
     }

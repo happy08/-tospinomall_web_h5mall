@@ -4,28 +4,30 @@
     <van-sticky :offset-top="0" class="home-search-sticky">
       <BmHeaderNav :left="{ isShow: true, isEmit: true }" :title="$t('search')" :border="false" @leftClick="leftClick" />
       <!-- 搜索 -->
-      <van-search
-        v-model="searchVal"
-        shape="round"
-        :placeholder="hintName"
-        :class="{'search-container plr-20 bg-white ptb-12': true, 'border-b': isShowTip != -1}"
-        @input="inputChange"
-        @search="onSearch"
-        @focus="onFocus"
-        @clear="onClear"
-        ref="searchContainer"
-        maxlength="200"
-      >
-        <template #left-icon>
-          <BmImage 
-            :url="require('@/assets/images/icon/search-icon.png')"
-            :width="'0.4rem'" 
-            :height="'0.4rem'"
-            :isShow="false"
-            :alt="'Tospino search logo'"
-          />
-        </template>
-      </van-search>
+      <div :class="{'plr-20 bg-white ptb-12': true, 'border-b': isShowTip != -1}">
+        <van-search
+          v-model="searchVal"
+          shape="round"
+          :placeholder="hintName"
+          :class="{'search-container': true}"
+          @input="inputChange"
+          @search="onSearch"
+          @focus="onFocus"
+          @clear="onClear"
+          ref="searchContainer"
+          maxlength="200"
+        >
+          <template #left-icon>
+            <BmImage 
+              :url="require('@/assets/images/icon/search-icon.png')"
+              :width="'0.4rem'" 
+              :height="'0.4rem'"
+              :isShow="false"
+              :alt="'Tospino search logo'"
+            />
+          </template>
+        </van-search>
+      </div>
       <!-- 分类 -->
       <div class="flex between vcenter plr-20 bg-white" v-show="!isShowTip">
         <van-tabs swipeable animated color="#42B7AE"  @change="getSearchList" @disabled="filterPopup = true" class="customs-van-tabs underline w-100" v-model="typeActive" line-height="0" line-width="0" :ellipsis="false">
@@ -765,7 +767,7 @@ export default {
       height: 20px!important;
     }
     .van-cell {
-      padding: 0 !important;
+      // padding: 0!important;
       align-items: center;
       height: 100%!important;
     }

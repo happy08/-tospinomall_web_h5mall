@@ -598,7 +598,7 @@ const en = {
   shop_follow: 'Store attention',
   goods_add_follow: 'Move in attention',
   ship_from_: 'Ship to {replace_tip}',
-  login_register: 'Login/registration >',
+  login_register: 'Login/Register >',
   t_format_error: 'Format error',
   similar_goods: 'Similar goods',
   goods_remove_follow: 'Remove attention',
