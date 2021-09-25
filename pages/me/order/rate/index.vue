@@ -35,9 +35,9 @@
                   <BmButton :type="'info'" class="h-32" v-show="tabActive === 1">{{ $t('follow_up_evaluation') }}</BmButton>
                 </nuxt-link>
                 <!-- 详情 -->
-                <nuxt-link :to="{ name: 'me-order-rate-detail-id', params: { id: orderitem.evaluateId } }" v-if="orderitem.isComment == 1 || orderitem.isComment == 2">
+                <!-- <nuxt-link :to="{ name: 'me-order-rate-detail-id', params: { id: orderitem.evaluateId } }" v-if="orderitem.isComment == 1 || orderitem.isComment == 2">
                   <BmButton :type="'info'" class="h-32" v-show="tabActive === 1">{{ $t('review') }}</BmButton>
-                </nuxt-link>
+                </nuxt-link> -->
               </div>
             </div>
           </van-list>
