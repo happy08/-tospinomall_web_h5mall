@@ -97,7 +97,7 @@ export default {
       listData = await this.$api.getRateList({ pageNum: this.pageNum, pageSize: this.pageSize, status: this.tabActive, createUser: this.$store.state.user.userInfo.id });
     }
 
-    if (listData.code != 0) return false;
+    if (!listData.data) return false;
 
     this.total = listData.data.total; // 列表总条数
     this.lists = this.pageNum == 1 ? listData.data.records : this.lists.concat(listData.data.records); // 列表数据
@@ -119,6 +119,7 @@ export default {
     })
   },
   activated() {
+    this.pageNum = 1;
     this.$fetch();
   },
   methods: {
