@@ -206,10 +206,10 @@ import PullRefresh from '@/components/PullRefresh';
 //     }
 //   }
 // });
-const algoliasearch = require("algoliasearch");
+const algoliasearch = require('algoliasearch');
 
 const client = algoliasearch('62MLEBY33X','7a8da9a5fd3f8137ea8cb70b60806e8d');
-const searchClient = client.initIndex("tospinoMall");
+let searchClient = client.initIndex('tospinoMall');
 
 export default {
   name: 'search',
@@ -316,6 +316,11 @@ export default {
       //   console.log(hits)
       // })
         this.pageIndex = 0;
+        // searchClient.search(this.searchVal, {
+        //   filters: ['brand:']
+        // }).then(({hits, nbHits}) => {
+        //   console.log(hits)
+        // })
         searchClient.search(this.searchVal, {
           page: this.pageIndex, // 从0开始算起
           hitsPerPage: this.pageSize
@@ -441,7 +446,7 @@ export default {
           //   key: 'sale_count',
           //   value: 0
           // }
-          ranking: ['desc(saleCount)']
+          customRanking: ['desc(price)']
         }
       } else if (index == 0) { 
         if (this.dropdownVal == 0) { // 综合排序
@@ -453,7 +458,7 @@ export default {
             //   key: 'promotion_price',
             //   value: 1
             // }
-            ranking: ['asc(price)']
+            customRanking: ['asc(price)']
           }
         } else if (this.dropdownVal == 2) { // 价格降序
           this.params = {
@@ -462,13 +467,29 @@ export default {
             //   key: 'promotion_price',
             //   value: 0
             // }
-            ranking: ['desc(price)']
+            customRanking: ['desc(price)']
           }
         }
       }
-      searchClient.setSettings(this.params).wait().then(res => {
-        console.log(res)
-        this.getProductList();
+      searchClient.setSettings({ ...this.params, ranking: [
+    'custom',
+    'typo',
+    'geo',
+    'words',
+    'filters',
+    'proximity',
+    'attribute',
+    'exact'
+  ], replicas: ['products_price_desc'] }).wait().then(res => {
+        searchClient = client.initIndex('products_price_desc');
+        searchClient.getSettings().then(result => {
+          console.log(result)
+          console.log('----------')
+          console.log(res)
+          this.getProductList();
+        })
+        
+        
       })
       
     },
@@ -500,9 +521,7 @@ export default {
       searchClient.setSettings(this.params).wait().then(response => {
         console.log(response)
         console.log('=========')
-        searchClient.search(this.searchVal).then(res => {
-          console.log(res)
-        })
+        this.getProductList();
       });
       // searchClient.setSettings(this.params).wait().then(res => {
       //   console.log(res)
@@ -652,8 +671,7 @@ export default {
         console.log(searchClient)
         searchClient.search(this.searchVal, {
           page: this.pageIndex, // 从0开始算起
-          hitsPerPage: this.pageSize,
-          ...this.params
+          hitsPerPage: this.pageSize
         }).then(({hits, nbHits}) => {
           console.log(hits)
           this.total = nbHits;
