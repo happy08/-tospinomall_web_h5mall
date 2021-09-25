@@ -35,9 +35,9 @@
                   <BmButton :type="'info'" class="h-32" v-show="tabActive === 1">{{ $t('follow_up_evaluation') }}</BmButton>
                 </nuxt-link>
                 <!-- 详情 -->
-                <nuxt-link :to="{ name: 'me-order-rate-detail-id', params: { id: orderitem.evaluateId } }" v-if="orderitem.isComment == 1 || orderitem.isComment == 2">
+                <!-- <nuxt-link :to="{ name: 'me-order-rate-detail-id', params: { id: orderitem.evaluateId } }" v-if="orderitem.isComment == 1 || orderitem.isComment == 2">
                   <BmButton :type="'info'" class="h-32" v-show="tabActive === 1">{{ $t('review') }}</BmButton>
-                </nuxt-link>
+                </nuxt-link> -->
               </div>
             </div>
           </van-list>
@@ -80,6 +80,17 @@ export default {
       notComment: 0
     }
   },
+  beforeRouteEnter (to, from, next) {
+    next(vm => {
+      if (from.name == 'me' || from.name == 'me-order') {
+        vm.tabActive = 0;
+      }
+      if (from.name == 'me' || from.name == 'me-order' || from.name == 'me-order-rate-evalution-id') {
+        vm.pageNum = 1;
+        vm.$fetch();
+      }
+    })
+  },
   async fetch() {
     // 查询评价订单列表
     if (this.pageNum == 1) {
@@ -91,41 +102,35 @@ export default {
       });
     }
     let listData;
-    if (this.$route.query.orderId) { // 查看某一个订单评价
+    if (this.$route.query.orderId && this.tabActive == 0) { // 查看某一个订单评价
       listData = await this.$api.getRateList({ pageNum: this.pageNum, pageSize: this.pageSize, status: this.tabActive, orderId: this.$route.query.orderId, createUser: this.$store.state.user.userInfo.id });
     } else {
       listData = await this.$api.getRateList({ pageNum: this.pageNum, pageSize: this.pageSize, status: this.tabActive, createUser: this.$store.state.user.userInfo.id });
     }
 
-    if (listData.code != 0) return false;
+    if (!listData.data) return false;
 
     this.total = listData.data.total; // 列表总条数
+    this.pageNum = parseFloat(listData.data.current);
     this.lists = this.pageNum == 1 ? listData.data.records : this.lists.concat(listData.data.records); // 列表数据
     this.refreshing.isFresh = false;
     this.loading = false;
-    if (this.pageNum == 1 || parseFloat(this.total) == this.lists.length) {
-      this.$toast.clear();
-    }
-    if (parseFloat(this.total) == this.lists.length) {
-      this.finished = true;
-    }
-
+    this.finished = parseFloat(this.total) == this.lists.length ? true: false;
+    this.$toast.clear();
+  },
+  activated() {
     getOrderRateCount().then(res => {
       if (res.code != 0) return false;
 
       this.hasCommentOrReview = res.data.hasCommentOrReview; // 已评价或追评
-      this.notComment = res.data.notComment; // 待评价
-      console.log(res)
+      this.notComment = this.$route.query.orderId ? 1 : res.data.notComment; // 待评价
     })
-  },
-  activated() {
-    this.$fetch();
   },
   methods: {
     getList() {
       this.pageNum = 1;
       this.lists = [];
-      this.finished = false;
+      // this.finished = false;
       this.$fetch();
     },
     onRefresh() { // 下拉刷新
@@ -136,6 +141,12 @@ export default {
         })
         setTimeout(() => {
           this.$fetch();
+          getOrderRateCount().then(res => {
+            if (res.code != 0) return false;
+
+            this.hasCommentOrReview = res.data.hasCommentOrReview; // 已评价或追评
+            this.notComment = res.data.notComment; // 待评价
+          })
         }, 100);
         return false;
       }

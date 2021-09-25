@@ -69,7 +69,7 @@
                     <!-- 订单店铺 -->
                     <OrderStoreSingle :name="item.storeName" :status="statusFormat(item.status, item)" @goStoreDetail="goStoreDetail(item)">
                       <!-- 如果是取消状态，则该订单可删除，添加操作展示  -->
-                      <div slot="other-deal" class="flex vcenter" v-if="item.status == 5 || item.status == 6 || item.status == 4">
+                      <div slot="other-deal" class="flex vcenter" v-if="item.status == 5 || item.status == 6 || item.status == 4 || item.status == 7">
                         <span class="block line-style"></span>
                         <BmImage 
                           :url="require('@/assets/images/icon/delete-icon.svg')"
@@ -210,7 +210,7 @@
         </van-radio-group>
 
         <!-- 取消之后将订单放入购物车 -->
-        <van-cell class="p-20" title-class="light-grey" :title="$t('cancel_order_tip_footer')" />
+        <van-cell class="p-20" title-class="light-grey" :title="$t('cancel_order_tip_footer')" v-if="currentOrder.status != 0" />
       </div>
       
       <div class="w-100 plr-12 flex between mt-12 pb-10">
@@ -342,7 +342,13 @@ export default {
 
     if (this.typeActive != 100) { // 全部
       this.params.status = this.typeActive;
+    } else {
+      this.params = {
+        pageNum: this.params.pageNum,
+        pageSize: this.params.pageSize
+      }
     }
+
     if (this.params.pageNum == 1 && this.refreshing.isFresh == false) { // 只有请求第一页数据的时候进行loading处理
       // 加载图标
       this.$toast.loading({
@@ -586,7 +592,7 @@ export default {
       })
     },
     statusFormat(val, item) {
-      return val == 0 ? this.$t('unpaid') : val == 1 ? this.$t('to_be_delivered') : val == 2 ? this.$t('unreceived') : val == 3 || val == 4 ? this.$t('completed') : val == 5 ? this.$t('cancelled') : val == 6 ? this.$t('trading_close') : val == 7 ? this.$t('un_rejected') : this.$t('other');
+      return val == 0 ? this.$t('unpaid') : val == 1 ? this.$t('to_be_delivered') : val == 2 ? this.$t('unreceived') : val == 3 || val == 4 ? this.$t('completed') : val == 5 ? this.$t('cancelled') : val == 6 ? this.$t('trading_close') : val == 7 ? this.$t('trading_close') : this.$t('other');
     },
     goStoreDetail(storeItem) { // 跳转到店铺首页
       this.$router.push({
@@ -627,7 +633,7 @@ export default {
       height: 20px!important;
     }
     .van-cell {
-      padding: 0 !important;
+      // padding: 0 !important;
       align-items: center;
       height: 100%!important;
     }

@@ -13,6 +13,11 @@
           <BmIcon :name="'guanbi2'" :width="'0.4rem'" :height="'0.4rem'" :color="'#fff'" />
           <span class="ml-4 white fs-18">{{ $t('payment_failed') }}</span>
         </template>
+        <!-- 货到付款下单成功 -->
+        <template v-else-if="$route.query.isSuccess == 3">
+          <BmIcon :name="'wancheng1'" :width="'0.4rem'" :height="'0.4rem'" :color="'#fff'" />
+          <span class="ml-4 white fs-18">{{ $t('success_order') }}</span>
+        </template>
         <!-- 成功 -->
         <template v-else>
           <BmIcon :name="'wancheng1'" :width="'0.4rem'" :height="'0.4rem'" :color="'#fff'" />
@@ -151,7 +156,11 @@ export default {
       }
     },
     leftClick() {
-      if (this.$route.query.isSuccess && this.$route.query.isSuccess == 2) { // 订单余额支付
+      if (this.$route.query.isSuccess && this.$route.query.isSuccess == 3) {
+        this.$router.replace({
+          name: 'me-order'
+        });
+      }else if (this.$route.query.isSuccess && this.$route.query.isSuccess == 2) { // 订单余额支付
         this.$router.go(-2);
       } else { // 订单其他支付
         this.$router.go(-3);

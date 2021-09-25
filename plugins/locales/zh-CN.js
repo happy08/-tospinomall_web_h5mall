@@ -698,10 +698,11 @@ const cn = {
   share_content: '分享内容',
   inventory_shortage: '库存不足',
   free_freight: '免运费',
-  not_sale: '该商品在该地区暂不支持销售',
+  not_sale: '该地区暂不支持销售',
   refund_return_state_tip_50: '您已成功发起退货退款申请，请耐心等待{replace_tip}处理',
   refund_return_state_tip_51: '平台同意后，请按照给出的退货地址退货，并记录退货运单号',
-  with_and: '和'
+  with_and: '和',
+  success_order: '下单成功'
 }
 
 export default cn;

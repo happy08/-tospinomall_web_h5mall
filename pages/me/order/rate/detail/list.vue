@@ -212,7 +212,10 @@ export default {
         });
       }
 
-      let _params = { goodsId: this.$route.query.id, pageNum: this.pageNum, pageSize: this.pageSize, createUser: this.$store.state.user.userInfo.id }
+      let _params = { goodsId: this.$route.query.id, pageNum: this.pageNum, pageSize: this.pageSize }
+      if (this.$store.state.user.userInfo) { // 已登录有用户信息的时候
+        _params.createUser = this.$store.state.user.userInfo.id;
+      }
       if (this.tabActive == 1) {
         _params.sortType = 1; // 最新创建时间排序
       }
@@ -291,9 +294,9 @@ export default {
         params: {
           id: item.id
         },
-        query: {
-          buyerId: item.buyerId
-        }
+        // query: {
+        //   buyerId: item.buyerId
+        // }
       })
     },
     onRefresh() { // 下拉刷新

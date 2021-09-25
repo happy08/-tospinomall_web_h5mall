@@ -193,6 +193,12 @@ export default {
   },
   methods: {
     goCart() { // 加入购物车
+      if (!this.$store.state.user.authToken) {
+        this.$router.push({
+          name: 'login'
+        })
+        return false;
+      }
       getGoodAttr(this.detailData.goodsId).then(res => {
         if (res.code != 0) return false;
 
@@ -263,7 +269,7 @@ export default {
       })
     },
     getRateDetail() { // 获取评价详情
-      getRateDetail(this.$route.params.id, this.$route.query.buyerId).then(res => {
+      getRateDetail(this.$route.params.id, this.$store.state.user.userInfo ? this.$store.state.user.userInfo.id : '').then(res => {
         if (res.code != 0) return false;
         this.detailData = res.data;
       })

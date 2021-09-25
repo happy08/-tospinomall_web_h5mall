@@ -598,7 +598,7 @@ const en = {
   shop_follow: 'Store attention',
   goods_add_follow: 'Move in attention',
   ship_from_: 'Ship to {replace_tip}',
-  login_register: 'Login/registration >',
+  login_register: 'Login/Register >',
   t_format_error: 'Format error',
   similar_goods: 'Similar goods',
   goods_remove_follow: 'Remove attention',
@@ -700,7 +700,8 @@ const en = {
   not_sale: 'The region does not support sales',
   refund_return_state_tip_50: 'You have successfully initiated a return and refund request, please wait patiently for the {replace_tip} to process',
   refund_return_state_tip_51: 'After the platform agrees, please return the goods according to the return address given, and record the return shipping order number',
-  with_and: 'and'
+  with_and: 'and',
+  success_order: 'Successfully ordered'
 }
 
 export default en;

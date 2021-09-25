@@ -39,7 +39,7 @@
         <span class="red fs-16 fw">
           <span class="fm-menlo" v-if="$store.state.rate">{{ $store.state.rate.currency }}</span><span class="fm-din">{{ detail.price }}</span>
         </span>
-        <span v-if="detail.volumn >= 0" class="fs-10 clr-black-25">{{ detail.volumn }}{{ $t('add_sold') }}</span>
+        <!-- <span v-if="detail.volumn >= 0" class="fs-10 clr-black-25">{{ detail.volumn }}{{ $t('add_sold') }}</span> -->
       </div>
     </div>
   </div>
