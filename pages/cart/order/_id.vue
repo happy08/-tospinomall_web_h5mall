@@ -201,6 +201,13 @@ export default {
       messageList: []
     }
   },
+  beforeRouteEnter (to, from, next) {
+    next(vm => {
+      if (from.name == 'cart' || from.name == 'cart-product-id' || from.name == 'me-order' || from.name == 'me-order-rate-detail-id') {
+        vm.paymentRadio = '1';
+      }
+    })
+  },
   async activated() {
     // 获取默认地址
     if (this.$route.query.address) { // 如果是从地址管理页面回跳回来的
@@ -291,7 +298,7 @@ export default {
             name: 'cart-order-confirm',
             query: {
               orderId: JSON.stringify({orderId: res.data.orderIds}),
-              isSuccess: 2
+              isSuccess: 3
             }
           })
           return false;

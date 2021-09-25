@@ -701,7 +701,8 @@ const tw = {
   not_sale: '該商品在該地區暫不支持銷售',
   refund_return_state_tip_50: '您已成功發起退貨退款申請，請耐心等待{replace_tip}處理',
   refund_return_state_tip_51: '平臺同意後，請按照給出的退貨地址退貨，並記錄退貨運單號',
-  with_and: '和'
+  with_and: '和',
+  success_order: '下單成功'
 }
 
 export default tw;

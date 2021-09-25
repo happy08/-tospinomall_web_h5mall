@@ -701,7 +701,8 @@ const vi = {
   not_sale: 'Bán hàng trong khu vực này hiện không được hỗ trợ',
   refund_return_state_tip_50: 'Bạn đã thực hiện thành công yêu cầu trả lại và hoàn tiền, vui lòng kiên nhẫn đợi {replace_tip} xử lý',
   refund_return_state_tip_51: 'Sau khi nền tảng đồng ý, vui lòng gửi lại hàng hóa theo địa chỉ trả hàng đã cho, và ghi lại số đơn hàng gửi trả hàng',
-  with_and: 'và'
+  with_and: 'và',
+  success_order: 'đặt hàng thành công'
 }
 
 export default vi;
