@@ -249,7 +249,7 @@
             v-model="loading"
             :finished="finished"
             @load="onLoad"
-            class="plr-12 bg-grey"
+            class="plr-12 bg-grey pb-10"
           >
             <!-- 加载中提示 -->
             <!-- <template #loading>
@@ -386,7 +386,12 @@ export default {
       },
       ...categoryList.data
     ];
-
+    // 搜索商品列表如果已经达到最大查询再次进来页面时不调用接口
+    if (parseFloat(this.tabTotal) == this.searchList.length && this.pageIndex > 1) { // 没有下一页了
+      this.finished = true;
+      this.loading = false;
+      return false;
+    }
     const searchList = await this.$api.getProductSearch({ pageSize: this.pageSize, pageIndex: this.pageIndex }); // 搜索商品列表
     if (!searchList.data) return false;
     
@@ -521,7 +526,7 @@ export default {
       this.$fetch();
     },
     onLoad() { // 滚动加载
-      if (this.tabTotal == this.searchList.length) { // 没有下一页了
+      if (parseFloat(this.tabTotal) == this.searchList.length) { // 没有下一页了
         this.finished = true;
         this.loading = false;
         return false;
@@ -544,6 +549,7 @@ export default {
         })
 
         this.searchList = this.searchList.concat(list);
+        this.finished = parseFloat(this.tabTotal) == this.searchList.length ? true: false;
         setTimeout(() => {
           if (typeof this.$redrawVueMasonry === 'function') {
             this.$redrawVueMasonry();
