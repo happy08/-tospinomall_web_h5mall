@@ -108,7 +108,7 @@
 
         <!-- 热区图片 -->
         <template v-if="moduleItem.type === 2">
-          <div class="fs-0 hot-container" :ref="'hotContainer' + moduleIndex">
+          <div class="fs-0 mt-12 hot-container" :ref="'hotContainer' + moduleIndex">
             <BmImage
               :url="moduleItem.imageUrl"
               :loadUrl="require('@/assets/images/product-bgd-375.png')"

@@ -216,6 +216,18 @@ export default {
               duration: 0
             });
             facebookLogin({ mobile: { userId: user.id, email: user.email, name: user.name }, grant_type: 'facebook' }).then(res => {
+              console.log(res)
+              if (res.code == 11001) {
+                this.$toast.clear();
+                this.$router.push({
+                  name: 'login-bind',
+                  query: {
+                    userId: user.id,
+                    name: user.name
+                  }
+                })
+                return false;
+              }
               this.$store.commit('user/SET_TOKEN', res.data.token_type + ' ' + res.data.access_token);
               this.$store.commit('user/SET_REFRESHTOKEN', res.data.refresh_token);
               this.$store.commit('user/SET_SCOPE', res.data.scope);
@@ -234,10 +246,22 @@ export default {
                   name: 'home'
                 })
               }, 100);
+            }).catch(error => {
+              console.log(error)
+              if (error.code == 11001) { // 未绑定邮箱 11001
+                this.$toast.clear();
+                this.$router.push({
+                  name: 'login-bind',
+                  query: {
+                    userId: user.id,
+                    name: user.name
+                  }
+                })
+              }
+              
             })
           })
         }
-        console.log(response)
       });
     }
   },

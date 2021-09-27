@@ -193,7 +193,7 @@ export default {
       _axios.then(res => {
         this.isCodeFlag = false;
         this.$toast(res.data); // 提示验证码
-        this.countdown = 120; // 设置倒计时120s
+        this.countdown = 60; // 设置倒计时60s
         let timer = setInterval(() => {
           if (this.countdown === 0) {
             clearInterval(timer);

@@ -153,7 +153,7 @@ export function googleLogin(data) {
 /**
  * facebook登录
  */
-export function facebookLogin(data) {
+export function facebookLogin(data, headers = {}) {
   return request({
     url: '/auth/mobile/token/social',
     method: 'post',
@@ -161,7 +161,8 @@ export function facebookLogin(data) {
     headers: {
       clientType: 'h5',
       version: '1.0.0',
-      language: getCookie('lang')
+      language: getCookie('lang'),
+      ...headers
     }
   })
 }
