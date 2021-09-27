@@ -214,7 +214,7 @@ const cn = {
   change_password: '修改密码',
   modify_binding_phone: '修改绑定手机',
   verification_method: '认证方式',
-  verify_by_password: '使用现有登录密码验证',
+  verify_by_password: '使用当前支付密码验证',
   verify_by_sms: '使用手机短信验证码',
   verify_by_email: '使用E-mail验证码',
   mobile_phone_verification: '手机验证',

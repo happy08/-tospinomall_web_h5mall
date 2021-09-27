@@ -214,7 +214,7 @@ const vi = {
   change_password: 'đổi mật khẩu',
   modify_binding_phone: 'Sửa đổi điện thoại di động bị ràng buộc',
   verification_method: 'phương thức xác minh',
-  verify_by_password: 'Sử dụng mật khẩu đăng nhập hiện có để xác minh',
+  verify_by_password: 'Sử dụng mật khẩu thanh toán hiện tại để xác minh',
   verify_by_sms: 'Sử dụng mã xác minh SMS',
   verify_by_email: 'Sử dụng mã xác minh E-mail',
   mobile_phone_verification: 'Xác minh điện thoại',

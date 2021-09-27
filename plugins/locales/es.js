@@ -214,7 +214,7 @@ const es = {
   change_password: 'cambiar la contraseña',
   modify_binding_phone: 'Modificar el teléfono móvil vinculado',
   verification_method: 'método de verificación',
-  verify_by_password: 'Utilice la contraseña de inicio de sesión existente para verificar',
+  verify_by_password: 'Utilice la contraseña de pago actual para verificar',
   verify_by_sms: 'Usar código de verificación por SMS',
   verify_by_email: 'Utilice el código de verificación de correo electrónico',
   mobile_phone_verification: 'Verificación de teléfono',

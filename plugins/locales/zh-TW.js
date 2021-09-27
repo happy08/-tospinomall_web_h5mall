@@ -214,7 +214,7 @@ const tw = {
   change_password: '修改密碼',
   modify_binding_phone: '修改綁定手機',
   verification_method: '認證方式',
-  verify_by_password: '使用現有登錄密碼驗證',
+  verify_by_password: '使用當前支付密碼驗證',
   verify_by_sms: '使用手機短信驗證碼',
   verify_by_email: '使用E-mail驗證碼',
   mobile_phone_verification: '手機驗證',
