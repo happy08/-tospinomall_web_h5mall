@@ -161,6 +161,7 @@
           <!-- 品牌 -->
           <div class="mt-32" v-if="brandList.length > 0">
             <h3 class="fs-16 black fw">{{ $t('brand') }}</h3>
+            
             <div class="mt-6 flex flex-wrap">
               <span :class="{'ptb-6 black fs-14 lh-20 tc w-84 mt-14 ml-10 odd-3 plr-4 hidden-1 bg-grey-f5 round-8 border-transparent': true, 'is-active': brandName == brandItem.value}" v-for="(brandItem, brandIndex) in brandList" :key="'brand-item-' + brandIndex" @click="brandName = brandItem.value">{{ brandItem.value }}</span>
             </div>
@@ -180,7 +181,9 @@
         <button class="white fw fs-16 bg-green-linear" @click="onFilter">{{ $t('determine') }}</button>
       </div>
     </van-popup>
-    
+    <div>搜索</div>
+    <input id="search-box" type="text">
+    <div id="brand-list"></div>
   </div>
 </template>
 
@@ -190,9 +193,9 @@ import ProductTopBtmSingle from '@/components/ProductTopBtmSingle';
 import EmptyStatus from '@/components/EmptyStatus';
 import { getSearchPull } from '@/api/search';
 import PullRefresh from '@/components/PullRefresh';
-// import algoliasearch from 'algoliasearch/lite';
-// import instantsearch from 'instantsearch.js';
-// import { searchBox, hits } from 'instantsearch.js/es/widgets';
+import algoliasearch from 'algoliasearch/lite';
+import instantsearch from 'instantsearch.js';
+import { searchBox, hits, refinementList } from 'instantsearch.js/es/widgets';
 
 // const searchClient = instantsearch({
 //   indexName: 'tospinoMall',
@@ -206,10 +209,36 @@ import PullRefresh from '@/components/PullRefresh';
 //     }
 //   }
 // });
-const algoliasearch = require('algoliasearch');
+// const algoliasearch = require('algoliasearch');
 
-const client = algoliasearch('62MLEBY33X','7a8da9a5fd3f8137ea8cb70b60806e8d');
-let searchClient = client.initIndex('tospinoMall');
+// const client = algoliasearch('62MLEBY33X','7a8da9a5fd3f8137ea8cb70b60806e8d');
+// const searchClient = client.initIndex('tospinoMall');
+const searchClient = instantsearch({
+  indexName: 'demo_ecommerce',
+  searchClient: algoliasearch('B1G2GM9NG0', 'aadef574be1f9252bb48d4ea09b5cfe5'),
+});
+
+if (process.client) {
+  searchClient.addWidgets([
+    searchBox({
+      container: '#search-box'
+    }),
+    refinementList({ attribute: 'brand', container: '#brand-list' }),
+  ])
+
+  searchClient.use(() => {
+    return {
+      onStateChange({ uiState }) {
+          console.log('44444444444444444')
+          console.log(uiState['demo_ecommerce']);
+      },
+    }
+  });
+  searchClient.start();
+} 
+
+
+
 
 export default {
   name: 'search',
@@ -316,18 +345,21 @@ export default {
       //   console.log(hits)
       // })
         this.pageIndex = 0;
+        // searchClient.addWidgets([
+        //   instantsearch.widgets.refinementList({
+        //     container: '#brand-list',
+        //     attribute: 'brand',
+        //   })
+        // ])
+        // searchClient.start();
+        
         // searchClient.search(this.searchVal, {
-        //   filters: ['brand:']
+        //   page: this.pageIndex, // 从0开始算起
+        //   hitsPerPage: this.pageSize
         // }).then(({hits, nbHits}) => {
-        //   console.log(hits)
+        //   this.total = nbHits;
+        //   this.list = hits;
         // })
-        searchClient.search(this.searchVal, {
-          page: this.pageIndex, // 从0开始算起
-          hitsPerPage: this.pageSize
-        }).then(({hits, nbHits}) => {
-          this.total = nbHits;
-          this.list = hits;
-        })
       
       this.$store.commit('SET_SEARCHPRODUCTLIST', this.searchVal); // 搜索历史存储
       this.arrangeType = 2;
@@ -480,16 +512,14 @@ export default {
     'proximity',
     'attribute',
     'exact'
-  ], replicas: ['products_price_desc'] }).wait().then(res => {
-        searchClient = client.initIndex('products_price_desc');
-        searchClient.getSettings().then(result => {
-          console.log(result)
-          console.log('----------')
+  ] }).then(res => {
+      console.log('-')
+        console.log(res)
+        searchClient.waitTask(res.taskID).then(res => {
+          console.log('=')
           console.log(res)
           this.getProductList();
         })
-        
-        
       })
       
     },
