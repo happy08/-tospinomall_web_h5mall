@@ -108,7 +108,7 @@
 
         <!-- 热区图片 -->
         <template v-if="moduleItem.type === 2">
-          <div class="fs-0 hot-container" :ref="'hotContainer' + moduleIndex">
+          <div class="fs-0 mt-12 hot-container" :ref="'hotContainer' + moduleIndex">
             <BmImage
               :url="moduleItem.imageUrl"
               :loadUrl="require('@/assets/images/product-bgd-375.png')"
@@ -126,7 +126,7 @@
           <!-- 轮播展示 -->
           <swiper
             ref="swiperComponentRef"
-            :class="{ 'swiper home-page__global-swiper': true, 'swiper-no-swiping' : moduleItem.componentDetails.length <= 3, 'pb-34': moduleItem.effect }"
+            :class="{ 'swiper home-page__global-swiper': true, 'swiper-no-swiping' : moduleItem.componentDetails.length <= 3, 'pb-34': moduleItem.effect && moduleItem.componentDetails.length > 3 }"
             :options="{
               ...swiperComponentOption,
               loop: moduleItem.componentDetails.length > 3,
@@ -148,7 +148,7 @@
               <swiper-slide v-for="addItem in (3 - parseFloat(moduleItem.componentDetails.length))" :key="'self-add-' + addItem"></swiper-slide>
             </template>
             
-            <div class="swiper-pagination swiper-group-pagination" v-show="moduleItem.effect" slot="pagination"></div>
+            <div class="swiper-pagination swiper-group-pagination" v-show="moduleItem.effect && moduleItem.componentDetails.length > 3" slot="pagination"></div>
           </swiper>
         </div>
 

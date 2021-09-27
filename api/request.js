@@ -20,7 +20,6 @@ const tip = msg => {
   });
 };
 
-
 /**
  * 请求失败后的错误统一处理
  * @param {Number} status 请求失败的状态码
@@ -73,10 +72,11 @@ const tip = msg => {
       tip($nuxt._i18n.t('axios_tip_connect'));
   }
 };
-
+let headers;
 // request拦截器
 service.interceptors.request.use(config => {
   config.headers['clientType'] = 'h5';
+  
   if (config.headers.Authorization) {
     config.headers['Authorization'] = config.headers.Authorization;
   // } else if (getCookie('authToken') && getCookie('authToken') != 'null' && getCookie('authToken').length > 10) {
@@ -101,7 +101,7 @@ service.interceptors.request.use(config => {
   }
 
   config.headers.language = getCookie('lang');
-
+  headers = config;
   return config;
 }, error => {
   return Promise.reject(error)
@@ -121,7 +121,7 @@ service.interceptors.response.use(response => { // 成功
       
       return response.data;
     } else {
-      if (response.data.msg) {
+      if (response.data.msg && (response.data.code != 11001 && headers.url != '/auth/mobile/token/social')) { // facebook未绑定邮箱接口返回时是跳转页面的，所以不进行提示
         tip(response.data.msg);
       }
     }
