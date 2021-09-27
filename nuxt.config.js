@@ -1,5 +1,6 @@
 const webpack = require('webpack');
 const CompressionPlugin = require('compression-webpack-plugin');
+const TerserPlugin = require("terser-webpack-plugin"); // 打包删除注释
 
 export default {
   server: {
@@ -46,7 +47,7 @@ export default {
     '@/plugins/vue-i18n',
     { src: '@/plugins/utils', ssr: false },
     '@/plugins/routeguard.js',
-    { src: '@/plugins/vconsole', ssr: false },
+    // { src: '@/plugins/vconsole', ssr: false },
     { src: '@/plugins/vue-masonry', ssr: false }
   ],
 
@@ -137,6 +138,8 @@ export default {
       })
     ],
     optimization: {
+      minimize: true,
+      minimizer: [new TerserPlugin()],
       splitChunks: {
         minSize: 10000,
         maxSize: 450000,
