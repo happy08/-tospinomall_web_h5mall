@@ -702,7 +702,10 @@ const cn = {
   refund_return_state_tip_50: '您已成功发起退货退款申请，请耐心等待{replace_tip}处理',
   refund_return_state_tip_51: '平台同意后，请按照给出的退货地址退货，并记录退货运单号',
   with_and: '和',
-  success_order: '下单成功'
+  success_order: '下单成功',
+  share_product_title: '商品标题',
+  share_product_min_price: '商品最小价格',
+  share_product_link: '分享链接'
 }
 
 export default cn;

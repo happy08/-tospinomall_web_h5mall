@@ -702,7 +702,10 @@
   refund_return_state_tip_50: 'Você iniciou com sucesso uma solicitação de devolução e reembolso, aguarde pacientemente {replace_tip} processar',
   refund_return_state_tip_51: 'Depois que a plataforma concordar, devolva a mercadoria de acordo com o endereço de retorno fornecido e registre o número do pedido de envio de retorno',
   with_and: 'e',
-  success_order: 'pedido com sucesso'
+  success_order: 'pedido com sucesso',
+  share_product_title: 'Título do produto',
+  share_product_min_price: 'Preço mínimo de mercadoria',
+  share_product_link: 'Compartilhar link'
 }
 
 export default por;

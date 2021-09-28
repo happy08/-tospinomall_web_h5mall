@@ -809,8 +809,16 @@ export default {
       this.getNextArea({ id: 0 });
     }
     this.$fetch();
+    if (this.goodSpuVo.goodTitle) {
+      this.shareDetail = {
+        textContent: `${this.$t('share_content')}, ${this.$t('share_product_title')}: ${this.goodSpuVo.goodTitle}`,
+        url: `${location.href}?isShare=1`,
+        urlContent: `${location.href}?isShare=1${this.$t('share_product_link')}, ${this.$t('share_product_title')}: ${this.goodSpuVo.goodTitle}, ${this.$t('share_product_min_price')}: ${this.goodSpuVo.minPrice}`
+      }
+    }
     // 获取分享内容
     getShareDetail(this.$route.params.id).then(res => {
+      if (!res.data) return false;
       this.shareDetail = res.data;
     })
     
