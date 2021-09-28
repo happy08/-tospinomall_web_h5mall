@@ -283,8 +283,8 @@ export default {
     this.isShowTip = this.searchVal.length > 0 ? false : true;
 
     let _params = this.$route.query;
-    if (this.$route.query.navCategoryIds && !Array.isArray(this.$route.query.navCategoryIds)) {
-      _params.navCategoryIds = [this.$route.query.navCategoryIds];
+    if (this.$route.query.navCategoryIds) {
+      _params.navCategoryIds = !Array.isArray(this.$route.query.navCategoryIds) ? [this.$route.query.navCategoryIds] : this.$route.query.navCategoryIds;
     }
     delete _params.val;
 
@@ -611,6 +611,10 @@ export default {
           shopId: this.shopId
         }
       }
+      if (this.$route.query.navCategoryIds) {
+        this.params.navCategoryIds = !Array.isArray(this.$route.query.navCategoryIds) ? [this.$route.query.navCategoryIds] : this.$route.query.navCategoryIds;
+        delete this.params.searchKeyword;
+      }
       this.$api.getProductSearch(this.params).then(res => {
         let list = res.data.items.map(item => {
           return {
@@ -793,5 +797,4 @@ export default {
     }
   }
 }
-
 </style>

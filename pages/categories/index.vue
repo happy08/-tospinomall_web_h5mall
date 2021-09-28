@@ -2,13 +2,14 @@
   <!-- 分类页面 -->
   <div class="categories-page">
     <!-- 搜索栏 -->
-    <div class="plr-20 ptb-4 border-b" @click="$router.push({ name: 'search' })">
+    <div class="plr-20 ptb-4 border-b">
       <van-search 
         v-model="searchVal" 
         :placeholder="$t('enter_key_words')"
         shape="round"
         disabled
         class="search-container"
+        @click="$router.push({ name: 'search' })"
       >
         <!-- <template #right-icon>
           <div class="search-camera">
