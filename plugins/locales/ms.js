@@ -1,8 +1,8 @@
-/**
- * 马来西亚语
- */
-const ms = {
+// /**
+//  * 马来西亚语
+//  */
+// const ms = {
 
-}
+// }
 
-export default ms;
+// export default ms;

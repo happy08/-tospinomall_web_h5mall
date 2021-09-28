@@ -130,6 +130,7 @@
           </template>
         </van-cell>
       </template>
+      <empty-status v-else :image="require('@/assets/images/empty/order.png')" :description="$t('empty')" />
     </div>
 
     <!-- 你的意见、信息、点赞 -->
@@ -167,6 +168,7 @@
 import { Rate, Field, Cell, Sticky, ImagePreview } from 'vant';
 import { getRateDetail, addGive, getGoodAttr, replyEvaluate } from '@/api/product';
 import ProductSku from '@/components/ProductSku';
+import EmptyStatus from '@/components/EmptyStatus';
 
 export default {
   components: {
@@ -174,7 +176,8 @@ export default {
     vanField: Field,
     vanCell: Cell,
     vanSticky: Sticky,
-    ProductSku
+    ProductSku,
+    EmptyStatus
   },
   data() {
     return {

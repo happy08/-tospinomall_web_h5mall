@@ -1,8 +1,8 @@
-/**
- * 法语
- */
-const fr = {
+// /**
+//  * 法语
+//  */
+// const fr = {
 
-}
+// }
 
-export default fr;
+// export default fr;

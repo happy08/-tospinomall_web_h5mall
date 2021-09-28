@@ -74,9 +74,9 @@
             <div class="grey ml-12">{{ item.saleAttr }}</div>
           </div>
           <!-- 描述 -->
-          <p class="black fs-14 mt-10 border-b plr-20 pb-20" @click="goDetail(item)">{{ item.content }}</p>
+          <p class="black fs-14 mt-10 plr-20" @click="goDetail(item)">{{ item.content }}</p>
           <!-- 展示图片 -->
-          <div class="mt-20 flex flex-wrap plr-20" v-if="item.pictures.length > 0">
+          <div class="mt-12 flex flex-wrap plr-20 between" v-if="item.pictures.length > 0">
             <div v-for="(picItem, picIndex) in item.pictures" :key="'pic-' + picItem.id">
               <BmImage
                 :url="picItem.imgUrl"
@@ -85,7 +85,7 @@
                 :isLazy="false"
                 :isShow="true"
                 :fit="'cover'"
-                :class="{'border round-2 hidden': true, 'ml-8': picIndex != 0}"
+                :class="{'border round-2 hidden block mt-8': true}"
                 v-if="picItem.fileType == 1"
                 @onClick="onPreview(item.pictures, picIndex)"
                 :alt="item.goodTitle"
@@ -93,13 +93,13 @@
             </div>
           </div>
           
-          <van-cell-group class="mt-10 plr-20" :border="false">
+          <van-cell-group class="mt-20 plr-20" :border="false">
             <!-- 追加评论 -->
             <template v-if="item.additionalEvaluates && item.additionalEvaluates.length > 0">
               <p class="fw black fs-14">{{ $t('review_after_purchase') }}</p>
               <div v-for="addItem in item.additionalEvaluates" :key="'add-review-' + addItem.id">
                 <p class="black fs-14 mt-10" @click="goDetail(item)">{{ addItem.content }}</p>
-                <div class="mt-10 flex flex-wrap">
+                <div class="mt-10 flex flex-wrap between">
                   <div v-for="(addPicItem, addPicIndex) in addItem.pictures" :key="'add-pic-' + addPicItem.id">
                     <BmImage
                       :url="addPicItem.imgUrl"
@@ -108,7 +108,7 @@
                       :isLazy="false"
                       :isShow="true"
                       :fit="'cover'"
-                      :class="{'border round-2 hidden block mt-8': true, 'ml-8': addPicIndex % 3 != 0}"
+                      :class="{'border round-2 hidden block mt-8': true}"
                       v-if="addPicItem.fileType == 1"
                       @onClick="onPreview(addItem.pictures, addPicIndex)"
                       :alt="item.goodTitle"
@@ -240,9 +240,9 @@ export default {
         let list = res.data.records.map(item => {
           return {
             ...item,
-            pictures: item.pictures.filter((picItem, picIndex) => {
-              return picIndex < 3;
-            }),
+            // pictures: item.pictures.filter((picItem, picIndex) => {
+            //   return picIndex < 3;
+            // }),
             sellerReplyList: item.sellerReplyList.length > 0 ? [item.sellerReplyList[0]] : []
           }
         });

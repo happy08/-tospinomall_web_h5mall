@@ -214,7 +214,7 @@
   change_password: 'mudar senha',
   modify_binding_phone: 'Modifique o telefone celular vinculado',
   verification_method: 'método de verificação',
-  verify_by_password: 'Use a senha de login existente para verificar',
+  verify_by_password: 'Use a senha de pagamento atual para verificar',
   verify_by_sms: 'Use o código de verificação SMS',
   verify_by_email: 'Use o código de verificação de e-mail',
   mobile_phone_verification: 'Verificação de telefone',
@@ -702,7 +702,10 @@
   refund_return_state_tip_50: 'Você iniciou com sucesso uma solicitação de devolução e reembolso, aguarde pacientemente {replace_tip} processar',
   refund_return_state_tip_51: 'Depois que a plataforma concordar, devolva a mercadoria de acordo com o endereço de retorno fornecido e registre o número do pedido de envio de retorno',
   with_and: 'e',
-  success_order: 'pedido com sucesso'
+  success_order: 'pedido com sucesso',
+  share_product_title: 'Título do produto',
+  share_product_min_price: 'Preço mínimo de mercadoria',
+  share_product_link: 'Compartilhar link'
 }
 
 export default por;

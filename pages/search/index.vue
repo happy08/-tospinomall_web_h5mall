@@ -274,7 +274,8 @@ export default {
       shopId: '',
       backName: '',
       backNameId: '',
-      backQuery: null
+      backQuery: null,
+      meta: {}
     }
   },
   async fetch() {
@@ -282,8 +283,8 @@ export default {
     this.isShowTip = this.searchVal.length > 0 ? false : true;
 
     let _params = this.$route.query;
-    if (this.$route.query.navCategoryIds && !Array.isArray(this.$route.query.navCategoryIds)) {
-      _params.navCategoryIds = [this.$route.query.navCategoryIds];
+    if (this.$route.query.navCategoryIds) {
+      _params.navCategoryIds = !Array.isArray(this.$route.query.navCategoryIds) ? [this.$route.query.navCategoryIds] : this.$route.query.navCategoryIds;
     }
     delete _params.val;
 
@@ -349,6 +350,25 @@ export default {
     // 获得底纹词
     const hintList = await this.$api.getHintResult();
     this.hintName = hintList.data.result[0].name;
+
+    // 获取seo信息
+    const metaData = await this.$api.getSearchListSEO();
+    this.meta = {
+      title: metaData.data.title.replace('{userKeywords}', this.searchVal),
+      description: metaData.data.description.replace('{userKeywords}', this.searchVal),
+      keyword: metaData.data.keyword.replace('{userKeywords}', this.searchVal)
+    }
+  },
+  head() {
+    return {
+      title: this.meta.title + 'Tospino Ghana online shopping',
+      meta: [
+        { hid: 'description', name: 'description', content: this.meta.description || 'Tospino Ghana online shopping' },
+        { hid: 'keywords', name: 'keywords', content: this.meta.keyword || 'Tospino Ghana online shopping' },
+        { hid: 'og:title', property: 'og:title', content: this.meta.title || 'Tospino Ghana online shopping' },
+        { hid: 'og:description', property: 'og:description', content: this.meta.description || 'Tospino Ghana online shopping' }
+      ]
+    }
   },
   watch: {
     '$route'() {
@@ -591,6 +611,10 @@ export default {
           shopId: this.shopId
         }
       }
+      if (this.$route.query.navCategoryIds) {
+        this.params.navCategoryIds = !Array.isArray(this.$route.query.navCategoryIds) ? [this.$route.query.navCategoryIds] : this.$route.query.navCategoryIds;
+        delete this.params.searchKeyword;
+      }
       this.$api.getProductSearch(this.params).then(res => {
         let list = res.data.items.map(item => {
           return {
@@ -773,5 +797,4 @@ export default {
     }
   }
 }
-
 </style>

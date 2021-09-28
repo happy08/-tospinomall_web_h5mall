@@ -701,7 +701,11 @@ const en = {
   refund_return_state_tip_50: 'You have successfully initiated a return and refund request, please wait patiently for the {replace_tip} to process',
   refund_return_state_tip_51: 'After the platform agrees, please return the goods according to the return address given, and record the return shipping order number',
   with_and: 'and',
-  success_order: 'Successfully ordered'
+  success_order: 'Successfully ordered',
+  share_product_title: 'Product title',
+  share_product_min_price: 'Minimum commodity price',
+  share_product_content: 'Share content',
+  share_product_link: 'Share link'
 }
 
 export default en;

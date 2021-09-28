@@ -2,13 +2,14 @@
   <!-- 分类页面 -->
   <div class="categories-page">
     <!-- 搜索栏 -->
-    <div class="plr-20 ptb-4 border-b" @click="$router.push({ name: 'search' })">
+    <div class="plr-20 ptb-4 border-b">
       <van-search 
         v-model="searchVal" 
         :placeholder="$t('enter_key_words')"
         shape="round"
         disabled
         class="search-container"
+        @click="$router.push({ name: 'search' })"
       >
         <!-- <template #right-icon>
           <div class="search-camera">
@@ -28,7 +29,7 @@
     </div>
     <!-- 侧边栏分类 -->
     <van-tree-select
-      :items="catrgorieList" 
+      :items="catrgoriesList" 
       :main-active-index.sync="treeActive"
       @click-nav="changeNavEvent"
       class="custom-select-tree-container"
@@ -69,85 +70,9 @@ export default {
   data() {
     return {
       searchVal: '',
-      items: [
-        {
-          // 导航名称
-          text: 'Furniture Mall',
-          // 导航名称右上角徽标，2.5.6 版本开始支持
-          badge: 3,
-          // 是否在导航名称右上角显示小红点
-          dot: true,
-          // 导航节点额外类名
-          className: 'my-class',
-          // 该导航下所有的可选项
-          children: [
-            {
-              // 名称
-              text: '温州',
-              // id，作为匹配选中状态的标识符
-              id: 1,
-              // 禁用选项
-              disabled: true,
-            },
-            {
-              text: '杭州',
-              id: 2,
-            },
-          ],
-        },
-        {
-          // 导航名称
-          text: '所有城市',
-          // 导航名称右上角徽标，2.5.6 版本开始支持
-          badge: 3,
-          // 是否在导航名称右上角显示小红点
-          dot: true,
-          // 导航节点额外类名
-          className: 'my-class',
-          // 该导航下所有的可选项
-          children: [
-            {
-              // 名称
-              text: '温州',
-              // id，作为匹配选中状态的标识符
-              id: 1,
-              // 禁用选项
-              disabled: true,
-            },
-            {
-              text: '杭州',
-              id: 2,
-            },
-          ],
-        },
-        {
-          // 导航名称
-          text: '所有城市',
-          // 导航名称右上角徽标，2.5.6 版本开始支持
-          badge: 3,
-          // 是否在导航名称右上角显示小红点
-          dot: true,
-          // 导航节点额外类名
-          className: 'my-class',
-          // 该导航下所有的可选项
-          children: [
-            {
-              // 名称
-              text: '温州',
-              // id，作为匹配选中状态的标识符
-              id: 1,
-              // 禁用选项
-              disabled: true,
-            },
-            {
-              text: '杭州',
-              id: 2,
-            },
-          ],
-        },
-      ],
+      items: [],
       treeActive: 0,
-      catrgorieList: [],
+      catrgoriesList: [],
       list: [],
       leftLists: [],
       meta: {}
@@ -158,16 +83,32 @@ export default {
       title: this.meta.title || 'Tospino Ghana online shopping',
       meta: [
         { hid: 'description', name: 'description', content: this.meta.description || 'Tospino Ghana online shopping' },
-        { hid: 'keywords', name: 'keywords', content: this.meta.keyword || 'Tospino Ghana online shopping' }
+        { hid: 'keywords', name: 'keywords', content: this.meta.keyword || 'Tospino Ghana online shopping' },
+        { hid: 'og:title', property: 'og:title', content: this.meta.title || 'Tospino Ghana online shopping' },
+        { hid: 'og:description', property: 'og:description', content: this.meta.description || 'Tospino Ghana online shopping' }
       ]
     }
   },
   async fetch() {
-    const [listData, meta] = await Promise.all([
+    const [listData, metaData] = await Promise.all([
       this.$api.getCategoryList(), // 分类列表
       this.$api.getCategorySeo() // 获取SEO信息
     ])
-    this.catrgorieList = listData.data.map(item => {
+    let _all_categories = [];
+    listData.data.forEach(item => {
+      _all_categories.push(item.name);
+      if (item.children) {
+        item.children.forEach(childrenItem => {
+          _all_categories.push(childrenItem.name);
+          if (childrenItem.children) {
+            childrenItem.children.forEach(threeChildrenItem => {
+              _all_categories.push(threeChildrenItem.name);
+            })
+          }
+        })
+      }
+    }); // 所有分类名为了seo优化
+    this.catrgoriesList = listData.data.map(item => {
       return {
         text: item.name,
         id: item.id,
@@ -175,12 +116,17 @@ export default {
       }
     })
     this.list = listData.data;
-    this.leftLists = this.catrgorieList[0].children;
-    this.meta = meta.data;
+    this.leftLists = this.catrgoriesList[0].children;
+
+    this.meta = {
+      title: metaData.data.title.replace('{categoryName}', _all_categories.join(',')),
+      description: metaData.data.description.replace('{categoryName}', _all_categories.join(',')),
+      keyword: metaData.data.keyword.replace('{categoryName}', _all_categories.join(','))
+    };
   },
   methods: {
     changeNavEvent(currentIndex) { // 点击左侧切换tab栏
-      this.leftLists = this.catrgorieList[currentIndex].children
+      this.leftLists = this.catrgoriesList[currentIndex].children
     },
     clickItemEvent(data) { // 点击分类跳转到搜索列表页面
       this.$router.push({
