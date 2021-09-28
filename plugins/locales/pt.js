@@ -214,7 +214,7 @@
   change_password: 'mudar senha',
   modify_binding_phone: 'Modifique o telefone celular vinculado',
   verification_method: 'método de verificação',
-  verify_by_password: 'Use a senha de pagamento atual para verificar',
+  verify_by_password: 'Use a senha de login atual para verificar',
   verify_by_sms: 'Use o código de verificação SMS',
   verify_by_email: 'Use o código de verificação de e-mail',
   mobile_phone_verification: 'Verificação de telefone',
