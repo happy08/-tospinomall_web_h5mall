@@ -1051,7 +1051,7 @@ export default {
         return false;
       }
       if (index == 1) { // 复制链接
-        this.onCopy(this.shareDetail.urlContent);
+        this.onCopy(this.shareDetail.url);
         return false;
       }
       if (index == 2) { // 分享内容
