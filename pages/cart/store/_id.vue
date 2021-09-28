@@ -1,8 +1,8 @@
 <template>
   <!-- 店铺-店铺首页 -->
   <div class="vh-100 bg-grey pb-70">
-    <div :class="{'store-container-headr': true, 'h-68': scrollTop > 40}" :style="storeBgdUrl != '' ? 'background-image: url(' + storeBgdUrl + ')' : 'background-color: #000'">
-      <div :class="{'bg-black-65': scrollTop < 40}">
+    <div :class="{'store-container-headr': true, 'h-68': scrollTop > 40}" :style="storeBgdUrl != '' ? 'background-image: url(' + storeBgdUrl + ')' : 'background-color: #42b7ae'">
+      <div :class="{'bg-black-65': scrollTop < 40 && storeBgdUrl != ''}">
         <div class="flex vcenter plr-12 h-46">
           <van-icon name="arrow-left" color="#fff" size="18px" @click="leftBack"></van-icon>
           <van-search
@@ -16,7 +16,7 @@
         </div>
         <van-sticky offset-top="0" @scroll="onScroll">
           <div :class="{'store-container-headr': scrollTop > 40 && storeBgdUrl != '', 'h-68': scrollTop > 40, 'bg-black': scrollTop > 40 && storeBgdUrl == ''}" :style="scrollTop > 40 && storeBgdUrl != '' ? 'background-image: url(' + storeBgdUrl + ')' : ''">
-            <div :class="{'w-100 flex between plr-12 ptb-10 vcenter': true, 'bg-black-65': scrollTop > 40}">
+            <div :class="{'w-100 flex between plr-12 ptb-10 vcenter': true, 'bg-black-65': scrollTop > 40 && storeBgdUrl != ''}">
               <div class="flex vcenter w-100">
                 <!-- 店铺详情 -->
                 <nuxt-link replace :to="{ name: 'cart-store-detail-id', params: { id: $route.params.id }, query: $route.query }" v-slot="{ navigate }" class="flex vcenter w-100">
@@ -397,7 +397,7 @@ export default {
     let storeBgdArr = moduleData.data.components.filter(item => {
       return item.type == 7;
     })
-    this.storeBgdUrl = storeBgdArr.length > 0 ? storeBgdArr[0].imageUrl : '';
+    this.storeBgdUrl = storeBgdArr.length > 0 && storeBgdArr[0].imageUrl ? storeBgdArr[0].imageUrl : '';
     // 判断店铺有没有装修
     const store_components = moduleData.data.components.filter(item => {
       return item.type == 2;
@@ -657,6 +657,6 @@ export default {
   background-color: rgba(0, 0, 0, .65);
 }
 .bg-black{
-  background-color: #000;
+  background-color: #42b7ae;
 }
 </style>
