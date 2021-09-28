@@ -181,9 +181,6 @@
         <button class="white fw fs-16 bg-green-linear" @click="onFilter">{{ $t('determine') }}</button>
       </div>
     </van-popup>
-    <div>搜索</div>
-    <input id="search-box" type="text">
-    <div id="brand-list"></div>
   </div>
 </template>
 
@@ -193,51 +190,10 @@ import ProductTopBtmSingle from '@/components/ProductTopBtmSingle';
 import EmptyStatus from '@/components/EmptyStatus';
 import { getSearchPull } from '@/api/search';
 import PullRefresh from '@/components/PullRefresh';
-import algoliasearch from 'algoliasearch/lite';
-import instantsearch from 'instantsearch.js';
-import { searchBox, hits, refinementList } from 'instantsearch.js/es/widgets';
 
-// const searchClient = instantsearch({
-//   indexName: 'tospinoMall',
-//   searchClient: algoliasearch(
-//     '62MLEBY33X',
-//     'b8f81ef6a145b0e57dd10b020d1c0c54'
-//   ),
-//   searchFunction(helper) {
-//     if (helper.state.query) {
-//       helper.search();
-//     }
-//   }
-// });
-// const algoliasearch = require('algoliasearch');
-
-// const client = algoliasearch('62MLEBY33X','7a8da9a5fd3f8137ea8cb70b60806e8d');
-// const searchClient = client.initIndex('tospinoMall');
-const searchClient = instantsearch({
-  indexName: 'demo_ecommerce',
-  searchClient: algoliasearch('B1G2GM9NG0', 'aadef574be1f9252bb48d4ea09b5cfe5'),
-});
-
-if (process.client) {
-  searchClient.addWidgets([
-    searchBox({
-      container: '#search-box'
-    }),
-    refinementList({ attribute: 'brand', container: '#brand-list' }),
-  ])
-
-  searchClient.use(() => {
-    return {
-      onStateChange({ uiState }) {
-          console.log('44444444444444444')
-          console.log(uiState['demo_ecommerce']);
-      },
-    }
-  });
-  searchClient.start();
-} 
-
-
+const algoliasearch = require('algoliasearch');
+let client = algoliasearch('62MLEBY33X','7a8da9a5fd3f8137ea8cb70b60806e8d');
+let searchClient = client.initIndex('tospinoMall');
 
 
 export default {
@@ -336,8 +292,9 @@ export default {
     if (this.searchVal != '') {
       
       console.log('------------')
+      console.log(client)
       // searchClient.start();
-      console.log(searchClient)
+      // console.log(await searchClient)
       // searchClient.on('render', res => {
       //   console.log(res)
       // })
@@ -352,14 +309,14 @@ export default {
         //   })
         // ])
         // searchClient.start();
-        
-        // searchClient.search(this.searchVal, {
-        //   page: this.pageIndex, // 从0开始算起
-        //   hitsPerPage: this.pageSize
-        // }).then(({hits, nbHits}) => {
-        //   this.total = nbHits;
-        //   this.list = hits;
-        // })
+        // searchClient = await searchClient;
+        searchClient.search(this.searchVal, {
+          page: this.pageIndex, // 从0开始算起
+          hitsPerPage: this.pageSize
+        }).then(({hits, nbHits}) => {
+          this.total = nbHits;
+          this.list = hits;
+        })
       
       this.$store.commit('SET_SEARCHPRODUCTLIST', this.searchVal); // 搜索历史存储
       this.arrangeType = 2;
@@ -470,93 +427,32 @@ export default {
     getSearchList(index, title) { // 获取分类列表
       this.pageIndex = 0;
       this.finished = false;
-      // this.params = { pageIndex: this.pageIndex, pageSize: this.pageSize, searchKeyword: this.searchVal };
       if (index == 1) { // 销量
-        this.params = {
-          // ...this.params,
-          // sortMap: {
-          //   key: 'sale_count',
-          //   value: 0
-          // }
-          customRanking: ['desc(price)']
-        }
+        searchClient = client.initIndex('tospinoMall_price_des');
       } else if (index == 0) { 
         if (this.dropdownVal == 0) { // 综合排序
-          // this.typeActive = this.$t('search_filter_overall');
+          searchClient = client.initIndex('tospinoMall');
         } else if (this.dropdownVal == 1) { // 价格升序
-          this.params = {
-            // ...this.params,
-            // sortMap: {
-            //   key: 'promotion_price',
-            //   value: 1
-            // }
-            customRanking: ['asc(price)']
-          }
+          searchClient = client.initIndex('tospinoMall_price_asc');
         } else if (this.dropdownVal == 2) { // 价格降序
-          this.params = {
-            // ...this.params,
-            // sortMap: {
-            //   key: 'promotion_price',
-            //   value: 0
-            // }
-            customRanking: ['desc(price)']
-          }
+          searchClient = client.initIndex('tospinoMall_price_des');
         }
       }
-      searchClient.setSettings({ ...this.params, ranking: [
-    'custom',
-    'typo',
-    'geo',
-    'words',
-    'filters',
-    'proximity',
-    'attribute',
-    'exact'
-  ] }).then(res => {
-      console.log('-')
-        console.log(res)
-        searchClient.waitTask(res.taskID).then(res => {
-          console.log('=')
-          console.log(res)
-          this.getProductList();
-        })
-      })
+      this.getProductList();
       
     },
     getDropSearchList(value) {
-      // if (value == 0) { // 综合排序
-      //   this.typeActive = this.$t('search_filter_overall');
-      // }
+      if (value == 0) { // 综合排序
+        searchClient = client.initIndex('tospinoMall');
+      }
       this.pageIndex = 0;
       this.params = { pageIndex: this.pageIndex, pageSize: this.pageSize, searchKeyword: this.searchVal };
       if (value == 1) { // 价格升序
-        this.params = {
-          // ...this.params,
-          // sortMap: {
-          //   key: 'promotion_price',
-          //   value: 1
-          // }
-          ranking: ['asc(price)']
-        }
+        searchClient = client.initIndex('tospinoMall_price_asc');
       } else if (value == 2) { // 价格降序
-        this.params = {
-          // ...this.params,
-          // sortMap: {
-          //   key: 'promotion_price',
-          //   value: 0
-          // }
-          ranking: ['desc(price)']
-        }
+        searchClient = client.initIndex('tospinoMall_price_des');
       }
-      searchClient.setSettings(this.params).wait().then(response => {
-        console.log(response)
-        console.log('=========')
-        this.getProductList();
-      });
-      // searchClient.setSettings(this.params).wait().then(res => {
-      //   console.log(res)
-      //   this.getProductList();
-      // })
+      this.getProductList();
     },
     onSearch(val) { // 搜索
       // let value = val;
@@ -628,14 +524,14 @@ export default {
         // pageSize: this.pageSize
       };
       
-      searchClient.setSettings({
-        attributesForFaceting: [
-          'brand' // or 'filterOnly(brand)' for filtering purposes only
-        ]
-      }).then(() => {
+      // searchClient.setSettings({
+      //   attributesForFaceting: [
+      //     'brand' // or 'filterOnly(brand)' for filtering purposes only
+      //   ]
+      // }).then(() => {
         // done
         this.getProductList();
-      });
+      // });
       
     },
     onReset() { // 筛选重置
@@ -689,35 +585,24 @@ export default {
       })
     },
     getProductList() { // 获取商品列表
-      // if (this.params) {
-      //   searchClient.setSettings(this.params);
-      // }
-      // searchClient.setSettings({
-      //   ranking: [
-      //     // 'desc(popularity)',
-      //     'desc(price)'
-      //   ]
-      // }).then(() => {
-        console.log(searchClient)
-        searchClient.search(this.searchVal, {
-          page: this.pageIndex, // 从0开始算起
-          hitsPerPage: this.pageSize
-        }).then(({hits, nbHits}) => {
-          console.log(hits)
-          this.total = nbHits;
-          this.list = this.pageIndex == 0 ? hits : this.list.concat(hits);
-          this.isShowTip = false;
-          this.filterPopup = false; // 筛选窗口隐藏
-          this.refreshing.isFresh = false;
-          this.loading = false;
-          this.finished = this.total == this.list.length ? true : false;
-          setTimeout(() => {
-            if (typeof this.$redrawVueMasonry === 'function') {
-              this.$redrawVueMasonry();
-            }
-          }, 50)
-        })
-      // })
+      searchClient.search(this.searchVal, {
+        page: this.pageIndex, // 从0开始算起
+        hitsPerPage: this.pageSize,
+        filters: this.params.filters
+      }).then(({hits, nbHits}) => {
+        this.total = nbHits;
+        this.list = this.pageIndex == 0 ? hits : this.list.concat(hits);
+        this.isShowTip = false;
+        this.filterPopup = false; // 筛选窗口隐藏
+        this.refreshing.isFresh = false;
+        this.loading = false;
+        this.finished = this.total == this.list.length ? true : false;
+        setTimeout(() => {
+          if (typeof this.$redrawVueMasonry === 'function') {
+            this.$redrawVueMasonry();
+          }
+        }, 50)
+      })
       // searchClient.search(this.searchVal, {
       //   page: this.pageIndex, // 从0开始算起
       //   hitsPerPage: this.pageSize,
