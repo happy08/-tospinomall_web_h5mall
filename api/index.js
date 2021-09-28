@@ -202,6 +202,18 @@ export default ({ app }, inject) => {
           Authorization: app.$cookies.get('authToken')
         }
       })
+    },
+    getProductDetailSEO() { // 获取商品详情seo信息
+      return app.$axios({
+        url: `${url}/basics/base/mall/seo/findGoodsDetail`,
+        method: 'get'
+      })
+    },
+    getSearchListSEO() { // 获取商品搜索页seo信息
+      return app.$axios({
+        url: `${url}/basics/base/mall/seo/findGoodsSearch`,
+        method: 'get'
+      })
     }
   };
 

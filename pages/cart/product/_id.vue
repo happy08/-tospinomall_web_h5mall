@@ -194,7 +194,7 @@
                 </template>
               </van-step>
             </van-steps>
-            <p class="mt-16 fs-14 light-grey fm-helvetica pb-20" v-if="deliveryInfo">{{ deliveryInfo[0].estimeate }}</p>
+            <p class="mt-16 fs-14 light-grey fm-helvetica pb-20" v-if="deliveryInfo">{{ deliveryInfo[0].estimetae }}</p>
             <!-- <p class="mt-8 orange fs-12 pb-10">From January 3rd to January 27th</p> -->
           </template>
         </div>
@@ -620,7 +620,8 @@ export default {
           icon: shareInfo
         }
       ],
-      shareDetail: {}
+      shareDetail: {},
+      meta: {}
     }
   },
   async fetch() {
@@ -772,6 +773,14 @@ export default {
       if (!recommendData.data) return false;
       this.likeList = recommendData.data;
     }
+
+    // 获取SEO信息
+    const metaData = await this.$api.getProductDetailSEO();
+    this.meta = {
+      title: metaData.data.title.replace('{spuTitle}', this.goodSpuVo.goodTitle).replace('{sellerGoodsKeywords}', this.goodSpuVo.goodTitle),
+      description: metaData.data.description.replace('{spuTitle}', this.goodSpuVo.goodTitle).replace('{sellerGoodsKeywords}', this.goodSpuVo.goodTitle),
+      keyword: metaData.data.keyword.replace('{spuTitle}', this.goodSpuVo.goodTitle).replace('{sellerGoodsKeywords}', this.goodSpuVo.goodTitle)
+    }
   },
   activated() {
     if (this.$store.state.user.authToken) {
@@ -809,12 +818,12 @@ export default {
   },
   head() {
     return {
-      title: this.goodSpuVo.goodTitle + 'Tospino Ghana online shopping',
+      title: this.meta.title + 'Tospino Ghana online shopping',
       meta: [
-        { hid: 'description', name: 'description', content: this.goodSpuVo.goodTitle || 'Tospino Ghana online shopping' },
-        { hid: 'keywords', name: 'keywords', content: this.goodSpuVo.goodTitle || 'Tospino Ghana online shopping' },
-        { hid: 'og:title', property: 'og:title', content: this.goodSpuVo.goodTitle || 'Tospino Ghana online shopping' },
-        { hid: 'og:description', property: 'og:description', content: this.goodSpuVo.goodTitle || 'Tospino Ghana online shopping' }
+        { hid: 'description', name: 'description', content: this.meta.description || 'Tospino Ghana online shopping' },
+        { hid: 'keywords', name: 'keywords', content: this.meta.keyword || 'Tospino Ghana online shopping' },
+        { hid: 'og:title', property: 'og:title', content: this.meta.title || 'Tospino Ghana online shopping' },
+        { hid: 'og:description', property: 'og:description', content: this.meta.description || 'Tospino Ghana online shopping' }
       ]
     }
   },
