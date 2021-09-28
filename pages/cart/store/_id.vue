@@ -3,7 +3,7 @@
   <div class="vh-100 bg-grey pb-70">
     <div :class="{'store-container-headr': true, 'h-68': scrollTop > 40}" :style="storeBgdUrl != '' ? 'background-image: url(' + storeBgdUrl + ')' : 'background-color: #42b7ae'">
       <div :class="{'bg-black-65': scrollTop < 40 && storeBgdUrl != ''}">
-        <div class="flex vcenter plr-12 h-46">
+        <div class="flex vcenter pl-20 pr-12 h-46">
           <van-icon name="arrow-left" color="#fff" size="18px" @click="leftBack"></van-icon>
           <van-search
             shape="round"
