@@ -117,7 +117,7 @@
           <!-- 货源地到收货地 -->
           <template v-if="deliveryInfo.length > 0 && completeAddress">
             <!-- 步骤条 -->
-            <van-steps :active="freightActive" class="plr-20">
+            <van-steps :active="freightActive" class="plr-20 mt-6 custom-step-product">
               <!-- 发货地址 -->
               <van-step>
                 {{ storeInfo.deliveryCountryName }}
@@ -170,7 +170,7 @@
               </van-step>
               <!-- 收货地址 -->
               <van-step>
-                {{ completeAddress }}
+                <span>{{ completeAddress }}</span>
                 <!-- 自定义未激活状态图标 -->
                 <template #inactive-icon>
                   <van-icon
@@ -194,7 +194,7 @@
                 </template>
               </van-step>
             </van-steps>
-            <p class="mt-16 fs-14 light-grey fm-helvetica pb-20" v-if="deliveryInfo">{{ deliveryInfo[0].estimetae }}</p>
+            <p class="mt-16 fs-14 light-grey fm-helvetica pb-20" v-if="deliveryInfo.length > 0">{{ deliveryInfo[0].estimeate }}</p>
             <!-- <p class="mt-8 orange fs-12 pb-10">From January 3rd to January 27th</p> -->
           </template>
         </div>
@@ -1208,6 +1208,30 @@ export default {
     width: 76%;
     &>div, .sticky-opacity{
       width: 100%;
+    }
+  }
+}
+.custom-step-product{
+  .van-steps__items{
+    margin-bottom: 0;
+    padding-bottom: 0;
+    .van-step{
+      .van-step__title{
+        margin-top: 25px;
+        width: 60px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .van-step__circle-container, .van-step__line{
+        margin-top: 8px;
+        top: 0;
+      }
+      &:last-child{
+        .van-step__title{
+          margin-right: -10px;
+        }
+      }
     }
   }
 }

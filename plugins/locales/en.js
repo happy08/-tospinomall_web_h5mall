@@ -646,7 +646,7 @@ const en = {
   fail_copied_to_clipboard: 'copy failed',
   address_tag: ['Home', 'Company', 'School'],
   category_list: ['whole', 'Price reduction', 'Often buy'],
-  store_product_tab: ['Recommend', 'Sales volume', 'Price', 'In stock'],
+  store_product_tab: ['Recommend', 'Sale', 'Price', 'In stock'],
   cart_empty_tip: 'The shopping cart is empty',
   rate_tab: ['To be evaluated', 'Evaluated/followed up'],
   rating_num: 'Commodity praise {replace_tip}',
