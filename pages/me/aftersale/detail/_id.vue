@@ -69,7 +69,7 @@
                 :alt="'Tospino circle finished icon'"
               />
             </template>
-            {{ stepItem }}
+            <div v-html="stepItem"></div>
           </van-step>
         </van-steps>
       </div>
@@ -522,9 +522,42 @@ export default {
 
 <style lang="less">
 .custom-step-aftersale{
+  padding-left: 20px;
+  padding-right: 20px;
   .van-step__circle{
     width: 11px;
     height: 11px;
+  }
+  .van-steps__items{
+    margin-bottom: 0;
+    padding-bottom: 0;
+    .van-step{
+      .van-step__title{
+        word-break: break-word;
+        // width: 80%;
+        // text-align: center;
+        margin-top: 25px;
+        // transform: none;
+      }
+      .van-step__circle-container, .van-step__line{
+        margin-top: 8px;
+        top: 0;
+      }
+      &:first-child{
+        .van-step__title{
+          // width: 80%;
+          text-align: left;
+          transform: translateX(-30%);
+        }
+      }
+      &:last-child{
+        .van-step__title{
+          // width: 80%;
+          text-align: right;
+          transform: translateX(30%);
+        }
+      }
+    }
   }
 }
 </style>
