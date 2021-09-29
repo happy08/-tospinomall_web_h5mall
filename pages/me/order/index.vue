@@ -1,8 +1,9 @@
 <template>
   <!-- 我的-订单 -->
-  <div :class="{'v-percent-100 pt-46 order-page': true, 'bg-white': lists.length == 0, 'bg-grey': lists.length > 0}">
-    <BmHeaderNav :left="{ isShow: true, url: '/me' }" :title="$t('my_order')" :border="false" :fixed="true" />
-    <van-sticky class="bg-white" :offset-top="'0.92rem'">
+  <div :class="{'v-percent-100 order-page': true, 'bg-white': lists.length == 0, 'bg-grey': lists.length > 0}">
+    
+    <van-sticky :offset-top="0">
+      <BmHeaderNav :left="{ isShow: true, url: '/me' }" :title="$t('my_order')" :border="false" />
       <!-- 搜索 -->
       <div class="flex vcenter pl-20 pr-12 bg-white">
         <van-search
