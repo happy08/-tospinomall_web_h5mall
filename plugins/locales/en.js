@@ -706,7 +706,8 @@ const en = {
   share_product_min_price: 'Minimum commodity price',
   share_product_content: 'Share content',
   share_product_link: 'Share link',
-  verify_pay_by_password: 'Use the current payment password to verify'
+  verify_pay_by_password: 'Use the current payment password to verify',
+  delivery_freight_method: 'Delivery Method'
 }
 
 export default en;

@@ -706,7 +706,8 @@
   share_product_title: 'Título do produto',
   share_product_min_price: 'Preço mínimo de mercadoria',
   share_product_link: 'Compartilhar link',
-  verify_pay_by_password: 'Use a senha de pagamento atual para verificar'
+  verify_pay_by_password: 'Use a senha de pagamento atual para verificar',
+  delivery_freight_method: 'Método de Entrega'
 }
 
 export default por;
