@@ -163,14 +163,14 @@
             <h3 class="fs-16 black fw">{{ $t('brand') }}</h3>
             
             <div class="mt-6 flex flex-wrap">
-              <span :class="{'ptb-6 black fs-14 lh-20 tc w-84 mt-14 ml-10 odd-3 plr-4 hidden-1 bg-grey-f5 round-8 border-transparent': true, 'is-active': brandName == brandItem.value}" v-for="(brandItem, brandIndex) in brandList" :key="'brand-item-' + brandIndex" @click="brandName = brandItem.value">{{ brandItem.value }}</span>
+              <span :class="{'ptb-6 black fs-14 lh-20 tc w-84 mt-14 ml-10 odd-3 plr-4 hidden-1 bg-grey-f5 round-8 border-transparent': true, 'is-active': brandName == brandItem}" v-for="(brandItem, brandIndex) in brandList" :key="'brand-item-' + brandIndex" @click="brandName = brandItem">{{ brandItem }}</span>
             </div>
           </div>
           <!-- 所有类别 -->
           <div class="mt-32" v-if="categoryList.length > 0">
             <h3 class="fs-16 black fw">{{ $t('all_categories') }}</h3>
             <div class="mt-6 flex flex-wrap">
-              <span :class="{'ptb-6 black fs-14 lh-20 tc w-84 mt-14 ml-10 odd-3 plr-4 hidden-1 bg-grey-f5 round-8 border-transparent': true, 'is-active': categoryName == categoryItem.value}" v-for="(categoryItem, categoryIndex) in categoryList" :key="'category-index-' + categoryIndex" @click="categoryName = categoryItem.value">{{ categoryItem.value }}</span>
+              <span :class="{'ptb-6 black fs-14 lh-20 tc w-84 mt-14 ml-10 odd-3 plr-4 hidden-1 bg-grey-f5 round-8 border-transparent': true, 'is-active': categoryName == categoryItem}" v-for="(categoryItem, categoryIndex) in categoryList" :key="'category-index-' + categoryIndex" @click="categoryName = categoryItem">{{ categoryItem }}</span>
             </div>
           </div>
         </div>
@@ -290,32 +290,21 @@ export default {
 
     // 如果带着搜索的参数跳转过来的需要先获取相对应的搜索数据
     if (this.searchVal != '') {
-      
-      console.log('------------')
-      console.log(client)
-      // searchClient.start();
-      // console.log(await searchClient)
-      // searchClient.on('render', res => {
-      //   console.log(res)
-      // })
-      // searchClient.helper.search('').then(({hits}) => {
-      //   console.log(hits)
-      // })
         this.pageIndex = 0;
-        // searchClient.addWidgets([
-        //   instantsearch.widgets.refinementList({
-        //     container: '#brand-list',
-        //     attribute: 'brand',
-        //   })
-        // ])
-        // searchClient.start();
-        // searchClient = await searchClient;
+        // searchClient.search(this.searchVal, {
+        //   facets: ['brand', 'category', 'author']
+        // }).then((res) => {
+        //   this.brandList = Object.keys(res.facets.brand);
+        // })
         searchClient.search(this.searchVal, {
           page: this.pageIndex, // 从0开始算起
-          hitsPerPage: this.pageSize
-        }).then(({hits, nbHits}) => {
+          hitsPerPage: this.pageSize,
+          facets: ['brand', 'categories']
+        }).then(({hits, nbHits, facets}) => {
           this.total = nbHits;
           this.list = hits;
+          this.brandList = Object.keys(facets.brand);
+          this.categoryList = Object.keys(facets.categories);
         })
       
       this.$store.commit('SET_SEARCHPRODUCTLIST', this.searchVal); // 搜索历史存储
@@ -342,7 +331,7 @@ export default {
       // });
       this.isShowTip = false;
       this.loading = false;
-      this.finished = false;
+      this.finished = this.total == this.list.length ? true : false;
 
       // // 品牌列表
       // this.brandList = listData.data.brandList;
@@ -446,7 +435,6 @@ export default {
         searchClient = client.initIndex('tospinoMall');
       }
       this.pageIndex = 0;
-      this.params = { pageIndex: this.pageIndex, pageSize: this.pageSize, searchKeyword: this.searchVal };
       if (value == 1) { // 价格升序
         searchClient = client.initIndex('tospinoMall_price_asc');
       } else if (value == 2) { // 价格降序
@@ -455,8 +443,6 @@ export default {
       this.getProductList();
     },
     onSearch(val) { // 搜索
-      // let value = val;
-      if (!val && this.hintName) value = this.hintName;
       if (this.isRouteBack != 0) {
         this.$router.replace({
           name: 'search',
@@ -474,54 +460,47 @@ export default {
           }
         })
       }
-      // this.$store.commit('SET_SEARCHPRODUCTLIST', value); // 搜索历史存储
-      // // 更新页面展示
-      // this.searchHistoryList = this.$store.state.searchProductList.filter((item, index) => {
-      //   return index < 6;
-      // });
-      // this.searchVal = value;
-      // this.pageIndex = 1;
-      // // 获取搜索列表
-      // this.params = { searchKeyword: value, pageIndex: this.pageIndex, pageSize: this.pageSize };
-      // this.getProductList();
     },
     onFocus() { // 获取焦点之后，不展示数据列表和历史数据
       this.isShowTip = this.searchVal.length > 0 ? -1 : this.searchVal.length === 0;
       this.getSearchPull();
     },
     onFilter() { // 筛选
-      let _data = {
-        // searchKeyword: this.searchVal,
-        // brandName: this.brandName,
-        // categoryName: this.categoryName
+      let filterArr = [];
+      let facetFilters = [];
+      if (this.brandName != '') {
+        // filterArr.push(`brand: ${this.brandName}`);
+        facetFilters.push([`brand: ${this.brandName}`]);
+      }
+      if (this.categoryName != '') {
+        // filterArr.push(`categories: ${this.categoryName}`);
+        facetFilters.push([`categories: ${this.categoryName}`]);
       }
       if (this.available == true) { // 是否有货
-        // _data.available = 1;
-        _data.filters = 'brand:Native Union';
+        filterArr.push('available: 1');
       }
       if (this.overseas == true) { // 是否海外购
-        // _data.overseas = 1;
-        _data.filters = 'brand:Nomad';
+        // _data.filters = 'brand:Nomad';
+        filterArr.push('overseas: 1');
       }
       if (this.deliveryType == true) { // tospino物流
-        // _data.deliveryType = 2;
-      }
-      if (this.minPrice != '') { // 最低价格
-        // _data.queryMinPrice = this.minPrice;
-        _data.filters = `price >= ${this.minPrice}`;
-      }
-      if (this.maxPrice != '') { // 最高价格
-        // _data.queryMaxPrice = this.maxPrice;
-        _data.filters = `price <= ${this.maxPrice}`;
+        filterArr.push('deliveryType: 2');
       }
       if (this.maxPrice != '' && this.minPrice != '') {
-        _data.filters = `price: ${this.minPrice} TO ${this.maxPrice}`;
+        // _data.filters = `price: ${this.minPrice} TO ${this.maxPrice}`;
+        filterArr.push(`price: ${this.minPrice} TO ${this.maxPrice}`);
+      } else if (this.minPrice != '') { // 最低价格
+        // _data.filters = `price >= ${this.minPrice}`;
+        filterArr.push(`price >= ${this.minPrice}`);
+      } else if (this.maxPrice != '') { // 最高价格
+        // _data.filters = `price <= ${this.maxPrice}`;
+        filterArr.push(`price <= ${this.maxPrice}`);
       }
+      
       this.pageIndex = 0;
       this.params = {
-        ..._data,
-        // pageIndex: this.pageIndex,
-        // pageSize: this.pageSize
+        filters: filterArr.join(' AND '),
+        facetFilters: facetFilters
       };
       
       // searchClient.setSettings({
@@ -537,11 +516,12 @@ export default {
     onReset() { // 筛选重置
       this.brandName = this.minPrice = this.maxPrice = this.categoryName = '';
       this.available = this.overseas = this.deliveryType = false;
-      this.pageIndex = 1;
+      this.pageIndex = 0;
       this.params = {
-        searchKeyword: this.searchVal,
-        pageSize: this.pageSize,
-        pageIndex: this.pageIndex
+        // searchKeyword: this.searchVal,
+        // pageSize: this.pageSize,
+        // pageIndex: this.pageIndex
+        filters: ''
       }
       this.getProductList();
     },
@@ -550,7 +530,6 @@ export default {
       this.searchHistoryList = this.$store.state.searchProductList;
     },
     toSearch(item) {
-      // this.$store.commit('SET_SEARCHPRODUCTLIST', item.suggestion); // 搜索历史存储
       // 更新页面展示
       if (this.searchHistoryList.length > 6) {
         this.searchHistoryList = this.$store.state.searchProductList;
@@ -588,7 +567,8 @@ export default {
       searchClient.search(this.searchVal, {
         page: this.pageIndex, // 从0开始算起
         hitsPerPage: this.pageSize,
-        filters: this.params.filters
+        filters: this.params.filters,
+        facetFilters: this.params.facetFilters
       }).then(({hits, nbHits}) => {
         this.total = nbHits;
         this.list = this.pageIndex == 0 ? hits : this.list.concat(hits);
@@ -603,58 +583,6 @@ export default {
           }
         }, 50)
       })
-      // searchClient.search(this.searchVal, {
-      //   page: this.pageIndex, // 从0开始算起
-      //   hitsPerPage: this.pageSize,
-      //   ...this.params // 过滤
-      // }).then(({hits, nbHits}) => {
-      //   this.total = nbHits;
-      //   this.list = this.pageIndex == 0 ? hits : this.list.concat(hits);
-      //   this.isShowTip = false;
-      //   this.filterPopup = false; // 筛选窗口隐藏
-      //   this.refreshing.isFresh = false;
-      //   this.loading = false;
-      //   this.finished = this.total == this.list.length ? true : false;
-      //   setTimeout(() => {
-      //     if (typeof this.$redrawVueMasonry === 'function') {
-      //       this.$redrawVueMasonry();
-      //     }
-      //   }, 50)
-      // })
-      // this.params = {
-      //   ...this.params,
-      //   pageIndex: this.pageIndex
-      // }
-      // if (this.shopId != '') {
-      //   this.params = {
-      //     ...this.params,
-      //     shopId: this.shopId
-      //   }
-      // }
-      // this.$api.getProductSearch(this.params).then(res => {
-      //   let list = res.data.items.map(item => {
-      //     return {
-      //       ...item,
-      //       starLevel: parseFloat(item.starLevel)
-      //     }
-      //   });
-      //   this.list = this.pageIndex == 1 ? list : this.list.concat(list);
-      //   // 品牌列表
-      //   this.brandList = res.data.brandList;
-      //   // 所有分类
-      //   this.categoryList = res.data.categoryList;
-      //   this.total = res.data.total;
-      //   this.isShowTip = false;
-      //   this.filterPopup = false; // 筛选窗口隐藏
-      //   this.refreshing.isFresh = false;
-      //   this.loading = false;
-      //   this.finished = false;
-      //   setTimeout(() => {
-      //     if (typeof this.$redrawVueMasonry === 'function') {
-      //       this.$redrawVueMasonry();
-      //     }
-      //   }, 50)
-      // })
     },
     onRefresh() { // 刷新
       this.pageIndex = 0;
