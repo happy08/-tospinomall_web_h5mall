@@ -14,6 +14,7 @@
         length="6"
         class="round-8 mt-20 custom-pwd-ipt"
         gutter="0.14rem"
+        :mask="false"
       />
       <!-- 数字键盘 -->
       <van-number-keyboard

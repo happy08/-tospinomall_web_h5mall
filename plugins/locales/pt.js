@@ -705,7 +705,8 @@
   success_order: 'pedido com sucesso',
   share_product_title: 'Título do produto',
   share_product_min_price: 'Preço mínimo de mercadoria',
-  share_product_link: 'Compartilhar link'
+  share_product_link: 'Compartilhar link',
+  verify_pay_by_password: 'Use a senha de pagamento atual para verificar'
 }
 
 export default por;

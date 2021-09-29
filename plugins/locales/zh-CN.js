@@ -705,7 +705,8 @@ const cn = {
   success_order: '下单成功',
   share_product_title: '商品标题',
   share_product_min_price: '商品最小价格',
-  share_product_link: '分享链接'
+  share_product_link: '分享链接',
+  verify_pay_by_password: '使用当前支付密码验证'
 }
 
 export default cn;

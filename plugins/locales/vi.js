@@ -705,7 +705,8 @@ const vi = {
   success_order: 'đặt hàng thành công',
   share_product_title: 'Tiêu đề sản phẩm',
   share_product_min_price: 'Giá hàng hóa tối thiểu',
-  share_product_link: 'Chia sẻ đường link'
+  share_product_link: 'Chia sẻ đường link',
+  verify_pay_by_password: 'Sử dụng mật khẩu thanh toán hiện tại để xác minh'
 }
 
 export default vi;

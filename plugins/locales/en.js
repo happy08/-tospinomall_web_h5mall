@@ -523,11 +523,11 @@ const en = {
   refund_message: 'Return message',
   t_please_upload_voucher_image: 'Please upload the voucher picture',
   wait_process: '{replace_tip} pending',
-  wait_pick_up: 'Waiting for door-to-door pick-up',
+  wait_pick_up: 'Waiting for pick-up',
   wait_return_self: 'To be sent back by yourself',
   wait_receive: '{replace_tip} goods to be received',
   wait_refund: 'To be refunded',
-  close_after_sale_order: 'Close the after-sales order',
+  close_after_sale_order: 'Close the after sales order',
   reject_apply: 'The {replace_tip} rejected the application',
   rejection_goods: '{replace_tip} reject returned goods',
   adducing_evidence: 'Proof',
@@ -705,7 +705,8 @@ const en = {
   share_product_title: 'Product title',
   share_product_min_price: 'Minimum commodity price',
   share_product_content: 'Share content',
-  share_product_link: 'Share link'
+  share_product_link: 'Share link',
+  verify_pay_by_password: 'Use the current payment password to verify'
 }
 
 export default en;
