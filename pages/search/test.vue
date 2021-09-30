@@ -92,7 +92,7 @@
                 >
                   <ProductTopBtmSingle
                     :img="{ url: searchItem.mainPictureUrl, width: '3.4rem', height: '3.4rem', loadImage: require('@/assets/images/product-bgd-170.png') }" 
-                    :detail="{ desc: searchItem.name, price: searchItem.price, rate: searchItem.starLevel, volumn: searchItem.saleCount, ellipsis: 2, country: searchItem.supplyCountryName, country_url: searchItem.supplyCountryIcon }"
+                    :detail="{ desc: searchItem.productTitle, price: searchItem.productPrice, rate: searchItem.starLevel, volumn: searchItem.saleCount, ellipsis: 2, country: searchItem.supplyCountryName, country_url: searchItem.supplyCountryIcon }"
                     class="round-4 bg-white hidden v-100"
                   ></ProductTopBtmSingle>
                 </nuxt-link>
@@ -299,12 +299,12 @@ export default {
         searchClient.search(this.searchVal, {
           page: this.pageIndex, // 从0开始算起
           hitsPerPage: this.pageSize,
-          facets: ['brand', 'categories']
+          facets: ['brandName', 'categoryName']
         }).then(({hits, nbHits, facets}) => {
           this.total = nbHits;
           this.list = hits;
-          this.brandList = Object.keys(facets.brand);
-          this.categoryList = Object.keys(facets.categories);
+          this.brandList = Object.keys(facets.brandName);
+          this.categoryList = Object.keys(facets.categoryName);
         })
       
       this.$store.commit('SET_SEARCHPRODUCTLIST', this.searchVal); // 搜索历史存储
@@ -417,7 +417,7 @@ export default {
       this.pageIndex = 0;
       this.finished = false;
       if (index == 1) { // 销量
-        searchClient = client.initIndex('tospinoMall_price_des');
+        searchClient = client.initIndex('tospinoMall_sales_des');
       } else if (index == 0) { 
         if (this.dropdownVal == 0) { // 综合排序
           searchClient = client.initIndex('tospinoMall');
@@ -470,21 +470,21 @@ export default {
       let facetFilters = [];
       if (this.brandName != '') {
         // filterArr.push(`brand: ${this.brandName}`);
-        facetFilters.push([`brand: ${this.brandName}`]);
+        facetFilters.push([`brandName: ${this.brandName}`]);
       }
       if (this.categoryName != '') {
         // filterArr.push(`categories: ${this.categoryName}`);
-        facetFilters.push([`categories: ${this.categoryName}`]);
+        facetFilters.push(`categoryName: ${this.categoryName}`);
       }
       if (this.available == true) { // 是否有货
-        filterArr.push('available: 1');
+        filterArr.push('available=1');
       }
       if (this.overseas == true) { // 是否海外购
         // _data.filters = 'brand:Nomad';
-        filterArr.push('overseas: 1');
+        filterArr.push('overseas=1');
       }
       if (this.deliveryType == true) { // tospino物流
-        filterArr.push('deliveryType: 2');
+        filterArr.push('deliveryType=2');
       }
       if (this.maxPrice != '' && this.minPrice != '') {
         // _data.filters = `price: ${this.minPrice} TO ${this.maxPrice}`;
@@ -523,7 +523,7 @@ export default {
         // pageIndex: this.pageIndex
         filters: ''
       }
-      this.getProductList();
+      // this.getProductList();
     },
     showMoreHistory() { // 展示更多的搜索历史
       this.historyNum = false;

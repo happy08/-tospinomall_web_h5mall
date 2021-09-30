@@ -11,6 +11,7 @@
       :errorUrl="img.loadImage"
       :isShow="true"
       :alt="detail.desc"
+      class="flex-shrink"
     />
     <!-- 商品的信息 -->
     <div class="pt-12 plr-4" v-if="detail">
@@ -22,7 +23,7 @@
           :isLazy="false"
           :loadUrl="img.loadImage"
           :errorUrl="img.loadImage"
-          :isShow="false"
+          :isShow="true"
           :round="true"
           :alt="detail.desc"
         />
