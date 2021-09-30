@@ -220,7 +220,7 @@
       </div>
     </van-popup>
 
-    <div class="w-100 bg-white btn-content flex hend vcenter" v-if="togetherResult.length > 0 && typeActive == 0">
+    <div class="w-100 bg-white btn-content flex hend vcenter z-100" v-if="togetherResult.length > 0 && typeActive == 0">
       <BmButton class="fs-14 mr-10 round-8 plr-10 h-40" @btnClick="onToggerPay">{{ $t('merge_to_pay') }}</BmButton>
     </div>
   </div>
@@ -619,6 +619,9 @@ export default {
 }
 .h-40{
   height: 40px;
+}
+.z-100{
+  z-index: 100;
 }
 </style>
 
