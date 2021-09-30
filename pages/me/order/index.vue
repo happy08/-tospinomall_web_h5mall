@@ -359,13 +359,12 @@ export default {
       });
     }
     const listData = await this.$api.getOrderList(this.params);
-    if (this.params.pageNum == 1) {
-      this.$toast.clear();
+    this.$toast.clear();
+    if (listData.data) {
+      this.lists = this.params.pageNum == 1 ? listData.data.records : this.lists.concat(listData.data.records);
+      this.togetherResult = this.lists.length == 0 ? [] : this.togetherResult;
+      this.total = parseFloat(listData.data.total);
     }
-    if (listData.code != 0) return false;
-    this.lists = this.params.pageNum == 1 ? listData.data.records : this.lists.concat(listData.data.records);
-    this.togetherResult = this.lists.length == 0 ? [] : this.togetherResult;
-    this.total = parseFloat(listData.data.total);
     this.loading = false;
     this.refreshing.isFresh = false;
     this.isFirst = false;

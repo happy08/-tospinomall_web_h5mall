@@ -121,7 +121,7 @@ service.interceptors.response.use(response => { // 成功
       
       return response.data;
     } else {
-      if (response.data.msg && (response.data.code != 11001 && headers.url != '/auth/mobile/token/social')) { // facebook未绑定邮箱接口返回时是跳转页面的，所以不进行提示
+      if (response.data.msg && (response.data.code != 11001 && url != '/auth/mobile/token/social')) { // facebook未绑定邮箱接口返回时是跳转页面的，所以不进行提示
         tip(response.data.msg);
       }
     }
@@ -133,6 +133,7 @@ service.interceptors.response.use(response => { // 成功
 }, error => { // 失败
   if (error.code > 0) {
     if (error.code == 10401) {
+      Toast.clear();
       $nuxt.$store.commit('user/SET_TOKEN', null); // 用户凭证已过期，先刷新token
       $nuxt.$router.push({
         name: 'login'
