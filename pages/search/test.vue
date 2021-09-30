@@ -266,7 +266,7 @@ export default {
       available: false,
       pageIndex: 0,
       pageSize: 10,
-      params: null,
+      params: {},
       refreshing: {
         isFresh: false
       },
@@ -504,13 +504,13 @@ export default {
       }
       if (this.maxPrice != '' && this.minPrice != '') {
         // _data.filters = `price: ${this.minPrice} TO ${this.maxPrice}`;
-        filterArr.push(`price: ${this.minPrice} TO ${this.maxPrice}`);
+        filterArr.push(`minPrice: ${this.minPrice} TO ${this.maxPrice}`);
       } else if (this.minPrice != '') { // 最低价格
         // _data.filters = `price >= ${this.minPrice}`;
-        filterArr.push(`price >= ${this.minPrice}`);
+        filterArr.push(`minPrice >= ${this.minPrice}`);
       } else if (this.maxPrice != '') { // 最高价格
         // _data.filters = `price <= ${this.maxPrice}`;
-        filterArr.push(`price <= ${this.maxPrice}`);
+        filterArr.push(`minPrice <= ${this.maxPrice}`);
       }
       
       this.pageIndex = 0;
