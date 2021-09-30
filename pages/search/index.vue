@@ -554,12 +554,12 @@ export default {
       this.brandName = this.minPrice = this.maxPrice = this.categoryName = '';
       this.available = this.overseas = this.deliveryType = false;
       this.pageIndex = 1;
-      this.params = {
-        searchKeyword: this.searchVal,
-        pageSize: this.pageSize,
-        pageIndex: this.pageIndex
-      }
-      this.getProductList();
+      // this.params = {
+      //   searchKeyword: this.searchVal,
+      //   pageSize: this.pageSize,
+      //   pageIndex: this.pageIndex
+      // }
+      // this.getProductList();
     },
     showMoreHistory() { // 展示更多的搜索历史
       this.historyNum = false;
@@ -623,10 +623,10 @@ export default {
           }
         });
         this.list = this.pageIndex == 1 ? list : this.list.concat(list);
-        // 品牌列表
-        this.brandList = res.data.brandList;
-        // 所有分类
-        this.categoryList = res.data.categoryList;
+        // // 品牌列表
+        // this.brandList = res.data.brandList;
+        // // 所有分类
+        // this.categoryList = res.data.categoryList;
         this.total = res.data.total;
         this.isShowTip = false;
         this.filterPopup = false; // 筛选窗口隐藏

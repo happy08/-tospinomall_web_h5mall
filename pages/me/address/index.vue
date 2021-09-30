@@ -111,7 +111,8 @@ export default {
               name: item.name,
               phone: item.phone,
               completeAddress: item.completeAddressDetail,
-              id: item.id
+              id: item.id,
+              phonePrefix: item.phonePrefix
             })
           }
         })
@@ -134,6 +135,7 @@ export default {
             cityCode: item.cityCode,
             countryCode: item.countryCode,
             provinceCode: item.provinceCode,
+            phonePrefix: item.phonePrefix
           })
         }
       })

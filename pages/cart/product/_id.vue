@@ -97,7 +97,7 @@
             class="ptb-14 plr-0"
             is-link
             :border="false"
-            @click="addressShow = true"
+            @click="onChooseFreight"
           >
             <template #title>
               <div class="flex vcenter">
@@ -117,29 +117,62 @@
           <!-- 货源地到收货地 -->
           <template v-if="deliveryInfo.length > 0 && completeAddress">
             <!-- 步骤条 -->
-            <van-steps :active="freightActive" class="plr-20">
+            <van-steps :active="freightActive" class="plr-20 mt-6 custom-step-product">
               <!-- 发货地址 -->
               <van-step>
                 {{ storeInfo.deliveryCountryName }}
                 <!-- 自定义未激活状态图标 -->
                 <template #inactive-icon>
                   <van-icon
+                    v-if="deliveryInfo[0].type == 1"
                     :name="require('@/assets/images/icon/plane-default.png')"
-                    size="0.48rem"
+                    size="0.36rem"
+                  />
+                  <van-icon
+                    v-if="deliveryInfo[0].type == 2"
+                    :name="require('@/assets/images/icon/steamer-default.png')"
+                    size="0.36rem"
+                  />
+                  <van-icon
+                    v-if="deliveryInfo[0].type == 3"
+                    :name="require('@/assets/images/icon/truck-default.png')"
+                    size="0.36rem"
                   />
                 </template>
                 <!-- 自定义激活状态图标 -->
                 <template #active-icon>
                   <van-icon
+                    v-if="deliveryInfo[0].type == 1"
                     :name="require('@/assets/images/icon/plane-active.png')"
-                    size="0.48rem"
+                    size="0.36rem"
+                  />
+                  <van-icon
+                    v-if="deliveryInfo[0].type == 2"
+                    :name="require('@/assets/images/icon/steamer-active.png')"
+                    size="0.36rem"
+                  />
+                  <van-icon
+                    v-if="deliveryInfo[0].type == 3"
+                    :name="require('@/assets/images/icon/truck-active.png')"
+                    size="0.36rem"
                   />
                 </template>
                 <!-- 自定义激活状态图标 -->
                 <template #finish-icon>
                   <van-icon
+                    v-if="deliveryInfo[0].type == 1"
                     :name="require('@/assets/images/icon/plane-active.png')"
-                    size="0.48rem"
+                    size="0.36rem"
+                  />
+                  <van-icon
+                    v-if="deliveryInfo[0].type == 2"
+                    :name="require('@/assets/images/icon/steamer-active.png')"
+                    size="0.36rem"
+                  />
+                  <van-icon
+                    v-if="deliveryInfo[0].type == 3"
+                    :name="require('@/assets/images/icon/truck-active.png')"
+                    size="0.36rem"
                   />
                 </template>
               </van-step>
@@ -170,7 +203,7 @@
               </van-step>
               <!-- 收货地址 -->
               <van-step>
-                {{ completeAddress }}
+                <span>{{ completeAddress }}</span>
                 <!-- 自定义未激活状态图标 -->
                 <template #inactive-icon>
                   <van-icon
@@ -194,7 +227,7 @@
                 </template>
               </van-step>
             </van-steps>
-            <p class="mt-16 fs-14 light-grey fm-helvetica pb-20" v-if="deliveryInfo">{{ deliveryInfo[0].estimetae }}</p>
+            <p class="mt-16 fs-14 light-grey fm-helvetica pb-20" v-if="deliveryInfo.length > 0">{{ deliveryInfo[0].estimeate }}</p>
             <!-- <p class="mt-8 orange fs-12 pb-10">From January 3rd to January 27th</p> -->
           </template>
         </div>
@@ -392,51 +425,87 @@
       </van-tab>
     </van-tabs>
 
-    <!-- 支付方式 -->
+    <!-- 运费模板 -->
     <van-popup v-model="deliveryShow" position="bottom" closeable class="pb-30">
       <div class="plr-20 pt-20 pb-30">
-        <h3 class="black fs-18">Delivery Method</h3>
+        <h3 class="black fs-18 border-b pb-20">{{ $t('delivery_freight_method') }}</h3>
         <!-- 运送费 -->
         <van-cell
-          title="Delivery fee"
+          :title="$t('delivery_freight_free')"
           :border="false"
           class="plr-0 pt-12 pb-0"
-          title-class="fs-16 black fw"
-          label="Ф0.00"
+          title-class="fs-16 black"
           label-class="fs-14 black"
-        />
-        <!-- 交货地点 -->
+        >
+          <template #label>
+            <div class="flex vcenter">
+              <span class="fs-12 grey fm-helvetica" v-if="deliveryInfo.length > 0 && completeAddress">
+                <!-- 包邮 -->
+                <span v-if="deliveryInfo[0].type == 1">{{ $t('free_freight') }}</span>
+                <!-- 不配送 -->
+                <span v-else-if="deliveryInfo[0].type == 3">{{ $t('not_sale') }}</span>
+                <!-- 不包邮 -->
+                <span v-else>{{ $t("freight") }}: {{ $store.state.rate.currency }}{{ deliveryInfo[0].freightPrice }}</span>
+              </span>
+              <span class="fs-12 grey fm-helvetica" v-else>{{ completeAddress ? completeAddress : $t('please_choose_address')}}</span>
+            </div>
+          </template>
+        </van-cell>
+        <!-- 发货地 -->
         <van-cell
-          title="Delivery place"
+          :title="$t('delivery_freight_place')"
           :border="false"
           class="plr-0 pt-12 pb-0"
-          title-class="fs-16 black fw"
-          label="china"
+          title-class="fs-16 black"
+          :label="storeInfo.deliveryCountryName"
           label-class="fs-14 black"
         />
-        <!-- 配送地址 -->
+        <!-- 收货地址 -->
         <van-cell
-          title="Shipping address"
+          :title="$t('harvest_address')"
           :border="false"
           class="plr-0 pt-12 pb-0"
-          title-class="fs-16 black fw"
-          label="No.007, Matian Street, Baoan District, Shenzhen,Guangdong"
+          title-class="fs-16 black"
+          :label="completeAddress"
           label-class="fs-14 black"
-        />
+        >
+          <template #right-icon>
+            <div class="green fs-16" @click="addressShow = true">{{ $t('delivery_address_choose') }}</div>
+          </template>
+        </van-cell>
         <!-- 预计到达时间 -->
         <van-cell
-          title="Estimated arrival time"
+          title=""
           :border="false"
-          class="plr-0 pt-28 pb-0"
-          title-class="fs-16 black fw"
-          label="The order is completed before 23:59 today, and it is  expected to be shipped before 23:30 on January 2. Delivery from January 3rd to January 27th"
-          label-class="fs-14 black"
-        />
-      </div>
-      <!-- 按钮 -->
-      <div class="plr-12 flex between">
-        <BmButton :type="'info'" class="fs-16 round-8 w-169 h-48 add-cart-btn" @click="onAddCart">{{ $t('add_to_cart') }}</BmButton>
-        <BmButton class="fs-16 round-8 w-169 h-48" @click="onBuyNow">{{ $t('buy_now') }}</BmButton>
+          class="plr-0 mt-20 pb-0 pt-0"
+          v-for="(deliveryItem, deliveryIndex) in deliveryInfo"
+          :key="deliveryIndex"
+          label-class="ml-10 black mt-0 fm-helvetica"
+        >
+          <template #icon>
+            <van-icon
+              v-if="deliveryItem.type == 1"
+              :name="require('@/assets/images/icon/plane-active.png')"
+              size="0.36rem"
+            />
+            <van-icon
+              v-if="deliveryItem.type == 2"
+              :name="require('@/assets/images/icon/steamer-active.png')"
+              size="0.36rem"
+            />
+            <van-icon
+              v-if="deliveryItem.type == 3"
+              :name="require('@/assets/images/icon/truck-active.png')"
+              size="0.36rem"
+            />
+          </template>
+          <template #label>
+            <div class="fs-16">{{ deliveryItem.type == 1 ? $t('air_freight') : deliveryItem.type == 2 ? $t('sea_transportation') : deliveryItem.type == 3 ? $t('land_transportation') : ''}} · {{ $t('delivery_freight_arrive_time') }}</div>
+            <div class="fs-14 mt-12">
+              {{ deliveryItem.estimeate }}
+            </div>
+          </template>
+        </van-cell>
       </div>
     </van-popup>
 
@@ -621,7 +690,8 @@ export default {
         }
       ],
       shareDetail: {},
-      meta: {}
+      meta: {},
+      isNext: false
     }
   },
   async fetch() {
@@ -919,7 +989,8 @@ export default {
     getNextArea(city, flag, isNext) {
       getNextArea({ parentId: city.id }).then(res => {
         if (res.data.length === 0) { // 没有下一级的数据处理
-          if (!this.isNext) { // 已经是最后一级的话
+          this.isNext = true;
+          if (this.isNext) { // 已经是最后一级的话
             this.stepArr.splice(this.stepActive, 1, city);
           } else { // 如果还是true就要增加数据
             if (flag) { // 下一级处理
@@ -927,7 +998,6 @@ export default {
               this.stepArr.push(city);
             }
           }
-          this.isNext = false;
           this.addressShow = false;
           this.isShowChooseTitle = false;
           return false;
@@ -950,7 +1020,7 @@ export default {
       })
     },
     closePopup() { // 关闭修改地址弹窗时触发, 数据处理
-      if (!this.isNext) {
+      if (this.isNext) {
         this.assgnStepList = this.stepArr;
         this.form = {
           countryCode: this.assgnStepList[0] ? this.assgnStepList[0].code : '',
@@ -1081,6 +1151,13 @@ export default {
         })
         clipboard.destroy();
       })
+    },
+    onChooseFreight() {
+      if (this.deliveryInfo.length > 0 && this.completeAddress) { // 已选择收货地址
+        this.deliveryShow = true;
+        return false;
+      }
+      this.addressShow = true
     }
   },
 }
@@ -1208,6 +1285,30 @@ export default {
     width: 76%;
     &>div, .sticky-opacity{
       width: 100%;
+    }
+  }
+}
+.custom-step-product{
+  .van-steps__items{
+    margin-bottom: 0;
+    padding-bottom: 0;
+    .van-step{
+      .van-step__title{
+        margin-top: 25px;
+        width: 60px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .van-step__circle-container, .van-step__line{
+        margin-top: 8px;
+        top: 0;
+      }
+      &:last-child{
+        .van-step__title{
+          margin-right: -10px;
+        }
+      }
     }
   }
 }

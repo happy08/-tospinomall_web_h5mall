@@ -58,11 +58,11 @@
               
             </div>
           </div>
-          <van-tabs v-if="tabbarActive == 1" sticky swipeable animated color="#42B7AE" class="customs-van-tabs bg-white plr-20" v-model="productTabActive" line-height="0" line-width="0" :before-change="beforeChange">
+          <van-tabs v-if="tabbarActive == 1" sticky swipeable animated color="#42B7AE" class="customs-van-tabs bg-white plr-12" v-model="productTabActive" line-height="0" line-width="0" :before-change="beforeChange">
             <van-tab v-for="tabItem, tabIndex in $t('store_product_tab')" :key="tabIndex">
               <template #title="props" :class="{'flex vcenter': true}">
                 <div :class="{'flex vcenter': true}">
-                  {{ tabItem }} {{ props }}
+                  <span class="ws-nowrap">{{ tabItem }} {{ props }}</span>
                   <BmIcon v-if="tabIndex === 2" :name="priceSortType == 0 ? 'sort-default': priceSortType == 1 ? 'sort-up' : 'sort-down'" :width="'0.4rem'" :height="'0.4rem'" />
                 </div>
               </template>

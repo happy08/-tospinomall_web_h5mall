@@ -334,6 +334,7 @@ export default {
   background-color: #F8F8F8;
   line-height: 20px;
   border-radius: 20px;
+  padding: 8px 10px;
 }
 .fixed {
   position: fixed;

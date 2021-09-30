@@ -100,17 +100,17 @@
                     <!-- 订单类型orderType：1->FBM订单 2->FBT订单 -->
                     <div class="flex hend flex-wrap">
                       <!-- 客服介入 -->
-                      <BmButton :type="'info'" class="h-32 mr-12 time-out mt-8" v-if="(orderitem.status == 7 || orderitem.status == 8) && orderitem.involvedStatus == 0 && orderitem.orderType == 1 && orderitem.surplusTime > 0" @btnClick="$router.push({ name: 'me-aftersale-proof-id', params: { id: orderitem.id } })">{{ $t('customer_service_intervention') }}</BmButton>
+                      <BmButton :type="'info'" class="h-32 mr-12 time-out mt-8 ws-nowrap" v-if="(orderitem.status == 7 || orderitem.status == 8) && orderitem.involvedStatus == 0 && orderitem.orderType == 1 && orderitem.surplusTime > 0" @btnClick="$router.push({ name: 'me-aftersale-proof-id', params: { id: orderitem.id } })">{{ $t('customer_service_intervention') }}</BmButton>
                       <!-- 追加举证 -->
                       <!-- <BmButton :type="'info'" class="h-32 time-out mt-8" v-if="(orderitem.status == 7 || orderitem.status == 8) && orderitem.involvedStatus == 1 && orderitem.orderType == 1 && orderitem.surplusTime > 0">追加举证</BmButton> -->
                       <!-- 撤销申请 -->
-                      <BmButton :type="'info'" class="h-32 mt-8" v-if="orderitem.status == 1 || orderitem.status == 2 || (orderitem.status == 7 && orderitem.involvedStatus == 0) || (orderitem.status == 8 && orderitem.involvedStatus == 0)" @btnClick="onRevokeApply(orderitem.id)">{{ $t('cancel_the_application') }}</BmButton>
+                      <BmButton :type="'info'" class="h-32 mt-8 ws-nowrap" v-if="orderitem.status == 1 || orderitem.status == 2 || (orderitem.status == 7 && orderitem.involvedStatus == 0) || (orderitem.status == 8 && orderitem.involvedStatus == 0)" @btnClick="onRevokeApply(orderitem.id)">{{ $t('cancel_the_application') }}</BmButton>
                       <!-- 撤销工单 -->
-                      <BmButton :type="'info'" class="h-32 mt-8" v-if="(orderitem.status == 7 || orderitem.status == 8) && (orderitem.involvedStatus == 1 || orderitem.involvedStatus == 2)" @btnClick="onCancelApply(orderitem.workId)">{{ $t('cancel_the_application') }}</BmButton>
+                      <BmButton :type="'info'" class="h-32 mt-8 ws-nowrap" v-if="(orderitem.status == 7 || orderitem.status == 8) && (orderitem.involvedStatus == 1 || orderitem.involvedStatus == 2)" @btnClick="onCancelApply(orderitem.workId)">{{ $t('cancel_the_application') }}</BmButton>
                       <!-- 删除 -->
-                      <BmButton :type="'info'" class="h-32 time-out mt-8" v-if="orderitem.status == 5 || orderitem.status == 6" @btnClick="onRemoveOrder(orderitem.id)">{{ $t('delete') }}</BmButton>
+                      <BmButton :type="'info'" class="h-32 time-out mt-8 ws-nowrap" v-if="orderitem.status == 5 || orderitem.status == 6" @btnClick="onRemoveOrder(orderitem.id)">{{ $t('delete') }}</BmButton>
                       <!-- 查看详情 -->
-                      <BmButton :type="'info'" class="h-32 ml-12 mt-8" v-if="orderitem.status == 5 || orderitem.status == 6" @btnClick="$router.push({ name: 'me-aftersale-detail-id', params: { id: orderitem.id } })">{{ $t('watch_detail') }}</BmButton>
+                      <BmButton :type="'info'" class="h-32 ml-12 mt-8 ws-nowrap" v-if="orderitem.status == 5 || orderitem.status == 6" @btnClick="$router.push({ name: 'me-aftersale-detail-id', params: { id: orderitem.id } })">{{ $t('watch_detail') }}</BmButton>
                       <!-- 修改申请 -->
                       <!-- <BmButton :type="'info'" class="h-32 time-out mt-8" v-if="orderitem.status == 1 || orderitem.status == 7">修改申请</BmButton> -->
                       <!-- 填写运单号 -->
@@ -362,7 +362,7 @@ export default {
 }
 .w-auto{
   width: fit-content;
-  max-width: 60%;
+  max-width: 50%;
 }
 .order-page__global-swiper{
   height: 84px;

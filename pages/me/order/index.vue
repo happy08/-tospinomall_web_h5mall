@@ -1,8 +1,9 @@
 <template>
   <!-- 我的-订单 -->
-  <div :class="{'v-percent-100 pt-46 order-page': true, 'bg-white': lists.length == 0, 'bg-grey': lists.length > 0}">
-    <BmHeaderNav :left="{ isShow: true, url: '/me' }" :title="$t('my_order')" :border="false" :fixed="true" />
-    <van-sticky class="bg-white" :offset-top="'0.92rem'">
+  <div :class="{'v-percent-100 order-page': true, 'bg-white': lists.length == 0, 'bg-grey': lists.length > 0}">
+    
+    <van-sticky :offset-top="0">
+      <BmHeaderNav :left="{ isShow: true, url: '/me' }" :title="$t('my_order')" :border="false" />
       <!-- 搜索 -->
       <div class="flex vcenter pl-20 pr-12 bg-white">
         <van-search
@@ -219,7 +220,7 @@
       </div>
     </van-popup>
 
-    <div class="w-100 bg-white btn-content flex hend vcenter" v-if="togetherResult.length > 0 && typeActive == 0">
+    <div class="w-100 bg-white btn-content flex hend vcenter z-100" v-if="togetherResult.length > 0 && typeActive == 0">
       <BmButton class="fs-14 mr-10 round-8 plr-10 h-40" @btnClick="onToggerPay">{{ $t('merge_to_pay') }}</BmButton>
     </div>
   </div>
@@ -358,13 +359,12 @@ export default {
       });
     }
     const listData = await this.$api.getOrderList(this.params);
-    if (this.params.pageNum == 1) {
-      this.$toast.clear();
+    this.$toast.clear();
+    if (listData.data) {
+      this.lists = this.params.pageNum == 1 ? listData.data.records : this.lists.concat(listData.data.records);
+      this.togetherResult = this.lists.length == 0 ? [] : this.togetherResult;
+      this.total = parseFloat(listData.data.total);
     }
-    if (listData.code != 0) return false;
-    this.lists = this.params.pageNum == 1 ? listData.data.records : this.lists.concat(listData.data.records);
-    this.togetherResult = this.lists.length == 0 ? [] : this.togetherResult;
-    this.total = parseFloat(listData.data.total);
     this.loading = false;
     this.refreshing.isFresh = false;
     this.isFirst = false;
@@ -618,6 +618,9 @@ export default {
 }
 .h-40{
   height: 40px;
+}
+.z-100{
+  z-index: 100;
 }
 </style>
 

@@ -705,7 +705,13 @@ const cn = {
   success_order: '下单成功',
   share_product_title: '商品标题',
   share_product_min_price: '商品最小价格',
-  share_product_link: '分享链接'
+  share_product_link: '分享链接',
+  verify_pay_by_password: '使用当前支付密码验证',
+  delivery_freight_method: '配送方式',
+  delivery_freight_free: '配送费',
+  delivery_freight_place: '发货地',
+  delivery_freight_arrive_time: '预计到达时间',
+  delivery_address_choose: '选择'
 }
 
 export default cn;
