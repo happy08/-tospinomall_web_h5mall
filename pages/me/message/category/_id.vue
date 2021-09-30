@@ -14,7 +14,7 @@
           <div class="bg-light-dd ptb-10 plr-12 fs-12 white round-16 message-time">{{ item.sendTime }}</div>
           <div class="bg-white plr-12 ptb-20 round-8 mlr-12">
             <h3 class="black fs-16">{{ item.title }}</h3>
-            <p class="mt-12 fs-14 light-grey">{{ item.content }}</p>
+            <p class="mt-12 fs-14 light-grey word-break">{{ item.content }}</p>
           </div>
         </div>
       </van-list>
@@ -23,7 +23,7 @@
 </template>
 
 <script>
-import { getMsgList } from '@/api/message';
+import { getMsgList, markedSingleAsRead } from '@/api/message';
 import { List } from 'vant';
 import PullRefresh from '@/components/PullRefresh';
 
@@ -55,6 +55,8 @@ export default {
         this.total = res.data.total;
         this.loading = false;
         this.refreshing.isFresh = false;
+        // 标记为已读
+        markedSingleAsRead(this.$route.params.id);
       })
     },
     onRefresh() { // 下拉刷新
@@ -84,5 +86,8 @@ export default {
 .message-time{
   width: fit-content;
   margin: 22px auto 8px;
+}
+.word-break{
+  word-break: break-all;
 }
 </style>

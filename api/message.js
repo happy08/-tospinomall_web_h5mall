@@ -31,3 +31,19 @@ export function markedAsReadAll() {
     method: 'post'
   })
 }
+
+/**
+ * 单个消息标记为已读
+ */
+export function markedSingleAsRead(categoryId) {
+  return request({
+    url: '/sock/message/buyer/markedAsRead',
+    method: 'post',
+    data: {
+      categoryId
+    },
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+}
