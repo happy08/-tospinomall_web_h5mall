@@ -689,15 +689,17 @@ export default {
         cityCode: this.address.cityCode,
         countryCode: this.address.countryCode,
         provinceCode: this.address.provinceCode,
-        deliveryType: 2,
+        // deliveryType: this.detail.deliveryType,
         goodsWeight: this.orderList[0].weight,
         goodsWeightUnit: this.orderList[0].weightUnit,
         pieceCount: this.applyNum,
-        promisedDeliveryTime: this.detail.promisedDeliveryTime,
         volume: this.orderList[0].volume,
         volumeUnit: this.orderList[0].volumeUnit,
         orderType: 2
       }
+      // if (this.detail.deliveryType == 1) { // FBM
+      //   _data.promisedDeliveryTime = this.detail.promisedDeliveryTime;
+      // }
       getFreightPrice(_data).then(res => {
         this.freightPrice = res.data.freightPrice;
       })
