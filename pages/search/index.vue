@@ -700,6 +700,7 @@ export default {
   padding-top: 6px;
   padding-bottom: 6px;
   background-color: #F8F8F8;
+  word-break: break-all;
 }
 .delete-style{
   color: rgba(0, 0, 0, .45);
