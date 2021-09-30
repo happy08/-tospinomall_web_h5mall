@@ -162,16 +162,24 @@
           <div class="mt-32" v-if="brandList.length > 0">
             <h3 class="fs-16 black fw">{{ $t('brand') }}</h3>
             
-            <div class="mt-6 flex flex-wrap">
-              <span :class="{'ptb-6 black fs-14 lh-20 tc w-84 mt-14 ml-10 odd-3 plr-4 hidden-1 bg-grey-f5 round-8 border-transparent': true, 'is-active': brandName == brandItem}" v-for="(brandItem, brandIndex) in brandList" :key="'brand-item-' + brandIndex" @click="brandName = brandItem">{{ brandItem }}</span>
-            </div>
+            <van-checkbox-group v-model="brandResult" class="mt-6 flex flex-wrap" ref="brandCheckboxGroup">
+              <van-checkbox :name="brandItem" icon-size="0" v-for="(brandItem, brandIndex) in brandList" :key="'brand-item-' + brandIndex" :class="{'custom-checkbox-single': true, 'ml-10': brandIndex % 3 != 0}">
+                <template #icon="props">
+                  <span :class="{'ptb-6 black fs-14 lh-20 tc w-84 mt-14 iblock odd-3 plr-4 hidden-1 bg-grey-f5 round-8 border-transparent': true, 'is-active': props.checked}">{{ brandItem }}</span>
+                </template>
+              </van-checkbox>
+            </van-checkbox-group>
           </div>
           <!-- 所有类别 -->
           <div class="mt-32" v-if="categoryList.length > 0">
             <h3 class="fs-16 black fw">{{ $t('all_categories') }}</h3>
-            <div class="mt-6 flex flex-wrap">
-              <span :class="{'ptb-6 black fs-14 lh-20 tc w-84 mt-14 ml-10 odd-3 plr-4 hidden-1 bg-grey-f5 round-8 border-transparent': true, 'is-active': categoryName == categoryItem}" v-for="(categoryItem, categoryIndex) in categoryList" :key="'category-index-' + categoryIndex" @click="categoryName = categoryItem">{{ categoryItem }}</span>
-            </div>
+            <van-checkbox-group v-model="categoryResult" class="mt-6 flex flex-wrap" ref="categoryCheckboxGroup">
+              <van-checkbox :name="categoryItem" icon-size="0" v-for="(categoryItem, categoryIndex) in categoryList" :key="'brand-item-' + categoryIndex" :class="{'custom-checkbox-single': true, 'ml-10': categoryIndex % 3 != 0}">
+                <template #icon="props">
+                  <span :class="{'ptb-6 black fs-14 lh-20 tc w-84 mt-14 iblock odd-3 plr-4 hidden-1 bg-grey-f5 round-8 border-transparent': true, 'is-active': props.checked}">{{ categoryItem }}</span>
+                </template>
+              </van-checkbox>
+            </van-checkbox-group>
           </div>
         </div>
       </div>
@@ -185,7 +193,7 @@
 </template>
 
 <script>
-import { Search, Tab, Tabs, DropdownItem, DropdownMenu, Popup, Field, Cell, Sticky, List } from 'vant';
+import { Search, Tab, Tabs, DropdownItem, DropdownMenu, Popup, Field, Cell, Sticky, List, Checkbox, CheckboxGroup } from 'vant';
 import ProductTopBtmSingle from '@/components/ProductTopBtmSingle';
 import EmptyStatus from '@/components/EmptyStatus';
 import { getSearchPull } from '@/api/search';
@@ -209,6 +217,8 @@ export default {
     vanCell: Cell,
     vanSticky: Sticky,
     vanList: List,
+    vanCheckbox: Checkbox,
+    vanCheckboxGroup: CheckboxGroup,
     EmptyStatus,
     ProductTopBtmSingle,
     PullRefresh
@@ -267,7 +277,9 @@ export default {
       shopId: '',
       backName: '',
       backNameId: '',
-      backQuery: null
+      backQuery: null,
+      brandResult: [],
+      categoryResult: []
     }
   },
   async fetch() {
@@ -468,13 +480,17 @@ export default {
     onFilter() { // 筛选
       let filterArr = [];
       let facetFilters = [];
-      if (this.brandName != '') {
+      if (this.brandResult.length > 0) {
         // filterArr.push(`brand: ${this.brandName}`);
-        facetFilters.push([`brandName: ${this.brandName}`]);
+        facetFilters.push(this.brandResult.map(brandItem => {
+          return `brandName: ${brandItem}`
+        }));
       }
-      if (this.categoryName != '') {
+      if (this.categoryResult.length > 0) {
         // filterArr.push(`categories: ${this.categoryName}`);
-        facetFilters.push(`categoryName: ${this.categoryName}`);
+        facetFilters.push(this.categoryResult.map(categoryItem => {
+          return `categoryName: ${categoryItem}`
+        }));
       }
       if (this.available == true) { // 是否有货
         filterArr.push('available=1');
@@ -514,13 +530,12 @@ export default {
       
     },
     onReset() { // 筛选重置
-      this.brandName = this.minPrice = this.maxPrice = this.categoryName = '';
+      this.minPrice = this.maxPrice = '';
+      this.$refs.brandCheckboxGroup.toggleAll(false);
+      this.$refs.categoryCheckboxGroup.toggleAll(false);
       this.available = this.overseas = this.deliveryType = false;
       this.pageIndex = 0;
       this.params = {
-        // searchKeyword: this.searchVal,
-        // pageSize: this.pageSize,
-        // pageIndex: this.pageIndex
         filters: ''
       }
       // this.getProductList();
@@ -721,5 +736,14 @@ export default {
 <style lang="less">
 .pr-60{
   padding-right: 60px!important;
+}
+.custom-checkbox-single{
+  .van-checkbox__icon{
+    height: auto;
+    line-height: 0;
+    &.van-checkbox__icon--checked{
+
+    }
+  }
 }
 </style>
