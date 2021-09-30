@@ -39,11 +39,8 @@ export function markedSingleAsRead(categoryId) {
   return request({
     url: '/sock/message/buyer/markedAsRead',
     method: 'post',
-    data: {
+    data: qs.stringify({
       categoryId
-    },
-    headers: {
-      'Content-Type': 'application/json'
-    }
+    })
   })
 }
