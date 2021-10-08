@@ -707,7 +707,11 @@ const en = {
   share_product_content: 'Share content',
   share_product_link: 'Share link',
   verify_pay_by_password: 'Use the current payment password to verify',
-  delivery_freight_method: 'Delivery Method'
+  delivery_freight_method: 'Delivery Method',
+  delivery_freight_free: 'Delivery fee',
+  delivery_freight_place: 'Delivery place',
+  delivery_freight_arrive_time: 'Estimated arrival time',
+  delivery_address_choose: 'Choose'
 }
 
 export default en;

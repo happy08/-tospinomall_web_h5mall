@@ -26,8 +26,8 @@
         </div>
       </div>
       <!-- 地址 -->
-      <div class="mt-10 fs-14 black fm-helvetica">{{ item.address }}</div>
-      <div class="mt-10 fs-14 black fm-helvetica">{{ item.completeAddress }}</div>
+      <div class="mt-10 fs-14 black fm-helvetica word-break">{{ item.address }}</div>
+      <div class="mt-10 fs-14 black fm-helvetica word-break">{{ item.completeAddress }}</div>
       <div class="mt-12 flex vcenter" @click="onSetDeafult(item.id)">
         <BmImage
           :url="item.isDefault ? require('@/assets/images/icon/choose-icon.png') : require('@/assets/images/icon/choose-default-icon.png')"

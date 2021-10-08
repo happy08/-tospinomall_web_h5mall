@@ -228,6 +228,8 @@ export default {
     this.list = listData.data.records; // 关注商品/店铺列表
     this.total = listData.data.total; // 商品/店铺总数
     this.isFirst = false;
+    // 加载状态结束
+    this.loading = false;
     if (this.active == 0) {
       const recommendData = await this.$api.getRecommend({ type: 1, pageNum: this.pageNum, pageSize: this.pageSize});
       if (!recommendData.data) {
@@ -242,8 +244,7 @@ export default {
         }
       }, 50)
       this.recommendTotal = recommendData.data.total;
-      // 加载状态结束
-      this.loading = false;
+      
       if (parseFloat(res.data.total) == this.recommendList.length) {
         this.isLoadRecommend = true;
       }

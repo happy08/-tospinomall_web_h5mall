@@ -3,7 +3,7 @@
   <div :class="{'pt-46': isShow}">
     <BmHeaderNav :left="{ isShow: true }" :title="title" v-if="isShow" :fixed="true" />
     
-    <div class="fs-14 mlr-20 mt-20 pb-20 lh-20" v-html="intro"></div>
+    <div class="fs-14 mlr-20 mt-20 pb-20 lh-20 word-break" v-html="intro"></div>
   </div>
 </template>
 

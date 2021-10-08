@@ -1242,9 +1242,6 @@ export default {
   padding-top: 2px;
   padding-bottom: 2px;
 }
-.word-break{
-  word-break: break-all;
-}
 </style>
 
 <style lang="less">

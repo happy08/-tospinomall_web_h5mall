@@ -707,7 +707,11 @@
   share_product_min_price: 'Preço mínimo de mercadoria',
   share_product_link: 'Compartilhar link',
   verify_pay_by_password: 'Use a senha de pagamento atual para verificar',
-  delivery_freight_method: 'Método de Entrega'
+  delivery_freight_method: 'Método de Entrega',
+  delivery_freight_free: 'Taxa de entrega',
+  delivery_freight_place: 'Local de entrega',
+  delivery_freight_arrive_time: 'Tempo de chegada estimado',
+  delivery_address_choose: 'Escolher'
 }
 
 export default por;

@@ -707,7 +707,11 @@ const vi = {
   share_product_min_price: 'Giá hàng hóa tối thiểu',
   share_product_link: 'Chia sẻ đường link',
   verify_pay_by_password: 'Sử dụng mật khẩu thanh toán hiện tại để xác minh',
-  delivery_freight_method: 'phương thức vận chuyển'
+  delivery_freight_method: 'phương thức vận chuyển',
+  delivery_freight_free: 'Phí giao hàng',
+  delivery_freight_place: 'Nơi giao hàng',
+  delivery_freight_arrive_time: 'Thời gian đến dự kiến',
+  delivery_address_choose: 'Chọn'
 }
 
 export default vi;
