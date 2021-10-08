@@ -33,14 +33,14 @@
           <nuxt-link :to="{ name: 'me-wallet-bill-id', params: { id: itemInfo.id } }" v-for="(itemInfo, itemInfoIndex) in item.infos" :key="'info-' + itemInfoIndex" class="bg-white plr-12 block">
             <div class="pb-12 pt-20 bg-white flex between vcenter border-b">
               <div class="flex">
-                <!-- <BmImage 
-                  :url="require('@/assets/images/icon/' + item.payTypeLabel)"
+                <BmImage 
+                  :url="require('@/assets/images/icon/' + itemInfo.payTypeLabel)"
                   :width="'0.48rem'" 
                   :height="'0.48rem'"
                   :isLazy="false"
                   :isShow="false"
                   :round="true"
-                /> -->
+                />
                 <!-- 名字和时间 -->
                 <div class="ml-12 fm-helvetica">
                   <p class="fs-14 black">{{ itemInfo.title }}</p>
@@ -119,7 +119,7 @@ export default {
             infos: item.infos.map(infoItem => {
               return {
                 ...infoItem,
-                payTypeLabel: infoItem.payType == 2 ? 'MTN.png' : infoItem.payType == 3 ? 'VODAFONE.png' : infoItem.payType == 4 ? 'ARTLTIGO.png' : 'MTN.png',
+                payTypeLabel: infoItem.payType == 2 ? 'MTN.png' : infoItem.payType == 3 ? 'VODAFONE.png' : infoItem.payType == 4 ? 'ARTLTIGO.png' : 'balance.png',
                 statusLabel: infoItem.status == 1 ? this.$t('bill_success') : infoItem.status == 2 ? this.$t('bill_to_pay') : infoItem.status == 3 ? this.$t('cancelled') : this.$t('bill_fail'),
               }
             })
