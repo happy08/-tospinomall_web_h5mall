@@ -673,9 +673,9 @@
 //   reply: '回復',
 //   please_choose_address: '請選擇收貨地址',
 //   bill_search_placeholder: '輸入帳單相關資訊',
-//   bill_success: '成功',
+//   bill_success: '交易成功',
 //   bill_to_pay: '待支付',
-//   bill_fail: '失敗',
+//   bill_fail: '交易失敗',
 //   prefix_tip: '+233',
 //   bill_detail: '帳單詳情',
 //   axios_tip_404: '請求的資源不存在',
@@ -702,7 +702,16 @@
 //   refund_return_state_tip_50: '您已成功發起退貨退款申請，請耐心等待{replace_tip}處理',
 //   refund_return_state_tip_51: '平臺同意後，請按照給出的退貨地址退貨，並記錄退貨運單號',
 //   with_and: '和',
-//   success_order: '下單成功'
+//   success_order: '下單成功',
+//   share_product_title: '商品標題',
+//   share_product_min_price: '商品最小價格',
+//   share_product_link: '分享鏈接',
+//   verify_pay_by_password: '使用當前支付密碼驗證',
+//   delivery_freight_method: '配送方式',
+//   delivery_freight_free: '配送費',
+//   delivery_freight_place: '發貨地',
+//   delivery_freight_arrive_time: '預計到達時間',
+//   delivery_address_choose: '選擇'
 // }
 
 // export default tw;
