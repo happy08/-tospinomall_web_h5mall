@@ -668,7 +668,7 @@ const vi = {
   take_address: 'Chọn địa chỉ',
   address: 'Địa chỉ',
   return_address: 'địa chỉ trả lại',
-  me_read_and_agreen_server: 'Tôi đã đọc và đồng ý với',
+  me_read_and_agreen_server: 'Tôi đã đọc và đồng ý với ',
   please_read_checked: 'Vui lòng đọc và đánh dấu vào thỏa thuận',
   reply: 'Đáp lại',
   please_choose_address: 'Vui lòng chọn địa chỉ giao hàng',
