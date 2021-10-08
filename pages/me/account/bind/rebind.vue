@@ -23,22 +23,12 @@
           maxlength="30"
         >
           <template #label>
-            <span @click="showPicker = true" class="iblock fs-14 black lh-20 prefix-container">
+            <nuxt-link replace :to="{ name: 'me-address-areacode', query: { ...$route.query, type: 'rebind' } }" @click="showPicker = true" class="iblock fs-14 black lh-20 prefix-container">
               {{ prefixCode }}
               <img class="prefix-container--icon" src="@/assets/images/triangle-icon.png">
-            </span>
+            </nuxt-link>
           </template>
         </van-field>
-        <!-- 手机前缀选择 -->
-        <van-popup v-model="showPicker" round position="bottom">
-          <van-picker
-            show-toolbar
-            :columns="phonePrefixs"
-            value-key="phonePrefix"
-            @cancel="showPicker = false"
-            @confirm="onConfirm"
-          />
-        </van-popup>
       </div>
       <!-- 验证码 -->
       <van-field
@@ -71,7 +61,7 @@
 
 <script>
 import { Field, Divider, Picker, Popup } from 'vant';
-import { getPhonePrefix, getPhoneCode, checkPhoneCode, getEmailCode, checkEmailCode } from '@/api/login';
+import { getPhoneCode, checkPhoneCode, getEmailCode, checkEmailCode } from '@/api/login';
 import { updateUserInfo } from '@/api/user';
 
 export default {
@@ -88,7 +78,6 @@ export default {
       showPicker: false,
       countdown: 0,
       isCodeFlag: false,
-      phonePrefixs: [],
       code: '',
       prefixCode: ''
     }
@@ -111,22 +100,9 @@ export default {
     });
   },
   activated() {
-    // 手机号注册或者忘记密码时 需要先获取手机号前缀
-    if (this.$route.query.changeWay !== 'email' || !this.$route.query.changeWay) {
-      this.getPhonePrefix();
-    }
+    this.prefixCode = this.$route.query.phonePrefix || this.$t('prefix_tip');
   },
   methods: {
-    getPhonePrefix() { // 获取手机号前缀
-      getPhonePrefix().then(res => {
-        this.phonePrefixs = res.data;
-        this.prefixCode = this.$t('prefix_tip');
-      })
-    },
-    onConfirm(event) { // 选择手机号前缀
-      this.prefixCode = event.phonePrefix;
-      this.showPicker = false;
-    },
     sendCode() { // 发送验证码
       if (this.isCodeFlag) {
         return false;
@@ -149,7 +125,7 @@ export default {
         }
         _axios = getEmailCode({ email: this.account, userType: 'buyer' });
       } else { // 默认是获取手机验证码
-        _axios = getPhoneCode({ phone: this.account, phonePrefix: this.prefixCode.split('+')[1], userType: 'buyer' });
+        _axios = getPhoneCode({ phone: this.account, phonePrefix: this.$route.query.phonePrefix, userType: 'buyer' });
       }
       // 接口返回操作
       _axios.then(res => {
@@ -190,14 +166,13 @@ export default {
         }
         _axios = checkEmailCode({ code: this.code, email: this.account, userType: 'buyer', isDelCode: 0 });
       } else { // 校验手机验证码
-        _axios = checkPhoneCode({ code: this.code, phone: this.account, phonePrefix: this.prefixCode.split('+')[1], userType: 'buyer', isDelCode: 0 });
+        _axios = checkPhoneCode({ code: this.code, phone: this.account, phonePrefix: this.$route.query.phonePrefix, userType: 'buyer', isDelCode: 0 });
       }
 
-      _axios.then((res) => {
+      _axios.then(() => {
         this.isNextFlag = false;
-        if (res.code != 0) return false;
         // 校验成功之后提交修改
-        let _userinfoAjax = this.$route.query.changeWay == 'email' ? updateUserInfo({ email: this.account, code: this.code }) : updateUserInfo({ phone: this.account, phonePrefix: this.prefixCode.split('+')[1], code: this.code });
+        let _userinfoAjax = this.$route.query.changeWay == 'email' ? updateUserInfo({ email: this.account, code: this.code }) : updateUserInfo({ phone: this.account, phonePrefix: this.$route.query.phonePrefix, code: this.code });
         _userinfoAjax.then(res => {
           this.$store.commit('user/SET_USERINFO', res.data); // 修改本地用户信息
           this.$router.push({
