@@ -30,7 +30,7 @@
           :placeholder="$t('feedback_input_hint')"
         />
         <!-- 上传图片 -->
-        <van-uploader class="plr-12 pb-20" :after-read="afterRead" v-model="fileList" preview-size="1.2rem" multiple>
+        <van-uploader class="plr-12 pb-20" :after-read="afterRead" v-model="fileList" preview-size="1.2rem" multiple :max-count="4">
           <BmImage 
             :url="require('@/assets/images/camera-upload-icon.png')"
             :width="'1.2rem'" 
