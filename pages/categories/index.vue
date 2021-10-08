@@ -183,7 +183,7 @@ export default {
   .van-tree-select__nav{
     flex: inherit;
     width: 100px;
-    background-color: #fff;
+    background-color: #F8F8F8;
     &::-webkit-scrollbar{
       display: none;
     }
@@ -191,11 +191,13 @@ export default {
       background: linear-gradient(14deg, #70CEB6 0%, #3EB5AE 100%);
     }
     .van-tree-select__nav-item{
-      margin-top: 1px;
+      // margin-top: 1px;
       color: #383838;
       text-align: center;
+      border-top: 1px solid #fff;
       &:first-child{
-        margin-top: 0;
+        // margin-top: 0;
+        border-top: none;
       }
     }
   }

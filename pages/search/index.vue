@@ -68,8 +68,8 @@
           <BmIcon :name="'down-icon'" :width="'0.64rem'" :height="'0.64rem'" v-if="historyNum" @iconClick="showMoreHistory" />
         </div>
         <!-- 搜索发现 -->
-        <h2 class="fs-14 black mt-30">{{ $t('search_found') }}</h2>
-        <div class="mt-12">
+        <h2 class="fs-14 black mt-30" v-if="searchFindList.length > 0">{{ $t('search_found') }}</h2>
+        <div class="mt-12" v-if="searchFindList.length > 0">
           <span class="plr-10 round-8 mr-12 iblock mb-10 tag-name" v-for="(tag, index) in searchFindList" :key="index" @click="onSearch(tag.name)">{{ tag.name }}</span>
         </div>
       </div>
