@@ -245,7 +245,7 @@ export default {
       }, 50)
       this.recommendTotal = recommendData.data.total;
       
-      if (parseFloat(res.data.total) == this.recommendList.length) {
+      if (parseFloat(recommendData.data.total) == this.recommendList.length) {
         this.isLoadRecommend = true;
       }
       if (typeof this.$redrawVueMasonry === 'function') {
