@@ -75,12 +75,12 @@
         imageLinkType: 图片链接类型（0:商品链接，1:前端分类id，2:后端分类id，3:品牌，4:FBT，5:FBM，6:外部链接）
       -->
       <div v-for="(moduleItem, moduleIndex) in moduleData" :key="'module-data-' + moduleIndex">
-        <h2 class="fs-18 mlr-12 fw black pt-20 lh-20 fm-din-alternate" v-if="moduleItem.moduleTitleDisplay">{{ moduleItem.moduleTitle }}</h2>
+        <h2 class="fs-18 mlr-12 fw black pt-20 lh-20 fm-din-alternate mt-12" v-if="moduleItem.moduleTitleDisplay">{{ moduleItem.moduleTitle }}</h2>
         <!-- 整屏轮播图 -->
-        <div v-if="moduleItem.type === 1">
+        <div v-if="moduleItem.type === 1" class="mt-12 mb-12">
           <swiper
             :ref="'swiperFullScreenRef' + moduleIndex"
-            class="mt-12 swiper home-banner-swiper"
+            class="swiper home-banner-swiper"
             :options="swiperFullScreenOption"
             v-if="moduleItem.componentDetails.length > 0"
           >
@@ -108,7 +108,7 @@
 
         <!-- 热区图片 -->
         <template v-if="moduleItem.type === 2">
-          <div class="fs-0 mt-12 hot-container" :ref="'hotContainer' + moduleIndex">
+          <div class="fs-0 hot-container" :ref="'hotContainer' + moduleIndex">
             <BmImage
               :url="moduleItem.imageUrl"
               :loadUrl="require('@/assets/images/product-bgd-375.png')"
@@ -154,7 +154,7 @@
 
         <!-- 一行两列 -->
         <template v-if="moduleItem.type === 4">
-          <div class="mlr-12 mt-12 flex between">
+          <div class="mlr-12 flex between">
             <nuxt-link 
               :to="{ name: 'cart-product-id', params: { id: productType4Item.goodsId } }"
               class="iblock" 
@@ -243,7 +243,7 @@
         </div>
       </div> -->
       <!-- 滚动标签栏部分 -->
-      <van-tabs sticky swipeable animated :offset-top="'0.88rem'" color="#42B7AE" v-model="tabCategoryActive" @change="getSearchList" class="mt-12 mh-60 custom-home-tab" :ellipsis="false">
+      <van-tabs sticky swipeable animated :offset-top="'0.88rem'" color="#42B7AE" v-model="tabCategoryActive" @change="getSearchList" class="mh-60 custom-home-tab" :ellipsis="false">
         <van-tab v-for="(categoryItem, tabIndex) in categoryList" :title="categoryItem.name" :key="'scroll-tab-' + tabIndex" :name="categoryItem.id">
           <empty-status v-if="searchList.length === 0" :image="require('@/assets/images/empty/order.png')" class="mh-60" />
           <van-list
