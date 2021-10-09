@@ -13,6 +13,7 @@
           maxlength="254"
           type="email"
           v-if="isType == 'email'"
+          clearable
         >
           <template #label>
           </template>
@@ -24,6 +25,7 @@
           class="field-container phone-code-field"
           maxlength="30"
           type="number"
+          clearable
           v-else
         >
           <template #label>
@@ -145,7 +147,7 @@ export default {
       code: '',
       phonePrefixs: [],
       showPicker: false,
-      prefixCode: '',
+      prefixCode: this.$t('prefix_tip'),
       countdown: 0, // 60
       isCodeFlag: false,
       isNextFlag: false,
@@ -196,7 +198,6 @@ export default {
     getPhonePrefix() { // 获取所有手机号前缀
       getPhonePrefix().then(res => {
         this.phonePrefixs = res.data;
-        this.prefixCode = this.$t('prefix_tip');
       })
     },
     onConfirm(event) { // 选择手机号前缀

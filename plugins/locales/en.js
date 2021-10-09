@@ -640,7 +640,7 @@ const en = {
   state_goods_list: ['Goods not received', 'Received goods'],
   return_method_title: 'Select application type',
   search_filter_overall: 'All',
-  search_filter_price: [{text: 'Comprehensive sorting', value: 0}, {text: 'Price ascending order', value: 1}, {text: 'Price descending order', value: 2}],
+  search_filter_price: [{text: 'Comprehensive', value: 0}, {text: 'Price ascending', value: 1}, {text: 'Price descending', value: 2}],
   gander: ['Male', 'Female', 'Bisexuality', 'Secrecy'],
   marital_status_list: ['Unmarried', 'Married', 'Secrecy'],
   fail_copied_to_clipboard: 'copy failed',

@@ -13,7 +13,7 @@
       :alt="detail.desc"
     />
     <!-- 商品的信息 -->
-    <div class="pt-12 plr-4" v-if="detail">
+    <div class="pt-12 plr-12" v-if="detail">
       <div class="flex vcenter pb-12" v-if="detail.country">
         <BmImage 
           :url="detail.country_url"

@@ -23,16 +23,16 @@
         <h1 class="tc black lagin-page__title">{{ $t('log_in') }}</h1>
         <div class="tc login-page__container">
           <!-- 账号 -->
-          <van-field class="field-container phone-code-field" v-model="account" :placeholder="$t('phone_number_or_email')" @input="onInput" ref="loginAccountInputContainer">
-            <template #label v-if="isPhone">
-              <span @click="showPicker = true" class="iblock fs-14 black lh-20 prefix-container">
+          <van-field class="field-container phone-code-field" v-model="account" :placeholder="$t('phone_number_or_email')" @input="onInput" ref="loginAccountInputContainer" clearable>
+            <template #label>
+              <span @click="showPicker = true" v-show="isPhone" class="fs-14 black lh-20 prefix-container">
                 {{ prefixCode }}
                 <img class="prefix-container--icon" src="@/assets/images/triangle-icon.png">
               </span>
             </template>
           </van-field>
           <!-- 密码 -->
-          <van-field class="field-container" v-model="password" type="password" :placeholder="$t('your_password_6_20')" maxlength="20" />
+          <van-field class="field-container" v-model="password" type="password" :placeholder="$t('your_password_6_20')" maxlength="20" clearable />
           <!-- 忘记密码 -->
           <nuxt-link :to="{ name: 'register', query: { type: 'forgot' } }" class="fs-14 tr block mt-12 lh-20 login-page__container--forgot">{{ $t('forgot_password') }}</nuxt-link>
           <!-- 登录 -->
@@ -306,9 +306,6 @@ export default {
     onInput(value) {
       let reg = /^\d{1,}$/;
       this.isPhone = reg.test(value) ? true : false;
-      setTimeout(() => {
-        this.$refs.loginAccountInputContainer.$el.querySelector('input').focus();
-      })
     }
   },
 }

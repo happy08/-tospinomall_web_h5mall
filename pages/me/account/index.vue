@@ -40,7 +40,7 @@
     </div>
 
     <!-- 退出 -->
-    <div class="plr-20 w-100 pb-20">
+    <div class="plr-20 w-100 pb-20" v-if="$store.state.user.authToken">
       <BmButton class="w-100 account-btn fs-16 black" :type="'info'" @click="logout">{{ $t('log_out') }}</BmButton>
     </div>
   </div>

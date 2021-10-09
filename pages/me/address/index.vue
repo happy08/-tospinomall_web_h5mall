@@ -1,7 +1,7 @@
 <template>
   <!-- 我的-设置-收货地址 -->
-  <div>
-    <BmHeaderNav :left="{ isShow: true, isEmit: true }" :title="$t('harvest_address')" @leftClick="leftClick" />
+  <div class="pt-46 pb-10">
+    <BmHeaderNav :left="{ isShow: true, isEmit: true }" :title="$t('harvest_address')" @leftClick="leftClick" :fixed="true" />
     <!-- 地址列表 -->
     <div class="p-20 address-single" v-for="(item, index) in lists" :key="index" @click="onClick(item)">
       <div class="flex between vcenter address-single__top">
