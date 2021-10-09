@@ -76,7 +76,7 @@
           <!-- 描述 -->
           <p class="black fs-14 mt-10 plr-20" @click="goDetail(item)">{{ item.content }}</p>
           <!-- 展示图片 -->
-          <div class="mt-12 flex flex-wrap plr-20 between" v-if="item.pictures.length > 0">
+          <div class="mt-12 flex flex-wrap plr-20" v-if="item.pictures.length > 0">
             <div v-for="(picItem, picIndex) in item.pictures" :key="'pic-' + picItem.id">
               <BmImage
                 :url="picItem.imgUrl"
@@ -85,8 +85,7 @@
                 :isLazy="false"
                 :isShow="true"
                 :fit="'cover'"
-                :class="{'border round-2 hidden block mt-8': true}"
-                v-if="picItem.fileType == 1"
+                :class="{'border round-2 hidden block mt-8': true, 'ml-8': picIndex % 3 != 0}"
                 @onClick="onPreview(item.pictures, picIndex)"
                 :alt="item.goodTitle"
               />
@@ -240,9 +239,9 @@ export default {
         let list = res.data.records.map(item => {
           return {
             ...item,
-            // pictures: item.pictures.filter((picItem, picIndex) => {
-            //   return picIndex < 3;
-            // }),
+            pictures: item.pictures.filter((picItem, picIndex) => {
+              return picItem.fileType == 1; // 1.0版本只展示图片
+            }),
             sellerReplyList: item.sellerReplyList.length > 0 ? [item.sellerReplyList[0]] : []
           }
         });
