@@ -59,15 +59,12 @@ export default {
         loadingType: 'spinner',
         duration: 0
       });
+      
       let _data = {
-        username: this.$route.query.phone ? this.$route.query.phone : this.$route.query.email,
+        username: this.$route.query.phone ? this.$route.query.phonePrefix + this.$route.query.phone : this.$route.query.email,
         password: this.$route.query.password,
         grant_type: 'password'
       }
-      if (this.$route.query.phone) {
-        _data.phonePrefix = this.$route.query.phonePrefix;
-      }
-
       authLogin(_data).then(res => {
         clearInterval(this.timer);
         this.$store.commit('user/SET_TOKEN', res.data.token_type + ' ' + res.data.access_token);

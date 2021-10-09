@@ -22,8 +22,16 @@
         <!-- title -->
         <h1 class="tc black lagin-page__title">{{ $t('log_in') }}</h1>
         <div class="tc login-page__container">
-          <!-- 验证码 -->
-          <van-field class="field-container" v-model="account" :placeholder="$t('phone_number_or_email')" />
+          <!-- 账号 -->
+          <van-field class="field-container phone-code-field" v-model="account" :placeholder="$t('phone_number_or_email')" @input="onInput" ref="loginAccountInputContainer">
+            <template #label v-if="isPhone">
+              <span @click="showPicker = true" class="iblock fs-14 black lh-20 prefix-container">
+                {{ prefixCode }}
+                <img class="prefix-container--icon" src="@/assets/images/triangle-icon.png">
+              </span>
+            </template>
+          </van-field>
+          <!-- 密码 -->
           <van-field class="field-container" v-model="password" type="password" :placeholder="$t('your_password_6_20')" maxlength="20" />
           <!-- 忘记密码 -->
           <nuxt-link :to="{ name: 'register', query: { type: 'forgot' } }" class="fs-14 tr block mt-12 lh-20 login-page__container--forgot">{{ $t('forgot_password') }}</nuxt-link>
@@ -77,12 +85,23 @@
         </div>
       </div>
     </div>
+
+    <!-- 手机前缀选择 -->
+    <van-popup v-model="showPicker" round position="bottom">
+      <van-picker
+        show-toolbar
+        :columns="phonePrefixs"
+        value-key="phonePrefix"
+        @cancel="showPicker = false"
+        @confirm="onConfirm"
+      />
+    </van-popup>
   </div>
 </template>
 
 <script>
-import { Divider, Field, DropdownMenu, DropdownItem, Cell } from 'vant';
-import { authLogin, googleLogin, facebookLogin } from '@/api/login';
+import { Divider, Field, DropdownMenu, DropdownItem, Cell, Popup, Picker } from 'vant';
+import { authLogin, googleLogin, facebookLogin, getPhonePrefix } from '@/api/login';
 
 export default {
   components: {
@@ -90,7 +109,9 @@ export default {
     vanField: Field,
     vanDropdownMenu: DropdownMenu,
     vanDropdownItem: DropdownItem,
-    vanCell: Cell
+    vanCell: Cell,
+    vanPopup: Popup,
+    vanPicker: Picker
   },
   data() {
     return {
@@ -99,7 +120,11 @@ export default {
       langOptions: [
         { text: 'EN', value: 'en', icon: 'chat-o' },
         { text: 'China', value: 'zh-CN', icon: 'fire-o' }
-      ]
+      ],
+      prefixCode: '',
+      showPicker: false,
+      phonePrefixs: [],
+      isPhone: false
     }
   },
   computed: {
@@ -108,6 +133,10 @@ export default {
         return lang.value === this.$store.state.locale;
       })[0].text;
     }
+  },
+  activated() {
+    this.prefixCode = this.$t('prefix_tip');
+    this.getPhonePrefix();
   },
   mounted() {
     let gScript = document.createElement('script');
@@ -127,7 +156,7 @@ export default {
         duration: 0
       });
       // 登录
-      authLogin({ username: this.account, password: this.password, grant_type: 'password' }).then(res => {
+      authLogin({ username: this.isPhone ? this.prefixCode + this.account : this.account, password: this.password, grant_type: 'password' }).then(res => {
         if (res.code != 0) return false;
         this.$store.commit('user/SET_TOKEN', res.data.token_type + ' ' + res.data.access_token);
         this.$store.commit('user/SET_REFRESHTOKEN', res.data.refresh_token);
@@ -263,6 +292,23 @@ export default {
           })
         }
       });
+    },
+    getPhonePrefix() {
+      getPhonePrefix().then(res => {
+        this.phonePrefixs = res.data;
+        this.prefixCode = this.$t('prefix_tip');
+      })
+    },
+    onConfirm(event) { // 选择手机号前缀
+      this.prefixCode = event.phonePrefix;
+      this.showPicker = false;
+    },
+    onInput(value) {
+      let reg = /^\d{1,}$/;
+      this.isPhone = reg.test(value) ? true : false;
+      setTimeout(() => {
+        this.$refs.loginAccountInputContainer.$el.querySelector('input').focus();
+      })
     }
   },
 }
@@ -304,5 +350,12 @@ export default {
 }
 .ml-18{
   margin-left: 18px;
+}
+.prefix-container--icon{
+  margin-left: 1px;
+  width: 20px;
+  height: 20px;
+  object-fit: cover;
+  vertical-align: top;
 }
 </style>
