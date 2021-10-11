@@ -38,7 +38,7 @@
         <div class="product-categories__box" v-for="(item, index) in leftLists" :key="index">
           <h4 class="fw fs-14 black">{{ item.name }}</h4>
           <div class="flex flex-wrap">
-            <div @click="clickItemEvent(childrenItem)" class="tc mr-12 mt-20 product-single" v-for="(childrenItem, childrenIndex) in item.children" :key="childrenIndex">
+            <nuxt-link class="block tc mr-12 mt-20 product-single" v-for="(childrenItem, childrenIndex) in item.children" :key="childrenIndex" :to="{ name: 'search', query: { navCategoryIds: [childrenItem.id], val: childrenItem.name } }">
               <BmImage 
                 :url="childrenItem.icon"
                 :width="'1.4rem'"
@@ -48,7 +48,7 @@
                 :fit="'fill'"
               />
               <h5 class="fs-12 mt-8 lh-1 clr-grey" v-html="childrenItem.name"></h5>
-            </div>
+            </nuxt-link>
           </div>
         </div>
       </template>
@@ -127,15 +127,6 @@ export default {
   methods: {
     changeNavEvent(currentIndex) { // 点击左侧切换tab栏
       this.leftLists = this.catrgoriesList[currentIndex].children
-    },
-    clickItemEvent(data) { // 点击分类跳转到搜索列表页面
-      this.$router.push({
-        name: 'search',
-        query: {
-          navCategoryIds: [data.id],
-          val: data.name
-        }
-      })
     }
   },
 }

@@ -75,7 +75,7 @@
       </div>
 
       <PullRefresh v-show="!isShowTip" :refreshing="refreshing" @refresh="onRefresh" :class="{'pb-20 custom-min-height-154 bg-white': true, 'bg-grey': arrangeType == 2, 'bg-white': arrangeType == 1}">
-        <div :class="{'w-100': true, 'plr-20 bg-white': arrangeType == 1 && list.length > 0, 'plr-12': arrangeType == 2} ">
+        <div :class="{'w-100': true, 'plr-20 bg-white': arrangeType == 1, 'plr-12': arrangeType == 2} ">
           <!-- 空状态  -->
           <empty-status v-if="list.length === 0" :image="require('@/assets/images/empty/order.png')" />
           <van-list

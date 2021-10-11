@@ -41,14 +41,14 @@
 
       <!-- 收藏信息 -->
       <div class="p-30 flex between">
-        <nuxt-link :to="{ name: 'me-likes' }" v-slot="{ navigate }" class="tc">
-          <dl @click="navigate" role="link">
+        <nuxt-link :to="{ name: 'me-likes' }">
+          <dl class="tc">
             <dt class="fs-24 black fw">{{ $store.state.user.userInfo ? $store.state.user.userInfo.attentionProductNum : 0 }}</dt>
             <dd class="fs-12 grey mt-4">{{ $t('collection') }}</dd>
           </dl>
         </nuxt-link>
-        <nuxt-link :to="{ name: 'me-wallet' }" v-slot="{ navigate }" class="tc">
-          <dl @click="navigate" role="link">
+        <nuxt-link :to="{ name: 'me-wallet' }">
+          <dl class="tc">
             <dt class="fs-24 black fw">{{ walletNum }}</dt>
             <dd class="fs-12 grey mt-4">{{ $t('wallet') }}</dd>
           </dl>
@@ -84,13 +84,14 @@
     <div class="clearfix"></div>
     <!-- 其他设置项 -->
     <div class="round-8 bg-white mlr-12 mt-12 hidden user-page__other">
-      <van-cell class="ptb-14 plr-12" :title="$t(otherItem.text)" title-class="pl-12" v-for="(otherItem, otherIndex) in otherList" :key="'other-list-' + otherIndex" :to="{ name: otherItem.name, query: otherItem.query }">
-        <template #icon>
-          <BmIcon :name="otherItem.icon" :width="'0.48rem'" :height="'0.48rem'"></BmIcon>
-        </template>
-      </van-cell>
+      <nuxt-link v-for="(otherItem, otherIndex) in otherList" :key="'other-list-' + otherIndex" :to="{ name: otherItem.name, query: otherItem.query }" class="block mlr-12 border-b">
+        <van-cell class="ptb-14 plr-0" :title="$t(otherItem.text)" title-class="pl-12" >
+          <template #icon>
+            <BmIcon :name="otherItem.icon" :width="'0.48rem'" :height="'0.48rem'"></BmIcon>
+          </template>
+        </van-cell>
+      </nuxt-link>
     </div>
-    
     <!-- 底部 -->
     <BmTabbar />
   </div>
