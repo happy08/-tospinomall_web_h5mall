@@ -92,10 +92,10 @@
             </div>
           </div>
           
-          <van-cell-group class="mt-20 plr-20" :border="false">
+          <van-cell-group class="pt-20 plr-20" :border="false">
             <!-- 追加评论 -->
             <template v-if="item.additionalEvaluates && item.additionalEvaluates.length > 0">
-              <p class="fw black fs-14">{{ $t('review_after_purchase') }}</p>
+              <p class="fw black fs-14" @click="goDetail(item)">{{ $t('review_after_purchase') }}</p>
               <div v-for="addItem in item.additionalEvaluates" :key="'add-review-' + addItem.id">
                 <p class="black fs-14 mt-10" @click="goDetail(item)">{{ addItem.content }}</p>
                 <div class="mt-10 flex flex-wrap between">
