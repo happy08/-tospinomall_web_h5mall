@@ -16,7 +16,7 @@
 
     <PullRefresh :refreshing="refreshing" @refresh="onRefresh" class="custom-min-height-46">
       <van-cell-group>
-        <van-cell class="p-20" v-for="(messageItem, messageIndex) in messageList" :key="messageIndex" :value="messageItem.sendTime" :label="messageItem.title" label-class="light-grey fs-14 ml-36" @click="goCategoryList(messageItem.id)">
+        <van-cell class="p-20" v-for="(messageItem, messageIndex) in messageList" :key="messageIndex" :value="messageItem.sendTime" :label="messageItem.title" label-class="light-grey fs-14 ml-36" title-class="flex-3" value-class="flex-2" @click="goCategoryList(messageItem.id)">
           <template #title>
             <div class="flex vcenter">
               <BmImage 
@@ -108,5 +108,11 @@ export default {
 <style lang="less" scoped>
 .ml-36{
   margin-left: 36px;
+}
+.flex-2{
+  flex: 2;
+}
+.flex-3{
+  flex: 3;
 }
 </style>

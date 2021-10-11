@@ -76,8 +76,7 @@
         <div class="mt-12 bg-white plr-20 ptb-14">
           <div>
             <span class="fs-16 red fw">
-              <span class="fm-menlo">{{ $store.state.rate.currency }}</span>
-              <span class="fm-din">{{ goodSpuVo.minPrice }}</span>
+              <span class="fm-menlo">{{ $store.state.rate.currency }}</span><span class="fm-din">{{ goodSpuVo.minPrice }}</span>
             </span>
             <!-- 促销价 -->
             <!-- <span class="ml-8 grey line-through">{{ $store.state.rate.currency }}260.00</span> -->
@@ -1164,7 +1163,7 @@ export default {
         this.deliveryShow = true;
         return false;
       }
-      this.addressShow = true
+      this.addressShow = true;
     }
   },
 }
