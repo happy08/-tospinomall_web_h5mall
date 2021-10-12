@@ -273,8 +273,8 @@
               item-selector=".custom-grid-item"
               fit-width="true"
               transition-duration="0s"
-              stagger="0.03s"
-              gutter="10"
+              stagger="0s"
+              :gutter="gutter"
             >
               <nuxt-link
                 v-for="(searchItem, searchIndex) in searchList"
@@ -422,6 +422,11 @@ export default {
   },
   activated() {
     this.$fetch();
+  },
+  computed: {
+    gutter() {
+      return process.client ? parseInt(10 * document.body.clientWidth / 375) : 10;
+    }
   },
   methods: {
     stickyScroll(scrollObj) { // 吸顶滚动事件

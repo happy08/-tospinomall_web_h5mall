@@ -94,7 +94,7 @@
                 fit-width="true"
                 transition-duration="0s"
                 stagger="0.03s"
-                gutter="10"
+                :gutter="gutter"
               >
                 <nuxt-link 
                   v-for="(searchItem, searchIndex) in list" 
@@ -373,6 +373,11 @@ export default {
   watch: {
     '$route'() {
       this.$fetch();
+    }
+  },
+  computed: {
+    gutter() {
+      return process.client ? parseInt(10 * document.body.clientWidth / 375) : 10;
     }
   },
   activated() {
