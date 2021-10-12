@@ -89,7 +89,7 @@
             <template v-if="arrangeType == 2">
               <div 
                 class="mx-auto my-2"
-                v-masonry
+                v-masonry="searchMasonryContainer"
                 item-selector=".custom-grid-item"
                 fit-width="true"
                 transition-duration="0s"
@@ -101,6 +101,7 @@
                   :key="'search-list-' + searchIndex"
                   :to="{ name: 'cart-product-id', params: { id: searchItem.productId } }"
                   class="mt-12 custom-grid-item"
+                  v-masonry-tile="searchMasonryContainer"
                 >
                   <ProductTopBtmSingle
                     :img="{ url: searchItem.mainPictureUrl, width: '3.4rem', height: '3.4rem', loadImage: require('@/assets/images/product-bgd-170.png') }" 
@@ -275,7 +276,8 @@ export default {
       backName: '',
       backNameId: '',
       backQuery: null,
-      meta: {}
+      meta: {},
+      searchMasonryContainer: 'searchMasonryContainer'
     }
   },
   async fetch() {
@@ -332,10 +334,6 @@ export default {
       // 所有分类
       this.categoryList = listData.data.categoryList;
       this.total = listData.data.total;
-
-      if (typeof this.$redrawVueMasonry === 'function') {
-        this.$redrawVueMasonry();
-      }
       
       // 更新页面展示
       this.searchHistoryList = this.$store.state.searchProductList.filter((item, index) => {
@@ -405,6 +403,11 @@ export default {
       }
       this.getSearchPull();
     }, 300);
+    setTimeout(() => {
+      if (typeof this.$redrawVueMasonry === 'function') {
+        this.$redrawVueMasonry('searchMasonryContainer');
+      }
+    }, 50)
   },
   deactivated() {
     this.shopId = '';
@@ -428,7 +431,7 @@ export default {
     changeArrange() { // 切换展示样式 1列 2列
       this.arrangeType = this.arrangeType === 1 ? 2 : 1;
       if (this.arrangeType == 2) {
-        this.$redrawVueMasonry();
+        this.$redrawVueMasonry('searchMasonryContainer');
       }
     },
     getSearchList(index, title) { // 获取分类列表
@@ -640,7 +643,7 @@ export default {
         this.finished = false;
         setTimeout(() => {
           if (typeof this.$redrawVueMasonry === 'function') {
-            this.$redrawVueMasonry();
+            this.$redrawVueMasonry('searchMasonryContainer');
           }
         }, 50)
       })

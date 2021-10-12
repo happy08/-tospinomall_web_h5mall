@@ -269,19 +269,19 @@
             <!-- 瀑布流 -->
             <div 
               class="mx-auto my-2"
-              v-masonry
+              v-masonry="homeMasonryContainer"
               item-selector=".custom-grid-item"
               fit-width="true"
               transition-duration="0s"
-              stagger="0s"
               :gutter="gutter"
+              stagger="0s"
             >
               <nuxt-link
                 v-for="(searchItem, searchIndex) in searchList"
                 :key="'search-list-' + searchIndex"
                 :to="{ name: 'cart-product-id', params: { id: searchItem.productId } }"
                 class="iblock mt-10 custom-grid-item"
-                v-masonry-tile>
+                v-masonry-tile="homeMasonryContainer">
                 <client-only placeholder="">
                   <ProductTopBtmSingle
                     :img="{ url: searchItem.mainPictureUrl, width: '3.4rem', height: '3.4rem', loadImage: require('@/assets/images/product-bgd-170.png') }" 
@@ -367,7 +367,8 @@ export default {
       finished: false,
       pageIndex: 1,
       pageSize: 10,
-      tabTotal: 0
+      tabTotal: 0,
+      homeMasonryContainer: 'homeMasonryContainer'
     }
   },
   async fetch() {
@@ -394,6 +395,7 @@ export default {
       this.loading = false;
       return false;
     }
+    
     const searchList = await this.$api.getProductSearch({ pageSize: this.pageSize, pageIndex: this.pageIndex }); // 搜索商品列表
     if (!searchList.data) return false;
     
@@ -407,9 +409,6 @@ export default {
     })
     this.searchList = this.pageIndex == 1 ? list : this.searchList.concat(list);
     this.tabTotal = searchList.data.total; // 搜索商品列表商品总数目
-    if (typeof this.$redrawVueMasonry === 'function') {
-      this.$redrawVueMasonry();
-    }
   },
   head() { // 头部设置，方便seo
     return {
@@ -422,6 +421,11 @@ export default {
   },
   activated() {
     this.$fetch();
+    setTimeout(() => {
+      if (typeof this.$redrawVueMasonry === 'function') {
+        this.$redrawVueMasonry('homeMasonryContainer');
+      }
+    }, 50)
   },
   computed: {
     gutter() {
@@ -454,7 +458,7 @@ export default {
             productPrice: parseFloat(item.productPrice)
           }
         })
-        this.$redrawVueMasonry();
+        this.$redrawVueMasonry('homeMasonryContainer');
         this.tabTotal = res.data.total;
       })
     },
@@ -533,7 +537,7 @@ export default {
       this.$fetch();
     },
     onLoad() { // 滚动加载
-      if (parseFloat(this.tabTotal) == this.searchList.length) { // 没有下一页了
+      if (parseFloat(this.tabTotal) == this.searchList.length || this.finished == true) { // 没有下一页了
         this.finished = true;
         this.loading = false;
         return false;
@@ -557,11 +561,11 @@ export default {
 
         this.searchList = this.searchList.concat(list);
         this.finished = parseFloat(this.tabTotal) == this.searchList.length ? true: false;
-        setTimeout(() => {
+        // setTimeout(() => {
           if (typeof this.$redrawVueMasonry === 'function') {
-            this.$redrawVueMasonry();
+            this.$redrawVueMasonry('homeMasonryContainer');
           }
-        }, 50)
+        // }, 50)
         
         // 加载状态结束
         this.loading = false;
