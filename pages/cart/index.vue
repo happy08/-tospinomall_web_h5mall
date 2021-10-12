@@ -58,21 +58,23 @@
                 <van-card class="bg-white pt-24 ml-12 plr-0 pb-0 lh-20 width-313 fm-helvetica">
                   <!-- 自定义图片 -->
                   <template #thumb>
-                    <SoldOut :isShow="singleItem.status == 1 ? false: true" @onClick="goProductDetail(singleItem.productId)">
-                      <BmImage
-                        :url="singleItem.mainPictureUrl"
-                        :width="'1.8rem'" 
-                        :height="'1.8rem'"
-                        :isLazy="false"
-                        :isShow="true"
-                        :fit="'cover'"
-                        :alt="singleItem.productName"
-                      />
-                    </SoldOut>
+                    <nuxt-link :to="{ name: 'cart-product-id', params: { id: singleItem.productId } }">
+                      <SoldOut :isShow="singleItem.status == 1 ? false: true">
+                        <BmImage
+                          :url="singleItem.mainPictureUrl"
+                          :width="'1.8rem'" 
+                          :height="'1.8rem'"
+                          :isLazy="false"
+                          :isShow="true"
+                          :fit="'cover'"
+                          :alt="singleItem.productName"
+                        />
+                      </SoldOut>
+                    </nuxt-link>
                   </template>
                   <!-- 自定义标题 -->
                   <template #title>
-                    <span @click="goProductDetail(singleItem.productId)" class="hidden-2">{{ singleItem.productName }}</span>
+                    <nuxt-link :to="{ name: 'cart-product-id', params: { id: singleItem.productId } }" class="hidden-2">{{ singleItem.productName }}</nuxt-link>
                   </template>
                   <!-- 自定义描述区域，改为展示商品型号 -->
                   <template #desc>
@@ -85,7 +87,7 @@
                   </template>
                   <!-- 标签 -->
                   <template #tags>
-                    <div class="flex mt-8 vcenter hidden round-8 product-tag" v-if="singleItem.status == 1" @click="goProductDetail(singleItem.productId)">
+                    <nuxt-link :to="{ name: 'cart-product-id', params: { id: singleItem.productId } }" class="flex mt-8 vcenter hidden round-8 product-tag" v-if="singleItem.status == 1">
                       <BmImage
                         :url="require('@/assets/images/icon/plane-icon.png')"
                         :width="'0.36rem'" 
@@ -95,8 +97,8 @@
                         :fit="'cover'"
                         :alt="'Tospino ship from tag'"
                       />
-                      <span class="fs-10 plr-8">{{ $t('ship_from') }}{{ singleItem.shipAddress }}</span>
-                    </div>
+                      <span class="fs-10 plr-8 lh-12">{{ $t('ship_from') }}{{ singleItem.shipAddress }}</span>
+                    </nuxt-link>
                   </template>
                   <!-- 自定义数量,有库存显示数量，没有去看相似物品 -->
                   <template #num>
@@ -105,10 +107,10 @@
                   </template>
                   <!-- 自定义价格 -->
                   <template #price>
-                    <div class="mt-8" @click="goProductDetail(singleItem.productId)">
+                    <nuxt-link :to="{ name: 'cart-product-id', params: { id: singleItem.productId } }" class="mt-8 block">
                       <span class="red fs-16 fw" v-if="$store.state.rate">{{ $store.state.rate.currency }}{{ singleItem.isPriceReduction == 1 ? singleItem.productPrice : singleItem.addCartPrice }}</span>
                       <span class="grey fs-12 ml-4 line-through" v-if="singleItem.isPriceReduction == 1">{{ $store.state.rate.currency }}{{ singleItem.addCartPrice }}</span>
-                    </div>
+                    </nuxt-link>
                   </template>
                 </van-card>
               </div>
@@ -416,14 +418,6 @@ export default {
         this.isEdit = false;
       }).catch(() => {
 
-      })
-    },
-    goProductDetail(productId) { // 跳转到商品详情页面
-      this.$router.push({
-        name: 'cart-product-id',
-        params: {
-          id: productId
-        }
       })
     },
     onLogin() { // 去登录

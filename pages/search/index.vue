@@ -68,14 +68,14 @@
           <BmIcon :name="'down-icon'" :width="'0.64rem'" :height="'0.64rem'" v-if="historyNum" @iconClick="showMoreHistory" />
         </div>
         <!-- 搜索发现 -->
-        <h2 class="fs-14 black mt-30">{{ $t('search_found') }}</h2>
-        <div class="mt-12">
+        <h2 class="fs-14 black mt-30" v-if="searchFindList.length > 0">{{ $t('search_found') }}</h2>
+        <div class="mt-12" v-if="searchFindList.length > 0">
           <span class="plr-10 round-8 mr-12 iblock mb-10 tag-name" v-for="(tag, index) in searchFindList" :key="index" @click="onSearch(tag.name)">{{ tag.name }}</span>
         </div>
       </div>
 
-      <PullRefresh v-show="!isShowTip" :refreshing="refreshing" @refresh="onRefresh" class="pb-20 custom-min-height-154 bg-white">
-        <div :class="{'w-100': true, 'plr-20 bg-white': arrangeType == 1 && list.length > 0, 'plr-12': arrangeType == 2} ">
+      <PullRefresh v-show="!isShowTip" :refreshing="refreshing" @refresh="onRefresh" :class="{'pb-20 custom-min-height-154 bg-white': true, 'bg-grey': arrangeType == 2, 'bg-white': arrangeType == 1}">
+        <div :class="{'w-100': true, 'plr-20 bg-white': arrangeType == 1, 'plr-12': arrangeType == 2} ">
           <!-- 空状态  -->
           <empty-status v-if="list.length === 0" :image="require('@/assets/images/empty/order.png')" />
           <van-list
@@ -89,18 +89,19 @@
             <template v-if="arrangeType == 2">
               <div 
                 class="mx-auto my-2"
-                v-masonry
+                v-masonry="searchMasonryContainer"
                 item-selector=".custom-grid-item"
                 fit-width="true"
                 transition-duration="0s"
                 stagger="0.03s"
-                gutter="10"
+                :gutter="gutter"
               >
                 <nuxt-link 
                   v-for="(searchItem, searchIndex) in list" 
                   :key="'search-list-' + searchIndex"
                   :to="{ name: 'cart-product-id', params: { id: searchItem.productId } }"
                   class="mt-12 custom-grid-item"
+                  v-masonry-tile="searchMasonryContainer"
                 >
                   <ProductTopBtmSingle
                     :img="{ url: searchItem.mainPictureUrl, width: '3.4rem', height: '3.4rem', loadImage: require('@/assets/images/product-bgd-170.png') }" 
@@ -275,7 +276,8 @@ export default {
       backName: '',
       backNameId: '',
       backQuery: null,
-      meta: {}
+      meta: {},
+      searchMasonryContainer: 'searchMasonryContainer'
     }
   },
   async fetch() {
@@ -332,10 +334,6 @@ export default {
       // 所有分类
       this.categoryList = listData.data.categoryList;
       this.total = listData.data.total;
-
-      if (typeof this.$redrawVueMasonry === 'function') {
-        this.$redrawVueMasonry();
-      }
       
       // 更新页面展示
       this.searchHistoryList = this.$store.state.searchProductList.filter((item, index) => {
@@ -375,6 +373,11 @@ export default {
       this.$fetch();
     }
   },
+  computed: {
+    gutter() {
+      return process.client ? parseInt(10 * document.body.clientWidth / 375) : 10;
+    }
+  },
   activated() {
     this.$fetch();
     if (this.$route.query.shopId) { // 从店铺搜索跳转过来的
@@ -400,6 +403,11 @@ export default {
       }
       this.getSearchPull();
     }, 300);
+    setTimeout(() => {
+      if (typeof this.$redrawVueMasonry === 'function') {
+        this.$redrawVueMasonry('searchMasonryContainer');
+      }
+    }, 50)
   },
   deactivated() {
     this.shopId = '';
@@ -423,7 +431,7 @@ export default {
     changeArrange() { // 切换展示样式 1列 2列
       this.arrangeType = this.arrangeType === 1 ? 2 : 1;
       if (this.arrangeType == 2) {
-        this.$redrawVueMasonry();
+        this.$redrawVueMasonry('searchMasonryContainer');
       }
     },
     getSearchList(index, title) { // 获取分类列表
@@ -635,7 +643,7 @@ export default {
         this.finished = false;
         setTimeout(() => {
           if (typeof this.$redrawVueMasonry === 'function') {
-            this.$redrawVueMasonry();
+            this.$redrawVueMasonry('searchMasonryContainer');
           }
         }, 50)
       })

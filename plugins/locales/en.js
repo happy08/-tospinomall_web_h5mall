@@ -640,7 +640,7 @@ const en = {
   state_goods_list: ['Goods not received', 'Received goods'],
   return_method_title: 'Select application type',
   search_filter_overall: 'All',
-  search_filter_price: [{text: 'Comprehensive sorting', value: 0}, {text: 'Price ascending order', value: 1}, {text: 'Price descending order', value: 2}],
+  search_filter_price: [{text: 'Comprehensive', value: 0}, {text: 'Price ascending', value: 1}, {text: 'Price descending', value: 2}],
   gander: ['Male', 'Female', 'Bisexuality', 'Secrecy'],
   marital_status_list: ['Unmarried', 'Married', 'Secrecy'],
   fail_copied_to_clipboard: 'copy failed',
@@ -672,9 +672,9 @@ const en = {
   reply: 'Reply',
   please_choose_address: 'Please select the delivery address',
   bill_search_placeholder: 'Enter bill-related information',
-  bill_success: 'Success',
+  bill_success: 'Successful Transaction',
   bill_to_pay: 'To pay',
-  bill_fail: 'Fail',
+  bill_fail: 'Transaction Failed',
   prefix_tip: '+233',
   bill_detail: 'Bill',
   axios_tip_404: 'The requested resource does not exist',
@@ -707,7 +707,11 @@ const en = {
   share_product_content: 'Share content',
   share_product_link: 'Share link',
   verify_pay_by_password: 'Use the current payment password to verify',
-  delivery_freight_method: 'Delivery Method'
+  delivery_freight_method: 'Delivery Method',
+  delivery_freight_free: 'Delivery fee',
+  delivery_freight_place: 'Delivery place',
+  delivery_freight_arrive_time: 'Estimated arrival time',
+  delivery_address_choose: 'Choose'
 }
 
 export default en;

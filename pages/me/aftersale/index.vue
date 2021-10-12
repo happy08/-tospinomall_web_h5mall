@@ -223,9 +223,9 @@ export default {
     this.$toast.clear();
     this.total = listData.data.total;
     this.finished = parseFloat(this.total) == this.lists.length ? true: false;
-    this.getOrderAfterSalesCount();
   },
   activated() {
+    this.getOrderAfterSalesCount();
   },
   deactivated() {
     this.isTab = false;

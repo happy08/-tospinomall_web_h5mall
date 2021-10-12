@@ -75,12 +75,12 @@
         imageLinkType: 图片链接类型（0:商品链接，1:前端分类id，2:后端分类id，3:品牌，4:FBT，5:FBM，6:外部链接）
       -->
       <div v-for="(moduleItem, moduleIndex) in moduleData" :key="'module-data-' + moduleIndex">
-        <h2 class="fs-18 mlr-12 fw black pt-20 lh-20 fm-din-alternate" v-if="moduleItem.moduleTitleDisplay">{{ moduleItem.moduleTitle }}</h2>
+        <h2 class="fs-18 mlr-12 fw black pt-12 lh-20 fm-din-alternate" v-if="moduleItem.moduleTitleDisplay">{{ moduleItem.moduleTitle }}</h2>
         <!-- 整屏轮播图 -->
-        <div v-if="moduleItem.type === 1">
+        <div v-if="moduleItem.type === 1" class="mt-12 mb-12">
           <swiper
             :ref="'swiperFullScreenRef' + moduleIndex"
-            class="mt-12 swiper home-banner-swiper"
+            class="swiper home-banner-swiper"
             :options="swiperFullScreenOption"
             v-if="moduleItem.componentDetails.length > 0"
           >
@@ -108,7 +108,7 @@
 
         <!-- 热区图片 -->
         <template v-if="moduleItem.type === 2">
-          <div class="fs-0 mt-12 hot-container" :ref="'hotContainer' + moduleIndex">
+          <div class="fs-0 hot-container" :ref="'hotContainer' + moduleIndex">
             <BmImage
               :url="moduleItem.imageUrl"
               :loadUrl="require('@/assets/images/product-bgd-375.png')"
@@ -126,7 +126,7 @@
           <!-- 轮播展示 -->
           <swiper
             ref="swiperComponentRef"
-            :class="{ 'swiper home-page__global-swiper': true, 'swiper-no-swiping' : moduleItem.componentDetails.length <= 3, 'pb-34': moduleItem.effect && moduleItem.componentDetails.length > 3 }"
+            :class="{ 'swiper home-page__global-swiper': true, 'swiper-no-swiping' : moduleItem.componentDetails.length <= 3, 'pb-34': moduleItem.effect == 1 && moduleItem.componentDetails.length > 3 }"
             :options="{
               ...swiperComponentOption,
               loop: moduleItem.componentDetails.length > 3,
@@ -148,13 +148,13 @@
               <swiper-slide v-for="addItem in (3 - parseFloat(moduleItem.componentDetails.length))" :key="'self-add-' + addItem"></swiper-slide>
             </template>
             
-            <div class="swiper-pagination swiper-group-pagination" v-show="moduleItem.effect && moduleItem.componentDetails.length > 3" slot="pagination"></div>
+            <div class="swiper-pagination swiper-group-pagination" v-show="moduleItem.effect == 1 && moduleItem.componentDetails.length > 3" slot="pagination"></div>
           </swiper>
         </div>
 
         <!-- 一行两列 -->
         <template v-if="moduleItem.type === 4">
-          <div class="mlr-12 mt-12 flex between">
+          <div class="mlr-12 flex between mt-12">
             <nuxt-link 
               :to="{ name: 'cart-product-id', params: { id: productType4Item.goodsId } }"
               class="iblock" 
@@ -243,7 +243,7 @@
         </div>
       </div> -->
       <!-- 滚动标签栏部分 -->
-      <van-tabs sticky swipeable animated :offset-top="'0.88rem'" color="#42B7AE" v-model="tabCategoryActive" @change="getSearchList" class="mt-12 mh-60 custom-home-tab" :ellipsis="false">
+      <van-tabs sticky swipeable animated :offset-top="'0.88rem'" color="#42B7AE" v-model="tabCategoryActive" @change="getSearchList" class="mh-60 mt-12 custom-home-tab" :ellipsis="false" :lazy-render="false">
         <van-tab v-for="(categoryItem, tabIndex) in categoryList" :title="categoryItem.name" :key="'scroll-tab-' + tabIndex" :name="categoryItem.id">
           <empty-status v-if="searchList.length === 0" :image="require('@/assets/images/empty/order.png')" class="mh-60" />
           <van-list
@@ -269,19 +269,19 @@
             <!-- 瀑布流 -->
             <div 
               class="mx-auto my-2"
-              v-masonry
+              v-masonry="homeMasonryContainer"
               item-selector=".custom-grid-item"
               fit-width="true"
               transition-duration="0s"
-              stagger="0.03s"
-              gutter="10"
+              :gutter="gutter"
+              stagger="0s"
             >
               <nuxt-link
                 v-for="(searchItem, searchIndex) in searchList"
                 :key="'search-list-' + searchIndex"
                 :to="{ name: 'cart-product-id', params: { id: searchItem.productId } }"
                 class="iblock mt-10 custom-grid-item"
-                v-masonry-tile>
+                v-masonry-tile="homeMasonryContainer">
                 <client-only placeholder="">
                   <ProductTopBtmSingle
                     :img="{ url: searchItem.mainPictureUrl, width: '3.4rem', height: '3.4rem', loadImage: require('@/assets/images/product-bgd-170.png') }" 
@@ -367,7 +367,8 @@ export default {
       finished: false,
       pageIndex: 1,
       pageSize: 10,
-      tabTotal: 0
+      tabTotal: 0,
+      homeMasonryContainer: 'homeMasonryContainer'
     }
   },
   async fetch() {
@@ -394,6 +395,7 @@ export default {
       this.loading = false;
       return false;
     }
+    
     const searchList = await this.$api.getProductSearch({ pageSize: this.pageSize, pageIndex: this.pageIndex }); // 搜索商品列表
     if (!searchList.data) return false;
     
@@ -407,9 +409,6 @@ export default {
     })
     this.searchList = this.pageIndex == 1 ? list : this.searchList.concat(list);
     this.tabTotal = searchList.data.total; // 搜索商品列表商品总数目
-    if (typeof this.$redrawVueMasonry === 'function') {
-      this.$redrawVueMasonry();
-    }
   },
   head() { // 头部设置，方便seo
     return {
@@ -422,6 +421,16 @@ export default {
   },
   activated() {
     this.$fetch();
+    setTimeout(() => {
+      if (typeof this.$redrawVueMasonry === 'function') {
+        this.$redrawVueMasonry('homeMasonryContainer');
+      }
+    }, 50)
+  },
+  computed: {
+    gutter() {
+      return process.client ? parseInt(10 * document.body.clientWidth / 375) : 10;
+    }
   },
   methods: {
     stickyScroll(scrollObj) { // 吸顶滚动事件
@@ -449,7 +458,7 @@ export default {
             productPrice: parseFloat(item.productPrice)
           }
         })
-        this.$redrawVueMasonry();
+        this.$redrawVueMasonry('homeMasonryContainer');
         this.tabTotal = res.data.total;
       })
     },
@@ -528,7 +537,7 @@ export default {
       this.$fetch();
     },
     onLoad() { // 滚动加载
-      if (parseFloat(this.tabTotal) == this.searchList.length) { // 没有下一页了
+      if (parseFloat(this.tabTotal) == this.searchList.length || this.finished == true) { // 没有下一页了
         this.finished = true;
         this.loading = false;
         return false;
@@ -552,11 +561,11 @@ export default {
 
         this.searchList = this.searchList.concat(list);
         this.finished = parseFloat(this.tabTotal) == this.searchList.length ? true: false;
-        setTimeout(() => {
+        // setTimeout(() => {
           if (typeof this.$redrawVueMasonry === 'function') {
-            this.$redrawVueMasonry();
+            this.$redrawVueMasonry('homeMasonryContainer');
           }
-        }, 50)
+        // }, 50)
         
         // 加载状态结束
         this.loading = false;

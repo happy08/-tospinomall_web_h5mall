@@ -1,7 +1,7 @@
 <template>
   <!-- 我的-设置-收货地址 -->
-  <div>
-    <BmHeaderNav :left="{ isShow: true, isEmit: true }" :title="$t('harvest_address')" @leftClick="leftClick" />
+  <div class="pt-46 pb-10">
+    <BmHeaderNav :left="{ isShow: true, isEmit: true }" :title="$t('harvest_address')" @leftClick="leftClick" :fixed="true" />
     <!-- 地址列表 -->
     <div class="p-20 address-single" v-for="(item, index) in lists" :key="index" @click="onClick(item)">
       <div class="flex between vcenter address-single__top">
@@ -26,8 +26,8 @@
         </div>
       </div>
       <!-- 地址 -->
-      <div class="mt-10 fs-14 black fm-helvetica">{{ item.address }}</div>
-      <div class="mt-10 fs-14 black fm-helvetica">{{ item.completeAddress }}</div>
+      <div class="mt-10 fs-14 black fm-helvetica word-break">{{ item.address }}</div>
+      <div class="mt-10 fs-14 black fm-helvetica word-break">{{ item.completeAddress }}</div>
       <div class="mt-12 flex vcenter" @click="onSetDeafult(item.id)">
         <BmImage
           :url="item.isDefault ? require('@/assets/images/icon/choose-icon.png') : require('@/assets/images/icon/choose-default-icon.png')"

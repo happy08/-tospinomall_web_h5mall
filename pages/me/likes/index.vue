@@ -50,7 +50,7 @@
                   <!-- 左滑单元格 -->
                   <van-swipe-cell :disabled="edit">
                     <!-- 店铺的样式 -->
-                    <div class="flex pl-30 ptb-20" v-if="active == 1" @click="goStore(item)">
+                    <nuxt-link class="flex pl-30 ptb-20" v-if="active == 1" tag="div" :to="{ name: 'cart-store-id', params: { id: item.storeId }, query: { sellerId: item.sellerId, tabbarActive: 0 } }">
                       <BmImage 
                         :url="item.storeLogoUrl"
                         :width="'1.12rem'" 
@@ -65,14 +65,20 @@
                         <p class="black hidden-2">{{ item.storeName }}</p>
                         <p class="color_666 mt-8">{{ item.collectNum }}{{ $t('shop_follower', { replace_tip: item.followers }) }}</p>
                       </div>
-                    </div>
+                    </nuxt-link>
 
                     <!-- 商品的样式 -->
                     <div class="pt-26 pr-20" v-if="active == 0">
-                      <OrderSingle class="pl-30 pt-20" :isShowRight="false" :product_desc="item.productName" :image="item.productImg" :price="item.productPrice" @onClick="goProduct(item)" :stock="item.isValid == 1 ? 100 : 0" />
+                      <nuxt-link :to="{ name: 'cart-product-id', params: { id: item.productId } }">
+                        <OrderSingle class="pl-30 pt-20" :isShowRight="false" :product_desc="item.productName" :image="item.productImg" :price="item.productPrice" :stock="item.isValid == 1 ? 100 : 0" />
+                      </nuxt-link>
+                      
                       <div class="flex hend">
                         <!-- 看相似 -->
-                        <BmButton type="default" plain class="plr-12 round-8 h-25 mt-0" @btnClick="goSimilar(item.productId)">{{ $t('look_similar') }}</BmButton>
+                        <nuxt-link :to="{ name: 'search-similar-id', params: { id: item.productId } }" class="fs-0">
+                          <BmButton type="default" plain class="plr-12 round-8 h-25 mt-0">{{ $t('look_similar') }}</BmButton>
+                        </nuxt-link>
+                        
                         <!-- 购物车 -->
                         <BmImage
                           :url="require('@/assets/images/icon/add-cart-btn.png')"
@@ -228,6 +234,8 @@ export default {
     this.list = listData.data.records; // 关注商品/店铺列表
     this.total = listData.data.total; // 商品/店铺总数
     this.isFirst = false;
+    // 加载状态结束
+    this.loading = false;
     if (this.active == 0) {
       const recommendData = await this.$api.getRecommend({ type: 1, pageNum: this.pageNum, pageSize: this.pageSize});
       if (!recommendData.data) {
@@ -242,9 +250,8 @@ export default {
         }
       }, 50)
       this.recommendTotal = recommendData.data.total;
-      // 加载状态结束
-      this.loading = false;
-      if (parseFloat(res.data.total) == this.recommendList.length) {
+      
+      if (parseFloat(recommendData.data.total) == this.recommendList.length) {
         this.isLoadRecommend = true;
       }
       if (typeof this.$redrawVueMasonry === 'function') {
@@ -317,31 +324,10 @@ export default {
       this.pageNum = 1;
       this.getList();
     },
-    goStore(item) {
-      this.$router.push({
-        name: 'cart-store-id',
-        params: {
-          id: item.storeId
-        },
-        query: {
-          sellerId: item.sellerId,
-          tabbarActive: 0
-        }
-      })
-    },
-    goProduct(item) {
-      this.$router.push({
-        name: 'cart-product-id',
-        params:{
-          id: item.productId
-        }
-      })
-    },
     async onLoad() { // 收藏商品加载下一页，加载最后一页时开始加载推荐商品列表，店铺没有推荐
       if (parseFloat(this.total) == this.list.length) { // 没有下一页了
         if (this.active == 0 && !this.edit) {
           this.pageNum = this.recommendList.length > 0 && this.pageNum >= 1 ? this.pageNum : 0;
-          console.log(this.pageNum)
           if (!this.isLoadRecommend && this.recommendList.length == parseFloat(this.recommendTotal) && this.pageNum > 0) {
             this.finished = true;
             this.loading = false;
@@ -354,9 +340,7 @@ export default {
         }
         return false;
       }
-      console.log(this.pageNum)
       this.pageNum += 1;
-      console.log(this.pageNum)
       const listData = this.active == 0 ? await this.$api.getLikeProduct({ pageNum: this.pageNum, pageSize: this.pageSize }) : await this.$api.getLikeStoreList({ pageNum: this.pageNum, pageSize: this.pageSize }); // 获取关注商品/店铺列表
       if (!listData.data) return false;
 
@@ -392,14 +376,6 @@ export default {
       if (parseFloat(recommendData.data.total) == this.recommendList.length) {
         this.isLoadRecommend = true;
       }
-    },
-    goSimilar(productId) { // 跳转到相似列表
-      this.$router.push({
-        name: 'search-similar-id',
-        params: {
-          id: productId
-        }
-      })
     },
     onSKu(productItem) { // 获取产品规格
       getGoodAttr(productItem.productId).then(res => {

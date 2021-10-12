@@ -77,7 +77,7 @@ export default {
         return false;
       }
       if (this.pwd !== this.confirmPwd) {
-        this.$Toast('密码不相等');
+        this.$Toast(this.$t('the_two_passwords_entered_are_inconsistent'));
         return false;
       }
       let _account = this.$route.query.email ? { email: this.$route.query.email } : { phone: this.$route.query.phone, phonePrefix: this.$route.query.phonePrefix };

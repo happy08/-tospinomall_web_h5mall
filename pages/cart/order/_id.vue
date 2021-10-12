@@ -6,7 +6,7 @@
     <div v-if="codeData.code == 0">
       <!-- 个人信息 -->
       <div class="bg-white">
-        <van-cell :label="address.completeAddress" is-link :to="{ name: 'me-address', query: { back: 'car-order-id', cartOrderId: this.$route.params.id, otherQuery: $route.query } }" title-class="fs-14 black" label-class="fs-14 light-grey" class="pt-20 pl-20 pr-14 pb-30" :border="false" >
+        <van-cell :label="address.completeAddress" is-link :to="{ name: 'me-address', query: { back: 'car-order-id', cartOrderId: this.$route.params.id, otherQuery: $route.query } }" title-class="fs-14 black word-break" label-class="fs-14 light-grey" class="pt-20 pl-20 pr-14 pb-30" :border="false" >
           <template #title>
             {{ address.name }} {{ address.phonePrefix }}-{{ address.phone }}
           </template>

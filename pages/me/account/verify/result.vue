@@ -59,7 +59,13 @@ export default {
       // })
     },
     login() {
-      authLogin({ username: this.$store.state.user.account_phone && this.$store.state.user.account_phone != '' ? this.$store.state.user.account_phone : this.$store.state.user.account_email, password: this.$route.query.pwd, grant_type: 'password' }).then(res => {
+      let _data = {
+        username: this.$store.state.user.account_phone && this.$store.state.user.account_phone != '' ? this.$store.state.user.userInfo.phonePrefix + this.$store.state.user.account_phone : this.$store.state.user.account_email,
+        password: this.$route.query.pwd,
+        grant_type: 'password'
+      }
+      
+      authLogin(_data).then(res => {
         this.$store.commit('user/SET_TOKEN', res.data.token_type + ' ' + res.data.access_token);
         this.$store.commit('user/SET_REFRESHTOKEN', res.data.refresh_token);
         this.$store.commit('user/SET_SCOPE', res.data.scope);

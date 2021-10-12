@@ -40,13 +40,13 @@ export default {
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
-    "@/plugins/global-components",
-    "@/plugins/vant",
-    "@/api/index",
-    "@/api/axios",
-    "@/plugins/vue-i18n",
-    { src: "@/plugins/utils", ssr: false },
-    "@/plugins/routeguard.js",
+    '@/plugins/global-components',
+    '@/plugins/vant',
+    '@/api/index',
+    '@/plugins/vue-i18n',
+    '@/api/axios',
+    { src: '@/plugins/utils', ssr: false },
+    '@/plugins/routeguard.js',
     // { src: '@/plugins/vconsole', ssr: false },
     // { src: '@/plugins/algolia', ssr: false },
     { src: '@/plugins/vue-masonry', ssr: false }
@@ -171,7 +171,7 @@ export default {
   },
   loading: false, // 加载进度条
   resourceHints: false, // 资源提示,加快初始页面加载时间
-  render: { // 预加载
-    resourceHints: false
-  }
+  // render: { // 预加载
+  //   resourceHints: false
+  // }
 };

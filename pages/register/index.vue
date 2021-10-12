@@ -13,6 +13,7 @@
           maxlength="254"
           type="email"
           v-if="isType == 'email'"
+          clearable
         >
           <template #label>
           </template>
@@ -24,6 +25,7 @@
           class="field-container phone-code-field"
           maxlength="30"
           type="number"
+          clearable
           v-else
         >
           <template #label>
@@ -145,7 +147,7 @@ export default {
       code: '',
       phonePrefixs: [],
       showPicker: false,
-      prefixCode: '',
+      prefixCode: this.$t('prefix_tip'),
       countdown: 0, // 60
       isCodeFlag: false,
       isNextFlag: false,
@@ -196,7 +198,6 @@ export default {
     getPhonePrefix() { // 获取所有手机号前缀
       getPhonePrefix().then(res => {
         this.phonePrefixs = res.data;
-        this.prefixCode = this.$t('prefix_tip');
       })
     },
     onConfirm(event) { // 选择手机号前缀
@@ -223,7 +224,7 @@ export default {
         }
         _axios = getEmailCode({ email: this.account_email, userType: 'buyer', type: this.$route.query.type === 'forgot' ? 2 : 1 });
       } else { // 默认是获取手机验证码
-        _axios = getPhoneCode({ phone: this.account, phonePrefix: this.prefixCode.split('+')[1], userType: 'buyer', type: this.$route.query.type === 'forgot' ? 2 : 1 });
+        _axios = getPhoneCode({ phone: this.account, phonePrefix: this.prefixCode, userType: 'buyer', type: this.$route.query.type === 'forgot' ? 2 : 1 });
       }
       // 接口返回操作
       _axios.then(res => {
@@ -268,7 +269,7 @@ export default {
         }
         _axios = checkEmailCode({ code: this.code, email: this.account_email, userType: 'buyer', isDelCode: 0 });
       } else { // 校验手机验证码
-        _axios = checkPhoneCode({ code: this.code, phone: this.account, phonePrefix: this.prefixCode.split('+')[1], userType: 'buyer', isDelCode: 0 });
+        _axios = checkPhoneCode({ code: this.code, phone: this.account, phonePrefix: this.prefixCode, userType: 'buyer', isDelCode: 0 });
       }
       // 接口返回的操作处理
       _axios.then(() => {
@@ -276,7 +277,7 @@ export default {
         this.isNextFlag = false;
         // 如果是忘记密码，手机验证通过之后跳转到设置密码页面
         if (this.$route.query.type === 'forgot') {
-          let changeObj = this.$route.query.changeWay === 'email' ? { email: this.account_email } : { phone: this.account, phonePrefix: this.prefixCode.split('+')[1] }
+          let changeObj = this.$route.query.changeWay === 'email' ? { email: this.account_email } : { phone: this.account, phonePrefix: this.prefixCode }
           this.$router.push({
             name: 'register-changePwd',
             query: {
@@ -287,8 +288,8 @@ export default {
           return false;
         }
         // 注册手机号验证通过之后跳转到设置密码页面
-        let registerQuery = this.$route.query.changeWay === 'email' ? { code: this.code, email: this.account_email } : { code: this.code,code: this.code, phone: this.account, phonePrefix: this.prefixCode.split('+')[1] };
-        this.$router.push({ 
+        let registerQuery = this.$route.query.changeWay === 'email' ? { code: this.code, email: this.account_email } : { code: this.code,code: this.code, phone: this.account, phonePrefix: this.prefixCode };
+        this.$router.push({
           name: 'register-password',
           query: registerQuery
         })

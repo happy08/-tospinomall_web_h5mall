@@ -96,7 +96,8 @@
     <!-- 订单信息 -->
     <div class="plr-20 pb-20 pt-10 bg-white mt-12 lh-36">
       <p class="fs-14 black flex vcenter">
-        <span>{{ $t('order_no') }}{{ detail.orderSn }}</span>
+        <span class="ws-nowrap">{{ $t('order_no') }}</span>
+        <span class="word-break lh-1">{{ detail.orderSn }}</span>
         <van-icon :name="require('@/assets/images/icon/copy-icon.png')" size="0.48rem" class="ml-24 copy-order" @click="copy" />
       </p>
       <p class="fs-14 black flex vcenter">{{ $t('start_from') }}{{ detail.createTime }}</p>

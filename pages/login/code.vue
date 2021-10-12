@@ -80,9 +80,9 @@
         <van-divider>{{ $t('or') }}</van-divider>
         <div class="flex login-page__btm--concat">
           <!-- facebook -->
-          <!-- <a href="#">
-            <BmIcon :name="'facebook-icon'" :width="'0.64rem'" :height="'0.64rem'" />
-          </a> -->
+           <!-- <a href="#"> -->
+            <BmIcon :name="'facebook-icon'" :width="'0.64rem'" :height="'0.64rem'" @iconClick="fLogin" />
+          <!-- </a>  -->
           <!-- 电话 -->
           <!-- <a href="#">
             <BmIcon :name="'phone-icon'" :width="'0.64rem'" :height="'0.64rem'" />
@@ -92,9 +92,9 @@
             <BmIcon :name="'twitter-icon'" :width="'0.64rem'" :height="'0.64rem'" />
           </a> -->
           <!-- google -->
-          <!-- <a href="#">
-            <BmIcon :name="'google-icon'" :width="'0.64rem'" :height="'0.64rem'" />
-          </a> -->
+          <!-- <a href="#"> -->
+            <BmIcon :name="'google-icon'" :width="'0.64rem'" :height="'0.64rem'" class="ml-18" @iconClick="gLogin" />
+          <!-- </a> -->
           <!-- 微信 -->
           <!-- <a href="#">
             <BmIcon :name="'wechat-icon'" :width="'0.64rem'" :height="'0.64rem'" />
@@ -166,6 +166,15 @@ export default {
       this.getPhonePrefix()
     }
   },
+  mounted() {
+    let gScript = document.createElement('script');
+    gScript.src = 'https://apis.google.com/js/platform.js';
+    document.head.appendChild(gScript);
+
+    let fScript = document.createElement('script');
+    fScript.src = 'https://connect.facebook.net/en_US/sdk.js';
+    document.head.appendChild(fScript);
+  },
   methods: {
     getPhonePrefix() {
       getPhonePrefix().then(res => {
@@ -187,7 +196,7 @@ export default {
       if (this.$route.query.changeWay === 'email') { // 获取邮箱验证码
         _axios = getEmailCode({ email: this.account, userType: 'buyer', type: 3 });
       } else { // 默认是获取手机验证码
-        _axios = getPhoneCode({ phone: this.account, phonePrefix: this.prefixCode.split('+')[1], userType: 'buyer', type: 3 });
+        _axios = getPhoneCode({ phone: this.account, phonePrefix: this.prefixCode, userType: 'buyer', type: 3 });
       }
       // 接口返回操作
       _axios.then(res => {
@@ -214,7 +223,7 @@ export default {
       });
       authCodeLogin({
         code: this.code, 
-        mobile: this.$route.query.changeWay === 'email' ? this.account : this.prefixCode.split('+')[1] + this.account, 
+        mobile: this.$route.query.changeWay === 'email' ? this.account : this.prefixCode + this.account, 
         // userType: 'buyer'
       }).then(res => {
         this.$toast.clear();
@@ -239,6 +248,117 @@ export default {
     //   this.$store.commit('SET_LANG', lang.value);
     //   this.$refs.dropdownLang.toggle();
     // },
+    gLogin() { // 谷歌登录
+      gapi.load('auth2', () => {
+        gapi.auth2.init({
+          apiKey: 'Wfrc034S1dNn-nqPmLLbEGRG',
+          clientId: '75328792168-dhmjntibom2p54u87gvg5qdekaaicuii.apps.googleusercontent.com',
+          scope: 'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/plus.me'
+        })
+        const getAuthInstance = gapi.auth2.getAuthInstance();
+        getAuthInstance.signIn().then(success => {
+          console.log('success');
+          // console.log(success);
+          console.log(success.getAuthResponse())
+          this.$toast.loading({
+            forbidClick: true,
+            loadingType: 'spinner',
+            duration: 0
+          });
+          googleLogin({ mobile: success.getAuthResponse().id_token, grant_type: 'google' }).then(res => {
+            this.$store.commit('user/SET_TOKEN', res.data.token_type + ' ' + res.data.access_token);
+            this.$store.commit('user/SET_REFRESHTOKEN', res.data.refresh_token);
+            this.$store.commit('user/SET_SCOPE', res.data.scope);
+            // 获取用户信息
+            this.$store.dispatch('user/GetUserInfo', res.data.token_type + ' ' + res.data.access_token);
+            // 获取消息信息
+            this.$store.commit('user/SET_WEBSOCKET', res.data.user_info.passUrl);
+            // 当前登录账号
+            this.$store.commit('user/SET_ACCOUNT', res.data.user_info.email);
+            this.$toast.clear();
+            // 登录成功跳转到首页
+            setTimeout(() => {
+              this.account = '';
+              this.password = '';
+              this.$router.push({
+                name: 'home'
+              })
+            }, 100);
+          })
+        }, err => {
+          console.log('err: ');
+          console.log(err);
+        })
+      })
+    },
+    fLogin() { // facebook登录
+      console.log(FB)
+      FB.init({
+        appId: '231779648840263',
+        scope: 'public_profile, email',
+        version: 'v11.0'
+      })
+
+      FB.login(response => {
+        console.log(response)
+        if (response.status == 'connected') { // 连接成功
+          FB.api('/me?fields=name,email', user => { // 获取用户信息
+            console.log('user')
+            console.log(user);
+            this.$toast.loading({
+              forbidClick: true,
+              loadingType: 'spinner',
+              duration: 0
+            });
+            facebookLogin({ mobile: { userId: user.id, email: user.email, name: user.name }, grant_type: 'facebook' }).then(res => {
+              console.log(res)
+              if (res.code == 11001) {
+                this.$toast.clear();
+                this.$router.push({
+                  name: 'login-bind',
+                  query: {
+                    userId: user.id,
+                    name: user.name
+                  }
+                })
+                return false;
+              }
+              this.$store.commit('user/SET_TOKEN', res.data.token_type + ' ' + res.data.access_token);
+              this.$store.commit('user/SET_REFRESHTOKEN', res.data.refresh_token);
+              this.$store.commit('user/SET_SCOPE', res.data.scope);
+              // 获取用户信息
+              this.$store.dispatch('user/GetUserInfo', res.data.token_type + ' ' + res.data.access_token);
+              // 获取消息信息
+              this.$store.commit('user/SET_WEBSOCKET', res.data.user_info.passUrl);
+              // 当前登录账号
+              this.$store.commit('user/SET_ACCOUNT', res.data.user_info.email);
+              this.$toast.clear();
+              // 登录成功跳转到首页
+              setTimeout(() => {
+                this.account = '';
+                this.password = '';
+                this.$router.push({
+                  name: 'home'
+                })
+              }, 100);
+            }).catch(error => {
+              console.log(error)
+              if (error.code == 11001) { // 未绑定邮箱 11001
+                this.$toast.clear();
+                this.$router.push({
+                  name: 'login-bind',
+                  query: {
+                    userId: user.id,
+                    name: user.name
+                  }
+                })
+              }
+              
+            })
+          })
+        }
+      });
+    }
   }
 }
 </script>
@@ -292,5 +412,8 @@ export default {
 }
 .login-page__container{
   margin-top: 50px;
+}
+.ml-18{
+  margin-left: 18px;
 }
 </style>

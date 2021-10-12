@@ -216,7 +216,7 @@
       </template>
 
       <!-- 店铺商品列表 -->
-      <template v-if="tabbarActive == 1">
+      <template v-else-if="tabbarActive == 1">
         <!-- 空列表 -->
         <empty-status v-if="productList.length === 0" :image="require('@/assets/images/empty/order.png')" class="mlr-12" />
         <!-- 数据列表 -->
@@ -425,7 +425,7 @@ export default {
   },
   activated() {
     this.isTabbarShow = false;
-    if (this.$route.query.tabbarActive) this.tabbarActive = parseFloat(this.$route.query.tabbarActive);
+    // if (this.$route.query.tabbarActive) this.tabbarActive = parseFloat(this.$route.query.tabbarActive);
     this.$fetch();
   },
   methods: {

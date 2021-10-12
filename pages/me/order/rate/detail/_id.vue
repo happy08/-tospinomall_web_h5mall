@@ -4,7 +4,7 @@
     <BmHeaderNav :left="{ isShow: true }" :title="$t('review_details')" :fixed="true" />
 
     <!-- 订单展示 -->
-    <van-sticky :offset-top="'0.925rem'">
+    <van-sticky :offset-top="'0.92rem'">
       <div class="p-20 bg-white flex between">
         <div class="flex">
           <BmImage
@@ -94,7 +94,6 @@
                 :isShow="true"
                 :fit="'cover'"
                 :class="{'border round-8 hidden mt-10 block': true}"
-                v-if="addPicItem.fileType == 1"
                 @onClick="onPreview(addItem.pictures, addPicIndex)"
                 :alt="detailData.goodTitle"
               />
@@ -273,8 +272,13 @@ export default {
     },
     getRateDetail() { // 获取评价详情
       getRateDetail(this.$route.params.id, this.$store.state.user.userInfo ? this.$store.state.user.userInfo.id : '').then(res => {
-        if (res.code != 0) return false;
-        this.detailData = res.data;
+        if (!res.data) return false;
+        this.detailData = {
+          ...res.data,
+          pictures: res.data.pictures.filter(item => {
+            return item.fileType == 1; // 1.0版本只展示图片
+          })
+        };
       })
     },
     addGive(item) { // 点赞取消点赞

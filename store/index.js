@@ -1,7 +1,7 @@
 import { vantLocales } from '@/plugins/vue-i18n';
 
 export const state = () => ({
-  locales: ['en', 'zh-CN', 'zh-TW', 'fr', 'es', 'ms', 'vi'],
+  locales: ['en', 'zh-CN', /*'zh-TW', 'fr', 'es', 'ms', */'vi', 'pt'],
   locale: 'zh-CN',
   rate: {
     currency: ''
@@ -45,7 +45,7 @@ export const actions = {
     console.log(authToken)
     // 如果有token获取用户信息
     if (authToken) { // 如果已经登录，每次刷新页面时先重新获取token
-      console.log('jinqulai')
+      console.log('已登录')
       const authTokenData = await $api.refreshToken();
       if (authTokenData.code != 0) {
         commit('user/SET_TOKEN', null);
@@ -72,8 +72,6 @@ export const actions = {
     const lang = $cookies.get('lang');
     commit('SET_LANG', lang);
     
-    
-
     // 是否有未读消息
     commit('user/SET_ISNEWMESSAGE', Boolean($cookies.get('isNewWebsocketMsg')));
 

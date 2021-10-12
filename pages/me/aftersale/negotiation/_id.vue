@@ -1,7 +1,7 @@
 <template>
   <!-- 我的-售后-协商历史 type: 1仅退款 2退货退款 3换货 4审核不通过 -->
-  <div class="vh-100 bg-grey">
-    <BmHeaderNav :left="{ isShow: true }" :title="$t('negotiation_history')" />
+  <div class="v-percent-100 bg-grey pt-46">
+    <BmHeaderNav :left="{ isShow: true }" :title="$t('negotiation_history')" :fixed="true" />
 
     <!-- 历史记录 -->
     <div class="plr-20 pb-30 pt-20 bg-white mb-12" v-for="(item, index) in lists" :key="index">

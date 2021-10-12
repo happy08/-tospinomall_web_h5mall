@@ -57,7 +57,7 @@
       <van-tab :title="$t('shot')" name="Short">
         <div>
           <!-- 商品轮播图 -->
-          <swiper ref="swiperComponentRef" :options="swiperOption" class="swiper-container">
+          <swiper ref="swiperComponentRef" :options="swiperOption" class="swiper-container fs-0">
             <swiper-slide v-for="(productItem, productIndex) in carouselMapUrls" :key="productIndex" @click.native="onPreviewPic(productIndex)">
               <BmImage
                 :url="productItem.imgUrl"
@@ -76,8 +76,7 @@
         <div class="mt-12 bg-white plr-20 ptb-14">
           <div>
             <span class="fs-16 red fw">
-              <span class="fm-menlo">{{ $store.state.rate.currency }}</span>
-              <span class="fm-din">{{ goodSpuVo.minPrice }}</span>
+              <span class="fm-menlo">{{ $store.state.rate.currency }}</span><span class="fm-din">{{ goodSpuVo.minPrice }}</span>
             </span>
             <!-- 促销价 -->
             <!-- <span class="ml-8 grey line-through">{{ $store.state.rate.currency }}260.00</span> -->
@@ -120,23 +119,22 @@
             <van-steps :active="freightActive" class="plr-20 mt-6 custom-step-product">
               <!-- 发货地址 -->
               <van-step>
-                {{ storeInfo.deliveryCountryName }}
                 <!-- 自定义未激活状态图标 -->
                 <template #inactive-icon>
                   <van-icon
                     v-if="deliveryInfo[0].type == 1"
                     :name="require('@/assets/images/icon/plane-default.png')"
-                    size="0.36rem"
+                    size="0.48rem"
                   />
                   <van-icon
                     v-if="deliveryInfo[0].type == 2"
                     :name="require('@/assets/images/icon/steamer-default.png')"
-                    size="0.36rem"
+                    size="0.48rem"
                   />
                   <van-icon
                     v-if="deliveryInfo[0].type == 3"
                     :name="require('@/assets/images/icon/truck-default.png')"
-                    size="0.36rem"
+                    size="0.48rem"
                   />
                 </template>
                 <!-- 自定义激活状态图标 -->
@@ -144,17 +142,17 @@
                   <van-icon
                     v-if="deliveryInfo[0].type == 1"
                     :name="require('@/assets/images/icon/plane-active.png')"
-                    size="0.36rem"
+                    size="0.48rem"
                   />
                   <van-icon
                     v-if="deliveryInfo[0].type == 2"
                     :name="require('@/assets/images/icon/steamer-active.png')"
-                    size="0.36rem"
+                    size="0.48rem"
                   />
                   <van-icon
                     v-if="deliveryInfo[0].type == 3"
                     :name="require('@/assets/images/icon/truck-active.png')"
-                    size="0.36rem"
+                    size="0.48rem"
                   />
                 </template>
                 <!-- 自定义激活状态图标 -->
@@ -162,23 +160,24 @@
                   <van-icon
                     v-if="deliveryInfo[0].type == 1"
                     :name="require('@/assets/images/icon/plane-active.png')"
-                    size="0.36rem"
+                    size="0.48rem"
                   />
                   <van-icon
                     v-if="deliveryInfo[0].type == 2"
                     :name="require('@/assets/images/icon/steamer-active.png')"
-                    size="0.36rem"
+                    size="0.48rem"
                   />
                   <van-icon
                     v-if="deliveryInfo[0].type == 3"
                     :name="require('@/assets/images/icon/truck-active.png')"
-                    size="0.36rem"
+                    size="0.48rem"
                   />
                 </template>
+                <span>{{ storeInfo.deliveryCountryName }}</span>
               </van-step>
-              <!-- 配送类型( 1 FBM 2 FBT ) FBM不展示中转站 -->
-              <van-step v-if="goodSpuVo.deliveryType != 1 && form.countryCode != storeInfo.deliveryCountryCode">
-                Accra
+              <!-- 配送类型( 1 FBM 2 FBT ) FBT不展示中转站 -->
+              <van-step v-if="goodSpuVo.deliveryType == 1 && form.countryCode != storeInfo.deliveryCountryCode">
+                <span class="tc w-100 iblock ml-8">Accra</span>
                 <!-- 自定义未激活状态图标 -->
                 <template #inactive-icon>
                   <van-icon
@@ -203,7 +202,6 @@
               </van-step>
               <!-- 收货地址 -->
               <van-step>
-                <span>{{ completeAddress }}</span>
                 <!-- 自定义未激活状态图标 -->
                 <template #inactive-icon>
                   <van-icon
@@ -225,9 +223,10 @@
                     size="0.48rem"
                   />
                 </template>
+                <span>{{ completeAddress }}</span>
               </van-step>
             </van-steps>
-            <p class="mt-16 fs-14 light-grey fm-helvetica pb-20" v-if="deliveryInfo.length > 0">{{ deliveryInfo[0].estimeate }}</p>
+            <p class="fs-14 light-grey fm-helvetica pb-20" v-if="deliveryInfo.length > 0">{{ deliveryInfo[0].estimeate }}</p>
             <!-- <p class="mt-8 orange fs-12 pb-10">From January 3rd to January 27th</p> -->
           </template>
         </div>
@@ -716,7 +715,14 @@ export default {
     
     this.hotEvaluates = {  // 商品热评
       total: detailData.data.totalEvaluateNum,
-      lists: detailData.data.hotEvaluates
+      lists: detailData.data.hotEvaluates.map(item => {
+        return {
+          ...item,
+          pictures: item.pictures.filter(picItem => {
+            return picItem.fileType == 1;
+          })
+        }
+      })
     };
     this.servicePromises = detailData.data.servicePromises; // 商品的服务与承诺
     this.detailsPics = detailData.data.detailsPics; // 商品详情中的图片集合
@@ -1157,7 +1163,7 @@ export default {
         this.deliveryShow = true;
         return false;
       }
-      this.addressShow = true
+      this.addressShow = true;
     }
   },
 }
@@ -1242,9 +1248,6 @@ export default {
   padding-top: 2px;
   padding-bottom: 2px;
 }
-.word-break{
-  word-break: break-all;
-}
 </style>
 
 <style lang="less">
@@ -1291,7 +1294,7 @@ export default {
 .custom-step-product{
   .van-steps__items{
     margin-bottom: 0;
-    padding-bottom: 0;
+    padding-bottom: 14px;
     .van-step{
       .van-step__title{
         margin-top: 25px;
