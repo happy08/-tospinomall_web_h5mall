@@ -441,7 +441,7 @@ export default {
         name: 'me-pay-payment',
         query: {
           type: 'order',
-          amount: orderItem.productAmount,
+          amount: orderItem.payAmount,
           orderIds: JSON.stringify({orderIds: [orderItem.id]}),
           comfirmOrder: 1
         }
