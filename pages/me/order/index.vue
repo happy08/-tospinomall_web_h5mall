@@ -587,7 +587,7 @@ export default {
           type: 'order',
           amount: productAmount,
           orderIds: JSON.stringify({orderIds: this.togetherResult}),
-          comfirmOrder: 1
+          // comfirmOrder: 1
         }
       })
     },
@@ -626,6 +626,7 @@ export default {
 
 <style lang="less">
 .order-page{
+  padding-bottom: 56px;
   .search-container{
     height: 34px!important;
     .van-search__content{
