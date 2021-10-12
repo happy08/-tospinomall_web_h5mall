@@ -75,7 +75,7 @@
         imageLinkType: 图片链接类型（0:商品链接，1:前端分类id，2:后端分类id，3:品牌，4:FBT，5:FBM，6:外部链接）
       -->
       <div v-for="(moduleItem, moduleIndex) in moduleData" :key="'module-data-' + moduleIndex">
-        <h2 class="fs-18 mlr-12 fw black pt-20 lh-20 fm-din-alternate mt-12" v-if="moduleItem.moduleTitleDisplay">{{ moduleItem.moduleTitle }}</h2>
+        <h2 class="fs-18 mlr-12 fw black pt-12 lh-20 fm-din-alternate" v-if="moduleItem.moduleTitleDisplay">{{ moduleItem.moduleTitle }}</h2>
         <!-- 整屏轮播图 -->
         <div v-if="moduleItem.type === 1" class="mt-12 mb-12">
           <swiper
@@ -126,7 +126,7 @@
           <!-- 轮播展示 -->
           <swiper
             ref="swiperComponentRef"
-            :class="{ 'swiper home-page__global-swiper': true, 'swiper-no-swiping' : moduleItem.componentDetails.length <= 3, 'pb-34': moduleItem.effect && moduleItem.componentDetails.length > 3 }"
+            :class="{ 'swiper home-page__global-swiper': true, 'swiper-no-swiping' : moduleItem.componentDetails.length <= 3, 'pb-34': moduleItem.effect == 1 && moduleItem.componentDetails.length > 3 }"
             :options="{
               ...swiperComponentOption,
               loop: moduleItem.componentDetails.length > 3,
@@ -148,13 +148,13 @@
               <swiper-slide v-for="addItem in (3 - parseFloat(moduleItem.componentDetails.length))" :key="'self-add-' + addItem"></swiper-slide>
             </template>
             
-            <div class="swiper-pagination swiper-group-pagination" v-show="moduleItem.effect && moduleItem.componentDetails.length > 3" slot="pagination"></div>
+            <div class="swiper-pagination swiper-group-pagination" v-show="moduleItem.effect == 1 && moduleItem.componentDetails.length > 3" slot="pagination"></div>
           </swiper>
         </div>
 
         <!-- 一行两列 -->
         <template v-if="moduleItem.type === 4">
-          <div class="mlr-12 flex between">
+          <div class="mlr-12 flex between mt-12">
             <nuxt-link 
               :to="{ name: 'cart-product-id', params: { id: productType4Item.goodsId } }"
               class="iblock" 
@@ -243,7 +243,7 @@
         </div>
       </div> -->
       <!-- 滚动标签栏部分 -->
-      <van-tabs sticky swipeable animated :offset-top="'0.88rem'" color="#42B7AE" v-model="tabCategoryActive" @change="getSearchList" class="mh-60 custom-home-tab" :ellipsis="false">
+      <van-tabs sticky swipeable animated :offset-top="'0.88rem'" color="#42B7AE" v-model="tabCategoryActive" @change="getSearchList" class="mh-60 mt-12 custom-home-tab" :ellipsis="false" :lazy-render="false">
         <van-tab v-for="(categoryItem, tabIndex) in categoryList" :title="categoryItem.name" :key="'scroll-tab-' + tabIndex" :name="categoryItem.id">
           <empty-status v-if="searchList.length === 0" :image="require('@/assets/images/empty/order.png')" class="mh-60" />
           <van-list
