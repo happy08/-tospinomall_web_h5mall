@@ -45,11 +45,16 @@
                 <!-- 左滑单元格 -->
                 <!-- <van-swipe-cell :disabled="edit"> -->
                   <!-- 商品的样式 -->
-                  <div class="pt-26 pr-20">
-                    <OrderSingle class="pl-30 pt-20" :isShowRight="false" :product_desc="item.goodTitle" :image="item.img" :price="item.price" @onClick="goProduct(item)" :stock="item.isValid" />
+                  <div class="pb-26 pr-20">
+                    <nuxt-link :to="{ name: 'cart-product-id', params: { id: item.goodId } }">
+                      <OrderSingle class="pl-30 pt-20" :isShowRight="false" :product_desc="item.goodTitle" :image="item.img" :price="item.price" :stock="item.isValid" />
+                    </nuxt-link>
                     <div class="flex hend">
                       <!-- 看相似 -->
-                      <BmButton type="default" plain class="plr-12 round-8 h-25 mt-0" @btnClick="goSimilar(item.goodId)">{{ $t('look_similar') }}</BmButton>
+                      <nuxt-link :to="{ name: 'search-similar-id', params: { id: item.goodId } }" class="fs-0">
+                        <BmButton type="default" plain class="plr-12 round-8 h-25 mt-0">{{ $t('look_similar') }}</BmButton>
+                      </nuxt-link>
+                      
                       <!-- 购物车 -->
                       <BmImage
                         :url="require('@/assets/images/icon/add-cart-btn.png')"
@@ -229,20 +234,6 @@ export default {
       this.isAll = !this.isAll;
       this.$refs.checkboxStoreGroup.toggleAll(this.isAll);
     },
-    emptyClick() { // 没有数据时点击跳转到首页
-      this.$router.push({
-        name: 'home'
-      })
-    },
-    goProduct(item) {
-      console.log(item)
-      this.$router.push({
-        name: 'cart-product-id',
-        params:{
-          id: item.goodId
-        }
-      })
-    },
     onRefresh() { // 下拉刷新
       this.pageNum = 1;
       this.$fetch();
@@ -265,14 +256,6 @@ export default {
         // 加载状态结束
         this.loading = false;
       });
-    },
-    goSimilar(productId) { // 跳转到相似列表
-      this.$router.push({
-        name: 'search-similar-id',
-        params: {
-          id: productId
-        }
-      })
     },
     onSKu(productItem) { // 获取产品规格
       getGoodAttr(productItem.goodId).then(res => {
@@ -377,7 +360,7 @@ export default {
 .h-25{
   height: 25px!important;
 }
-.pt-26{
+.pb-26{
   padding-bottom: 26px;
 }
 .driver-line{
