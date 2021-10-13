@@ -285,7 +285,7 @@
                 <client-only placeholder="">
                   <ProductTopBtmSingle
                     :img="{ url: searchItem.mainPictureUrl, width: '3.4rem', height: '3.4rem', loadImage: require('@/assets/images/product-bgd-170.png') }" 
-                    :detail="{ desc: searchItem.productTitle, price: searchItem.productPrice, rate: searchItem.starLevel, volumn: searchItem.saleCount, ellipsis: 2 }"
+                    :detail="{ desc: searchItem.productTitle, price: searchItem.minPrice, rate: searchItem.starLevel, volumn: searchItem.saleCount, ellipsis: 2 }"
                   />
                 </client-only>
               </nuxt-link>
@@ -404,7 +404,7 @@ export default {
         ...item,
         starLevel: parseFloat(item.starLevel),
         saleCount: parseFloat(item.saleCount),
-        productPrice: parseFloat(item.productPrice)
+        minPrice: parseFloat(item.minPrice)
       }
     })
     this.searchList = this.pageIndex == 1 ? list : this.searchList.concat(list);
@@ -455,7 +455,7 @@ export default {
             ...item,
             starLevel: parseFloat(item.starLevel),
             saleCount: parseFloat(item.saleCount),
-            productPrice: parseFloat(item.productPrice)
+            minPrice: parseFloat(item.minPrice)
           }
         })
         this.$redrawVueMasonry('homeMasonryContainer');
@@ -555,7 +555,7 @@ export default {
             ...item,
             starLevel: parseFloat(item.starLevel),
             saleCount: parseFloat(item.saleCount),
-            productPrice: parseFloat(item.productPrice)
+            minPrice: parseFloat(item.minPrice)
           }
         })
 

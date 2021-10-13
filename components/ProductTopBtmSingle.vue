@@ -22,7 +22,7 @@
           :isLazy="false"
           :loadUrl="img.loadImage"
           :errorUrl="img.loadImage"
-          :isShow="false"
+          :isShow="true"
           :round="true"
           :alt="detail.desc"
         />
