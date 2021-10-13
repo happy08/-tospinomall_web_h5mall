@@ -312,7 +312,7 @@ export default {
           page: this.pageIndex, // 从0开始算起
           hitsPerPage: this.pageSize,
           facets: ['brandName', 'categoryName'],
-          filters: 'categoryId=11'
+          // filters: 'categoryId=11'
         }).then(({hits, nbHits, facets}) => {
           this.total = nbHits;
           this.list = hits;
