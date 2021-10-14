@@ -31,7 +31,7 @@
           <van-rate class="mt-10" v-model="goodsScores" size="14" color="#F7B500" void-color="#DDDDDD" void-icon="star" />
         </template>
       </van-cell>
-      <van-field class="p-20" v-model="content" :placeholder="$t('comment_upload_photo_tip')" :border="false" type="textarea" rows="1" :autosize="{maxHeight: 60}" />
+      <van-field maxlength="255" class="p-20" v-model="content" :placeholder="$t('comment_upload_photo_tip')" :border="false" type="textarea" rows="1" :autosize="{maxHeight: 60}" />
       <!-- 添加图片 -->
       <van-cell class="plr-20 pb-20 pt-0" title="" title-class="black fs-14">
         <template #label>
