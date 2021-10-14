@@ -316,14 +316,17 @@ export default {
     this.refreshing.isFresh = false;
 
     // 获取商品推荐列表
-    const recommendData = await this.$api.getRecommend({type: 0, pageNum: this.pageNum, pageSize: this.pageSize});
-    if (recommendData.code != 0) return false;
-    this.recommendList = recommendData.data.items;
-    this.total = recommendData.data.total;
-    if (typeof this.$redrawVueMasonry === 'function') {
-      this.$redrawVueMasonry();
+    if (this.$store.state.searchType == 0) { // 阿里搜索
+      const recommendData = await this.$api.getRecommend({type: 0, pageNum: this.pageNum, pageSize: this.pageSize});
+      if (recommendData.code != 0) return false;
+      this.recommendList = recommendData.data.items;
+      this.total = recommendData.data.total;
+      this.finished = this.total == this.recommendList.length ? true : false;
+      if (typeof this.$redrawVueMasonry === 'function') {
+        this.$redrawVueMasonry();
+      }
     }
-    this.finished = false;
+    
     if (process.client) {
       window.scrollTo({
         top: 0

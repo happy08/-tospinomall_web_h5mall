@@ -7,6 +7,7 @@ export const state = () => ({
     currency: ''
   },
   searchProductList: [], // 商品搜索历史
+  searchType: 0 // 搜索类型
 });
 
 export const mutations = {
@@ -35,6 +36,9 @@ export const mutations = {
     }
     this.$cookies.set('searchProductList', encodeURI(state.searchProductList));
   },
+  SET_SEARCHTYPE(state, searchType) {
+    state.searchType = searchType;
+  }
 };
 
 export const actions = {
@@ -65,10 +69,14 @@ export const actions = {
       commit('user/SET_ACCOUNT', { email: authTokenData.data.user_info.email, phone: authTokenData.data.user_info.phone });
     }
     
+    // 获取初始化信息
+    const initData = await $api.getInitData();
     // 获取当前语言货币汇率
-    const rateData = await $api.getCurrentRate();
-    commit('SET_RATE', rateData.data);
-    // 回去当前语言
+    commit('SET_RATE', initData.data.baseRate);
+    // 获取搜索类型
+    commit('SET_SEARCHTYPE', initData.data.searchType);
+
+    // 获取当前语言
     const lang = $cookies.get('lang');
     commit('SET_LANG', lang);
     

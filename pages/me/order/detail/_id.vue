@@ -262,11 +262,14 @@ export default {
     }
   },
   async fetch() {
-    const recommendData = await this.$api.getRecommend({type: 2, pageNum: this.pageNum, pageSize: this.pageSize});
-    if (recommendData.code != 0) return false;
-    this.recommendList = this.pageNum == 1 ? recommendData.data.items : this.recommendList.concat(recommendData.data.items);
-    this.total = recommendData.data.total;
-    this.loading = false;
+    if (this.$store.state.searchType == 0) { // 阿里搜索
+      const recommendData = await this.$api.getRecommend({type: 2, pageNum: this.pageNum, pageSize: this.pageSize});
+      if (recommendData.code != 0) return false;
+      this.recommendList = this.pageNum == 1 ? recommendData.data.items : this.recommendList.concat(recommendData.data.items);
+      this.total = recommendData.data.total;
+      this.loading = false;
+    }
+    
     this.orderId = this.$route.params.id;
   },
   activated() {

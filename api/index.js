@@ -11,9 +11,9 @@ export default ({ app }, inject) => {
         `${url}/basics/app/api/index/findIndexData`
       );
     },
-    getCurrentRate() { // 获取当前站点货币信息
+    getInitData() { // 初始化信息查询
       return app.$axios.get(
-        `${url}/basics/base/rate/findSiteCurrency`
+        `${url}/basics/app/api/index/queryInitData`
       )
     },
     getProductSearch(data) { // 搜索获取商品列表
@@ -213,6 +213,16 @@ export default ({ app }, inject) => {
       return app.$axios({
         url: `${url}/basics/base/mall/seo/findGoodsSearch`,
         method: 'get'
+      })
+    },
+    getCategoryLinkMap(navIds) { // 根据前端分类id获取后端分类Id
+      return app.$axios({
+        url: `${url}/product/nav/category/getCategoryLinkMap`,
+        method: 'post',
+        data: navIds,
+        headers: {
+          'Content-Type': 'application/json'
+        }
       })
     }
   };

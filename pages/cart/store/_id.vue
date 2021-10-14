@@ -292,6 +292,10 @@ import 'swiper/css/swiper.css';
 import { Swiper, SwiperSlide } from 'vue-awesome-swiper';
 import PullRefresh from '@/components/PullRefresh';
 
+let searchClient;
+let client;
+const algoliasearch = require('algoliasearch');
+
 export default {
   components: {
     vanTab: Tab,
@@ -363,6 +367,10 @@ export default {
     }
   },
   async fetch() {
+    if (this.$store.state.searchType == 2) { // algolia 搜索
+      client = algoliasearch('62MLEBY33X','7a8da9a5fd3f8137ea8cb70b60806e8d');
+      searchClient = client.initIndex('tospinoMall');
+    }
     // 获取店铺详情
     let _detailParams = {};
     if (this.$store.state.user.userInfo) {
@@ -380,24 +388,40 @@ export default {
       };
     }
     
-    this.sort = {
-      shopId: this.$route.params.id, pageIndex: this.pageIndex, pageSize: this.pageSize
-    }
     // 商品列表数据
-    const listData = await this.$api.getProductSearch(this.sort);
-    if (!listData.data) {
-      this.productList = [];
-      this.total = 0;
+    if (this.$store.state.searchType == 0) {
+      this.pageSize = 1;
+      this.sort = {
+        shopId: this.$route.params.id, pageIndex: this.pageIndex, pageSize: this.pageSize
+      }
+      const listData = await this.$api.getProductSearch(this.sort);
+      this.loading = false;
+      if (!listData.data) {
+        this.productList = [];
+        this.total = 0;
+      } else {
+        this.total = listData.data.total;
+        this.productList = listData.data.items.map(item => {
+          return {
+            ...item,
+            starLevel: parseFloat(item.starLevel)
+          }
+        });
+      }
     } else {
-      this.total = listData.data.total;
-      this.productList = listData.data.items.map(item => {
-        return {
-          ...item,
-          starLevel: parseFloat(item.starLevel)
-        }
-      });
+      this.pageIndex = 0;
+      searchClient.search('', {
+        page: this.pageIndex, // 从0开始算起
+        hitsPerPage: this.pageSize,
+        filters: `shopId:${this.$route.params.id}`
+      }).then(({hits, nbHits, facets}) => {
+        this.total = nbHits;
+        this.productList = hits;
+        this.loading = false;
+        this.finished = this.total == this.productList.length ? true : false;
+      })
     }
-
+    
     // 店铺组件数据,店铺有装修才可看
     const moduleData = await this.$api.getStoreIndex({shopId: this.$route.params.id});
     if (!moduleData.data) {
@@ -544,28 +568,70 @@ export default {
         this.loading = false;
         return false;
       }
-      this.sort.pageIndex += 1;
-      
-      this.$api.getProductSearch(this.sort).then(res => { // 搜索商品列表
-        
-        this.total = res.data.total;
-        let list = res.data.items.map(item => { // 搜索商品列表
-          return {
-            ...item,
-            starLevel: parseFloat(item.starLevel)
-          }
-        })
 
-        this.productList = this.productList.concat(list);
-        
-        // 加载状态结束
-        this.loading = false;
-      });
+      if (this.$store.state.searchType == 2) {
+        this.pageIndex += 1;
+        searchClient.search('', {
+          page: this.pageIndex, // 从0开始算起
+          hitsPerPage: this.pageSize,
+          filters: `shopId:${this.$route.params.id} ${this.productTabActive == 3 ? 'AND stock > 0' : ''}`,
+        }).then(({hits, nbHits}) => {
+          this.total = nbHits;
+          this.productList = this.productList.concat(hits);
+          this.finished = this.total == this.productList.length ? true : false;
+          // 加载状态结束
+          this.loading = false;
+        })
+      } else {
+        this.sort.pageIndex += 1;
+        this.$api.getProductSearch(this.sort).then(res => { // 搜索商品列表
+          this.total = res.data.total;
+          let list = res.data.items.map(item => { // 搜索商品列表
+            return {
+              ...item,
+              starLevel: parseFloat(item.starLevel)
+            }
+          })
+
+          this.productList = this.productList.concat(list);
+          
+          // 加载状态结束
+          this.loading = false;
+        });
+      }
     },
     beforeChange(index) { // 根据条件展示排序
       this.productTabActive = index;
+      if (this.$store.state.searchType == 2) { // algolia 搜索
+        this.pageIndex = 0;
+        
+        if (index == 0) {
+          searchClient = client.initIndex('tospinoMall');
+        } else if (index == 1) { // 销量排序列表
+          searchClient = client.initIndex('tospinoMall_sales_des');
+        } else if (index == 3) { // 有货
+          searchClient = client.initIndex('tospinoMall');
+        }
+        if (index == 2) { // 价格升序降序
+          this.priceSortType = this.priceSortType == 0 ? 1 : this.priceSortType == 1 ? 2 : this.priceSortType == 2 ? 1 : 0;
+          searchClient = this.priceSortType == 1 ? client.initIndex('tospinoMall_price_asc') : client.initIndex('tospinoMall_price_des'); // 价格升序
+        } else {
+          this.priceSortType = 0;
+        }
+
+        searchClient.search('', {
+          page: this.pageIndex, // 从0开始算起
+          hitsPerPage: this.pageSize,
+          filters: `shopId:${this.$route.params.id} ${index == 3 ? 'AND stock > 0' : ''}`
+        }).then(({hits, nbHits}) => {
+          this.total = nbHits;
+          this.productList = hits;
+          this.finished = this.total == this.productList.length ? true : false;
+        })
+        return false;
+      }
+      // 阿里搜索
       this.pageIndex = 1;
-      this.finished = false;
       if (index == 0) { // 推荐列表
         this.sort = {
           shopId: this.$route.params.id, pageIndex: this.pageIndex, pageSize: this.pageSize
@@ -610,6 +676,7 @@ export default {
         })
 
         this.productList = list;
+        this.finished = this.total == this.productList.length ? true : false;
       });
     },
     onScroll(scrollTop) {

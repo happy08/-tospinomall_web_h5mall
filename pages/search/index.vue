@@ -220,15 +220,9 @@ import EmptyStatus from '@/components/EmptyStatus';
 import { getSearchPull } from '@/api/search';
 import PullRefresh from '@/components/PullRefresh';
 
-const currencyType = 1; // 1 阿里搜索 2 algolia搜索
-
 let searchClient;
+let currencyType;
 let client;
-if (currencyType == 2) {
-  const algoliasearch = require('algoliasearch');
-  client = algoliasearch('62MLEBY33X','7a8da9a5fd3f8137ea8cb70b60806e8d');
-  searchClient = client.initIndex('tospinoMall');
-}
 
 export default {
   name: 'search',
@@ -308,10 +302,12 @@ export default {
       searchMasonryContainer: 'searchMasonryContainer',
       brandResult: [],
       categoryResult: [],
-      filterCheckType: currencyType
+      filterCheckType: 0
     }
   },
   async fetch() {
+    currencyType = this.$store.state.searchType; // 0 阿里搜索 2 algolia搜索
+    this.filterCheckType = currencyType;
     this.searchVal = this.$route.query.val || ''; // 搜索value
     this.isShowTip = this.searchVal.length > 0 ? false : true;
 
@@ -332,18 +328,39 @@ export default {
       this.backQuery = this.$route.query.backQuery;
     }
 
+    if (currencyType == 2) {
+      const algoliasearch = require('algoliasearch');
+      client = algoliasearch('62MLEBY33X','7a8da9a5fd3f8137ea8cb70b60806e8d');
+      searchClient = client.initIndex('tospinoMall');
+    }
+
+    this.params = {..._params, pageIndex: this.pageIndex, pageSize: this.pageSize};
+
     // 如果带着搜索的参数跳转过来的需要先获取相对应的搜索数据
     if (this.searchVal != '') {
       this.$store.commit('SET_SEARCHPRODUCTLIST', this.searchVal); // 搜索历史存储
       this.arrangeType = 2;
 
       if (currencyType == 2) { // algolia搜索
+        const getCategoryLinkMap = await this.$api.getCategoryLinkMap(_params.navCategoryIds);
+        let _filter = [];
+        if (getCategoryLinkMap.data['productIds']) {
+          _filter.push((getCategoryLinkMap.data['productIds'].map(item => {
+            return `productId:${item}`;
+          }).join(' OR ')));
+          this.params.productIds = (getCategoryLinkMap.data['productIds'].map(item => {
+            return `productId:${item}`;
+          }).join(' OR '));
+        }
         this.pageIndex = 0;
-        searchClient.search(this.searchVal, {
+        if (this.shopId != '') {
+          _filter.push(`shopId:${this.shopId}`);
+        }
+        searchClient.search(this.params.productIds || this.params.categoryIds ? '' : this.searchVal, {
           page: this.pageIndex, // 从0开始算起
           hitsPerPage: this.pageSize,
           facets: ['brandName', 'categoryName'],
-          // filters: 'categoryId=11'
+          filters: _filter.length > 0 ? _filter.join(' AND ') : ''
         }).then(({hits, nbHits, facets}) => {
           this.total = nbHits;
           this.list = hits;
@@ -352,11 +369,15 @@ export default {
           this.isShowTip = false;
           this.loading = false;
           this.finished = this.total == this.list.length ? true : false;
+          setTimeout(() => {
+            if (typeof this.$redrawVueMasonry === 'function') {
+              this.$redrawVueMasonry('searchMasonryContainer');
+            }
+          }, 50)
         })
       } else { // 阿里搜索
         this.pageIndex = 1;
         // 获取搜索列表数据
-        this.params = {..._params, pageIndex: this.pageIndex, pageSize: this.pageSize};
         if (this.shopId != '') {
           this.params = {
             ...this.params,
@@ -388,6 +409,12 @@ export default {
         });
         this.total = listData.data.total;
       }
+
+      setTimeout(() => {
+        if (typeof this.$redrawVueMasonry === 'function') {
+          this.$redrawVueMasonry('searchMasonryContainer');
+        }
+      }, 50)
       
       // // 更新页面展示
       // this.searchHistoryList = this.$store.state.searchProductList.filter((item, index) => {
@@ -396,7 +423,7 @@ export default {
       // this.historyNum = true;
     }
 
-    if (currencyType == 1) { // 阿里搜索
+    if (currencyType == 0) { // 阿里搜索
       // 搜索发现数据
       const findList = await this.$api.getSearchHot();
       this.searchFindList = findList.data.result;
@@ -454,7 +481,7 @@ export default {
       this.isRouteBack = 1;
     }
 
-    if (currencyType == 1) { // 阿里搜索
+    if (currencyType == 0) { // 阿里搜索
       // 搜索防抖
       this.inputChange = this.$utils.debounce((e) => {
         this.isShowTip = e[0].length > 0 && this.list.length === 0 ? -1 : e[0].length === 0;
@@ -464,12 +491,6 @@ export default {
         this.getSearchPull();
       }, 300);
     }
-    
-    setTimeout(() => {
-      if (typeof this.$redrawVueMasonry === 'function') {
-        this.$redrawVueMasonry('searchMasonryContainer');
-      }
-    }, 50)
   },
   deactivated() {
     this.shopId = '';
@@ -606,7 +627,7 @@ export default {
     },
     onFocus() { // 获取焦点之后，不展示数据列表和历史数据
       this.isShowTip = this.searchVal.length > 0 ? -1 : this.searchVal.length === 0;
-      if (currencyType == 1) { // 阿里搜索才有
+      if (currencyType == 0) { // 阿里搜索才有
         this.getSearchPull();
       }
     },
@@ -732,10 +753,18 @@ export default {
     },
     getProductList() { // 获取商品列表
       if (currencyType == 2) { // algolia搜索
+        let _filter = [];
+        if (this.params.productIds) { // 获取得到商品id
+          _filter.push((this.params.productIds));
+        }
+        this.pageIndex = 0;
+        if (this.shopId != '') {
+          _filter.push(`shopId:${this.shopId}`);
+        }
         searchClient.search(this.searchVal, {
           page: this.pageIndex, // 从0开始算起
           hitsPerPage: this.pageSize,
-          filters: this.params.filters,
+          filters: this.params.filters ? this.params.filters + ' AND ' + _filter.length > 0 ? _filter.join(' AND ') : '' : _filter,
           facetFilters: this.params.facetFilters
         }).then(({hits, nbHits}) => {
           this.total = nbHits;

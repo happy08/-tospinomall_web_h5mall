@@ -92,19 +92,21 @@ export default {
     }
   },
   async fetch() {
-    const recommendData = await this.$api.getRecommend({ type: 2, pageNum: this.pageNum, pageSize: this.pageSize});
-    this.recommendList = this.pageNum == 1 ? recommendData.data.items : this.recommendList.concat(recommendData.data.items);
-    this.total = recommendData.data.total;
-    if (this.total > this.recommendList.length) {
-      this.finished = false;
-    }
-    setTimeout(() => {
-      if (typeof this.$redrawVueMasonry === 'function') {
-        this.$redrawVueMasonry();
+    if (this.$store.state.searchType == 0) { // 阿里搜索
+      const recommendData = await this.$api.getRecommend({ type: 2, pageNum: this.pageNum, pageSize: this.pageSize});
+      this.recommendList = this.pageNum == 1 ? recommendData.data.items : this.recommendList.concat(recommendData.data.items);
+      this.total = recommendData.data.total;
+      if (this.total > this.recommendList.length) {
+        this.finished = false;
       }
-    }, 50)
-    // 加载状态结束
-    this.loading = false;
+      setTimeout(() => {
+        if (typeof this.$redrawVueMasonry === 'function') {
+          this.$redrawVueMasonry();
+        }
+      }, 50)
+      // 加载状态结束
+      this.loading = false;
+    }
   },
   activated() {
     this.$fetch();
