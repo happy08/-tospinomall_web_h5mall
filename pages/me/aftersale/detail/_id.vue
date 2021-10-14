@@ -169,7 +169,7 @@
 
       <!-- 仅退款驳回申请 -->
       <template v-if="detail.closeType == 4">
-        <h4 class="fs-14" >{{ $t('refund_return_state_tip_43') }}{{ detail.reason }}</h4>
+        <h4 class="fs-14" >{{ $t('refund_return_state_tip_43', { replace_tip: detail.reason }) }}</h4>
         <p class="mt-12 fs-12 light-grey pre-wrap" v-html="$t('refund_return_state_tip_18', { replace_tip: detail.orderType == 1 ? $t('merchant'): $t('platform') })"></p>
       </template>
       
