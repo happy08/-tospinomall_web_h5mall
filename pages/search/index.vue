@@ -338,29 +338,42 @@ export default {
 
     // 如果带着搜索的参数跳转过来的需要先获取相对应的搜索数据
     if (this.searchVal != '') {
+      // 加载图标
+      this.$toast.loading({
+        forbidClick: true,
+        loadingType: 'spinner',
+        duration: 0
+      });
       this.$store.commit('SET_SEARCHPRODUCTLIST', this.searchVal); // 搜索历史存储
       this.arrangeType = 2;
 
       if (currencyType == 2) { // algolia搜索
-        const getCategoryLinkMap = await this.$api.getCategoryLinkMap(_params.navCategoryIds);
-        let _filter = [];
-        if (getCategoryLinkMap.data['productIds']) {
-          _filter.push((getCategoryLinkMap.data['productIds'].map(item => {
-            return `productId:${item}`;
-          }).join(' OR ')));
-          this.params.productIds = (getCategoryLinkMap.data['productIds'].map(item => {
-            return `productId:${item}`;
-          }).join(' OR '));
+        let facetFilters = [];
+        if (this.$route.query.navCategoryIds) {
+          const getCategoryLinkMap = await this.$api.getCategoryLinkMap(_params.navCategoryIds);
+          if (getCategoryLinkMap.data['productIds']) { // 商品id
+            facetFilters.push((getCategoryLinkMap.data['productIds'].map(item => {
+              return `productId:${item}`;
+            })));
+          }
+          if (getCategoryLinkMap.data['categoryIds']) { // 分类id
+            facetFilters.push((getCategoryLinkMap.data['categoryIds'].map(item => {
+              return `categoryIds:${item}`;
+            })));
+          }
+          this.params.productIds = facetFilters;
         }
         this.pageIndex = 0;
+        let _filter = [];
         if (this.shopId != '') {
           _filter.push(`shopId:${this.shopId}`);
         }
-        searchClient.search(this.params.productIds || this.params.categoryIds ? '' : this.searchVal, {
+        searchClient.search(this.params.productIds ? '' : this.searchVal, {
           page: this.pageIndex, // 从0开始算起
           hitsPerPage: this.pageSize,
           facets: ['brandName', 'categoryName'],
-          filters: _filter.length > 0 ? _filter.join(' AND ') : ''
+          filters: _filter.length > 0 ? _filter.join(' AND ') : '',
+          facetFilters: facetFilters
         }).then(({hits, nbHits, facets}) => {
           this.total = nbHits;
           this.list = hits;
@@ -369,6 +382,7 @@ export default {
           this.isShowTip = false;
           this.loading = false;
           this.finished = this.total == this.list.length ? true : false;
+          this.$toast.clear();
           setTimeout(() => {
             if (typeof this.$redrawVueMasonry === 'function') {
               this.$redrawVueMasonry('searchMasonryContainer');
@@ -408,19 +422,13 @@ export default {
           return item.value;
         });
         this.total = listData.data.total;
+        this.$toast.clear();
+        setTimeout(() => {
+          if (typeof this.$redrawVueMasonry === 'function') {
+            this.$redrawVueMasonry('searchMasonryContainer');
+          }
+        }, 50)
       }
-
-      setTimeout(() => {
-        if (typeof this.$redrawVueMasonry === 'function') {
-          this.$redrawVueMasonry('searchMasonryContainer');
-        }
-      }, 50)
-      
-      // // 更新页面展示
-      // this.searchHistoryList = this.$store.state.searchProductList.filter((item, index) => {
-      //   return index < 6;
-      // });
-      // this.historyNum = true;
     }
 
     if (currencyType == 0) { // 阿里搜索
@@ -663,10 +671,8 @@ export default {
         }
         
         this.pageIndex = 0;
-        this.params = {
-          filters: filterArr.join(' AND '),
-          facetFilters: facetFilters
-        };
+        this.params.filters = filterArr.join(' AND ');
+        this.params.facetFilters = facetFilters;
         
         this.getProductList();
         return false;
@@ -754,18 +760,16 @@ export default {
     getProductList() { // 获取商品列表
       if (currencyType == 2) { // algolia搜索
         let _filter = [];
-        if (this.params.productIds) { // 获取得到商品id
-          _filter.push((this.params.productIds));
-        }
-        this.pageIndex = 0;
         if (this.shopId != '') {
           _filter.push(`shopId:${this.shopId}`);
         }
-        searchClient.search(this.searchVal, {
+        let facetFilters = this.params.facetFilters ? this.params.facetFilters : [];
+        let facetProducts = this.params.productIds ? this.params.productIds : [];
+        searchClient.search(this.params.productIds || this.params.categoryIds ? '' : this.searchVal, {
           page: this.pageIndex, // 从0开始算起
           hitsPerPage: this.pageSize,
-          filters: this.params.filters ? this.params.filters + ' AND ' + _filter.length > 0 ? _filter.join(' AND ') : '' : _filter,
-          facetFilters: this.params.facetFilters
+          filters: this.params.filters ? this.params.filters + ' AND ' + _filter.length > 0 ? _filter.join(' AND ') : '' : '',
+          facetFilters: [...facetFilters, ...facetProducts]
         }).then(({hits, nbHits}) => {
           this.total = nbHits;
           this.list = this.pageIndex == 0 ? hits : this.list.concat(hits);

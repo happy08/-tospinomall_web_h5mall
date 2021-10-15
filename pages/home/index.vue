@@ -310,6 +310,9 @@ import PullRefresh from '@/components/PullRefresh';
 import 'swiper/css/swiper.css';
 import { Swiper, SwiperSlide } from 'vue-awesome-swiper';
 
+let searchClient;
+let currencyType;
+
 export default {
   // middleware: 'sockjs',
   components: {
@@ -368,10 +371,12 @@ export default {
       pageIndex: 1,
       pageSize: 10,
       tabTotal: 0,
-      homeMasonryContainer: 'homeMasonryContainer'
+      homeMasonryContainer: 'homeMasonryContainer',
+      filterCategoryIds: []
     }
   },
   async fetch() {
+    currencyType = this.$store.state.searchType; // 0 阿里搜索 2 algolia搜索
     this.refreshing.isFresh = false;
     const metaData = await this.$api.getHomeSeo(); // 获取SEO信息
     this.meta = metaData.data;
@@ -395,20 +400,48 @@ export default {
       this.loading = false;
       return false;
     }
-    
-    const searchList = await this.$api.getProductSearch({ pageSize: this.pageSize, pageIndex: this.pageIndex }); // 搜索商品列表
-    if (!searchList.data) return false;
-    
-    let list = searchList.data.items.map(item => { // 搜索商品列表
-      return {
-        ...item,
-        starLevel: parseFloat(item.starLevel),
-        saleCount: parseFloat(item.saleCount),
-        minPrice: parseFloat(item.minPrice)
-      }
-    })
-    this.searchList = this.pageIndex == 1 ? list : this.searchList.concat(list);
-    this.tabTotal = searchList.data.total; // 搜索商品列表商品总数目
+
+    if (currencyType == 2) {
+      const algoliasearch = require('algoliasearch');
+      let client = algoliasearch('62MLEBY33X','7a8da9a5fd3f8137ea8cb70b60806e8d');
+      searchClient = client.initIndex('tospinoMall');
+      this.pageIndex = 0;
+      searchClient.search('', {
+        page: this.pageIndex, // 从0开始算起
+        hitsPerPage: this.pageSize
+      }).then(({hits, nbHits}) => {
+        this.tabTotal = nbHits;
+        this.searchList = hits;
+        this.loading = false;
+        this.finished = this.tabTotal == this.searchList.length ? true : false;
+        this.$toast.clear();
+        setTimeout(() => {
+          if (typeof this.$redrawVueMasonry === 'function') {
+            this.$redrawVueMasonry('homeMasonryContainer');
+          }
+        }, 50)
+      })
+    } else {
+      this.pageIndex = 1;
+      const searchList = await this.$api.getProductSearch({ pageSize: this.pageSize, pageIndex: this.pageIndex }); // 搜索商品列表
+      if (!searchList.data) return false;
+      
+      let list = searchList.data.items.map(item => { // 搜索商品列表
+        return {
+          ...item,
+          starLevel: parseFloat(item.starLevel),
+          saleCount: parseFloat(item.saleCount),
+          minPrice: parseFloat(item.minPrice)
+        }
+      })
+      this.searchList = this.pageIndex == 1 ? list : this.searchList.concat(list);
+      this.tabTotal = searchList.data.total; // 搜索商品列表商品总数目
+      setTimeout(() => {
+        if (typeof this.$redrawVueMasonry === 'function') {
+          this.$redrawVueMasonry('homeMasonryContainer');
+        }
+      }, 50)
+    }
   },
   head() { // 头部设置，方便seo
     return {
@@ -421,11 +454,6 @@ export default {
   },
   activated() {
     this.$fetch();
-    setTimeout(() => {
-      if (typeof this.$redrawVueMasonry === 'function') {
-        this.$redrawVueMasonry('homeMasonryContainer');
-      }
-    }, 50)
   },
   computed: {
     gutter() {
@@ -442,13 +470,45 @@ export default {
         this.$refs.headerStickyContainer.$el.classList.remove('sticky-scroll');
       }
     },
-    getSearchList(name, title) { // 获取搜索商品列表
+    async getSearchList(name, title) { // 获取搜索商品列表
       let categoryIds = {};
+      let facetFilters = [];
       if (name > 0) {
         categoryIds.navCategoryIds = [name];
+        const getCategoryLinkMap = await this.$api.getCategoryLinkMap([this.tabCategoryActive]);
+        if (getCategoryLinkMap.data['productIds']) { // 商品id
+          facetFilters.push((getCategoryLinkMap.data['productIds'].map(item => {
+            return `productId:${item}`;
+          })));
+        }
+        if (getCategoryLinkMap.data['categoryIds']) { // 分类id
+          facetFilters.push((getCategoryLinkMap.data['categoryIds'].map(item => {
+            return `categoryIds:${item}`;
+          })));
+        }
+        this.filterCategoryIds = facetFilters;
       }
       this.finished = false;
-      this.pageIndex = 1;
+      this.pageIndex = currencyType == 2 ? 0 : 1;
+      if (currencyType == 2) { // algolia 搜索
+        searchClient.search('', {
+          page: this.pageIndex, // 从0开始算起
+          hitsPerPage: this.pageSize,
+          facetFilters: facetFilters
+        }).then(({hits, nbHits}) => {
+          this.tabTotal = nbHits;
+          this.searchList = hits;
+          this.loading = false;
+          this.finished = this.tabTotal == this.searchList.length ? true : false;
+          this.$toast.clear();
+          setTimeout(() => {
+            if (typeof this.$redrawVueMasonry === 'function') {
+              this.$redrawVueMasonry('homeMasonryContainer');
+            }
+          }, 50)
+        })
+        return false;
+      }
       this.$api.getProductSearch({ ...categoryIds, pageIndex: this.pageIndex, pageSize: this.pageSize }).then(res => {
         this.searchList = res.data.items.map(item => {
           return {
@@ -536,7 +596,7 @@ export default {
     onRefresh() { // 下拉刷新
       this.$fetch();
     },
-    onLoad() { // 滚动加载
+    async onLoad() { // 滚动加载
       if (parseFloat(this.tabTotal) == this.searchList.length || this.finished == true) { // 没有下一页了
         this.finished = true;
         this.loading = false;
@@ -546,6 +606,26 @@ export default {
       let categoryIds = {};
       if (parseFloat(this.tabCategoryActive) > 0) {
         categoryIds.navCategoryIds = [this.tabCategoryActive];
+      }
+
+      if (currencyType == 2) { // algolia 搜索
+        searchClient.search('', {
+          page: this.pageIndex, // 从0开始算起
+          hitsPerPage: this.pageSize,
+          facetFilters: this.filterCategoryIds
+        }).then(({hits, nbHits}) => {
+          this.tabTotal = nbHits;
+          this.searchList = this.searchList.concat(hits);
+          this.loading = false;
+          this.finished = this.tabTotal == this.searchList.length ? true : false;
+          this.$toast.clear();
+          setTimeout(() => {
+            if (typeof this.$redrawVueMasonry === 'function') {
+              this.$redrawVueMasonry('homeMasonryContainer');
+            }
+          }, 50)
+        })
+        return false;
       }
       this.$api.getProductSearch({ ...categoryIds, pageSize: this.pageSize, pageIndex: this.pageIndex }).then(res => { // 搜索商品列表
         
@@ -561,11 +641,11 @@ export default {
 
         this.searchList = this.searchList.concat(list);
         this.finished = parseFloat(this.tabTotal) == this.searchList.length ? true: false;
-        // setTimeout(() => {
+        setTimeout(() => {
           if (typeof this.$redrawVueMasonry === 'function') {
             this.$redrawVueMasonry('homeMasonryContainer');
           }
-        // }, 50)
+        }, 50)
         
         // 加载状态结束
         this.loading = false;

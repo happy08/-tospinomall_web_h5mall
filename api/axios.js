@@ -17,6 +17,7 @@ export default function({ $axios, app, redirect, store }) {
     // 调用登录接口的时候需要固定值 Basic YnV5ZXI6YnV5ZXI= , 登录之后需要在headers中传用户token
     // console.log(config)
     config.headers['clientType'] = 'h5';
+    config.headers['site'] = 'ghana';
     // config.headers['Authorization'] = 'Basic YnV5ZXI6YnV5ZXI=';
     if (config.method === 'post' || config.method === 'get') {
       config.headers['Content-Type'] = config.headers['Content-Type'] || 'application/x-www-form-urlencoded';
