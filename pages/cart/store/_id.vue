@@ -389,7 +389,7 @@ export default {
     }
     
     // 商品列表数据
-    if (this.$store.state.searchType == 0) {
+    if (this.$store.state.searchType == 0) { // 阿里搜索
       this.pageSize = 1;
       this.sort = {
         shopId: this.$route.params.id, pageIndex: this.pageIndex, pageSize: this.pageSize
@@ -442,9 +442,7 @@ export default {
       return item.type == 2;
     })
     this.isTabbarShow = store_components.length > 1 ? true: false;
-    if (!this.$route.query.tabbarActive) {
-      this.tabbarActive = store_components.length > 1 ? 0 : 1;
-    }
+    this.tabbarActive = this.$route.query.tabbarActive ? this.$route.query.tabbarActive : store_components.length > 1 ? 0 : 1;
     this.refreshing.isFresh = false;
   },
   activated() {

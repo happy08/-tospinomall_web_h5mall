@@ -305,9 +305,25 @@ export default {
       filterCheckType: 0
     }
   },
+  beforeRouteEnter (to, from, next) {
+    next(vm => {
+      if (from.name == 'home' || from.name == 'categories') {
+        vm.params = {};
+        vm.shopId = vm.backNameId = vm.backName = '';
+        vm.brandResult = [];
+        vm.categoryResult = [];
+      }
+    })
+  },
   async fetch() {
     currencyType = this.$store.state.searchType; // 0 阿里搜索 2 algolia搜索
     this.filterCheckType = currencyType;
+    if (this.$route.query.val != this.searchVal) { // 一个新的搜索
+      this.params = {};
+      this.shopId = '';
+      this.brandResult = [];
+      this.categoryResult = [];
+    }
     this.searchVal = this.$route.query.val || ''; // 搜索value
     this.isShowTip = this.searchVal.length > 0 ? false : true;
 
@@ -334,7 +350,7 @@ export default {
       searchClient = client.initIndex('tospinoMall');
     }
 
-    this.params = {..._params, pageIndex: this.pageIndex, pageSize: this.pageSize};
+    this.params = {...this.params, ..._params, pageIndex: this.pageIndex, pageSize: this.pageSize};
 
     // 如果带着搜索的参数跳转过来的需要先获取相对应的搜索数据
     if (this.searchVal != '') {
@@ -348,20 +364,21 @@ export default {
       this.arrangeType = 2;
 
       if (currencyType == 2) { // algolia搜索
-        let facetFilters = [];
+        let facetFilters = this.params.facetFilters ? this.params.facetFilters : [];
+        let productIdsFscet = this.params.productIds ? this.params.productIds : [];
         if (this.$route.query.navCategoryIds) {
           const getCategoryLinkMap = await this.$api.getCategoryLinkMap(_params.navCategoryIds);
           if (getCategoryLinkMap.data['productIds']) { // 商品id
-            facetFilters.push((getCategoryLinkMap.data['productIds'].map(item => {
+            productIdsFscet.push((getCategoryLinkMap.data['productIds'].map(item => {
               return `productId:${item}`;
             })));
           }
           if (getCategoryLinkMap.data['categoryIds']) { // 分类id
-            facetFilters.push((getCategoryLinkMap.data['categoryIds'].map(item => {
+            productIdsFscet.push((getCategoryLinkMap.data['categoryIds'].map(item => {
               return `categoryIds:${item}`;
             })));
           }
-          this.params.productIds = facetFilters;
+          this.params.productIds = productIdsFscet;
         }
         this.pageIndex = 0;
         let _filter = [];
@@ -372,13 +389,15 @@ export default {
           page: this.pageIndex, // 从0开始算起
           hitsPerPage: this.pageSize,
           facets: ['brandName', 'categoryName'],
-          filters: _filter.length > 0 ? _filter.join(' AND ') : '',
-          facetFilters: facetFilters
+          filters: this.params.filters ? this.params.filters + ' AND ' + _filter.length > 0 ? _filter.join(' AND ') : '' : _filter.length > 0 ? _filter.join(' AND ') : '',
+          facetFilters: [...facetFilters, ...productIdsFscet]
         }).then(({hits, nbHits, facets}) => {
           this.total = nbHits;
           this.list = hits;
-          this.brandList = facets.brandName ? Object.keys(facets.brandName) : [];
-          this.categoryList = facets.categoryName ? Object.keys(facets.categoryName) : [];
+          if (facetFilters.length == 0) {
+            this.brandList = facets.brandName ? Object.keys(facets.brandName) : [];
+            this.categoryList = facets.categoryName ? Object.keys(facets.categoryName) : [];
+          }
           this.isShowTip = false;
           this.loading = false;
           this.finished = this.total == this.list.length ? true : false;
@@ -466,8 +485,10 @@ export default {
     }
   },
   watch: {
-    '$route'() {
-      this.$fetch();
+    '$route'(newRoute, oldRoute) {
+      if (oldRoute.name == 'search' && newRoute.name == 'search') {
+        this.$fetch();
+      }
     }
   },
   computed: {
@@ -501,7 +522,6 @@ export default {
     }
   },
   deactivated() {
-    this.shopId = '';
     this.backName = '';
     this.backNameId = '';
   },
@@ -768,7 +788,7 @@ export default {
         searchClient.search(this.params.productIds || this.params.categoryIds ? '' : this.searchVal, {
           page: this.pageIndex, // 从0开始算起
           hitsPerPage: this.pageSize,
-          filters: this.params.filters ? this.params.filters + ' AND ' + _filter.length > 0 ? _filter.join(' AND ') : '' : '',
+          filters: this.params.filters ? this.params.filters + ' AND ' + _filter.length > 0 ? _filter.join(' AND ') : '' : _filter.length > 0 ? _filter.join(' AND ') : '',
           facetFilters: [...facetFilters, ...facetProducts]
         }).then(({hits, nbHits}) => {
           this.total = nbHits;
