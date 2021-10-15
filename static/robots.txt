@@ -1,4 +1,3 @@
 User-agent: *
 Allow: /
 Disallow: /login/
-Sitemap: https://h5mall.fyynet.com/sitemap.xml
