@@ -7,7 +7,8 @@ export const state = () => ({
     currency: ''
   },
   searchProductList: [], // 商品搜索历史
-  searchType: 0 // 搜索类型
+  searchType: 0, // 搜索类型
+  supplyCountry: {} // 国家
 });
 
 export const mutations = {
@@ -38,6 +39,9 @@ export const mutations = {
   },
   SET_SEARCHTYPE(state, searchType) {
     state.searchType = searchType;
+  },
+  SET_SUPPLYCOUNTRY(state, supplyCountry) {
+    state.supplyCountry = supplyCountry;
   }
 };
 
@@ -79,6 +83,10 @@ export const actions = {
     // 获取当前语言
     const lang = $cookies.get('lang');
     commit('SET_LANG', lang);
+
+    // 获取国家名称和国家图片
+    const countryData = await $api.getSupplyCountry();
+    commit('SET_SUPPLYCOUNTRY', countryData.data);
     
     // 是否有未读消息
     commit('user/SET_ISNEWMESSAGE', Boolean($cookies.get('isNewWebsocketMsg')));

@@ -224,6 +224,12 @@ export default ({ app }, inject) => {
           'Content-Type': 'application/json'
         }
       })
+    },
+    getSupplyCountry() { // 获取当前国家名称和国家图片
+      return app.$axios({
+        url: `${url}/search/productsearch/getSupplyCountry`,
+        method: 'get'
+      })
     }
   };
 
