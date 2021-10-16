@@ -79,7 +79,7 @@ service.interceptors.request.use(config => {
   config.headers['site'] = 'ghana';
   
   if (config.headers.Authorization) {
-    config.headers['Authorization'] = config.headers.Authorization;
+    config.headers['Authorization'] = config.headers.Authorization || 'Basic YnV5ZXI6YnV5ZXI=';
   // } else if (getCookie('authToken') && getCookie('authToken') != 'null' && getCookie('authToken').length > 10) {
   } else if ($nuxt.$store.state.user.authToken) {
     // config.headers['Authorization'] = getCookie('authToken');

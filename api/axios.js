@@ -30,7 +30,7 @@ export default function({ $axios, app, redirect, store }) {
     //   config.headers['Authorization'] = `${store.state.user.authToken}`;
     // }
     if (config.headers.Authorization) {
-      config.headers['Authorization'] = config.headers.Authorization;
+      config.headers['Authorization'] = config.headers.Authorization || 'Basic YnV5ZXI6YnV5ZXI=';
     } else if (store.state.user.authToken && config.url != '/auth/oauth/token?grant_type=refresh_token') {
       config.headers['Authorization'] = `${store.state.user.authToken}`;
     } else {

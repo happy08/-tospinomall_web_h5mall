@@ -85,8 +85,8 @@ export const actions = {
     commit('SET_LANG', lang);
 
     // 获取国家名称和国家图片
-    const countryData = await $api.getSupplyCountry();
-    commit('SET_SUPPLYCOUNTRY', countryData.data);
+    // const countryData = await $api.getSupplyCountry();
+    // commit('SET_SUPPLYCOUNTRY', countryData.data);
     
     // 是否有未读消息
     commit('user/SET_ISNEWMESSAGE', Boolean($cookies.get('isNewWebsocketMsg')));
