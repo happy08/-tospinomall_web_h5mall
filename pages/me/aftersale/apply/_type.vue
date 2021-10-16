@@ -100,7 +100,7 @@
 
     <!-- 退货方法 退货退款才展示 -->
     <div class="p-20 bg-white mt-12" v-if="$route.params.type == 2">
-      <van-cell class="pb-20 pt-0 plr-0" :title="$t('return_method')" title-class="fs-14 black" :value="returnMethodTitle" is-link :border="false" @click="returnMethod = true" />
+      <van-cell class="pb-20 pt-0 plr-0" :title="$t('return_method')" title-class="fs-14 black" :value="returnMethodTitle" is-link :border="false" @click="returnMethod = detail.deliveryType == 1 && detail.traderType == 2 ? false : true" />
       <!-- 上门取件-有运费 -->
       <p class="fs-14 light-grey pb-10" v-if="returnMethodRadio == 0">{{ $t('after_sale_freight_tip', { replace_tip: $store.state.rate.currency + freightPrice }) }}</p>
       <!-- 上门取件,服务协议 -->
@@ -321,6 +321,8 @@ export default {
         vm.isGreenment = false;
         vm.freightPrice = 0;
         vm.applyNum = 1;
+        vm.concatCell = '';
+        vm.concatName = '';
       }
       if (from.name == 'me-address') { // 从地址选择页面回来不需要重新获取数据
         vm.isFrom = true;
@@ -351,7 +353,7 @@ export default {
     _ajax.then(res => {
       if (!res.data) return false;
       this.$toast.clear();
-      if (this.$route.query.edit) { // 修改申请
+      if (this.$route.query.edit) { // 修改申请时获取售后信息
         this.detail = {
           ...res.data,
           goodImg: res.data.productImage,
@@ -375,7 +377,7 @@ export default {
         // 申请信息
         this.applyMessage = res.data.applyDesc;
         if (res.data.returnType == 1) { // 退货退款
-          this.returnMethodRadio = res.data.deliveryType == 1 ? 1 : 0;
+          this.returnMethodRadio = res.data.deliveryType == 1 ? 1 : 0; // 1->自行寄出 2->上门取件
           this.returnMethodTitle = this.$t('return_method_list')[this.returnMethodRadio].title;
           this.concatName = res.data.contactPerson;
           this.concatCell = res.data.contactPhone;
@@ -409,6 +411,7 @@ export default {
         this.imgList = pics;
         return false;
       }
+      // 获取售后信息
       this.detail = {
         ...res.data.order,
         returnAmount: res.data.order.status == 1 ? res.data.order.payAmount : res.data.orderItemList[0].canAfterApplyNum * res.data.orderItemList[0].realPrice,
@@ -449,6 +452,9 @@ export default {
           provinceCode: res.data.order.receiverProvinceCode
         }
       }
+      // deliveryType 配送类型( 1 FBM 2 FBT ) traderType 贸易类型：1->国内贸易；2->跨境贸易
+      this.returnMethodRadio = res.data.order.traderType == 2 && res.data.order.deliveryType == 1 ? 1 : 0; // FBM跨境贸易不支持上门取件
+      this.returnMethodTitle = this.$t('return_method_list')[this.returnMethodRadio].title;
       if (this.$route.params.type == 2 && this.returnMethodRadio == 0) { // 退货退款
         this.getFreightPrice();
       }
