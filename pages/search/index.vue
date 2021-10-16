@@ -105,7 +105,7 @@
                 >
                   <ProductTopBtmSingle
                     :img="{ url: searchItem.mainPictureUrl, width: '3.4rem', height: '3.4rem', loadImage: require('@/assets/images/product-bgd-170.png') }" 
-                    :detail="{ desc: searchItem.productTitle, price: searchItem.minPrice, rate: searchItem.starLevel, volumn: searchItem.saleCount, ellipsis: 2, country: searchItem.supplyCountry ? $store.state.supplyCountry[searchItem.supplyCountry].label : '', country_url: searchItem.supplyCountry ? $store.state.supplyCountry[searchItem.supplyCountry].description : '' }"
+                    :detail="{ desc: searchItem.productTitle, price: searchItem.minPrice, rate: searchItem.starLevel, volumn: searchItem.saleCount, ellipsis: 2, country: searchItem.supplyCountry && $store.state.supplyCountry && $store.state.supplyCountry[searchItem.supplyCountry] ? $store.state.supplyCountry[searchItem.supplyCountry].label : '', country_url: searchItem.supplyCountry && $store.state.supplyCountry && $store.state.supplyCountry[searchItem.supplyCountry] ? $store.state.supplyCountry[searchItem.supplyCountry].description : '' }"
                     class="round-4 bg-white hidden v-100"
                   ></ProductTopBtmSingle>
                 </nuxt-link>
@@ -130,7 +130,7 @@
                   />
                   <div class="ml-14 w-230 hidden-1">
                     <p class="fs-14 black hidden-1" v-html="searchItem.productTitle"></p>
-                    <p class="mt-8 fs-14 light-grey">{{ $t('ship_from_', { replace_tip: searchItem.supplyCountry ? $store.state.supplyCountry[searchItem.supplyCountry].label : '' }) }}</p>
+                    <p class="mt-8 fs-14 light-grey">{{ $t('ship_from_', { replace_tip: searchItem.supplyCountry && $store.state.supplyCountry && $store.state.supplyCountry[searchItem.supplyCountry] ? $store.state.supplyCountry[searchItem.supplyCountry].label : '' }) }}</p>
                     <div class="mt-16 flex vcenter between">
                       <div>
                         <span class="red fs-18">{{ $store.state.rate.currency }}{{ searchItem.minPrice }}</span>
@@ -320,7 +320,7 @@ export default {
     this.filterCheckType = currencyType;
     if (this.$route.query.val != this.searchVal) { // 一个新的搜索
       this.params = {};
-      this.shopId = '';
+      // this.shopId = '';
       this.brandResult = [];
       this.categoryResult = [];
     }
@@ -450,7 +450,7 @@ export default {
       }
     }
 
-    if (currencyType == 0) { // 阿里搜索
+    // if (currencyType == 0) { // 阿里搜索
       // 搜索发现数据
       const findList = await this.$api.getSearchHot();
       this.searchFindList = findList.data.result;
@@ -458,7 +458,7 @@ export default {
       // 获得底纹词
       const hintList = await this.$api.getHintResult();
       this.hintName = hintList.data.result[0].name;
-    }
+    // }
 
     this.searchHistoryList = this.$store.state.searchProductList.filter((item, index) => {
       return index < 6;
@@ -510,7 +510,7 @@ export default {
       this.isRouteBack = 1;
     }
 
-    if (currencyType == 0) { // 阿里搜索
+    // if (currencyType == 0) { // 阿里搜索
       // 搜索防抖
       this.inputChange = this.$utils.debounce((e) => {
         this.isShowTip = e[0].length > 0 && this.list.length === 0 ? -1 : e[0].length === 0;
@@ -519,7 +519,7 @@ export default {
         }
         this.getSearchPull();
       }, 300);
-    }
+    // }
   },
   deactivated() {
     this.backName = '';
@@ -655,9 +655,9 @@ export default {
     },
     onFocus() { // 获取焦点之后，不展示数据列表和历史数据
       this.isShowTip = this.searchVal.length > 0 ? -1 : this.searchVal.length === 0;
-      if (currencyType == 0) { // 阿里搜索才有
+      // if (currencyType == 0) { // 阿里搜索才有
         this.getSearchPull();
-      }
+      // }
     },
     onFilter() { // 筛选
       if (currencyType == 2) { // algolia 搜索

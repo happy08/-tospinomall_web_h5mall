@@ -236,7 +236,7 @@ export default {
     this.isFirst = false;
     // 加载状态结束
     this.loading = false;
-    if (this.active == 0 && this.$store.state.searchType == 0) {
+    // if (this.active == 0 && this.$store.state.searchType == 0) {
       const recommendData = await this.$api.getRecommend({ type: 1, pageNum: this.pageNum, pageSize: this.pageSize});
       if (!recommendData.data) {
         this.isLoadRecommend = true;
@@ -254,7 +254,7 @@ export default {
       if (parseFloat(recommendData.data.total) == this.recommendList.length) {
         this.isLoadRecommend = true;
       }
-    }
+    // }
   },
   activated() {
     this.isFirst = true;
@@ -330,10 +330,10 @@ export default {
             this.loading = false;
             return false;
           }
-          if (this.$store.state.searchType == 2) { // algolia 搜索
-            this.loading = false;
-            return false;
-          }
+          // if (this.$store.state.searchType == 2) { // algolia 搜索
+          //   this.loading = false;
+          //   return false;
+          // }
           this.onRecommendLoad();
         } else {
           this.finished = true;

@@ -847,22 +847,22 @@ export default {
     this.likeList = [];
     // 获取同店商品推荐列表
     if (this.storeInfo.storeId) {
-      if (this.$store.state.searchType == 2) { // algolia 搜索
-        const algoliasearch = require('algoliasearch');
-        let client = algoliasearch('62MLEBY33X','7a8da9a5fd3f8137ea8cb70b60806e8d');
-        let searchClient = client.initIndex('tospinoMall');
-        searchClient.search('', {
-          // page: 0, // 从0开始算起
-          // hitsPerPage: this.pageSize,
-          filters: `shopId:${this.storeInfo.storeId} AND categoryId:${this.goodSpuVo.categoryId} AND (NOT productId:${this.goodSpuVo.id})`,
-        }).then(({ hits }) => {
-          this.likeList = hits;
-        })
-      } else { // 阿里搜索
+      // if (this.$store.state.searchType == 2) { // algolia 搜索
+      //   const algoliasearch = require('algoliasearch');
+      //   let client = algoliasearch('62MLEBY33X','7a8da9a5fd3f8137ea8cb70b60806e8d');
+      //   let searchClient = client.initIndex('tospinoMall');
+      //   searchClient.search('', {
+      //     // page: 0, // 从0开始算起
+      //     // hitsPerPage: this.pageSize,
+      //     filters: `shopId:${this.storeInfo.storeId} AND categoryId:${this.goodSpuVo.categoryId} AND (NOT productId:${this.goodSpuVo.id})`,
+      //   }).then(({ hits }) => {
+      //     this.likeList = hits;
+      //   })
+      // } else { // 阿里搜索
         const recommendData = await this.$api.getRecommendList({ shopId: this.storeInfo.storeId, categoryId: this.goodSpuVo.categoryId });
         if (!recommendData.data) return false;
         this.likeList = recommendData.data;
-      }
+      // }
     }
 
     // 获取SEO信息

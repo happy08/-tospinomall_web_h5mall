@@ -316,7 +316,7 @@ export default {
     this.refreshing.isFresh = false;
 
     // 获取商品推荐列表
-    if (this.$store.state.searchType == 0) { // 阿里搜索
+    // if (this.$store.state.searchType == 0) { // 阿里搜索
       const recommendData = await this.$api.getRecommend({type: 0, pageNum: this.pageNum, pageSize: this.pageSize});
       if (recommendData.code != 0) return false;
       this.recommendList = recommendData.data.items;
@@ -325,7 +325,7 @@ export default {
       if (typeof this.$redrawVueMasonry === 'function') {
         this.$redrawVueMasonry();
       }
-    }
+    // }
     
     if (process.client) {
       window.scrollTo({
