@@ -41,9 +41,9 @@ export default {
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
     '@/plugins/global-components',
-    '@/api/axios',
     '@/plugins/vant',
     '@/api/index',
+    '@/api/axios',
     '@/plugins/vue-i18n',
     { src: '@/plugins/utils', ssr: false },
     '@/plugins/routeguard.js',
