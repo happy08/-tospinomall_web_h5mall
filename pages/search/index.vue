@@ -347,21 +347,33 @@ export default {
       this.backQuery = this.$route.query.backQuery;
     }
     if (this.$route.query.categoryId) { // 后端分类id
-      this.params.productIds = Array.isArray(this.$route.query.categoryId) ? this.$route.query.categoryId.map(item => {
-        return `categoryIds:${item}`;
-      }) : [`categoryIds:${this.$route.query.categoryId}`];
+      if (currencyType == 2) {
+        // algolia搜索
+        this.params.productIds = Array.isArray(this.$route.query.categoryId) ? this.$route.query.categoryId.map(item => {
+          return `categoryIds:${item}`;
+        }) : [`categoryIds:${this.$route.query.categoryId}`];
+      }
+      // 阿里搜索
+      this.params.categoryIds = Array.isArray(this.$route.query.categoryId) ? this.$route.query.categoryId : [this.$route.query.categoryId];
       this.isShowTip = false;
     }
     if (this.$route.query.brandId) { // 品牌id
-      this.params.brandIds = Array.isArray(this.$route.query.brandId) ? this.$route.query.brandId.map(item => {
-        return `brandId:${item}`;
-      }): [`brandId:${this.$route.query.brandId}`];
+      this.params.brandIds = Array.isArray(this.$route.query.brandId) ? this.$route.query.brandId : [this.$route.query.brandId];
+      if (currencyType == 2) { // algolia搜索
+        this.params.brandIds = Array.isArray(this.$route.query.brandId) ? this.$route.query.brandId.map(item => {
+          return `brandId:${item}`;
+        }): [`brandId:${this.$route.query.brandId}`];
+      }
       this.isShowTip = false;
     }
     if (this.$route.query.supplyCountry) { // 国家编码
-      this.params.supplyCountry = Array.isArray(this.$route.query.supplyCountry) ? this.$route.query.supplyCountry.map(item => {
-        return `supplyCountry:${item}`;
-      }): [`supplyCountry:${this.$route.query.supplyCountry}`];
+      this.params.supplyCountry = Array.isArray(this.$route.query.supplyCountry) ? this.$route.query.supplyCountry : [this.$route.query.supplyCountry];
+      if (currencyType == 2) { // algolia搜索
+        this.params.supplyCountry = Array.isArray(this.$route.query.supplyCountry) ? this.$route.query.supplyCountry.map(item => {
+          return `supplyCountry:${item}`;
+        }): [`supplyCountry:${this.$route.query.supplyCountry}`];
+      }
+      
       this.params.deliveryType = this.$route.query.deliveryType ? this.$route.query.deliveryType : '';
       this.isShowTip = false;
     }
@@ -850,10 +862,10 @@ export default {
           shopId: this.shopId
         }
       }
-      if (this.$route.query.navCategoryIds) {
-        this.params.navCategoryIds = !Array.isArray(this.$route.query.navCategoryIds) ? [this.$route.query.navCategoryIds] : this.$route.query.navCategoryIds;
-        delete this.params.searchKeyword;
-      }
+      // if (this.$route.query.navCategoryIds) {
+      //   this.params.navCategoryIds = !Array.isArray(this.$route.query.navCategoryIds) ? [this.$route.query.navCategoryIds] : this.$route.query.navCategoryIds;
+      //   delete this.params.searchKeyword;
+      // }
       this.$api.getProductSearch(this.params).then(res => {
         let list = res.data.items.map(item => {
           return {

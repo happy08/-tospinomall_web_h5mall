@@ -571,7 +571,6 @@ export default {
           navCategoryIds: hotDetail.frontMenuIds
         }
       }
-      console.log(_query)
 
       this.$router.push({
         name: 'search',
