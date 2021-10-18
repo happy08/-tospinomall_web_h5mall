@@ -312,6 +312,7 @@ export default {
         vm.shopId = vm.backNameId = vm.backName = '';
         vm.brandResult = [];
         vm.categoryResult = [];
+        vm.list = [];
       }
     })
   },
@@ -327,11 +328,10 @@ export default {
     this.searchVal = this.$route.query.val || ''; // 搜索value
     this.isShowTip = this.searchVal.length > 0 ? false : true;
 
-    let _params = this.$route.query;
     if (this.$route.query.navCategoryIds) {
-      _params.navCategoryIds = !Array.isArray(this.$route.query.navCategoryIds) ? [this.$route.query.navCategoryIds] : this.$route.query.navCategoryIds;
+      this.params.navCategoryIds = !Array.isArray(this.$route.query.navCategoryIds) ? [this.$route.query.navCategoryIds] : this.$route.query.navCategoryIds;
+      this.isShowTip = false;
     }
-    delete _params.val;
 
     if (this.$route.query.back) { // 从哪个页面进来的
       this.backName = this.$route.query.back;
@@ -343,6 +343,25 @@ export default {
     if (this.$route.query.backQuery) {
       this.backQuery = this.$route.query.backQuery;
     }
+    if (this.$route.query.categoryId) { // 后端分类id
+      this.params.productIds = Array.isArray(this.$route.query.categoryId) ? this.$route.query.categoryId.map(item => {
+        return `categoryIds:${item}`;
+      }) : [`categoryIds:${this.$route.query.categoryId}`];
+      this.isShowTip = false;
+    }
+    if (this.$route.query.brandId) { // 品牌id
+      this.params.brandIds = Array.isArray(this.$route.query.brandId) ? this.$route.query.brandId.map(item => {
+        return `brandId:${item}`;
+      }): [`brandId:${this.$route.query.brandId}`];
+      this.isShowTip = false;
+    }
+    if (this.$route.query.supplyCountry) { // 国家编码
+      this.params.supplyCountry = Array.isArray(this.$route.query.supplyCountry) ? this.$route.query.supplyCountry.map(item => {
+        return `supplyCountry:${item}`;
+      }): [`supplyCountry:${this.$route.query.supplyCountry}`];
+      this.params.deliveryType = this.$route.query.deliveryType ? this.$route.query.deliveryType : '';
+      this.isShowTip = false;
+    }
 
     if (currencyType == 2) {
       const algoliasearch = require('algoliasearch');
@@ -350,10 +369,10 @@ export default {
       searchClient = client.initIndex('tospinoMall');
     }
 
-    this.params = {...this.params, ..._params, pageIndex: this.pageIndex, pageSize: this.pageSize};
+    this.params = {...this.params, pageIndex: this.pageIndex, pageSize: this.pageSize};
 
     // 如果带着搜索的参数跳转过来的需要先获取相对应的搜索数据
-    if (this.searchVal != '') {
+    if (this.searchVal != '' || (this.$route.query && !this.$route.query.back)) {
       // 加载图标
       this.$toast.loading({
         forbidClick: true,
@@ -366,8 +385,10 @@ export default {
       if (currencyType == 2) { // algolia搜索
         let facetFilters = this.params.facetFilters ? this.params.facetFilters : [];
         let productIdsFscet = this.params.productIds ? this.params.productIds : [];
+        let brandIds = this.params.brandIds ? this.params.brandIds : [];
+        let supplyCountry = this.params.supplyCountry ? this.params.supplyCountry : [];
         if (this.$route.query.navCategoryIds) {
-          const getCategoryLinkMap = await this.$api.getCategoryLinkMap(_params.navCategoryIds);
+          const getCategoryLinkMap = await this.$api.getCategoryLinkMap(this.params.navCategoryIds);
           if (getCategoryLinkMap.data['productIds']) { // 商品id
             productIdsFscet.push((getCategoryLinkMap.data['productIds'].map(item => {
               return `productId:${item}`;
@@ -385,12 +406,15 @@ export default {
         if (this.shopId != '') {
           _filter.push(`shopId:${this.shopId}`);
         }
+        if (this.params.deliveryType) {
+          _filter.push(`deliveryType:${this.params.deliveryType}`);
+        }
         searchClient.search(this.params.productIds ? '' : this.searchVal, {
           page: this.pageIndex, // 从0开始算起
           hitsPerPage: this.pageSize,
           facets: ['brandName', 'categoryName'],
           filters: this.params.filters ? this.params.filters + ' AND ' + _filter.length > 0 ? _filter.join(' AND ') : '' : _filter.length > 0 ? _filter.join(' AND ') : '',
-          facetFilters: [...facetFilters, ...productIdsFscet]
+          facetFilters: [...facetFilters, ...productIdsFscet, ...brandIds, ...supplyCountry]
         }).then(({hits, nbHits, facets}) => {
           this.total = nbHits;
           this.list = hits;
@@ -501,7 +525,7 @@ export default {
     if (this.$route.query.shopId) { // 从店铺搜索跳转过来的
       this.shopId = this.$route.query.shopId;
     }
-    if (this.searchVal == '') { // 没有带参数进来的时候，搜索输入框需要自动聚焦
+    if (this.searchVal == '' && !this.$route.query) { // 没有带参数进来的时候，搜索输入框需要自动聚焦
       this.$nextTick(() => {
         this.$refs.searchContainer.querySelector('input').focus();
       })
@@ -783,13 +807,18 @@ export default {
         if (this.shopId != '') {
           _filter.push(`shopId:${this.shopId}`);
         }
+        if (this.params.deliveryType) {
+          _filter.push(`deliveryType:${this.params.deliveryType}`);
+        }
         let facetFilters = this.params.facetFilters ? this.params.facetFilters : [];
         let facetProducts = this.params.productIds ? this.params.productIds : [];
+        let brandIds = this.params.brandIds ? this.params.brandIds : [];
+        let supplyCountry = this.params.supplyCountry ? this.params.supplyCountry : [];
         searchClient.search(this.params.productIds || this.params.categoryIds ? '' : this.searchVal, {
           page: this.pageIndex, // 从0开始算起
           hitsPerPage: this.pageSize,
           filters: this.params.filters ? this.params.filters + ' AND ' + _filter.length > 0 ? _filter.join(' AND ') : '' : _filter.length > 0 ? _filter.join(' AND ') : '',
-          facetFilters: [...facetFilters, ...facetProducts]
+          facetFilters: [...facetFilters, ...facetProducts, ...brandIds, ...supplyCountry]
         }).then(({hits, nbHits}) => {
           this.total = nbHits;
           this.list = this.pageIndex == 0 ? hits : this.list.concat(hits);

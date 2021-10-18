@@ -38,7 +38,7 @@
         <div class="product-categories__box" v-for="(item, index) in leftLists" :key="index">
           <h4 class="fw fs-14 black">{{ item.name }}</h4>
           <div class="flex flex-wrap">
-            <nuxt-link class="block tc mr-12 mt-20 product-single" v-for="(childrenItem, childrenIndex) in item.children" :key="childrenIndex" :to="{ name: 'search', query: { navCategoryIds: [childrenItem.id], val: childrenItem.name } }">
+            <nuxt-link class="block tc mr-12 mt-20 product-single" v-for="(childrenItem, childrenIndex) in item.children" :key="childrenIndex" :to="{ name: 'search', query: { navCategoryIds: [childrenItem.id] } }">
               <BmImage 
                 :url="childrenItem.icon"
                 :width="'1.4rem'"

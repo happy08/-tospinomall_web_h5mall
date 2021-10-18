@@ -542,28 +542,36 @@ export default {
       if (hotDetail.imageLinkType == 3) { // 搜索品牌
         _query = {
           brandId: hotDetail.brandIds,
-          val: hotDetail.brandIds
+          // val: hotDetail.brandIds
         }
       }
       if (hotDetail.imageLinkType == 4) { // 搜索fbt
         _query = {
           deliveryType: 2,
-          fbtStocks: hotDetail.fbtCountrys,
-          val: 2
+          supplyCountry: hotDetail.fbtCountrys,
+          // val: 2
         }
       }
       if (hotDetail.imageLinkType == 5) { // 搜索fbm
         _query = {
           deliveryType: 1,
-          val: 1,
-          fbmStocks: hotDetail.fbmCountrys
+          // val: 1,
+          supplyCountry: hotDetail.fbmCountrys
         }
       }
-      if (hotDetail.imageLinkType == 1 || hotDetail.imageLinkType == 2) { // 搜索 1前端分类id 2后端分类id
+      if (hotDetail.imageLinkType == 2) { // 搜索 2后端分类id
         _query = {
-          categoryId: hotDetail.imageLinkType == 2 ? hotDetail.serverMenuIds: hotDetail.frontMenuIds
+          categoryId: hotDetail.serverMenuIds
         }
       }
+
+      // 搜索 1前端分类id
+      if (hotDetail.imageLinkType == 1) {
+        _query = {
+          navCategoryIds: hotDetail.frontMenuIds
+        }
+      }
+      console.log(_query)
 
       this.$router.push({
         name: 'search',
