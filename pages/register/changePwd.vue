@@ -81,7 +81,7 @@ export default {
         return false;
       }
       let _account = this.$route.query.email ? { email: this.$route.query.email } : { phone: this.$route.query.phone, phonePrefix: this.$route.query.phonePrefix };
-      forgetPwd({ code: this.$route.query.code, password: this.pwd, repeatPassword: this.confirmPwd, ..._account }).then(res => {
+      forgetPwd({ code: this.$route.query.code, password: this.pwd, repeatPassword: this.confirmPwd, ..._account }).then(() => {
         this.$router.push({ // 忘记密码 修改成功页面
           name: 'register-result',
           query: {

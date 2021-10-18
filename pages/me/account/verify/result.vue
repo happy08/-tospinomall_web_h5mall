@@ -19,8 +19,6 @@
 </template>
 
 <script>
-import { authLogin } from '@/api/login';
-
 export default {
   middleware: 'authenticated',
   data() {
@@ -65,7 +63,7 @@ export default {
         grant_type: 'password'
       }
       
-      authLogin(_data).then(res => {
+      this.$api.authLogin(_data).then(res => {
         this.$store.commit('user/SET_TOKEN', res.data.token_type + ' ' + res.data.access_token);
         this.$store.commit('user/SET_REFRESHTOKEN', res.data.refresh_token);
         this.$store.commit('user/SET_SCOPE', res.data.scope);

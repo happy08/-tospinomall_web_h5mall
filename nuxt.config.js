@@ -1,6 +1,6 @@
 const webpack = require('webpack');
 const CompressionPlugin = require('compression-webpack-plugin');
-const TerserPlugin = require("terser-webpack-plugin"); // 打包删除注释
+const TerserPlugin = require('terser-webpack-plugin'); // 打包删除注释
 
 export default {
   server: {
@@ -69,16 +69,24 @@ export default {
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
     proxy: true, // 开启代理
-    prefix: '/api' // 请求url加个前缀 /api
+    prefix: '' // 请求url加个前缀 /api
     // credentials: true // 跨域请求时是否需要使用凭证
   },
 
   proxy: {
+    //登录、退出登录、刷新token、第三方登录接口地址
+    '/apiLogin': {
+        // target: 'https://auth.fyynet.com',
+        target: 'http://192.168.2.35:19999',
+        pathRewrite: {
+            '^/apiLogin': '/'
+        }
+    },
     '/api': {
       // target: 'http://192.168.2.34:9999', //120.78.145.142
       // target: 'http://192.168.2.70:9999',
-      target: 'https://tospinomallapi.fyynet.com',
-      // target: 'http://192.168.2.35:9999',
+      // target: 'https://tospinomallapi.fyynet.com',
+      target: 'http://192.168.2.35:9999',
       //target: 'http://120.78.145.142:9999',
       pathRewrite: {
         '^/api': '/'

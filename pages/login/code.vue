@@ -118,7 +118,7 @@
 
 <script>
 import { Divider, Field, Popup, DropdownMenu, DropdownItem, Cell, Picker } from 'vant';
-import { getPhonePrefix, getPhoneCode, getEmailCode, authCodeLogin } from '@/api/login';
+import { getPhonePrefix, getPhoneCode, getEmailCode } from '@/api/login';
 
 export default {
   components: {
@@ -221,7 +221,7 @@ export default {
         loadingType: 'spinner',
         duration: 0
       });
-      authCodeLogin({
+      this.$api.authCodeLogin({
         code: this.code, 
         mobile: this.$route.query.changeWay === 'email' ? this.account : this.prefixCode + this.account, 
         // userType: 'buyer'
@@ -267,7 +267,7 @@ export default {
             loadingType: 'spinner',
             duration: 0
           });
-          googleLogin({ mobile: success.getAuthResponse().id_token, grant_type: 'google' }).then(res => {
+          this.$api.thirdPartyLogin({ mobile: success.getAuthResponse().id_token, grant_type: 'google' }).then(res => {
             this.$store.commit('user/SET_TOKEN', res.data.token_type + ' ' + res.data.access_token);
             this.$store.commit('user/SET_REFRESHTOKEN', res.data.refresh_token);
             this.$store.commit('user/SET_SCOPE', res.data.scope);
@@ -312,7 +312,7 @@ export default {
               loadingType: 'spinner',
               duration: 0
             });
-            facebookLogin({ mobile: { userId: user.id, email: user.email, name: user.name }, grant_type: 'facebook' }).then(res => {
+            this.$api.thirdPartyLogin({ mobile: { userId: user.id, email: user.email, name: user.name }, grant_type: 'facebook' }).then(res => {
               console.log(res)
               if (res.code == 11001) {
                 this.$toast.clear();

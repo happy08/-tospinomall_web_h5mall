@@ -7,7 +7,7 @@ import { url } from './config'; // 导入配置域名
 import { getCookie } from './utils';
 
 const service = axios.create({
-  baseURL: process.env.NODE_ENV === "development" ? '/api' + url: url,
+  baseURL: url,
   timeout: 30000 // 请求超时时间
 })
 

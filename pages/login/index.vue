@@ -101,7 +101,7 @@
 
 <script>
 import { Divider, Field, DropdownMenu, DropdownItem, Cell, Popup, Picker } from 'vant';
-import { authLogin, googleLogin, facebookLogin, getPhonePrefix } from '@/api/login';
+import { getPhonePrefix } from '@/api/login';
 
 export default {
   components: {
@@ -156,7 +156,7 @@ export default {
         duration: 0
       });
       // 登录
-      authLogin({ username: this.isPhone ? this.prefixCode + this.account : this.account, password: this.password, grant_type: 'password' }).then(res => {
+      this.$api.authLogin({ username: this.isPhone ? this.prefixCode + this.account : this.account, password: this.password, grant_type: 'password' }).then(res => {
         if (res.code != 0) return false;
         this.$store.commit('user/SET_TOKEN', res.data.token_type + ' ' + res.data.access_token);
         this.$store.commit('user/SET_REFRESHTOKEN', res.data.refresh_token);
@@ -199,7 +199,7 @@ export default {
             loadingType: 'spinner',
             duration: 0
           });
-          googleLogin({ mobile: success.getAuthResponse().id_token, grant_type: 'google' }).then(res => {
+          this.$api.thirdPartyLogin({ mobile: success.getAuthResponse().id_token, grant_type: 'google' }).then(res => {
             this.$store.commit('user/SET_TOKEN', res.data.token_type + ' ' + res.data.access_token);
             this.$store.commit('user/SET_REFRESHTOKEN', res.data.refresh_token);
             this.$store.commit('user/SET_SCOPE', res.data.scope);
@@ -244,7 +244,7 @@ export default {
               loadingType: 'spinner',
               duration: 0
             });
-            facebookLogin({ mobile: { userId: user.id, email: user.email, name: user.name }, grant_type: 'facebook' }).then(res => {
+            this.$api.thirdPartyLogin({ mobile: { userId: user.id, email: user.email, name: user.name }, grant_type: 'facebook' }).then(res => {
               console.log(res)
               if (res.code == 11001) {
                 this.$toast.clear();

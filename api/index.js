@@ -2,7 +2,8 @@
  * api接口统一出口
  */
 import qs from 'qs';
-import { url } from './config'; // 导入配置域名
+import { url, urlLogin } from './config'; // 导入配置域名
+import { encrypt } from './cryptoAES'; // 加密解密
 
 export default ({ app }, inject) => {
   const api = {
@@ -174,7 +175,7 @@ export default ({ app }, inject) => {
     },
     refreshToken() { // 刷新token
       return app.$axios({
-        url: `${url}/auth/oauth/token?grant_type=refresh_token`,
+        url: `${urlLogin}/auth/oauth/token?grant_type=refresh_token`,
         method: 'post',
         data: qs.stringify({
           scope: app.$cookies.get('scope'),
@@ -187,7 +188,8 @@ export default ({ app }, inject) => {
     },
     logout() { // 退出
       return app.$axios({
-        url: `${url}/auth/token/logout`,
+        // url: `${url}/auth/token/logout`,
+        url: `${urlLogin}/auth/token/logout`,
         method: 'delete',
         headers: {
           Authorization: app.$cookies.get('authToken')
@@ -230,8 +232,48 @@ export default ({ app }, inject) => {
         url: `${url}/search/productsearch/getSupplyCountry`,
         method: 'get'
       })
+    },
+    authLogin(params) { // 账号密码登录
+      return app.$axios({
+        url: `${urlLogin}/auth/oauth/token`,
+        method: 'post',
+        data: qs.stringify({ ...params, password: encrypt(params.password) }),
+        headers: {
+          clientType: 'h5',
+          version: '1.0.0',
+          language: app.$cookies.get('lang'),
+          Authorization: 'Basic YnV5ZXI6YnV5ZXI='
+        }
+      })
+    },
+    authCodeLogin(params) { // 手机/邮箱 验证码登录
+      return app.$axios({
+        url: `${urlLogin}/auth/mobile/token/sms`,
+        method: 'post',
+        data: qs.stringify({ grant_type: 'mobile', ...params }),
+        headers: {
+          clientType: 'h5',
+          version: '1.0.0',
+          language: app.$cookies.get('lang')
+        }
+      })
+    },
+    thirdPartyLogin(data, headers = {}) { // 第三方登录
+      return app.$axios({
+        url: `${urlLogin}/auth/mobile/token/social`,
+        method: 'post',
+        data: qs.stringify(data),
+        headers: {
+          clientType: 'h5',
+          version: '1.0.0',
+          language: app.$cookies.get('lang'),
+          ...headers
+        }
+      })
     }
   };
+
+  // 测试环境登录、退出登录、刷新token、第三方登录接口地址单独处理：https://auth.fyynet.com/
 
   // 将api注入程序
   inject('api', api);
