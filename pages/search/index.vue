@@ -316,6 +316,8 @@ export default {
         vm.available = false;
         vm.overseas = false;
         vm.deliveryType = false;
+        vm.typeActive = 0;
+        vm.dropdownVal = 0;
       }
     })
   },
@@ -347,14 +349,14 @@ export default {
       this.backQuery = this.$route.query.backQuery;
     }
     if (this.$route.query.categoryId) { // 后端分类id
+      // 阿里搜索
+      this.params.categoryIds = Array.isArray(this.$route.query.categoryId) ? this.$route.query.categoryId : [this.$route.query.categoryId];
       if (currencyType == 2) {
         // algolia搜索
         this.params.productIds = Array.isArray(this.$route.query.categoryId) ? this.$route.query.categoryId.map(item => {
           return `categoryIds:${item}`;
         }) : [`categoryIds:${this.$route.query.categoryId}`];
       }
-      // 阿里搜索
-      this.params.categoryIds = Array.isArray(this.$route.query.categoryId) ? this.$route.query.categoryId : [this.$route.query.categoryId];
       this.isShowTip = false;
     }
     if (this.$route.query.brandId) { // 品牌id
@@ -614,7 +616,10 @@ export default {
         }
       } else if (index == 0) { 
         if (this.dropdownVal == 0) { // 综合排序
-          // this.typeActive = this.$t('search_filter_overall');
+          this.params = {
+            ...this.params,
+            sortMap: {}
+          }
         } else if (this.dropdownVal == 1) { // 价格升序
           this.params = {
             ...this.params,
@@ -653,7 +658,7 @@ export default {
       //   this.typeActive = this.$t('search_filter_overall');
       // }
       this.pageIndex = 1;
-      this.params = { ...this.params, searchKeyword: this.searchVal };
+      this.params = { ...this.params, searchKeyword: this.searchVal, sortMap: {} };
       if (value == 1) { // 价格升序
         this.params = {
           ...this.params,
@@ -732,7 +737,6 @@ export default {
         this.pageIndex = 0;
         this.params.filters = filterArr.join(' AND ');
         this.params.facetFilters = facetFilters;
-        console.log(this.params.filters)
         this.getProductList();
         return false;
       }
@@ -759,6 +763,7 @@ export default {
       this.pageIndex = 1;
       this.params = {
         ..._data,
+        ...this.params,
         pageIndex: this.pageIndex,
         pageSize: this.pageSize
       };
