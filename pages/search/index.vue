@@ -313,6 +313,9 @@ export default {
         vm.brandResult = [];
         vm.categoryResult = [];
         vm.list = [];
+        vm.available = false;
+        vm.overseas = false;
+        vm.deliveryType = false;
       }
     })
   },
@@ -413,7 +416,7 @@ export default {
           page: this.pageIndex, // 从0开始算起
           hitsPerPage: this.pageSize,
           facets: ['brandName', 'categoryName'],
-          filters: this.params.filters ? this.params.filters + ' AND ' + _filter.length > 0 ? _filter.join(' AND ') : '' : _filter.length > 0 ? _filter.join(' AND ') : '',
+          filters: this.params.filters ? this.params.filters + (_filter.length > 0 ? ' AND ' + _filter.join(' AND ') : '') : (_filter.length > 0 ? _filter.join(' AND ') : ''),
           facetFilters: [...facetFilters, ...productIdsFscet, ...brandIds, ...supplyCountry]
         }).then(({hits, nbHits, facets}) => {
           this.total = nbHits;
@@ -717,7 +720,7 @@ export default {
         this.pageIndex = 0;
         this.params.filters = filterArr.join(' AND ');
         this.params.facetFilters = facetFilters;
-        
+        console.log(this.params.filters)
         this.getProductList();
         return false;
       }
@@ -814,10 +817,11 @@ export default {
         let facetProducts = this.params.productIds ? this.params.productIds : [];
         let brandIds = this.params.brandIds ? this.params.brandIds : [];
         let supplyCountry = this.params.supplyCountry ? this.params.supplyCountry : [];
+
         searchClient.search(this.params.productIds || this.params.categoryIds ? '' : this.searchVal, {
           page: this.pageIndex, // 从0开始算起
           hitsPerPage: this.pageSize,
-          filters: this.params.filters ? this.params.filters + ' AND ' + _filter.length > 0 ? _filter.join(' AND ') : '' : _filter.length > 0 ? _filter.join(' AND ') : '',
+          filters: this.params.filters ? this.params.filters + (_filter.length > 0 ? ' AND ' + _filter.join(' AND ') : '') : (_filter.length > 0 ? _filter.join(' AND ') : ''),
           facetFilters: [...facetFilters, ...facetProducts, ...brandIds, ...supplyCountry]
         }).then(({hits, nbHits}) => {
           this.total = nbHits;
