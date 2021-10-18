@@ -389,7 +389,7 @@ export default {
     this.params = {...this.params, pageIndex: this.pageIndex, pageSize: this.pageSize};
 
     // 如果带着搜索的参数跳转过来的需要先获取相对应的搜索数据
-    if (this.searchVal != '' || (this.$route.query && !this.$route.query.back)) {
+    if (this.searchVal != '' || (!this.$route.query && !this.$route.query.back)) {
       // 加载图标
       this.$toast.loading({
         forbidClick: true,
@@ -458,7 +458,7 @@ export default {
             shopId: this.shopId
           }
         }
-        const listData = await this.$api.getProductSearch(this.params);
+        const listData = await this.$api.getProductSearch({ ...this.params, searchKeyword: this.searchVal});
         this.isRouteBack = 1;
         
         // 数据列表需要格式化

@@ -139,7 +139,7 @@
       <!-- 仅退款 -->
       <h4 class="fs-14 fw" v-if="detail.returnType == 0">{{ $t('refund_return_state_tip_2', { replace_tip: detail.orderType == 1 ? $t('merchant'): $t('platform') }) }}</h4>
       <!-- 退货退款 -->
-      <h4 class="fs-14 fw" v-if="detail.returnType == 1">{{ $t('refund_return_state_tip_50', { replace_tip: detail.orderType == 1 ? $t('merchant'): $t('platform') }) }}</h4>
+      <h4 class="fs-14 fw" v-if="detail.returnType == 1">{{ $t('refund_return_state_tip_52', { replace_tip: detail.orderType == 1 ? $t('merchant'): $t('platform') }) }}</h4>
       <!-- 退款 -->
       <p class="mt-12 fs-12 light-grey pre-wrap" v-if="detail.returnType == 0 && detail.orderType == 1" v-html="$t('refund_return_state_tip_4', { replace_tip: detail.orderType == 1 ? $t('merchant'): $t('platform') })"></p>
       <p class="mt-12 fs-12 light-grey pre-wrap" v-if="detail.returnType == 0 && detail.orderType == 2" v-html="$t('refund_return_state_tip_3', { replace_tip: detail.orderType == 1 ? $t('merchant'): $t('platform') })"></p>
@@ -150,7 +150,7 @@
         <span class="pre-wrap" v-html="$t('refund_return_state_tip_6', { replace_tip: detail.orderType == 1 ? $t('merchant'): $t('platform') })"></span>
       </p>
       <!-- FBM -->
-      <p class="mt-12 fs-12 light-grey" v-if="detail.returnType == 1 && detail.orderType == 2">{{ $t('refund_return_state_tip_51') }}</p>
+      <p class="mt-12 fs-12 light-grey" v-if="detail.returnType == 1 && detail.orderType == 2">{{ $t('refund_return_state_tip_53') }}</p>
     </div>
 
     <!-- 商家同意退货申请, 自行邮寄 -->
@@ -257,7 +257,7 @@
     <!-- 平台处理中，请耐心等待 -->
     <div class="bg-white plr-12 ptb-20" v-if="detail.status == 7 && detail.involvedStatus == 2">
       <h4 class="fs-14 fw">{{ $t('refund_return_state_tip_49') }}</h4>
-      <p class="mt-12 fs-12 light-grey pre-wrap" v-html="$t('refund_return_state_tip_50', { replace_tip: detail.orderType == 1 ? $t('merchant'): $t('platform') })"></p>
+      <p class="mt-12 fs-12 light-grey pre-wrap" v-html="$t('refund_return_state_tip_50')"></p>
     </div>
 
     <!-- 退货退款/换货 成功, 换货暂时不做 -->
