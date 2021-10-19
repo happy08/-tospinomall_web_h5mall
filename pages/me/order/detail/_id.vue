@@ -167,7 +167,7 @@
       <!-- 去评价：在线支付[已完成4且未评价0]；货到付款[已完成4且未评价0] -->
       <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" v-if="detail.hasComment == 0 && detail.status == 4" @btnClick="onRate(detail)">{{ $t('evaluation') }}</BmButton>
       <!-- 退款/售后：在线支付[待发货1且已支付1且可售后1, 该处2/4不展示[待收货2且已支付1且可售后1,已完成4且可售后1]]；货到付款[待发货1且已支付1且可售后1,该地方不展示[待收货2且可售后1,已完成4且可售后1]] -->
-      <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" v-if="(detail.paymentType == 1 && (((detail.status == 1) && detail.payState == 1))  && detail.showAfterSale == 1) || (detail.paymentType == 2 && ((detail.status == 1 && detail.payState == 1)) && detail.showAfterSale == 1)" @btnClick="onAfterSale(detail)">{{ $t('refund_after_sale') }}</BmButton>
+      <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" v-if="(detail.paymentType == 1 && detail.status == 1 && detail.payState == 1 && detail.showAfterSale == 1) || (detail.paymentType == 2 && detail.status == 1 && detail.payState == 1 && detail.showAfterSale == 1)" @btnClick="onAfterSale(detail)">{{ $t('refund_after_sale') }}</BmButton>
       <!-- 确认收货：在线支付[待收货2且已支付1]；货到付款[待收货2] -->
       <BmButton class="fs-14 ml-10 round-8 plr-12 h-32 gery-border" :type="'info'" v-if="(detail.paymentType == 1 && detail.status == 2 && detail.payState == 1) || (detail.paymentType == 2 && detail.status == 2)" @btnClick="onReceipt(detail)">{{ $t('confirm_receipt') }}</BmButton>
       <!-- 去购买：待发货1,待收货2,待评价3,已完成4,已取消5,超时未付款6,已拒收7,其他8 -->
