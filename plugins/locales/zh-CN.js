@@ -165,7 +165,7 @@ const cn = {
   return_and_exchange_instructions: '售后说明',
   apply_for_after_sales: '申请售后',
   cancel_the_application: '撤销申请',
-  customer_service: '客服',
+  customer_service: '联系客服',
   application_type: '申请类型',
   state_of_the_goods: '货品状态',
   apply_for_reason: '申请理由',

@@ -165,7 +165,7 @@ const vi = {
   return_and_exchange_instructions: 'Sau khi bán hàng hướng dẫn',
   apply_for_after_sales: 'Áp dụng cho hậu mãi',
   cancel_the_application: 'đơn bị hủy',
-  customer_service: 'dịch vụ khách hàng',
+  customer_service: 'Liên hệ với dịch vụ khách hàng',
   application_type: 'loại ứng dụng',
   state_of_the_goods: 'Tình trạng mặt hàng',
   apply_for_reason: 'Lý do ứng dụng',

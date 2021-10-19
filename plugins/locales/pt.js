@@ -165,7 +165,7 @@
   return_and_exchange_instructions: 'Instruções pós-venda',
   apply_for_after_sales: 'Candidate-se a pós-venda',
   cancel_the_application: 'Aplicação cancelada',
-  customer_service: 'Atendimento ao Cliente',
+  customer_service: 'Contate o Atendimento ao Cliente',
   application_type: 'tipo de aplicação',
   state_of_the_goods: 'Status do item',
   apply_for_reason: 'Motivo da candidatura',

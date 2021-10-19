@@ -1,10 +1,14 @@
 <template>
   <!-- 我的-设置-语言设置 -->
   <div class="bg-grey vh-100">
-    <BmHeaderNav :left="{ isShow: true }" :title="$t('language_settings')" />
+    <BmHeaderNav :left="{ isShow: true }" :title="$t('language_settings')">
+      <div slot="header-right" class="green" @click="onConfirm">
+        {{ $t('done') }}
+      </div>
+    </BmHeaderNav>
 
     <div>
-      <van-cell class="p-20" :title="langItem.label" :title-class="['fm-pf-r fs-14', $store.state.locale == langItem.value ? 'green' : 'black']" @click="changeLang(langItem.value)" v-for="langItem in langList" :key="'lang-' + langItem.id" />
+      <van-cell class="p-20" :title="langItem.label" :title-class="['fm-pf-r fs-14', locale == langItem.value ? 'green' : 'black']" @click="locale = langItem.value" v-for="langItem in langList" :key="'lang-' + langItem.id" />
     </div>
   </div>
 </template>
@@ -19,7 +23,8 @@ export default {
   },
   data() {
     return {
-      langList: []
+      langList: [],
+      locale: this.$store.state.locale
     }
   },
   activated() {
@@ -35,8 +40,9 @@ export default {
     });
   },
   methods: {
-    changeLang(lang) { // 切换语言
-      this.$store.commit('SET_LANG', lang);
+    onConfirm() { // 切换语言
+      this.$cookies.set('lang', this.locale);
+      location.href = '/';
     }
   },
 }

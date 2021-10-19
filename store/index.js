@@ -1,7 +1,7 @@
 import { vantLocales } from '@/plugins/vue-i18n';
 
 export const state = () => ({
-  locales: ['en', 'zh-CN', /*'zh-TW', 'fr', 'es', 'ms', */'vi', 'pt'],
+  locales: [],
   locale: 'zh-CN',
   rate: {
     currency: ''
@@ -42,6 +42,9 @@ export const mutations = {
   },
   SET_SUPPLYCOUNTRY(state, supplyCountry) {
     state.supplyCountry = supplyCountry;
+  },
+  SET_LANGLIST(state, locales) {
+    state.locales = locales;
   }
 };
 
@@ -81,8 +84,11 @@ export const actions = {
     commit('SET_SEARCHTYPE', initData.data.searchType);
 
     // 获取当前语言
-    const lang = $cookies.get('lang');
-    commit('SET_LANG', lang);
+    const localeData = await $api.getLangs();
+    commit('SET_LANGLIST', localeData.data.localeList.map(item => {
+      return item.value;
+    }));
+    commit('SET_LANG', $cookies.get('lang') || localeData.data.defaultLocale);
 
     // 获取国家名称和国家图片
     // const countryData = await $api.getSupplyCountry();

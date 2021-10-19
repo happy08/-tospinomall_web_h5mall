@@ -165,7 +165,7 @@ const en = {
   return_and_exchange_instructions: 'After-sales instructions',
   apply_for_after_sales: 'Apply for after sales',
   cancel_the_application: 'Cancel the application',
-  customer_service: 'customer service',
+  customer_service: 'Contact Customer Service',
   application_type: 'Application type',
   state_of_the_goods: 'State of the goods',
   apply_for_reason: 'Apply for reason',
