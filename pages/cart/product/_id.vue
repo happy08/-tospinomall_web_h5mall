@@ -552,10 +552,11 @@
     <div class="bg-white flex vcenter between pl-10 product-detail__operate">
       <div class="flex arround w-100">
         <!-- 客服 -->
-        <!-- <van-icon
+        <van-icon
           :name="require('@/assets/images/icon/chat-icon.png')"
           size="0.6rem"
-        /> -->
+          @click="qimoChatClick()"
+        />
         <!-- 店铺 -->
         <nuxt-link :to="{ name: 'cart-store-id', params: { id: storeInfo.storeId }, query: { sellerId: storeInfo.sellerId, tabbarActive: 0} }">
           <van-icon :name="require('@/assets/images/icon/store-icon.png')" size="0.6rem" />
@@ -873,6 +874,14 @@ export default {
       keyword: metaData.data.keyword.replace('{spuTitle}', this.goodSpuVo.goodTitle).replace('{sellerGoodsKeywords}', this.goodSpuVo.goodTitle)
     }
   },
+  mounted() {
+    if (this.$store.state.user.authToken) {
+      let customer_service = document.createElement('script');
+      let language = this.$i18n.locale == 'zh-CN' ? 'ZHCN' : 'EN';
+      customer_service.src = `https://ykf-webchat.7moor.com/javascripts/7moorInit.js?accessId=79b98c00-2fd7-11ec-bee1-5126bd69b6e2&autoShow=false&language=${language}`;
+      document.head.appendChild(customer_service);
+    }
+  },
   activated() {
     if (this.$store.state.user.authToken) {
       getCurrentDefaultAddress().then(res => { // 查看是否有默认地址
@@ -1179,6 +1188,15 @@ export default {
         return false;
       }
       this.addressShow = true;
+    },
+    qimoChatClick() { // 唤起客服
+      if (!this.$store.state.user.authToken) {
+        this.$router.push({
+          name: 'login'
+        })
+        return false;
+      }
+      qimoChatClick();
     }
   },
 }

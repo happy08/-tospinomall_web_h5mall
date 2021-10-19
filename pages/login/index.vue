@@ -246,8 +246,8 @@ export default {
             });
             this.$api.thirdPartyLogin({ mobile: { userId: user.id, email: user.email, name: user.name }, grant_type: 'facebook' }).then(res => {
               console.log(res)
+              this.$toast.clear();
               if (res.code == 11001) {
-                this.$toast.clear();
                 this.$router.push({
                   name: 'login-bind',
                   query: {
@@ -266,7 +266,6 @@ export default {
               this.$store.commit('user/SET_WEBSOCKET', res.data.user_info.passUrl);
               // 当前登录账号
               this.$store.commit('user/SET_ACCOUNT', res.data.user_info.email);
-              this.$toast.clear();
               // 登录成功跳转到首页
               setTimeout(() => {
                 this.account = '';
@@ -277,8 +276,8 @@ export default {
               }, 100);
             }).catch(error => {
               console.log(error)
+              this.$toast.clear();
               if (error.code == 11001) { // 未绑定邮箱 11001
-                this.$toast.clear();
                 this.$router.push({
                   name: 'login-bind',
                   query: {
@@ -286,8 +285,9 @@ export default {
                     name: user.name
                   }
                 })
+              } else {
+                this.$toast(error.msg);
               }
-              
             })
           })
         }
