@@ -11,7 +11,7 @@ const production = {
   DOMAIN_API: 'https://tospinomallapi.fyynet.com', //请求地址
   PATH_API: '', //接口路径  api/
   VERSION_API: '', //版本
-  DOMAIN_LOGIN: 'https://tospinomallapi.fyynet.com' //https://auth.fyynet.com //登录、退出登录、刷新token、第三方登录接口地址
+  DOMAIN_LOGIN: 'https://auth.fyynet.com' //https://auth.fyynet.com //登录、退出登录、刷新token、第三方登录接口地址
 };
 
 const isDev = process.env.NODE_ENV === 'development';
