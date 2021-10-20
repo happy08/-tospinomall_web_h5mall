@@ -396,7 +396,7 @@ export default {
       });
 
       getOrderDetail(this.$route.params.id).then(res => {
-        let title = '';
+        let title = 'trading_close';
         if (res.data.status == 0) title = 'unpaid'; // 0  待付款
         if (res.data.status == 1) title = 'to_be_delivered'; // 2  待发货
         if (res.data.status == 2) title = 'unreceived'; // 2  待收货
