@@ -507,7 +507,7 @@ const vi = {
   refund_return_state_tip_20: 'Lưu ý {replace_tip}:Đơn trả lại của bạn không tuân theo thỏa thuận nền tảng, vui lòng liên hệ với bộ phận dịch vụ khách hàng để thương lượng về sự đồng thuận, sau đó bắt đầu lại đơn trả lại và hoàn tiền',
   refund_return_state_tip_22: '{replace_tip} bị từ chối',
   refund_return_state_tip_23: 'Lưu ý {replace_tip}:Sản phẩm trả lại của bạn không có trong cam kết trả lại vì lý do cá nhân của người mua. Vui lòng liên hệ với bộ phận chăm sóc khách hàng để thương lượng và bắt đầu lại đơn trả lại và hoàn tiền',
-  express_number: 'số theo dõi',
+  express_number: 'Số theo dõi',
   fill_express_number: 'Điền vào số chuyển phát nhanh trở lại',
   confirm_submit: 'xác nhận gửi',
   submit_express_number_tips: 'Bắt buộc, vui lòng điền chi tiết hướng dẫn đăng ký',

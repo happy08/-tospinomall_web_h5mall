@@ -1050,7 +1050,7 @@ export default {
       })
     },
     closePopup() { // 关闭修改地址弹窗时触发, 数据处理
-      if (this.isNext) {
+      if (!this.isNext) {
         this.assgnStepList = this.stepArr;
         this.form = {
           countryCode: this.assgnStepList[0] ? this.assgnStepList[0].code : '',
