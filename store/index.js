@@ -8,7 +8,8 @@ export const state = () => ({
   },
   searchProductList: [], // 商品搜索历史
   searchType: 0, // 搜索类型
-  supplyCountry: {} // 国家
+  supplyCountry: {}, // 国家
+  platform: {}
 });
 
 export const mutations = {
@@ -45,6 +46,9 @@ export const mutations = {
   },
   SET_LANGLIST(state, locales) {
     state.locales = locales;
+  },
+  SET_PLATFORM(state, platform) {
+    state.platform = platform;
   }
 };
 
@@ -78,10 +82,13 @@ export const actions = {
     
     // 获取初始化信息
     const initData = await $api.getInitData();
+    console.log(initData.data)
     // 获取当前语言货币汇率
     commit('SET_RATE', initData.data.baseRate);
     // 获取搜索类型
     commit('SET_SEARCHTYPE', initData.data.searchType);
+    // 获取平台信息
+    commit('SET_PLATFORM', initData.data.platformSet);
 
     // 获取当前语言
     const localeData = await $api.getLangs();
@@ -91,8 +98,8 @@ export const actions = {
     commit('SET_LANG', $cookies.get('lang') || localeData.data.defaultLocale);
 
     // 获取国家名称和国家图片
-    // const countryData = await $api.getSupplyCountry();
-    // commit('SET_SUPPLYCOUNTRY', countryData.data);
+    const countryData = await $api.getSupplyCountry();
+    commit('SET_SUPPLYCOUNTRY', countryData.data);
     
     // 是否有未读消息
     commit('user/SET_ISNEWMESSAGE', Boolean($cookies.get('isNewWebsocketMsg')));

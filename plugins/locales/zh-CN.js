@@ -711,7 +711,11 @@ const cn = {
   delivery_freight_free: '配送费',
   delivery_freight_place: '发货地',
   delivery_freight_arrive_time: '预计到达时间',
-  delivery_address_choose: '选择'
+  delivery_address_choose: '选择',
+  concat_customer_service_tip: '如有需要或无法解决的问题，请联系我们的客服。',
+  concat_customer_service_online: '在线沟通',
+  concat_customer_service_tel: '电话联系',
+  concat_customer_service_email: '邮箱联系'
 }
 
 export default cn;

@@ -711,7 +711,11 @@ const vi = {
   delivery_freight_free: 'Phí giao hàng',
   delivery_freight_place: 'Nơi giao hàng',
   delivery_freight_arrive_time: 'Thời gian đến dự kiến',
-  delivery_address_choose: 'Chọn'
+  delivery_address_choose: 'Chọn',
+  concat_customer_service_tip: 'Nếu bạn có bất kỳ vấn đề nào mà bạn cần hoặc không thể giải quyết, vui lòng liên hệ với bộ phận chăm sóc khách hàng của chúng tôi.',
+  concat_customer_service_online: 'Giao tiếp trực tuyến',
+  concat_customer_service_tel: 'Liên hệ qua điện thoại',
+  concat_customer_service_email: 'Liên hệ qua email'
 }
 
 export default vi;

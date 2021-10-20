@@ -85,7 +85,7 @@
     <!-- 其他设置项 -->
     <div class="round-8 bg-white mlr-12 mt-12 hidden user-page__other">
       <nuxt-link v-for="(otherItem, otherIndex) in otherList" :key="'other-list-' + otherIndex" :to="{ name: otherItem.name, query: otherItem.query }" class="block mlr-12 border-b">
-        <van-cell class="ptb-14 plr-0" :title="$t(otherItem.text)" title-class="pl-12" @click="otherItem.text == 'customer_service' ? qimoChatClick() : false">
+        <van-cell class="ptb-14 plr-0" :title="$t(otherItem.text)" title-class="pl-12">
           <template #icon>
             <BmIcon :name="otherItem.icon" :width="'0.48rem'" :height="'0.48rem'"></BmIcon>
           </template>
@@ -185,7 +185,7 @@ export default {
         },
         {
           text: 'customer_service', // 客服
-          name: '',
+          name: 'me-concat',
           icon: 'customer'
         },
         {
@@ -195,15 +195,6 @@ export default {
         }
       ],
       walletNum: 0
-    }
-  },
-  mounted() {
-    // language用于控制访客端展示的语言类型，language=ZHCN为中文，language=EN为英文，您可按需设置一种语言类型
-    if (this.$store.state.user.authToken) {
-      let customer_service = document.createElement('script');
-      let language = this.$i18n.locale == 'zh-CN' ? 'ZHCN' : 'EN';
-      customer_service.src = `https://ykf-webchat.7moor.com/javascripts/7moorInit.js?accessId=79b98c00-2fd7-11ec-bee1-5126bd69b6e2&autoShow=false&language=${language}`;
-      document.head.appendChild(customer_service);
     }
   },
   activated() {
@@ -237,15 +228,6 @@ export default {
           name: 'me-account-userinfo'
         })
       }
-    },
-    qimoChatClick() { // 唤起客服
-      if (!this.$store.state.user.authToken) {
-        this.$router.push({
-          name: 'login'
-        })
-        return false;
-      }
-      qimoChatClick();
     }
   }
 }

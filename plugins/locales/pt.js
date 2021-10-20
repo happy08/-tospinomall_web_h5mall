@@ -711,7 +711,11 @@
   delivery_freight_free: 'Taxa de entrega',
   delivery_freight_place: 'Local de entrega',
   delivery_freight_arrive_time: 'Tempo de chegada estimado',
-  delivery_address_choose: 'Escolher'
+  delivery_address_choose: 'Escolher',
+  concat_customer_service_tip: 'Se você tiver algum problema que precise ou não possa resolver, entre em contato com nosso atendimento ao cliente.',
+  concat_customer_service_online: 'Comunicação online',
+  concat_customer_service_tel: 'Contatando por telefone',
+  concat_customer_service_email: 'Contato de email'
 }
 
 export default por;

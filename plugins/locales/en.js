@@ -711,7 +711,11 @@ const en = {
   delivery_freight_free: 'Delivery fee',
   delivery_freight_place: 'Delivery place',
   delivery_freight_arrive_time: 'Estimated arrival time',
-  delivery_address_choose: 'Choose'
+  delivery_address_choose: 'Choose',
+  concat_customer_service_tip: 'If you have any problems that you need or cannot solve, please contact our customer service.',
+  concat_customer_service_online: 'Online communication',
+  concat_customer_service_tel: 'Telephone contact',
+  concat_customer_service_email: 'Email contact'
 }
 
 export default en;
