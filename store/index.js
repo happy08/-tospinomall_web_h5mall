@@ -2,7 +2,7 @@ import { vantLocales } from '@/plugins/vue-i18n';
 
 export const state = () => ({
   locales: [],
-  locale: 'zh-CN',
+  locale: '',
   rate: {
     currency: ''
   },
