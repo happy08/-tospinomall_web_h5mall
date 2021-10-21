@@ -37,7 +37,9 @@ export default {
     this.$api.getLangs().then(res => {
       this.$toast.clear();
       this.langList = res.data.localeList;
-    });
+    }).catch(error => {
+      console.log(error);
+    })
   },
   methods: {
     onConfirm() { // 切换语言

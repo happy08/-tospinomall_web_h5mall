@@ -198,6 +198,8 @@ export default {
     getPhonePrefix() { // 获取所有手机号前缀
       getPhonePrefix().then(res => {
         this.phonePrefixs = res.data;
+      }).catch(error => {
+        console.log(error);
       })
     },
     onConfirm(event) { // 选择手机号前缀

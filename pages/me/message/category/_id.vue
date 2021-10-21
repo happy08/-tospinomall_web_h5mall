@@ -57,6 +57,8 @@ export default {
         this.refreshing.isFresh = false;
         // 标记为已读
         markedSingleAsRead(this.$route.params.id);
+      }).catch(error => {
+        console.log(error);
       })
     },
     onRefresh() { // 下拉刷新

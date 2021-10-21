@@ -111,6 +111,8 @@ export default {
     cancelPayOrder() { // 取消订单支付
       cancelPayOrder(this.$route.query.refNo).then(() => {
         this.$router.go(-1);
+      }).catch(error => {
+        console.log(error);
       })
     },
     leftClick() { // 页面回退
@@ -119,6 +121,8 @@ export default {
     cancelBuyerRecharge() { // 买家取消充值
       buyerCancelRecharge(this.$route.query.refNo).then(() => {
         this.$router.go(-1);
+      }).catch(error => {
+        console.log(error);
       })
     }
   },

@@ -51,6 +51,8 @@ export default {
         //     history.back();
         //   }
         // })
+      }).catch(error => {
+        console.log(error);
       })
     }
   },

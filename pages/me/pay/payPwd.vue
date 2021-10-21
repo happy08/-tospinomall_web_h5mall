@@ -72,6 +72,8 @@ export default {
                 payPwd: this.value
               }
             })
+          }).catch(error => {
+            console.log(error);
           })
         }, 100);
       }

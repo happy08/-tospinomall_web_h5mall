@@ -49,6 +49,8 @@ export default {
     // 获取物流信息
     getLogisticsInfo(this.$route.query.deliverySn).then(res => {
       this.detail = res.data;
+    }).catch(error => {
+      console.log(error);
     })
   },
   methods: {

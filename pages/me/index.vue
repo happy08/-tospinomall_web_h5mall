@@ -208,6 +208,8 @@ export default {
         this.orderList[1].count = res.data.await_take_good_count; // 待收货订单数
         this.orderList[2].count = res.data.await_comment; // 待评价
         this.orderList[3].count = res.data.order_refund_await_deal; // 售后
+      }).catch(error => {
+        console.log(error);
       })
     } else {
       this.orderList[0].count = 0; // 待支付订单数

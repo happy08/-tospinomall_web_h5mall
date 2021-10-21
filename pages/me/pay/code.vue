@@ -85,6 +85,8 @@ export default {
                 from: this.$route.query.from
               }
             })
+          }).catch(error => {
+            console.log(error);
           })
         }, 100);
       }
@@ -110,6 +112,8 @@ export default {
           }
           this.countdown --;
         }, 1000);
+      }).catch(error => {
+        console.log(error);
       })
     }
   },

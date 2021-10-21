@@ -129,6 +129,8 @@ export default {
 
       getPicUrl(formData).then(res => {
         this.updateUserInfo({ headPictureUrl: res.data });
+      }).catch(error => {
+        console.log(error);
       })
     },
     copy() { // 复制会员账号
@@ -165,6 +167,8 @@ export default {
           cellBirthday: res.data.birthday ? this.$utils.formatStandardDate(res.data.birthday) : ''
         };
         this.isPickerShow = false;
+      }).catch(error => {
+        console.log(error);
       })
     }
   },

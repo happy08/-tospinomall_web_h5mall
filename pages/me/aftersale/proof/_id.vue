@@ -146,6 +146,8 @@ export default {
           text: item.applyReason
         }
       });
+    }).catch(error => {
+      console.log(error);
     })
   },
   beforeRouteEnter (to, from, next) {
@@ -186,12 +188,16 @@ export default {
           this.fileList = [];
           this.imgList = [];
           this.$router.go(-1);
+        }).catch(error => {
+          console.log(error);
         })
       } else {
         applyMallIntervene({ returnApplyId: this.detail.id, workDesc: this.question, workMustVoucher: workMustVoucher.join(','), workName: this.currentReason.applyReason, workOptionalVoucher: workOptionalVoucher.join(',') }).then(() => {
           this.fileList = [];
           this.imgList = [];
           this.$router.go(-1);
+        }).catch(error => {
+          console.log(error);
         })
       }
       

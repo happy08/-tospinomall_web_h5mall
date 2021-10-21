@@ -90,39 +90,43 @@ export default {
     }
   },
   async fetch() {
-    const [listData, metaData] = await Promise.all([
-      this.$api.getCategoryList(), // 分类列表
-      this.$api.getCategorySeo() // 获取SEO信息
-    ])
-    let _all_categories = [];
-    listData.data.forEach(item => {
-      _all_categories.push(item.name);
-      if (item.children) {
-        item.children.forEach(childrenItem => {
-          _all_categories.push(childrenItem.name);
-          if (childrenItem.children) {
-            childrenItem.children.forEach(threeChildrenItem => {
-              _all_categories.push(threeChildrenItem.name);
-            })
-          }
-        })
-      }
-    }); // 所有分类名为了seo优化
-    this.catrgoriesList = listData.data.map(item => {
-      return {
-        text: item.name,
-        id: item.id,
-        children: item.children
-      }
-    })
-    this.list = listData.data;
-    this.leftLists = this.catrgoriesList[0].children;
+    try {
+      const [listData, metaData] = await Promise.all([
+        this.$api.getCategoryList(), // 分类列表
+        this.$api.getCategorySeo() // 获取SEO信息
+      ])
+      let _all_categories = [];
+      listData.data.forEach(item => {
+        _all_categories.push(item.name);
+        if (item.children) {
+          item.children.forEach(childrenItem => {
+            _all_categories.push(childrenItem.name);
+            if (childrenItem.children) {
+              childrenItem.children.forEach(threeChildrenItem => {
+                _all_categories.push(threeChildrenItem.name);
+              })
+            }
+          })
+        }
+      }); // 所有分类名为了seo优化
+      this.catrgoriesList = listData.data.map(item => {
+        return {
+          text: item.name,
+          id: item.id,
+          children: item.children
+        }
+      })
+      this.list = listData.data;
+      this.leftLists = this.catrgoriesList[0].children;
 
-    this.meta = {
-      title: metaData.data.title.replace('{categoryName}', _all_categories.join(',')),
-      description: metaData.data.description.replace('{categoryName}', _all_categories.join(',')),
-      keyword: metaData.data.keyword.replace('{categoryName}', _all_categories.join(','))
-    };
+      this.meta = {
+        title: metaData.data.title.replace('{categoryName}', _all_categories.join(',')),
+        description: metaData.data.description.replace('{categoryName}', _all_categories.join(',')),
+        keyword: metaData.data.keyword.replace('{categoryName}', _all_categories.join(','))
+      };
+    } catch (error) {
+      console.log(error);
+    }
   },
   methods: {
     changeNavEvent(currentIndex) { // 点击左侧切换tab栏

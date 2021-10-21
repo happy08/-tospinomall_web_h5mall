@@ -87,11 +87,15 @@ export default {
             isDefault: item.isDefault == 1 ? true: false
           }
         })
+      }).catch(error => {
+        console.log(error);
       })
     },
     onSetDeafult(id) { // 设置默认地址
       updateDefaultAddress(id).then(() => {
         this.getAddressList();
+      }).catch(error => {
+        console.log(error);
       })
     },
     onClick(item) { // 主要是为了点击跳转返回售后申请页面

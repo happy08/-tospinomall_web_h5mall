@@ -322,196 +322,202 @@ export default {
     })
   },
   async fetch() {
-    currencyType = this.$store.state.searchType; // 0 阿里搜索 2 algolia搜索
-    this.filterCheckType = currencyType;
-    if (this.$route.query.val != this.searchVal) { // 一个新的搜索
-      this.params = {};
-      // this.shopId = '';
-      this.brandResult = [];
-      this.categoryResult = [];
-    }
-    this.searchVal = this.$route.query.val || ''; // 搜索value
-    this.isShowTip = this.searchVal.length > 0 ? false : true;
+    try {
+      currencyType = this.$store.state.searchType; // 0 阿里搜索 2 algolia搜索
+      this.filterCheckType = currencyType;
+      if (this.$route.query.val != this.searchVal) { // 一个新的搜索
+        this.params = {};
+        // this.shopId = '';
+        this.brandResult = [];
+        this.categoryResult = [];
+      }
+      this.searchVal = this.$route.query.val || ''; // 搜索value
+      this.isShowTip = this.searchVal.length > 0 ? false : true;
 
-    if (this.$route.query.navCategoryIds) {
-      this.params.navCategoryIds = !Array.isArray(this.$route.query.navCategoryIds) ? [this.$route.query.navCategoryIds] : this.$route.query.navCategoryIds;
-      this.isShowTip = false;
-    }
+      if (this.$route.query.navCategoryIds) {
+        this.params.navCategoryIds = !Array.isArray(this.$route.query.navCategoryIds) ? [this.$route.query.navCategoryIds] : this.$route.query.navCategoryIds;
+        this.isShowTip = false;
+      }
 
-    if (this.$route.query.back) { // 从哪个页面进来的
-      this.backName = this.$route.query.back;
-    }
-    if (this.$route.query.backId) {
-      this.backNameId = this.$route.query.backId;
-      this.isRouteBack = 1;
-    }
-    if (this.$route.query.backQuery) {
-      this.backQuery = this.$route.query.backQuery;
-    }
-    if (this.$route.query.categoryId) { // 后端分类id
-      // 阿里搜索
-      this.params.categoryIds = Array.isArray(this.$route.query.categoryId) ? this.$route.query.categoryId : [this.$route.query.categoryId];
+      if (this.$route.query.back) { // 从哪个页面进来的
+        this.backName = this.$route.query.back;
+      }
+      if (this.$route.query.backId) {
+        this.backNameId = this.$route.query.backId;
+        this.isRouteBack = 1;
+      }
+      if (this.$route.query.backQuery) {
+        this.backQuery = this.$route.query.backQuery;
+      }
+      if (this.$route.query.categoryId) { // 后端分类id
+        // 阿里搜索
+        this.params.categoryIds = Array.isArray(this.$route.query.categoryId) ? this.$route.query.categoryId : [this.$route.query.categoryId];
+        if (currencyType == 2) {
+          // algolia搜索
+          this.params.productIds = Array.isArray(this.$route.query.categoryId) ? this.$route.query.categoryId.map(item => {
+            return `categoryIds:${item}`;
+          }) : [`categoryIds:${this.$route.query.categoryId}`];
+        }
+        this.isShowTip = false;
+      }
+      if (this.$route.query.brandId) { // 品牌id
+        this.params.brandIds = Array.isArray(this.$route.query.brandId) ? this.$route.query.brandId : [this.$route.query.brandId];
+        if (currencyType == 2) { // algolia搜索
+          this.params.brandIds = Array.isArray(this.$route.query.brandId) ? this.$route.query.brandId.map(item => {
+            return `brandId:${item}`;
+          }): [`brandId:${this.$route.query.brandId}`];
+        }
+        this.isShowTip = false;
+      }
+      if (this.$route.query.supplyCountry) { // 国家编码
+        this.params.supplyCountry = Array.isArray(this.$route.query.supplyCountry) ? this.$route.query.supplyCountry : [this.$route.query.supplyCountry];
+        if (currencyType == 2) { // algolia搜索
+          this.params.supplyCountry = Array.isArray(this.$route.query.supplyCountry) ? this.$route.query.supplyCountry.map(item => {
+            return `supplyCountry:${item}`;
+          }): [`supplyCountry:${this.$route.query.supplyCountry}`];
+        }
+        
+        this.params.deliveryType = this.$route.query.deliveryType ? this.$route.query.deliveryType : '';
+        this.isShowTip = false;
+      }
+
       if (currencyType == 2) {
-        // algolia搜索
-        this.params.productIds = Array.isArray(this.$route.query.categoryId) ? this.$route.query.categoryId.map(item => {
-          return `categoryIds:${item}`;
-        }) : [`categoryIds:${this.$route.query.categoryId}`];
+        const algoliasearch = require('algoliasearch');
+        client = algoliasearch('62MLEBY33X','7a8da9a5fd3f8137ea8cb70b60806e8d');
+        searchClient = client.initIndex('tospinoMall');
       }
-      this.isShowTip = false;
-    }
-    if (this.$route.query.brandId) { // 品牌id
-      this.params.brandIds = Array.isArray(this.$route.query.brandId) ? this.$route.query.brandId : [this.$route.query.brandId];
-      if (currencyType == 2) { // algolia搜索
-        this.params.brandIds = Array.isArray(this.$route.query.brandId) ? this.$route.query.brandId.map(item => {
-          return `brandId:${item}`;
-        }): [`brandId:${this.$route.query.brandId}`];
-      }
-      this.isShowTip = false;
-    }
-    if (this.$route.query.supplyCountry) { // 国家编码
-      this.params.supplyCountry = Array.isArray(this.$route.query.supplyCountry) ? this.$route.query.supplyCountry : [this.$route.query.supplyCountry];
-      if (currencyType == 2) { // algolia搜索
-        this.params.supplyCountry = Array.isArray(this.$route.query.supplyCountry) ? this.$route.query.supplyCountry.map(item => {
-          return `supplyCountry:${item}`;
-        }): [`supplyCountry:${this.$route.query.supplyCountry}`];
-      }
-      
-      this.params.deliveryType = this.$route.query.deliveryType ? this.$route.query.deliveryType : '';
-      this.isShowTip = false;
-    }
 
-    if (currencyType == 2) {
-      const algoliasearch = require('algoliasearch');
-      client = algoliasearch('62MLEBY33X','7a8da9a5fd3f8137ea8cb70b60806e8d');
-      searchClient = client.initIndex('tospinoMall');
-    }
+      this.params = {...this.params, pageIndex: this.pageIndex, pageSize: this.pageSize};
 
-    this.params = {...this.params, pageIndex: this.pageIndex, pageSize: this.pageSize};
-
-    // 如果带着搜索的参数跳转过来的需要先获取相对应的搜索数据
-    if (this.searchVal != '' || (!this.$route.query && !this.$route.query.back)) {
-      // 加载图标
-      this.$toast.loading({
-        forbidClick: true,
-        loadingType: 'spinner',
-        duration: 0
-      });
-      this.$store.commit('SET_SEARCHPRODUCTLIST', this.searchVal); // 搜索历史存储
-      this.arrangeType = 2;
-
-      if (currencyType == 2) { // algolia搜索
-        let facetFilters = this.params.facetFilters ? this.params.facetFilters : [];
-        let productIdsFscet = this.params.productIds ? this.params.productIds : [];
-        let brandIds = this.params.brandIds ? this.params.brandIds : [];
-        let supplyCountry = this.params.supplyCountry ? this.params.supplyCountry : [];
-        if (this.$route.query.navCategoryIds) {
-          const getCategoryLinkMap = await this.$api.getCategoryLinkMap(this.params.navCategoryIds);
-          if (getCategoryLinkMap.data['productIds']) { // 商品id
-            productIdsFscet.push((getCategoryLinkMap.data['productIds'].map(item => {
-              return `productId:${item}`;
-            })));
+      // 如果带着搜索的参数跳转过来的需要先获取相对应的搜索数据
+      if (this.searchVal != '' || (this.$route.query && !this.$route.query.back)) {
+        // 加载图标
+        this.$toast.loading({
+          forbidClick: true,
+          loadingType: 'spinner',
+          duration: 0
+        });
+        this.$store.commit('SET_SEARCHPRODUCTLIST', this.searchVal); // 搜索历史存储
+        this.arrangeType = 2;
+        console.log('-----')
+        if (currencyType == 2) { // algolia搜索
+          let facetFilters = this.params.facetFilters ? this.params.facetFilters : [];
+          let productIdsFscet = this.params.productIds ? this.params.productIds : [];
+          let brandIds = this.params.brandIds ? this.params.brandIds : [];
+          let supplyCountry = this.params.supplyCountry ? this.params.supplyCountry : [];
+          if (this.$route.query.navCategoryIds) {
+            const getCategoryLinkMap = await this.$api.getCategoryLinkMap(this.params.navCategoryIds);
+            if (getCategoryLinkMap.data['productIds']) { // 商品id
+              productIdsFscet.push((getCategoryLinkMap.data['productIds'].map(item => {
+                return `productId:${item}`;
+              })));
+            }
+            if (getCategoryLinkMap.data['categoryIds']) { // 分类id
+              productIdsFscet.push((getCategoryLinkMap.data['categoryIds'].map(item => {
+                return `categoryIds:${item}`;
+              })));
+            }
+            this.params.productIds = productIdsFscet;
           }
-          if (getCategoryLinkMap.data['categoryIds']) { // 分类id
-            productIdsFscet.push((getCategoryLinkMap.data['categoryIds'].map(item => {
-              return `categoryIds:${item}`;
-            })));
+          this.pageIndex = 0;
+          let _filter = [];
+          if (this.shopId != '') {
+            _filter.push(`shopId:${this.shopId}`);
           }
-          this.params.productIds = productIdsFscet;
-        }
-        this.pageIndex = 0;
-        let _filter = [];
-        if (this.shopId != '') {
-          _filter.push(`shopId:${this.shopId}`);
-        }
-        if (this.params.deliveryType) {
-          _filter.push(`deliveryType:${this.params.deliveryType}`);
-        }
-        searchClient.search(this.params.productIds ? '' : this.searchVal, {
-          page: this.pageIndex, // 从0开始算起
-          hitsPerPage: this.pageSize,
-          facets: ['brandName', 'categoryName'],
-          filters: this.params.filters ? this.params.filters + (_filter.length > 0 ? ' AND ' + _filter.join(' AND ') : '') : (_filter.length > 0 ? _filter.join(' AND ') : ''),
-          facetFilters: [...facetFilters, ...productIdsFscet, ...brandIds, ...supplyCountry]
-        }).then(({hits, nbHits, facets}) => {
-          this.total = nbHits;
-          this.list = hits;
-          if (facetFilters.length == 0) {
-            this.brandList = facets.brandName ? Object.keys(facets.brandName) : [];
-            this.categoryList = facets.categoryName ? Object.keys(facets.categoryName) : [];
+          if (this.params.deliveryType) {
+            _filter.push(`deliveryType:${this.params.deliveryType}`);
           }
+          searchClient.search(this.params.productIds ? '' : this.searchVal, {
+            page: this.pageIndex, // 从0开始算起
+            hitsPerPage: this.pageSize,
+            facets: ['brandName', 'categoryName'],
+            filters: this.params.filters ? this.params.filters + (_filter.length > 0 ? ' AND ' + _filter.join(' AND ') : '') : (_filter.length > 0 ? _filter.join(' AND ') : ''),
+            facetFilters: [...facetFilters, ...productIdsFscet, ...brandIds, ...supplyCountry]
+          }).then(({hits, nbHits, facets}) => {
+            this.total = nbHits;
+            this.list = hits;
+            if (facetFilters.length == 0) {
+              this.brandList = facets.brandName ? Object.keys(facets.brandName) : [];
+              this.categoryList = facets.categoryName ? Object.keys(facets.categoryName) : [];
+            }
+            this.isShowTip = false;
+            this.loading = false;
+            this.finished = this.total == this.list.length ? true : false;
+            this.$toast.clear();
+            setTimeout(() => {
+              if (typeof this.$redrawVueMasonry === 'function') {
+                this.$redrawVueMasonry('searchMasonryContainer');
+              }
+            }, 50)
+          }).catch(error => {
+            console.log(error);
+          })
+        } else { // 阿里搜索
+          this.pageIndex = 1;
+          // 获取搜索列表数据
+          if (this.shopId != '') {
+            this.params = {
+              ...this.params,
+              shopId: this.shopId
+            }
+          }
+          const listData = await this.$api.getProductSearch({ ...this.params, searchKeyword: this.searchVal});
+          this.isRouteBack = 1;
+          
+          // 数据列表需要格式化
+          this.list = listData.data.items.map(item => {
+            return {
+              ...item,
+              starLevel: parseFloat(item.starLevel),
+              saleCount: parseFloat(item.saleCount)
+            }
+          });
           this.isShowTip = false;
           this.loading = false;
-          this.finished = this.total == this.list.length ? true : false;
+          this.finished = false;
+
+          // 品牌列表
+          this.brandList = listData.data.brandList.map(item => {
+            return item.value;
+          });
+          // 所有分类
+          this.categoryList = listData.data.categoryList.map(item => {
+            return item.value;
+          });
+          this.total = listData.data.total;
           this.$toast.clear();
           setTimeout(() => {
             if (typeof this.$redrawVueMasonry === 'function') {
               this.$redrawVueMasonry('searchMasonryContainer');
             }
           }, 50)
-        })
-      } else { // 阿里搜索
-        this.pageIndex = 1;
-        // 获取搜索列表数据
-        if (this.shopId != '') {
-          this.params = {
-            ...this.params,
-            shopId: this.shopId
-          }
         }
-        const listData = await this.$api.getProductSearch({ ...this.params, searchKeyword: this.searchVal});
-        this.isRouteBack = 1;
-        
-        // 数据列表需要格式化
-        this.list = listData.data.items.map(item => {
-          return {
-            ...item,
-            starLevel: parseFloat(item.starLevel),
-            saleCount: parseFloat(item.saleCount)
-          }
-        });
-        this.isShowTip = false;
-        this.loading = false;
-        this.finished = false;
-
-        // 品牌列表
-        this.brandList = listData.data.brandList.map(item => {
-          return item.value;
-        });
-        // 所有分类
-        this.categoryList = listData.data.categoryList.map(item => {
-          return item.value;
-        });
-        this.total = listData.data.total;
-        this.$toast.clear();
-        setTimeout(() => {
-          if (typeof this.$redrawVueMasonry === 'function') {
-            this.$redrawVueMasonry('searchMasonryContainer');
-          }
-        }, 50)
       }
-    }
 
-    // if (currencyType == 0) { // 阿里搜索
-      // 搜索发现数据
-      const findList = await this.$api.getSearchHot();
-      this.searchFindList = findList.data.result;
+      // if (currencyType == 0) { // 阿里搜索
+        // 搜索发现数据
+        const findList = await this.$api.getSearchHot();
+        this.searchFindList = findList.data ? findList.data.result : [];
+        
+        // 获得底纹词
+        const hintList = await this.$api.getHintResult();
+        this.hintName = hintList.data.result[0].name;
+      // }
 
-      // 获得底纹词
-      const hintList = await this.$api.getHintResult();
-      this.hintName = hintList.data.result[0].name;
-    // }
+      this.searchHistoryList = this.$store.state.searchProductList.filter((item, index) => {
+        return index < 6;
+      });
+      this.historyNum = this.$store.state.searchProductList.length > 6 ? true: false;
 
-    this.searchHistoryList = this.$store.state.searchProductList.filter((item, index) => {
-      return index < 6;
-    });
-    this.historyNum = this.$store.state.searchProductList.length > 6 ? true: false;
-
-    // 获取seo信息
-    const metaData = await this.$api.getSearchListSEO();
-    this.meta = {
-      title: metaData.data.title.replace('{userKeywords}', this.searchVal),
-      description: metaData.data.description.replace('{userKeywords}', this.searchVal),
-      keyword: metaData.data.keyword.replace('{userKeywords}', this.searchVal)
+      // 获取seo信息
+      const metaData = await this.$api.getSearchListSEO();
+      this.meta = {
+        title: metaData.data.title.replace('{userKeywords}', this.searchVal),
+        description: metaData.data.description.replace('{userKeywords}', this.searchVal),
+        keyword: metaData.data.keyword.replace('{userKeywords}', this.searchVal)
+      }
+    } catch (error) {
+      console.log(error);
     }
   },
   head() {
@@ -554,7 +560,7 @@ export default {
     // if (currencyType == 0) { // 阿里搜索
       // 搜索防抖
       this.inputChange = this.$utils.debounce((e) => {
-        this.isShowTip = e[0].length > 0 && this.list.length === 0 ? -1 : e[0].length === 0;
+        // this.isShowTip = e[0].length > 0 && this.list.length === 0 ? -1 : e[0].length === 0;
         if (!this.searchVal) {
           return false;
         }
@@ -819,6 +825,8 @@ export default {
       getSearchPull({ queryName: this.searchVal, hits: 10 }).then(res => {
         this.searchPullList = res.data.suggestions;
         this.list = [];
+      }).catch(error => {
+        console.log(error);
       })
     },
     getProductList() { // 获取商品列表
@@ -853,6 +861,8 @@ export default {
               this.$redrawVueMasonry();
             }
           }, 50)
+        }).catch(error => {
+          console.log(error);
         })
         return false;
       }
@@ -890,6 +900,8 @@ export default {
             this.$redrawVueMasonry('searchMasonryContainer');
           }
         }, 50)
+      }).catch(error => {
+        console.log(error);
       })
     },
     onRefresh() { // 刷新

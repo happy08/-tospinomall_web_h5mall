@@ -458,6 +458,8 @@ export default {
       if (this.$route.params.type == 2 && this.returnMethodRadio == 0) { // 退货退款
         this.getFreightPrice();
       }
+    }).catch(error => {
+      console.log(error);
     })
   },
   deactivated() {
@@ -509,6 +511,8 @@ export default {
             })
           }
           this.isSelectType = true;
+        }).catch(error => {
+          console.log(error);
         })
         return false;
       }
@@ -667,6 +671,8 @@ export default {
             back: this.$route.query.backOrderId ? '/me/aftersale?orderId=' + this.$route.query.backOrderId : '/me/aftersale'
           }
         })
+      }).catch(error => {
+        console.log(error);
       })
     },
     onDeleteFile() { // 删除选择的图片
@@ -708,6 +714,8 @@ export default {
       // }
       getFreightPrice(_data).then(res => {
         this.freightPrice = res.data.freightPrice;
+      }).catch(error => {
+        console.log(error);
       })
     },
     leftClick() { // 页面回退 解决多次页面进来重复回退的问题

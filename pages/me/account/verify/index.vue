@@ -103,6 +103,8 @@ export default {
             oldPassword: this.pwd
           }
         })
+      }).catch(error => {
+        console.log(error);
       })
       
     }

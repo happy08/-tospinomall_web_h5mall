@@ -88,6 +88,8 @@ export default {
             type: 'forgot'
           }
         })
+      }).catch(error => {
+        console.log(error);
       })
     }
   },

@@ -253,6 +253,8 @@ export default {
         if (parseFloat(this.total) > this.list.length) {
           this.finished = false;
         }
+      }).catch(error => {
+        console.log(error);
       })
     },
     onReport(id) { // 举报
@@ -285,6 +287,8 @@ export default {
         }
         item.isGiveLike = 1;
         item.glike += 1;
+      }).catch(error => {
+        console.log(error);
       })
     },
     goDetail(item) { // 跳转到评价详情

@@ -73,6 +73,8 @@ export default {
           }
         });
         this.imgList = res.data.deliveryPics.split(',');
+      }).catch(error => {
+        console.log(error);
       })
     }
   },
@@ -109,10 +111,14 @@ export default {
       if (this.$route.query.edit) {
         updateLogisticsOrder({ deliveryNote: this.message, deliveryPics: deliveryPics, deliverySn: this.trackingNumber, orderReturnId: this.$route.params.id }).then(() => {
           this.$router.go(-1);
+        }).catch(error => {
+          console.log(error);
         })
       } else {
         writeReturnOrder({ deliveryNote: this.message, orderReturnId: this.$route.params.id, deliverySn: this.trackingNumber, deliveryPics: deliveryPics }).then(() => {
           this.$router.go(-1);
+        }).catch(error => {
+          console.log(error);
         })
       }
     },

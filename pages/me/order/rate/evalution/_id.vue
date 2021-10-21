@@ -118,6 +118,8 @@ export default {
       if (!res.data) return false;
 
       this.detail = res.data;
+    }).catch(error => {
+      console.log(error);
     })
   },
   methods: {
@@ -157,6 +159,8 @@ export default {
         this.fileList = [];
         this.imgList = [];
         this.$router.go(-1);
+      }).catch(error => {
+        console.log(error);
       })
     },
     async afterRead(file) { // 上传图片

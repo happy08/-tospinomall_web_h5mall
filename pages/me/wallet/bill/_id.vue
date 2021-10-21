@@ -75,6 +75,8 @@ export default {
         ...res.data,
         payTypeLabel: res.data.payType == 0 ? this.$t('system_payment') : res.data.payType == 1 ? this.$t('balance_payment') : res.data.payType == 2 ? 'MTN' : res.data.payType == 3 ? 'VODAFONE' : res.data.payType == 4 ? 'ARTLTIGO' : '',
       }
+    }).catch(error => {
+      console.log(error);
     })
   }
 }

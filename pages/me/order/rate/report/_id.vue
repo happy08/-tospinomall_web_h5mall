@@ -69,6 +69,8 @@ export default {
   activated() {
     getDictList('product_goods_evaluate_scene').then(res => {
       this.reasonList = res.data;
+    }).catch(error => {
+      console.log(error);
     })
   },
   methods: {
@@ -78,6 +80,8 @@ export default {
       })[0].value;
       reportEvaluate({ evaluateId: this.$route.params.id, reportingContent: this.message, reportingScene: reportingScene }).then(res => {
         this.$router.go(-1);
+      }).catch(error => {
+        console.log(error);
       })
     }
   },

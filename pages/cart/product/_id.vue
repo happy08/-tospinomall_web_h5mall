@@ -695,183 +695,187 @@ export default {
     }
   },
   async fetch() {
-    // 判断登录之后，获取详情时要带userid
-    this.$toast.loading({
-      forbidClick: true,
-      loadingType: 'spinner',
-      duration: 0
-    });
-    let _detailParams = {};
-    if (this.$store.state.user.userInfo) {
-      _detailParams.userId = this.$store.state.user.userInfo.id
-    }
-    const detailData = await this.$api.getProductDetail(this.$route.params.id, _detailParams); // 获取商品详情;
-    this.$toast.clear();
-    if (!detailData.data) return false;
+    try {
+      // 判断登录之后，获取详情时要带userid
+      this.$toast.loading({
+        forbidClick: true,
+        loadingType: 'spinner',
+        duration: 0
+      });
+      let _detailParams = {};
+      if (this.$store.state.user.userInfo) {
+        _detailParams.userId = this.$store.state.user.userInfo.id
+      }
+      const detailData = await this.$api.getProductDetail(this.$route.params.id, _detailParams); // 获取商品详情;
+      this.$toast.clear();
+      if (!detailData.data) return false;
 
-    this.carouselMapUrls = detailData.data.carouselMapUrls; // 商品轮播图
-    this.previewImages = detailData.data.carouselMapUrls.map(item => { // 轮播图预览图片
-      return item.imgUrl;
-    })
-    
-    this.hotEvaluates = {  // 商品热评
-      total: detailData.data.totalEvaluateNum,
-      lists: detailData.data.hotEvaluates.map(item => {
-        return {
-          ...item,
-          pictures: item.pictures.filter(picItem => {
-            return picItem.fileType == 1;
-          })
-        }
+      this.carouselMapUrls = detailData.data.carouselMapUrls; // 商品轮播图
+      this.previewImages = detailData.data.carouselMapUrls.map(item => { // 轮播图预览图片
+        return item.imgUrl;
       })
-    };
-    this.servicePromises = detailData.data.servicePromises; // 商品的服务与承诺
-    this.detailsPics = detailData.data.detailsPics; // 商品详情中的图片集合
-    this.goodSpuVo = { // 商品基本信息
-      ...detailData.data.goodSpuVo,
-      picture: detailData.data.goodSpuVo.mainPictureUrl
-    };
-    
-    this.storeInfo = detailData.data.storeInfo; // 店铺信息
-    // 商品规格格式化
-    this.sku = {
-      tree: [],
-      list: [],
-      price: detailData.data.goodSpuVo.minPrice,
-      // stock_num: 0, // 总库存
-      hide_stock: true, //是否隐藏商品剩余库存
-    };
-    let _skuList = [];
-    let _selectCarousel = [];
-    let _initSku = [];
-    detailData.data.saleAttr.forEach((item, itemInxdex) => { // 规格种类
-      this.sku.tree.push({
-        k: item.attrName, // 规格类目名称
-        k_id: item.attrId,
-        k_s: 's' + item.attrId, // sku 组合列表（下方 list）中当前类目对应的 key 值，value 值会是从属于当前类目的一个规格值 id
-        v: [],
-        largeImageMode: false
-      })
-      item.attrValues.forEach((attrItem, attrIndex) => { // 种类属性
-        // if (attrIndex == 0) {
-        //   _initSku.push(attrItem);
-        // }
-        if (_selectCarousel.length < 3 && _selectCarousel.length < item.attrValues.length) { // 商品选择的图片集展示
-          _selectCarousel.push(attrItem);
-        }
-        this.sku.tree[itemInxdex].v.push({
-          id: attrItem.attrValueId,
-          name: attrItem.attrValue
-        })
-
-        attrItem.skuList.forEach((skuItem, skuIndex) => { // 商品组合列表
-          if (attrIndex == 0 && skuIndex == 0) {
-            if (_initSku.findIndex(initItem => initItem.attrValueId != attrItem.attrValueId) < item.attrValues.length) {
-              _initSku.push({
-                id: skuItem.skuId,
-                [this.sku.tree[itemInxdex].k_s]: attrItem.attrValueId,
-                price: skuItem.skuPrice * 100, // list中的价格单位是分，所以需要乘以100
-                stock_num: skuItem.stockNum,
-                picture: skuItem.skuPicture,
-                name: attrItem.attrValue
-              });
-            }
+      
+      this.hotEvaluates = {  // 商品热评
+        total: detailData.data.totalEvaluateNum,
+        lists: detailData.data.hotEvaluates.map(item => {
+          return {
+            ...item,
+            pictures: item.pictures.filter(picItem => {
+              return picItem.fileType == 1;
+            })
           }
-          _skuList.push({ // sku 组合列表
-            id: skuItem.skuId,
-            [this.sku.tree[itemInxdex].k_s]: attrItem.attrValueId,
-            price: skuItem.skuPrice * 100, // list中的价格单位是分，所以需要乘以100
-            stock_num: skuItem.stockNum,
-            picture: skuItem.skuPicture,
-            name: attrItem.name
+        })
+      };
+      this.servicePromises = detailData.data.servicePromises; // 商品的服务与承诺
+      this.detailsPics = detailData.data.detailsPics; // 商品详情中的图片集合
+      this.goodSpuVo = { // 商品基本信息
+        ...detailData.data.goodSpuVo,
+        picture: detailData.data.goodSpuVo.mainPictureUrl
+      };
+      
+      this.storeInfo = detailData.data.storeInfo; // 店铺信息
+      // 商品规格格式化
+      this.sku = {
+        tree: [],
+        list: [],
+        price: detailData.data.goodSpuVo.minPrice,
+        // stock_num: 0, // 总库存
+        hide_stock: true, //是否隐藏商品剩余库存
+      };
+      let _skuList = [];
+      let _selectCarousel = [];
+      let _initSku = [];
+      detailData.data.saleAttr.forEach((item, itemInxdex) => { // 规格种类
+        this.sku.tree.push({
+          k: item.attrName, // 规格类目名称
+          k_id: item.attrId,
+          k_s: 's' + item.attrId, // sku 组合列表（下方 list）中当前类目对应的 key 值，value 值会是从属于当前类目的一个规格值 id
+          v: [],
+          largeImageMode: false
+        })
+        item.attrValues.forEach((attrItem, attrIndex) => { // 种类属性
+          // if (attrIndex == 0) {
+          //   _initSku.push(attrItem);
+          // }
+          if (_selectCarousel.length < 3 && _selectCarousel.length < item.attrValues.length) { // 商品选择的图片集展示
+            _selectCarousel.push(attrItem);
+          }
+          this.sku.tree[itemInxdex].v.push({
+            id: attrItem.attrValueId,
+            name: attrItem.attrValue
+          })
+
+          attrItem.skuList.forEach((skuItem, skuIndex) => { // 商品组合列表
+            if (attrIndex == 0 && skuIndex == 0) {
+              if (_initSku.findIndex(initItem => initItem.attrValueId != attrItem.attrValueId) < item.attrValues.length) {
+                _initSku.push({
+                  id: skuItem.skuId,
+                  [this.sku.tree[itemInxdex].k_s]: attrItem.attrValueId,
+                  price: skuItem.skuPrice * 100, // list中的价格单位是分，所以需要乘以100
+                  stock_num: skuItem.stockNum,
+                  picture: skuItem.skuPicture,
+                  name: attrItem.attrValue
+                });
+              }
+            }
+            _skuList.push({ // sku 组合列表
+              id: skuItem.skuId,
+              [this.sku.tree[itemInxdex].k_s]: attrItem.attrValueId,
+              price: skuItem.skuPrice * 100, // list中的价格单位是分，所以需要乘以100
+              stock_num: skuItem.stockNum,
+              picture: skuItem.skuPicture,
+              name: attrItem.name
+            })
           })
         })
       })
-    })
 
-    // 数组合并去重
-    let arr = [];
-    _skuList.forEach((item) => {
-      let flag = true;
-      let obj = item;
-      arr.forEach((newItem, index) => {
-        if (item.id === newItem.id) { // id一直合并对象属性
+      // 数组合并去重
+      let arr = [];
+      _skuList.forEach((item) => {
+        let flag = true;
+        let obj = item;
+        arr.forEach((newItem, index) => {
+          if (item.id === newItem.id) { // id一直合并对象属性
+            newItem.stock_num = newItem.stock_num < item.stock_num ? newItem.stock_num : item.stock_num; // 库存选择相比较小的那一个
+            obj = {
+              ...item,
+              ...newItem
+            }
+            arr[index] = obj;
+            flag = false;
+          }
+        })
+        if (flag) {
+          arr.push(obj);
+        }
+      })
+
+      this.selectCarousel = _selectCarousel;
+      this.sku.list = arr;
+
+      // 初始化默认选中的商品sku, 不从上面数组中拿是因为没办法保证数组中的第一个是所选属性的第一个选项
+      let initArr = [];
+      _initSku.forEach(item => {
+        let flag = true;
+        let obj = item;
+        initArr.forEach((newItem, index) => {
           newItem.stock_num = newItem.stock_num < item.stock_num ? newItem.stock_num : item.stock_num; // 库存选择相比较小的那一个
           obj = {
-            ...item,
-            ...newItem
+            ...newItem,
+            ...item
           }
-          arr[index] = obj;
+          initArr[index] = obj;
           flag = false;
+        })
+        if (flag) {
+          initArr.push(obj);
         }
       })
-      if (flag) {
-        arr.push(obj);
-      }
-    })
-
-    this.selectCarousel = _selectCarousel;
-    this.sku.list = arr;
-
-    // 初始化默认选中的商品sku, 不从上面数组中拿是因为没办法保证数组中的第一个是所选属性的第一个选项
-    let initArr = [];
-    _initSku.forEach(item => {
-      let flag = true;
-      let obj = item;
-      initArr.forEach((newItem, index) => {
-        newItem.stock_num = newItem.stock_num < item.stock_num ? newItem.stock_num : item.stock_num; // 库存选择相比较小的那一个
-        obj = {
-          ...newItem,
-          ...item
+      
+      this.initialSku = {
+        ...initArr[0],
+        selectedNum: 1,
+        selectedSkuComb: {
+          stock_num: initArr[0].stock_num
         }
-        initArr[index] = obj;
-        flag = false;
-      })
-      if (flag) {
-        initArr.push(obj);
       }
-    })
-    
-    this.initialSku = {
-      ...initArr[0],
-      selectedNum: 1,
-      selectedSkuComb: {
-        stock_num: initArr[0].stock_num
+      this.selectedSkuCombId = this.initialSku.id;
+      // 获取运费模板
+      if (this.$store.state.user.authToken) {
+        this.getDeliveryInfo();
       }
-    }
-    this.selectedSkuCombId = this.initialSku.id;
-    // 获取运费模板
-    if (this.$store.state.user.authToken) {
-      this.getDeliveryInfo();
-    }
 
-    this.likeList = [];
-    // 获取同店商品推荐列表
-    if (this.storeInfo.storeId) {
-      // if (this.$store.state.searchType == 2) { // algolia 搜索
-      //   const algoliasearch = require('algoliasearch');
-      //   let client = algoliasearch('62MLEBY33X','7a8da9a5fd3f8137ea8cb70b60806e8d');
-      //   let searchClient = client.initIndex('tospinoMall');
-      //   searchClient.search('', {
-      //     // page: 0, // 从0开始算起
-      //     // hitsPerPage: this.pageSize,
-      //     filters: `shopId:${this.storeInfo.storeId} AND categoryId:${this.goodSpuVo.categoryId} AND (NOT productId:${this.goodSpuVo.id})`,
-      //   }).then(({ hits }) => {
-      //     this.likeList = hits;
-      //   })
-      // } else { // 阿里搜索
-        const recommendData = await this.$api.getRecommendList({ shopId: this.storeInfo.storeId, categoryId: this.goodSpuVo.categoryId });
-        if (!recommendData.data) return false;
-        this.likeList = recommendData.data;
-      // }
-    }
+      this.likeList = [];
+      // 获取同店商品推荐列表
+      if (this.storeInfo.storeId) {
+        // if (this.$store.state.searchType == 2) { // algolia 搜索
+        //   const algoliasearch = require('algoliasearch');
+        //   let client = algoliasearch('62MLEBY33X','7a8da9a5fd3f8137ea8cb70b60806e8d');
+        //   let searchClient = client.initIndex('tospinoMall');
+        //   searchClient.search('', {
+        //     // page: 0, // 从0开始算起
+        //     // hitsPerPage: this.pageSize,
+        //     filters: `shopId:${this.storeInfo.storeId} AND categoryId:${this.goodSpuVo.categoryId} AND (NOT productId:${this.goodSpuVo.id})`,
+        //   }).then(({ hits }) => {
+        //     this.likeList = hits;
+        //   })
+        // } else { // 阿里搜索
+          const recommendData = await this.$api.getRecommendList({ shopId: this.storeInfo.storeId, categoryId: this.goodSpuVo.categoryId });
+          if (!recommendData.data) return false;
+          this.likeList = recommendData.data;
+        // }
+      }
 
-    // 获取SEO信息
-    const metaData = await this.$api.getProductDetailSEO();
-    this.meta = {
-      title: metaData.data.title.replace('{spuTitle}', this.goodSpuVo.goodTitle).replace('{sellerGoodsKeywords}', this.goodSpuVo.goodTitle),
-      description: metaData.data.description.replace('{spuTitle}', this.goodSpuVo.goodTitle).replace('{sellerGoodsKeywords}', this.goodSpuVo.goodTitle),
-      keyword: metaData.data.keyword.replace('{spuTitle}', this.goodSpuVo.goodTitle).replace('{sellerGoodsKeywords}', this.goodSpuVo.goodTitle)
+      // 获取SEO信息
+      const metaData = await this.$api.getProductDetailSEO();
+      this.meta = {
+        title: metaData.data.title.replace('{spuTitle}', this.goodSpuVo.goodTitle).replace('{sellerGoodsKeywords}', this.goodSpuVo.goodTitle),
+        description: metaData.data.description.replace('{spuTitle}', this.goodSpuVo.goodTitle).replace('{sellerGoodsKeywords}', this.goodSpuVo.goodTitle),
+        keyword: metaData.data.keyword.replace('{spuTitle}', this.goodSpuVo.goodTitle).replace('{sellerGoodsKeywords}', this.goodSpuVo.goodTitle)
+      }
+    } catch (error) {
+      console.log(error);
     }
   },
   mounted() {
@@ -904,6 +908,8 @@ export default {
         this.completeAddress = res.data.completeAddress; // 完整地址
         // 获取地址的时候默认是最后一级
         this.getNextArea(res.data.areaList[res.data.areaList.length - 2], false, true);
+      }).catch(error => {
+        console.log(error);
       })
     } else {
       this.getNextArea({ id: 0 });
@@ -920,6 +926,8 @@ export default {
     getShareDetail(this.$route.params.id).then(res => {
       if (!res.data) return false;
       this.shareDetail = res.data;
+    }).catch(error => {
+      console.log(error);
     })
     
     // this.$refs.productSku.resetSelectedSku();
@@ -1047,6 +1055,8 @@ export default {
           this.isShowChooseTitle = true;
           return false;
         }
+      }).catch(error => {
+        console.log(error);
       })
     },
     closePopup() { // 关闭修改地址弹窗时触发, 数据处理
@@ -1080,6 +1090,8 @@ export default {
           })
           this.completeAddress = this.assgnStepList.length > 0 ? _address : this.completeAddress;
         }
+      }).catch(error => {
+        console.log(error);
       })
     },
     onSkuInfo(selectValue) { // 获取选中的商品的规格
@@ -1125,12 +1137,16 @@ export default {
       if (this.goodSpuVo.isAttention == 1) { // 取消关注
         cancelAttentionProduct([this.goodSpuVo.id]).then(() => {
           this.goodSpuVo.isAttention = 0;
+        }).catch(error => {
+          console.log(error);
         })
         return false;
       }
       
       attentionProduct(this.goodSpuVo.id).then(() => {
         this.goodSpuVo.isAttention = 1;
+      }).catch(error => {
+        console.log(error);
       })
     },
     onBuySku() {

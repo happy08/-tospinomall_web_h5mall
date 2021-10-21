@@ -65,6 +65,8 @@ export default {
           headPortrait: item.headPortrait == '' ? userIcon : item.headPortrait
         }
       });
+    }).catch(error => {
+      console.log(error);
     })
   }
 }

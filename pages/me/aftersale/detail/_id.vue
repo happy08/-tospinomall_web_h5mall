@@ -419,6 +419,8 @@ export default {
           if (res.code != 0) return false;
 
           this.getReturnDetail();
+        }).catch(error => {
+          console.log(error);
         })
       }).catch(() => {
 
@@ -446,6 +448,8 @@ export default {
           this.stepList = this.$t('process_platform_step');
           this.stepActive = res.data.involvedStatus == 1 ? 1 : res.data.involvedStatus == 2 ? 2: 2;
         }
+      }).catch(error => {
+        console.log(error);
       })
     },
     onEditApply() { // 修改申请
@@ -481,6 +485,8 @@ export default {
     onCancelApply(id) { // 撤销工单的申请
       cancelApply(id).then(() => {
         this.getReturnDetail();
+      }).catch(error => {
+        console.log(error);
       })
     }
   },

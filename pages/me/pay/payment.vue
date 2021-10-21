@@ -215,6 +215,8 @@ export default {
             refNo: res.data.refNo
           }
         })
+      }).catch(error => {
+        console.log(error);
       })
     },
     leftClick() {

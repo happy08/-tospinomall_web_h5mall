@@ -262,15 +262,19 @@ export default {
     }
   },
   async fetch() {
-    // if (this.$store.state.searchType == 0) { // 阿里搜索
-      const recommendData = await this.$api.getRecommend({type: 2, pageNum: this.pageNum, pageSize: this.pageSize});
-      if (recommendData.code != 0) return false;
-      this.recommendList = this.pageNum == 1 ? recommendData.data.items : this.recommendList.concat(recommendData.data.items);
-      this.total = recommendData.data.total;
-      this.loading = false;
-    // }
-    
-    this.orderId = this.$route.params.id;
+    try {
+      // if (this.$store.state.searchType == 0) { // 阿里搜索
+        const recommendData = await this.$api.getRecommend({type: 2, pageNum: this.pageNum, pageSize: this.pageSize});
+        if (recommendData.code != 0) return false;
+        this.recommendList = this.pageNum == 1 ? recommendData.data.items : this.recommendList.concat(recommendData.data.items);
+        this.total = recommendData.data.total;
+        this.loading = false;
+      // }
+      
+      this.orderId = this.$route.params.id;
+    } catch (error) {
+      console.log(error);
+    }
   },
   activated() {
     this.getOrderDetail();
@@ -290,6 +294,8 @@ export default {
 
         this.getOrderDetail();
         this.isCancelShow = false;
+      }).catch(error => {
+        console.log(error);
       })
     },
     goPay() { // 跳转去待付款-支付页面
@@ -334,6 +340,8 @@ export default {
           if (res.code != 0) return false;
 
           this.getOrderDetail();
+        }).catch(error => {
+          console.log(error);
         })
       }).catch(() => {
 
@@ -377,6 +385,8 @@ export default {
         if (res.code != 0) return false;
 
         this.$toast(this.$t('t_add_shopping_cart_successfully'));
+      }).catch(error => {
+        console.log(error);
       })
     },
     onCancel() { // 获取取消订单原因
@@ -385,6 +395,8 @@ export default {
 
         this.cancelReasonList = res.data;
         this.isCancelShow = true;
+      }).catch(error => {
+        console.log(error);
       })
     },
     getOrderDetail() { // 获取订单详情
@@ -412,6 +424,8 @@ export default {
           paymentTypeLabel: res.data.paymentType == 1 ? this.$t('online') : res.data.paymentType == 2 ? this.$t('cash_on_delivery') : ''
         };
         this.$toast.clear();
+      }).catch(error => {
+        console.log(error);
       })
     },
     stickyScroll(scrollObj) { // 吸顶滚动事件

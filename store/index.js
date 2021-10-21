@@ -55,63 +55,68 @@ export const mutations = {
 export const actions = {
   // 数据持久化
   async nuxtServerInit ({ commit }, { $cookies, $api }) {
-    const authToken = $cookies.get('authToken'); // 用户token
-    console.log('持久化')
-    console.log(authToken)
-    // 如果有token获取用户信息
-    if (authToken) { // 如果已经登录，每次刷新页面时先重新获取token
-      console.log('已登录')
-      const authTokenData = await $api.refreshToken();
-      if (authTokenData.code != 0) {
-        commit('user/SET_TOKEN', null);
-        return false;
+    try {
+      const authToken = $cookies.get('authToken'); // 用户token
+      console.log('持久化')
+      console.log(authToken)
+      // 如果有token获取用户信息
+      if (authToken) { // 如果已经登录，每次刷新页面时先重新获取token
+        console.log('已登录')
+        const authTokenData = await $api.refreshToken();
+        if (authTokenData.code != 0) {
+          commit('user/SET_TOKEN', null);
+          return false;
+        }
+        commit('user/SET_TOKEN', authTokenData.data.token_type + ' ' + authTokenData.data.access_token);
+        commit('user/SET_REFRESHTOKEN', authTokenData.data.refresh_token);
+        commit('user/SET_SCOPE', authTokenData.data.scope);
+        // 获取用户信息
+        const userInfo = await $api.getUserInfo();
+        commit('user/SET_USERINFO', userInfo.data);
+        commit('user/SET_NOWTIME', userInfo.data.nowTime);
+
+        // 消息信息
+        commit('user/SET_WEBSOCKET', $cookies.get('websocketMsg'));
+        // 当前账户名
+        commit('user/SET_ACCOUNT', { email: authTokenData.data.user_info.email, phone: authTokenData.data.user_info.phone });
       }
-      commit('user/SET_TOKEN', authTokenData.data.token_type + ' ' + authTokenData.data.access_token);
-      commit('user/SET_REFRESHTOKEN', authTokenData.data.refresh_token);
-      commit('user/SET_SCOPE', authTokenData.data.scope);
-      // 获取用户信息
-      const userInfo = await $api.getUserInfo();
-      commit('user/SET_USERINFO', userInfo.data);
-      commit('user/SET_NOWTIME', userInfo.data.nowTime);
+      
+      // 获取初始化信息
+      const initData = await $api.getInitData();
+      console.log(initData.data)
+      // 获取当前语言货币汇率
+      commit('SET_RATE', initData.data.baseRate);
+      // 获取搜索类型
+      commit('SET_SEARCHTYPE', initData.data.searchType);
+      // 获取平台信息
+      commit('SET_PLATFORM', initData.data.platformSet);
 
-      // 消息信息
-      commit('user/SET_WEBSOCKET', $cookies.get('websocketMsg'));
-      // 当前账户名
-      commit('user/SET_ACCOUNT', { email: authTokenData.data.user_info.email, phone: authTokenData.data.user_info.phone });
-    }
-    
-    // 获取初始化信息
-    const initData = await $api.getInitData();
-    console.log(initData.data)
-    // 获取当前语言货币汇率
-    commit('SET_RATE', initData.data.baseRate);
-    // 获取搜索类型
-    commit('SET_SEARCHTYPE', initData.data.searchType);
-    // 获取平台信息
-    commit('SET_PLATFORM', initData.data.platformSet);
+      // 获取当前语言
+      const localeData = await $api.getLangs();
+      commit('SET_LANGLIST', localeData.data.localeList.map(item => {
+        return item.value;
+      }));
+      commit('SET_LANG', $cookies.get('lang') || localeData.data.defaultLocale);
 
-    // 获取当前语言
-    const localeData = await $api.getLangs();
-    commit('SET_LANGLIST', localeData.data.localeList.map(item => {
-      return item.value;
-    }));
-    commit('SET_LANG', $cookies.get('lang') || localeData.data.defaultLocale);
+      // 获取国家名称和国家图片
+      const countryData = await $api.getSupplyCountry();
+      commit('SET_SUPPLYCOUNTRY', countryData.data);
+      
+      // 是否有未读消息
+      commit('user/SET_ISNEWMESSAGE', Boolean($cookies.get('isNewWebsocketMsg')));
 
-    // 获取国家名称和国家图片
-    const countryData = await $api.getSupplyCountry();
-    commit('SET_SUPPLYCOUNTRY', countryData.data);
-    
-    // 是否有未读消息
-    commit('user/SET_ISNEWMESSAGE', Boolean($cookies.get('isNewWebsocketMsg')));
+      const searchProductList = decodeURI($cookies.get('searchProductList')); // 商品搜索历史
+      if (searchProductList != 'undefined' && searchProductList != '') {
+        commit('SET_SEARCHPRODUCTLIST', searchProductList.split(','));
+      }
 
-    const searchProductList = decodeURI($cookies.get('searchProductList')); // 商品搜索历史
-    if (searchProductList != 'undefined' && searchProductList != '') {
-      commit('SET_SEARCHPRODUCTLIST', searchProductList.split(','));
-    }
-
-    const searchOrderList = decodeURI($cookies.get('searchOrderList')); // 订单搜索历史
-    if (searchOrderList != 'undefined' && searchOrderList != '') {
-      commit('user/SET_SEARCHORDERLIST', searchOrderList.split(','));
+      const searchOrderList = decodeURI($cookies.get('searchOrderList')); // 订单搜索历史
+      if (searchOrderList != 'undefined' && searchOrderList != '') {
+        commit('user/SET_SEARCHORDERLIST', searchOrderList.split(','));
+      }
+    } catch (error) {
+      console.log('加载错误')
+      console.log(error)
     }
   }
 }

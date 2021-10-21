@@ -83,6 +83,8 @@ export default {
               pwd: this.pwd
             }
           })
+        }).catch(error => {
+          console.log(error);
         })
         return false;
       }
@@ -101,6 +103,8 @@ export default {
             pwd: this.pwd
           }
         })
+      }).catch(error => {
+        console.log(error);
       })
     }
   },

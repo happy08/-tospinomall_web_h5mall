@@ -158,17 +158,21 @@ export default {
     }
   },
   async fetch() {
-    // 数据初始化
-    this.edit = false;
-    this.refreshing.isFresh = false;
-    
-    // 获取列表数据
-    const listData = await this.$api.getFootprintList({ pageSize: this.pageSize, pageNum: this.pageNum });
-    if (listData.code != 0) return false;
+    try {
+      // 数据初始化
+      this.edit = false;
+      this.refreshing.isFresh = false;
+      
+      // 获取列表数据
+      const listData = await this.$api.getFootprintList({ pageSize: this.pageSize, pageNum: this.pageNum });
+      if (listData.code != 0) return false;
 
-    this.total = listData.data.total;
-    this.list = listData.data.records;
-    this.finished = false;
+      this.total = listData.data.total;
+      this.list = listData.data.records;
+      this.finished = false;
+    } catch (error) {
+      console.log(error);
+    }
   },
   beforeRouteEnter (to, from, next) {
     next(vm => {
@@ -225,6 +229,8 @@ export default {
           this.checkResult = [];
           this.edit = false;
           this.isAll = !this.isAll;
+        }).catch(error => {
+          console.log(error);
         })
       }).catch(() => {
 
@@ -255,7 +261,9 @@ export default {
         
         // 加载状态结束
         this.loading = false;
-      });
+      }).catch(error => {
+        console.log(error);
+      })
     },
     onSKu(productItem) { // 获取产品规格
       getGoodAttr(productItem.goodId).then(res => {
@@ -325,6 +333,8 @@ export default {
         setTimeout(() => {
           this.productShow.show = true;
         }, 100);
+      }).catch(error => {
+        console.log(error);
       })
     }
   },

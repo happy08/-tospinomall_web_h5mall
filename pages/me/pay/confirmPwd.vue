@@ -110,6 +110,8 @@ export default {
               name: 'me-pay-result',
               query: _query
             })
+          }).catch(error => {
+            console.log(error);
           })
         }, 100);
       }

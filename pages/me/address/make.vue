@@ -274,6 +274,8 @@ export default {
         this.$toast.clear();
         // 地址保存成功跳转到地址列表页面
         this.$router.go(-1);
+      }).catch(error => {
+        console.log(error);
       })
     },
     deleteFn() { // 删除地址
@@ -288,8 +290,8 @@ export default {
         deleteAddress(this.$route.query.id).then(res => {
           this.$router.go(-1);
         })
-      }).catch(() => {
-
+      }).catch(error => {
+        console.log(error);
       })
     },
     stepClick(step) { // step点击事件
@@ -309,6 +311,8 @@ export default {
       getPhonePrefix().then(res => {
         this.phonePrefixs = res.data;
         this.form.phonePrefix = this.$t('prefix_tip');
+      }).catch(error => {
+        console.log(error);
       })
     },
     getAddressDetail() { // 查看地址信息
@@ -340,6 +344,8 @@ export default {
         this.isShowChooseTitle = false;
         // 获取地址的时候默认是最后一级
         this.getNextArea(res.data.areaList[res.data.areaList.length - 2], false, true);
+      }).catch(error => {
+        console.log(error);
       })
     },
     chooseAddressFn() {
@@ -382,6 +388,8 @@ export default {
           this.isShowChooseTitle = true;
           return false;
         }
+      }).catch(error => {
+        console.log(error);
       })
     },
     closePopup() { // 关闭修改地址弹窗时触发, 数据处理

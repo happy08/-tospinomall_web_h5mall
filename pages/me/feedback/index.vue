@@ -99,6 +99,8 @@ export default {
         if (res.code != 0) return false;
         
         this.imgList.push(res.data);
+      }).catch(error => {
+        console.log(error);
       })
     },
     submit() { // 提交反馈意见
@@ -114,6 +116,8 @@ export default {
         this.$router.push({
           name: 'me-feedback-result'
         })
+      }).catch(error => {
+        console.log(error);
       })
     },
     async getFeedbackTypeList() {

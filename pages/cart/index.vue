@@ -269,68 +269,72 @@ export default {
     }
   },
   async fetch() {
-    // 未登录情况下不获取数据
-    if (!this.$store.state.user.authToken) return false;
-    this.listTotal = 0;
-    this.result = [];
-    this.productResult = [];
-    const listData = await this.$api.getCartList({ queryType: this.queryType });
-    this.list = listData.data.storeList.map(storeItem => { // 购物车列表
+    try {
+      // 未登录情况下不获取数据
+      if (!this.$store.state.user.authToken) return false;
+      this.listTotal = 0;
+      this.result = [];
+      this.productResult = [];
+      const listData = await this.$api.getCartList({ queryType: this.queryType });
+      this.list = listData.data.storeList.map(storeItem => { // 购物车列表
 
-      this.result = this.result.concat(storeItem.products.filter(selectItem => { // 是否选中
-        return selectItem.isSelect == 1 && selectItem.status == 1;
-      }).map(resultItem => {
-        return resultItem.productSku;
-      }));
+        this.result = this.result.concat(storeItem.products.filter(selectItem => { // 是否选中
+          return selectItem.isSelect == 1 && selectItem.status == 1;
+        }).map(resultItem => {
+          return resultItem.productSku;
+        }));
 
-      this.productResult = this.productResult.concat(storeItem.products.filter(selectItem => { // 已选择商品
-        return selectItem.isSelect == 1 && selectItem.status == 1;
-      }).map(resultItem => {
-        return {
-          skuId: resultItem.productSku,
-          quantity: resultItem.quantity
-        };
-      }));
+        this.productResult = this.productResult.concat(storeItem.products.filter(selectItem => { // 已选择商品
+          return selectItem.isSelect == 1 && selectItem.status == 1;
+        }).map(resultItem => {
+          return {
+            skuId: resultItem.productSku,
+            quantity: resultItem.quantity
+          };
+        }));
 
-      let result = storeItem.products.filter(selectItem => { // 是否选中
-        return selectItem.isSelect == 1;
-      }).map(resultItem => {
-        return resultItem.id;
-      })
-      return {
-        ...storeItem,
-        result: result,
-        isAll: result.length == storeItem.products.length ? true : false, // 是否全选
-        isEmpty: storeItem.products.filter(selectItem => { // 是否选中
-          return selectItem.status != 1;
+        let result = storeItem.products.filter(selectItem => { // 是否选中
+          return selectItem.isSelect == 1;
+        }).map(resultItem => {
+          return resultItem.id;
         })
-      }
-    });
-
-    this.checked = this.list.filter(item => {
-      return item.isAll == false;
-    }).length == 0 ? true : false;
-
-    this.totalAmount = listData.data.totalAmount;
-    // this.onCountPrice();
-    this.refreshing.isFresh = false;
-
-    // 获取商品推荐列表
-    // if (this.$store.state.searchType == 0) { // 阿里搜索
-      const recommendData = await this.$api.getRecommend({type: 0, pageNum: this.pageNum, pageSize: this.pageSize});
-      if (recommendData.code != 0) return false;
-      this.recommendList = recommendData.data.items;
-      this.total = recommendData.data.total;
-      this.finished = this.total == this.recommendList.length ? true : false;
-      if (typeof this.$redrawVueMasonry === 'function') {
-        this.$redrawVueMasonry();
-      }
-    // }
-    
-    if (process.client) {
-      window.scrollTo({
-        top: 0
+        return {
+          ...storeItem,
+          result: result,
+          isAll: result.length == storeItem.products.length ? true : false, // 是否全选
+          isEmpty: storeItem.products.filter(selectItem => { // 是否选中
+            return selectItem.status != 1;
+          })
+        }
       });
+
+      this.checked = this.list.filter(item => {
+        return item.isAll == false;
+      }).length == 0 ? true : false;
+
+      this.totalAmount = listData.data.totalAmount;
+      // this.onCountPrice();
+      this.refreshing.isFresh = false;
+
+      // 获取商品推荐列表
+      // if (this.$store.state.searchType == 0) { // 阿里搜索
+        const recommendData = await this.$api.getRecommend({type: 0, pageNum: this.pageNum, pageSize: this.pageSize});
+        if (recommendData.code != 0) return false;
+        this.recommendList = recommendData.data.items;
+        this.total = recommendData.data.total;
+        this.finished = this.total == this.recommendList.length ? true : false;
+        if (typeof this.$redrawVueMasonry === 'function') {
+          this.$redrawVueMasonry();
+        }
+      // }
+      
+      if (process.client) {
+        window.scrollTo({
+          top: 0
+        });
+      }
+    } catch (error) {
+      console.log(error);
     }
   },
   activated() {
@@ -446,6 +450,8 @@ export default {
       removeCart({skuIds: skuId}).then(() => {
         this.$fetch();
         this.getCartCount();
+      }).catch(error => {
+        console.log(error);
       })
     },
     goHome() { // 点击跳转到首页
@@ -460,6 +466,8 @@ export default {
         this.$toast(this.$t('set_often_buy_success'));
         this.$fetch();
         this.getCartCount();
+      }).catch(error => {
+        console.log(error);
       })
     },
     getCartCount() { // 总数查询
@@ -467,6 +475,8 @@ export default {
         this.priceCutTotal = res.data.priceCutTotal;
         this.oftenBuyTotal = res.data.oftenBuyTotal;
         this.allTotal = res.data.allTotal;
+      }).catch(error => {
+        console.log(error);
       })
     },
     moveToFavorite(skuIds) { // 添加到收藏夹
@@ -476,6 +486,8 @@ export default {
         this.$toast(this.$t('t_operation_successful'))
         this.$fetch();
         this.getCartCount();
+      }).catch(error => {
+        console.log(error);
       })
     },
     getCalculatePrice(selectedData) { // 计算商品价格
@@ -484,7 +496,9 @@ export default {
         this.result = selectedData.selectedData.map(item => {
           return item.skuId;
         });
-      });
+      }).catch(error => {
+        console.log(error);
+      })
     },
     async onRefresh() { // 下拉刷新
       this.pageNum = 1;
@@ -527,6 +541,8 @@ export default {
         if (res.code != 0) return false;
         
         this.onCountPrice(); // 修改数量之后如果选中的话要重新计算价格
+      }).catch(error => {
+        console.log(error);
       })
     },
     onMove() { // 移入收藏夹
@@ -617,6 +633,8 @@ export default {
         setTimeout(() => {
           this.productShow.show = true;
         }, 300);
+      }).catch(error => {
+        console.log(error);
       })
     },
     goSimilar(productId) { // 跳转到相似列表
@@ -646,7 +664,9 @@ export default {
         
         // 加载状态结束
         this.loading = false;
-      });
+      }).catch(error => {
+        console.log(error);
+      })
     }
   },
 }

@@ -337,38 +337,42 @@ export default {
     });
   },
   async fetch() {
-    if (!this.isTab) {
-      this.typeActive = this.$route.query.type ? parseFloat(this.tabs[this.$route.query.type].type) : 100;
-    }
-
-    if (this.typeActive != 100) { // 全部
-      this.params.status = this.typeActive;
-    } else {
-      this.params = {
-        pageNum: this.params.pageNum,
-        pageSize: this.params.pageSize
+    try {
+      if (!this.isTab) {
+        this.typeActive = this.$route.query.type ? parseFloat(this.tabs[this.$route.query.type].type) : 100;
       }
-    }
 
-    if (this.params.pageNum == 1 && this.refreshing.isFresh == false) { // 只有请求第一页数据的时候进行loading处理
-      // 加载图标
-      this.$toast.loading({
-        forbidClick: true,
-        loadingType: 'spinner',
-        duration: 0
-      });
+      if (this.typeActive != 100) { // 全部
+        this.params.status = this.typeActive;
+      } else {
+        this.params = {
+          pageNum: this.params.pageNum,
+          pageSize: this.params.pageSize
+        }
+      }
+
+      if (this.params.pageNum == 1 && this.refreshing.isFresh == false) { // 只有请求第一页数据的时候进行loading处理
+        // 加载图标
+        this.$toast.loading({
+          forbidClick: true,
+          loadingType: 'spinner',
+          duration: 0
+        });
+      }
+      const listData = await this.$api.getOrderList(this.params);
+      this.$toast.clear();
+      if (listData.data) {
+        this.lists = this.params.pageNum == 1 ? listData.data.records : this.lists.concat(listData.data.records);
+        this.togetherResult = this.lists.length == 0 ? [] : this.togetherResult;
+        this.total = parseFloat(listData.data.total);
+      }
+      this.loading = false;
+      this.refreshing.isFresh = false;
+      this.isFirst = false;
+      this.finished = this.total == this.lists.length ? true: false;
+    } catch (error) {
+      console.log(error);
     }
-    const listData = await this.$api.getOrderList(this.params);
-    this.$toast.clear();
-    if (listData.data) {
-      this.lists = this.params.pageNum == 1 ? listData.data.records : this.lists.concat(listData.data.records);
-      this.togetherResult = this.lists.length == 0 ? [] : this.togetherResult;
-      this.total = parseFloat(listData.data.total);
-    }
-    this.loading = false;
-    this.refreshing.isFresh = false;
-    this.isFirst = false;
-    this.finished = this.total == this.lists.length ? true: false;
   },
   activated() {
     this.beforeOneYear = Moment(parseFloat(this.$store.state.user.nowTime)).subtract(1,'years').format('YYYY');
@@ -378,6 +382,8 @@ export default {
       if (res.code != 0) return false;
 
       this.cancelReasonList = res.data;
+    }).catch(error => {
+      console.log(error);
     })
   },
   deactivated() {
@@ -444,6 +450,8 @@ export default {
         this.lists = res.data.records;
         this.total = parseFloat(res.data.total);
         this.$toast.clear();
+      }).catch(error => {
+        console.log(error);
       })
     },
     goSearch() { // 跳转到搜索页面
@@ -469,6 +477,8 @@ export default {
             this.lists.splice(index, 1);
           }
         })
+      }).catch(error => {
+        console.log(error);
       })
     },
     goOrderDetail(orderId) { // 跳转到订单详情
@@ -523,6 +533,8 @@ export default {
             this.lists.splice(index, 1);
           }
         })
+      }).catch(error => {
+        console.log(error);
       })
     },
     onPay(orderItem) { // 去支付
@@ -559,6 +571,8 @@ export default {
               this.lists.splice(index, 1);
             }
           })
+        }).catch(error => {
+          console.log(error);
         })
       }).catch(() => {
 

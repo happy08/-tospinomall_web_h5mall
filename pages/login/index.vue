@@ -176,6 +176,8 @@ export default {
             name: 'home'
           })
         }, 100);
+      }).catch(error => {
+        console.log(error);
       })
     },
     changeLang(lang) { // 切换语言
@@ -218,6 +220,8 @@ export default {
                 name: 'home'
               })
             }, 100);
+          }).catch(error => {
+            console.log(error);
           })
         }, err => {
           console.log('err: ');
@@ -297,6 +301,8 @@ export default {
       getPhonePrefix().then(res => {
         this.phonePrefixs = res.data;
         this.prefixCode = this.$t('prefix_tip');
+      }).catch(error => {
+        console.log(error);
       })
     },
     onConfirm(event) { // 选择手机号前缀

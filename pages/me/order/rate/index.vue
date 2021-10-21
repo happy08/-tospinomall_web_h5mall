@@ -92,31 +92,35 @@ export default {
     })
   },
   async fetch() {
-    // 查询评价订单列表
-    if (this.pageNum == 1) {
-      // 加载图标
-      this.$toast.loading({
-        forbidClick: true,
-        loadingType: 'spinner',
-        duration: 0
-      });
-    }
-    let listData;
-    if (this.$route.query.orderId && this.tabActive == 0) { // 查看某一个订单评价
-      listData = await this.$api.getRateList({ pageNum: this.pageNum, pageSize: this.pageSize, status: this.tabActive, orderId: this.$route.query.orderId, createUser: this.$store.state.user.userInfo.id });
-    } else {
-      listData = await this.$api.getRateList({ pageNum: this.pageNum, pageSize: this.pageSize, status: this.tabActive, createUser: this.$store.state.user.userInfo.id });
-    }
+    try {
+      // 查询评价订单列表
+      if (this.pageNum == 1) {
+        // 加载图标
+        this.$toast.loading({
+          forbidClick: true,
+          loadingType: 'spinner',
+          duration: 0
+        });
+      }
+      let listData;
+      if (this.$route.query.orderId && this.tabActive == 0) { // 查看某一个订单评价
+        listData = await this.$api.getRateList({ pageNum: this.pageNum, pageSize: this.pageSize, status: this.tabActive, orderId: this.$route.query.orderId, createUser: this.$store.state.user.userInfo.id });
+      } else {
+        listData = await this.$api.getRateList({ pageNum: this.pageNum, pageSize: this.pageSize, status: this.tabActive, createUser: this.$store.state.user.userInfo.id });
+      }
 
-    if (!listData.data) return false;
+      if (!listData.data) return false;
 
-    this.total = listData.data.total; // 列表总条数
-    this.pageNum = parseFloat(listData.data.current);
-    this.lists = this.pageNum == 1 ? listData.data.records : this.lists.concat(listData.data.records); // 列表数据
-    this.refreshing.isFresh = false;
-    this.loading = false;
-    this.finished = parseFloat(this.total) == this.lists.length ? true: false;
-    this.$toast.clear();
+      this.total = listData.data.total; // 列表总条数
+      this.pageNum = parseFloat(listData.data.current);
+      this.lists = this.pageNum == 1 ? listData.data.records : this.lists.concat(listData.data.records); // 列表数据
+      this.refreshing.isFresh = false;
+      this.loading = false;
+      this.finished = parseFloat(this.total) == this.lists.length ? true: false;
+      this.$toast.clear();
+    } catch (error) {
+      console.log(error);
+    }
   },
   activated() {
     getOrderRateCount().then(res => {
@@ -124,6 +128,8 @@ export default {
 
       this.hasCommentOrReview = res.data.hasCommentOrReview; // 已评价或追评
       this.notComment = this.$route.query.orderId ? 1 : res.data.notComment; // 待评价
+    }).catch(error => {
+      console.log(error);
     })
   },
   methods: {
@@ -146,6 +152,8 @@ export default {
 
             this.hasCommentOrReview = res.data.hasCommentOrReview; // 已评价或追评
             this.notComment = res.data.notComment; // 待评价
+          }).catch(error => {
+            console.log(error);
           })
         }, 100);
         return false;

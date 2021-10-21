@@ -80,19 +80,23 @@ export default {
     }
   },
   async fetch() {
-    let _detailParams = {};
-    if (this.$store.state.user.userInfo) {
-      _detailParams.userId = this.$store.state.user.userInfo.id;
-    }
-    const detailData = await this.$api.getStoreInfo({ sellerId: this.$route.query.sellerId, storeId: this.$route.params.id, ..._detailParams });
-    this.isFlag = false;
-    if (!detailData.data) return false;
+    try {
+      let _detailParams = {};
+      if (this.$store.state.user.userInfo) {
+        _detailParams.userId = this.$store.state.user.userInfo.id;
+      }
+      const detailData = await this.$api.getStoreInfo({ sellerId: this.$route.query.sellerId, storeId: this.$route.params.id, ..._detailParams });
+      this.isFlag = false;
+      if (!detailData.data) return false;
 
-    this.detailData = {
-      ...detailData.data,
-      collectNum: detailData.data.collectNum,
-      brandNameLabelList: detailData.data.brandNameList.join('、')
-    };
+      this.detailData = {
+        ...detailData.data,
+        collectNum: detailData.data.collectNum,
+        brandNameLabelList: detailData.data.brandNameList.join('、')
+      };
+    } catch (error) {
+      console.log(error);
+    }
   },
   activated() {
     this.$fetch();
@@ -114,6 +118,8 @@ export default {
         this.detailData.isAttention = this.detailData.isAttention == 1 ? 0 : 1;
         this.isFlag = false;
         this.$fetch();
+      }).catch(error => {
+        console.log(error);
       })
     },
     leftClick() {

@@ -194,35 +194,39 @@ export default {
     })
   },
   async fetch() {
-    let _params = {};
-    let listData;
-    this.tabActive = this.$route.query.orderId && this.isTab == false ? 0 : this.tabActive;
-    if (this.pageNum == 1 && this.refreshing.isFresh == false) { // 只有请求第一页数据的时候进行loading处理
-      // 加载图标
-      this.$toast.loading({
-        forbidClick: true,
-        loadingType: 'spinner',
-        duration: 0
-      });
-    }
-
-    if (this.tabActive > 0) {
-      _params.status = this.tabActive + 1;
-      listData = await this.$api.getAfterSaleStatusList({ pageNum: this.pageNum, pageSize: this.pageSize, ..._params }); // 申请原因/处理中列表
-    } else {
-      if (this.$route.query.orderId) {
-        this.afterSalesCount = 1;
-        listData = await this.$api.getAfterSaleList({ pageNum: this.pageNum, pageSize: this.pageSize, status: 1, orderId: this.$route.query.orderId}); // 某一个订单售后申请列表
-      } else {
-        listData = await this.$api.getAfterSaleList({ pageNum: this.pageNum, pageSize: this.pageSize, status: 1}); // 售后申请列表
+    try {
+      let _params = {};
+      let listData;
+      this.tabActive = this.$route.query.orderId && this.isTab == false ? 0 : this.tabActive;
+      if (this.pageNum == 1 && this.refreshing.isFresh == false) { // 只有请求第一页数据的时候进行loading处理
+        // 加载图标
+        this.$toast.loading({
+          forbidClick: true,
+          loadingType: 'spinner',
+          duration: 0
+        });
       }
+
+      if (this.tabActive > 0) {
+        _params.status = this.tabActive + 1;
+        listData = await this.$api.getAfterSaleStatusList({ pageNum: this.pageNum, pageSize: this.pageSize, ..._params }); // 申请原因/处理中列表
+      } else {
+        if (this.$route.query.orderId) {
+          this.afterSalesCount = 1;
+          listData = await this.$api.getAfterSaleList({ pageNum: this.pageNum, pageSize: this.pageSize, status: 1, orderId: this.$route.query.orderId}); // 某一个订单售后申请列表
+        } else {
+          listData = await this.$api.getAfterSaleList({ pageNum: this.pageNum, pageSize: this.pageSize, status: 1}); // 售后申请列表
+        }
+      }
+      this.loading = false;
+      this.refreshing.isFresh = false;
+      this.lists = this.pageNum == 1 ? listData.data.records : this.lists.concat(listData.data.records);
+      this.$toast.clear();
+      this.total = listData.data.total;
+      this.finished = parseFloat(this.total) == this.lists.length ? true: false;
+    } catch (error) {
+      console.log(error);
     }
-    this.loading = false;
-    this.refreshing.isFresh = false;
-    this.lists = this.pageNum == 1 ? listData.data.records : this.lists.concat(listData.data.records);
-    this.$toast.clear();
-    this.total = listData.data.total;
-    this.finished = parseFloat(this.total) == this.lists.length ? true: false;
   },
   activated() {
     this.getOrderAfterSalesCount();
@@ -301,6 +305,8 @@ export default {
             this.getOrderAfterSalesCount();
           }
         })
+      }).catch(error => {
+        console.log(error);
       })
     },
     onRevokeApply(id) { // 撤销申请
@@ -319,6 +325,8 @@ export default {
               this.recordCount += 1;
             }
           })
+        }).catch(error => {
+          console.log(error);
         })
       }).catch(() => {
 
@@ -333,6 +341,8 @@ export default {
             this.recordCount += 1;
           }
         })
+      }).catch(error => {
+        console.log(error);
       })
     },
     statusFormat(val, deliveryType, orderType) { // 格式化状态文案
@@ -345,6 +355,8 @@ export default {
         this.afterSalesCount = this.$route.query.orderId ? 1 : parseFloat(res.data.afterSalesCount); // 申请售后总数
         this.recordCount = parseFloat(res.data.recordCount); // 申请记录总数
         this.untreatedCount = parseFloat(res.data.untreatedCount); // 未处理总数
+      }).catch(error => {
+        console.log(error);
       })
     }
   },

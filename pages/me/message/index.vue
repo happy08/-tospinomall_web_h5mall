@@ -82,6 +82,8 @@ export default {
           this.$store.commit('user/SET_ISNEWMESSAGE', false);
         }
         this.refreshing.isFresh = false;
+      }).catch(error => {
+        console.log(error);
       })
     },
     goCategoryList(id) {
@@ -99,6 +101,8 @@ export default {
       markedAsReadAll().then(() => {
         this.getMsgCategory();
         this.$store.commit('user/SET_ISNEWMESSAGE', false);
+      }).catch(error => {
+        console.log(error);
       })
     }
   },

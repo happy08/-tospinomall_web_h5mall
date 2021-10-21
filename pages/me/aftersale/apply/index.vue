@@ -83,16 +83,17 @@ export default {
     }
   },
   fetch() {
+  },
+  activated() {
     aftersaleOrderItem(this.$route.query.itemId).then(res => {
       if (!res.data) return false;
 
       this.detail = res.data.order;
       this.orderList = res.data.orderItemList;
 
+    }).catch(error => {
+      console.log(error);
     })
-  },
-  activated() {
-    this.$fetch();
   },
   methods: {
     onApply(type) {

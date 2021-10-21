@@ -367,85 +367,89 @@ export default {
     }
   },
   async fetch() {
-    // if (this.$store.state.searchType == 2) { // algolia 搜索
-    //   client = algoliasearch('62MLEBY33X','7a8da9a5fd3f8137ea8cb70b60806e8d');
-    //   searchClient = client.initIndex('tospinoMall');
-    // }
-    // 获取店铺详情
-    let _detailParams = {};
-    if (this.$store.state.user.userInfo) {
-      _detailParams.userId = this.$store.state.user.userInfo.id
-    }
-    const detailData = await this.$api.getStoreInfo({ sellerId: this.$route.query.sellerId, storeId: this.$route.params.id, ..._detailParams });
-    if (!detailData.data) {
-      this.detailData = { // 店铺详情
-        storeLogoUrl: ''
+    try {
+      // if (this.$store.state.searchType == 2) { // algolia 搜索
+      //   client = algoliasearch('62MLEBY33X','7a8da9a5fd3f8137ea8cb70b60806e8d');
+      //   searchClient = client.initIndex('tospinoMall');
+      // }
+      // 获取店铺详情
+      let _detailParams = {};
+      if (this.$store.state.user.userInfo) {
+        _detailParams.userId = this.$store.state.user.userInfo.id
       }
-    } else { // 初始化
-      this.detailData = {
-        ...detailData.data,
-        collectNum: detailData.data.collectNum == '' ? 0 : detailData.data.collectNum
+      const detailData = await this.$api.getStoreInfo({ sellerId: this.$route.query.sellerId, storeId: this.$route.params.id, ..._detailParams });
+      if (!detailData.data) {
+        this.detailData = { // 店铺详情
+          storeLogoUrl: ''
+        }
+      } else { // 初始化
+        this.detailData = {
+          ...detailData.data,
+          collectNum: detailData.data.collectNum == '' ? 0 : detailData.data.collectNum
+        };
+      }
+      
+      // 商品列表数据
+      // if (this.$store.state.searchType == 0) { // 阿里搜索
+        this.pageIndex = 1;
+        this.sort = {
+          shopId: this.$route.params.id, pageIndex: this.pageIndex, pageSize: this.pageSize
+        }
+        const listData = await this.$api.getProductSearch(this.sort);
+        this.loading = false;
+        if (!listData.data) {
+          this.productList = [];
+          this.total = 0;
+        } else {
+          this.total = listData.data.total;
+          this.productList = listData.data.items.map(item => {
+            return {
+              ...item,
+              starLevel: parseFloat(item.starLevel)
+            }
+          });
+          this.finished = this.total == this.productList.length ? true : false;
+          console.log(this.finished)
+        }
+      // } else {
+        // this.pageIndex = 0;
+        // searchClient.search('', {
+        //   page: this.pageIndex, // 从0开始算起
+        //   hitsPerPage: this.pageSize,
+        //   filters: `shopId:${this.$route.params.id}`
+        // }).then(({hits, nbHits, facets}) => {
+        //   this.total = nbHits;
+        //   this.productList = hits;
+        //   this.loading = false;
+        //   this.finished = this.total == this.productList.length ? true : false;
+        // })
+      // }
+      
+      // 店铺组件数据,店铺有装修才可看
+      const moduleData = await this.$api.getStoreIndex({shopId: this.$route.params.id});
+      if (!moduleData.data) {
+        this.tabbarActive = 1;
+        this.isTabbarShow = false;
+        this.storeBgdUrl = '';
+        this.moduleData = [];
+        return false;
       };
+      this.moduleData = moduleData.data.components;
+      // 判断是不是有店铺背景图
+      let storeBgdArr = moduleData.data.components.filter(item => {
+        return item.type == 7;
+      })
+      this.storeBgdUrl = storeBgdArr.length > 0 && storeBgdArr[0].imageUrl ? storeBgdArr[0].imageUrl : '';
+      // 判断店铺有没有装修
+      const store_components = moduleData.data.components.filter(item => {
+        return item.type == 2;
+      })
+      this.isTabbarShow = store_components.length > 1 ? true: false;
+      this.tabbarActive = this.$route.query.tabbarActive ? this.$route.query.tabbarActive : store_components.length > 1 ? 0 : 1;
+      this.refreshing.isFresh = false;
+    } catch (error) {
+      console.log(error);
     }
-    
-    // 商品列表数据
-    // if (this.$store.state.searchType == 0) { // 阿里搜索
-      this.pageIndex = 1;
-      this.sort = {
-        shopId: this.$route.params.id, pageIndex: this.pageIndex, pageSize: this.pageSize
-      }
-      const listData = await this.$api.getProductSearch(this.sort);
-      this.loading = false;
-      if (!listData.data) {
-        this.productList = [];
-        this.total = 0;
-      } else {
-        this.total = listData.data.total;
-        this.productList = listData.data.items.map(item => {
-          return {
-            ...item,
-            starLevel: parseFloat(item.starLevel)
-          }
-        });
-        this.finished = this.total == this.productList.length ? true : false;
-        console.log(this.finished)
-      }
-    // } else {
-      // this.pageIndex = 0;
-      // searchClient.search('', {
-      //   page: this.pageIndex, // 从0开始算起
-      //   hitsPerPage: this.pageSize,
-      //   filters: `shopId:${this.$route.params.id}`
-      // }).then(({hits, nbHits, facets}) => {
-      //   this.total = nbHits;
-      //   this.productList = hits;
-      //   this.loading = false;
-      //   this.finished = this.total == this.productList.length ? true : false;
-      // })
-    // }
-    
-    // 店铺组件数据,店铺有装修才可看
-    const moduleData = await this.$api.getStoreIndex({shopId: this.$route.params.id});
-    if (!moduleData.data) {
-      this.tabbarActive = 1;
-      this.isTabbarShow = false;
-      this.storeBgdUrl = '';
-      this.moduleData = [];
-      return false;
-    };
-    this.moduleData = moduleData.data.components;
-    // 判断是不是有店铺背景图
-    let storeBgdArr = moduleData.data.components.filter(item => {
-      return item.type == 7;
-    })
-    this.storeBgdUrl = storeBgdArr.length > 0 && storeBgdArr[0].imageUrl ? storeBgdArr[0].imageUrl : '';
-    // 判断店铺有没有装修
-    const store_components = moduleData.data.components.filter(item => {
-      return item.type == 2;
-    })
-    this.isTabbarShow = store_components.length > 1 ? true: false;
-    this.tabbarActive = this.$route.query.tabbarActive ? this.$route.query.tabbarActive : store_components.length > 1 ? 0 : 1;
-    this.refreshing.isFresh = false;
   },
   activated() {
     this.isTabbarShow = false;
@@ -480,7 +484,11 @@ export default {
             ...res.data,
             collectNum: res.data.collectNum == '' ? 0 : res.data.collectNum
           };
+        }).catch(error => {
+          console.log(error);
         })
+      }).catch(error => {
+        console.log(error);
       })
     },
     leftBack() { // 返回上一页
@@ -598,7 +606,9 @@ export default {
           
           // 加载状态结束
           this.loading = false;
-        });
+        }).catch(error => {
+          console.log(error);
+        })
       // }
     },
     beforeChange(index) { // 根据条件展示排序
@@ -678,7 +688,9 @@ export default {
 
         this.productList = list;
         this.finished = this.total == this.productList.length ? true : false;
-      });
+      }).catch(error => {
+        console.log(error);
+      })
     },
     onScroll(scrollTop) {
       this.scrollTop = scrollTop.scrollTop;

@@ -242,29 +242,33 @@ export default {
     }
   },
   async fetch() {
-    this.orderVal = this.$route.query.orderVal || ''; // 搜索value
-    this.isShowTip = this.orderVal.length > 0 ? false : true;
-    if (this.$route.query.back) {
-      this.backName = this.$route.query.back;
-    }
+    try {
+      this.orderVal = this.$route.query.orderVal || ''; // 搜索value
+      this.isShowTip = this.orderVal.length > 0 ? false : true;
+      if (this.$route.query.back) {
+        this.backName = this.$route.query.back;
+      }
 
-    // 如果带着搜索的参数跳转过来的需要先获取相对应的搜索数据
-    if (this.orderVal != '') {
-      this.$store.commit('user/SET_SEARCHORDERLIST', this.orderVal); // 搜索历史存储
-      this.pageNum = 1;
-      this.isRouteBack = 1;
-      this.lists = [];
-      const orderData = await this.$api.getOrderList({ pageNum: this.pageNum, pageSize: this.pageSize, keyword: this.orderVal });
-      this.total = orderData.data.total;
-      this.lists = orderData.data.records;
-      this.isShowTip = false;
-      this.loading = false;
-      this.refreshing.isFresh = false;
-      this.finished = parseFloat(orderData.data.total) == this.lists.length;
-      // 更新页面展示
-      this.searchHistoryList = this.$store.state.user.searchOrderList.filter((item, index) => {
-        return index < 6;
-      });
+      // 如果带着搜索的参数跳转过来的需要先获取相对应的搜索数据
+      if (this.orderVal != '') {
+        this.$store.commit('user/SET_SEARCHORDERLIST', this.orderVal); // 搜索历史存储
+        this.pageNum = 1;
+        this.isRouteBack = 1;
+        this.lists = [];
+        const orderData = await this.$api.getOrderList({ pageNum: this.pageNum, pageSize: this.pageSize, keyword: this.orderVal });
+        this.total = orderData.data.total;
+        this.lists = orderData.data.records;
+        this.isShowTip = false;
+        this.loading = false;
+        this.refreshing.isFresh = false;
+        this.finished = parseFloat(orderData.data.total) == this.lists.length;
+        // 更新页面展示
+        this.searchHistoryList = this.$store.state.user.searchOrderList.filter((item, index) => {
+          return index < 6;
+        });
+      }
+    } catch (error) {
+      console.log(error);
     }
   },
   watch: {
@@ -279,6 +283,8 @@ export default {
       if (res.code != 0) return false;
 
       this.cancelReasonList = res.data;
+    }).catch(error => {
+      console.log(error);
     })
     if (this.orderVal == '') { // 没有带参数进来的时候，搜索输入框需要自动聚焦
       this.isRouteBack = 0;
@@ -369,6 +375,8 @@ export default {
       deleteOrder(orderId).then(() => {
         this.$toast.clear();
         this.$fetch();
+      }).catch(error => {
+        console.log(error);
       })
     },
     goOrderDetail(orderId) { // 跳转到订单详情
@@ -429,6 +437,8 @@ export default {
 
         this.isCancelShow = false;
         this.getSearchList();
+      }).catch(error => {
+        console.log(error);
       })
     },
     onPay(orderItem) { // 去支付
@@ -461,6 +471,8 @@ export default {
         this.isShowTip = false;
         this.loading = false;
         this.refreshing.isFresh = false;
+      }).catch(error => {
+        console.log(error);
       })
     },
     statusFormat(val) {
@@ -516,6 +528,8 @@ export default {
               this.lists.splice(index, 1);
             }
           })
+        }).catch(error => {
+          console.log(error);
         })
       }).catch(() => {
 

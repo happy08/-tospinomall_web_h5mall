@@ -139,6 +139,8 @@ export default {
           this.$toast.success(this.$t('t_add_shopping_cart_successfully'));
           this.productShow.show = false;
           this.quantity = 1;
+        }).catch(error => {
+          console.log(error);
         })
       } else {
         this.$toast(this.$t('inventory_shortage')); // 库存不足
@@ -176,6 +178,8 @@ export default {
       return new Promise(resolve => {
         getSkuStock(this.selectSku.selectedSkuComb.id).then(res => {
           resolve(res.data);
+        }).catch(error => {
+          console.log(error);
         })
       })
     },
@@ -184,6 +188,8 @@ export default {
         if (res.code != 0) return false;
         this.productShow.show = false;
         this.$emit('onRefresh');
+      }).catch(error => {
+        console.log(error);
       })
     },
     onChange() {

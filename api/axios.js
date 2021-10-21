@@ -81,6 +81,8 @@ export default function({ $axios, app, redirect, store }) {
   });
 
   $axios.onError(error => {
+    console.log('3333333')
+    console.log(error)
     if (error.code > 0) {
       if (error.code === 10401) { // 用户凭证过期跳转到登录页面
         console.log('响应失败')

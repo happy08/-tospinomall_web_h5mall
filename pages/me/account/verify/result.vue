@@ -82,6 +82,8 @@ export default {
             name: 'home'
           })
         }, 100);
+      }).catch(error => {
+        console.log(error);
       })
     }
   }

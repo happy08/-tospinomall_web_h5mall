@@ -82,6 +82,8 @@ export default {
             password: this.password,
           }
         })
+      }).catch(error => {
+        console.log(error);
       })
     }
   },

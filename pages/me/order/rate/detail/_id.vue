@@ -268,6 +268,8 @@ export default {
         setTimeout(() => {
           this.productShow.show = true;
         }, 100);
+      }).catch(error => {
+        console.log(error);
       })
     },
     getRateDetail() { // 获取评价详情
@@ -279,6 +281,8 @@ export default {
             return item.fileType == 1; // 1.0版本只展示图片
           })
         };
+      }).catch(error => {
+        console.log(error);
       })
     },
     addGive(item) { // 点赞取消点赞
@@ -291,6 +295,8 @@ export default {
       addGive(item.id).then(res => {
         if (res.code != 0) return false;
         this.getRateDetail();
+      }).catch(error => {
+        console.log(error);
       })
     },
     onFocus() {
@@ -313,6 +319,8 @@ export default {
       }).then(() => {
         this.thoughts = '';
         this.getRateDetail();
+      }).catch(error => {
+        console.log(error);
       })
     },
     onPreview(item, index) { // 图片预览

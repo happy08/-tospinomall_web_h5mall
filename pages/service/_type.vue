@@ -49,6 +49,8 @@ export default {
     getService({ platform: 1, type: _type }).then(res => {
       this.title = res.data.name;
       this.intro = res.data.content;
+    }).catch(error => {
+      console.log(error);
     })
   }
 }

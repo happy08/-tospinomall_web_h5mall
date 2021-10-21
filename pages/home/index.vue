@@ -376,72 +376,76 @@ export default {
     }
   },
   async fetch() {
-    currencyType = this.$store.state.searchType; // 0 阿里搜索 2 algolia搜索
-    this.refreshing.isFresh = false;
-    const metaData = await this.$api.getHomeSeo(); // 获取SEO信息
-    this.meta = metaData.data;
+    try {
+      currencyType = this.$store.state.searchType; // 0 阿里搜索 2 algolia搜索
+      this.refreshing.isFresh = false;
+      const metaData = await this.$api.getHomeSeo(); // 获取SEO信息
+      this.meta = metaData.data;
 
-    const hotData = await this.$api.getHomeRecommendWord(); // 首页推荐词
-    this.hotSearch = hotData.data; // 热门搜索
+      const hotData = await this.$api.getHomeRecommendWord(); // 首页推荐词
+      this.hotSearch = hotData.data; // 热门搜索
 
-    const homeData = await this.$api.getHomeData(); // 组件数据
-    this.moduleData = homeData.data.components; // 需要展示的模块数据
+      const homeData = await this.$api.getHomeData(); // 组件数据
+      this.moduleData = homeData.data.components; // 需要展示的模块数据
 
-    const categoryList = await this.$api.getCategoryList(); // 分类列表
-    this.categoryList = [ // 分类列表
-      {
-        name: this.$t('all')
-      },
-      ...categoryList.data
-    ];
-    // 搜索商品列表如果已经达到最大查询再次进来页面时不调用接口
-    if (parseFloat(this.tabTotal) == this.searchList.length && this.pageIndex > 0) { // 没有下一页了
-      this.finished = true;
-      this.loading = false;
-      return false;
+      const categoryList = await this.$api.getCategoryList(); // 分类列表
+      this.categoryList = [ // 分类列表
+        {
+          name: this.$t('all')
+        },
+        ...categoryList.data
+      ];
+      // 搜索商品列表如果已经达到最大查询再次进来页面时不调用接口
+      if (parseFloat(this.tabTotal) == this.searchList.length && this.pageIndex > 0) { // 没有下一页了
+        this.finished = true;
+        this.loading = false;
+        return false;
+      }
+
+      // if (currencyType == 2) {
+      //   const algoliasearch = require('algoliasearch');
+      //   let client = algoliasearch('62MLEBY33X','7a8da9a5fd3f8137ea8cb70b60806e8d');
+      //   searchClient = client.initIndex('tospinoMall');
+      //   this.pageIndex = 0;
+      //   searchClient.search('', {
+      //     page: this.pageIndex, // 从0开始算起
+      //     hitsPerPage: this.pageSize
+      //   }).then(({hits, nbHits}) => {
+      //     this.tabTotal = nbHits;
+      //     this.searchList = hits;
+      //     this.loading = false;
+      //     this.finished = this.tabTotal == this.searchList.length ? true : false;
+      //     this.$toast.clear();
+      //     setTimeout(() => {
+      //       if (typeof this.$redrawVueMasonry === 'function') {
+      //         this.$redrawVueMasonry('homeMasonryContainer');
+      //       }
+      //     }, 50)
+      //   })
+      // } else {
+        this.pageIndex = 0;
+        const searchList = await this.$api.getProductSearch({ /*pageSize: this.pageSize,*/ pageIndex: this.pageIndex }); // 搜索商品列表
+        if (!searchList.data) return false;
+        
+        let list = searchList.data.items.map(item => { // 搜索商品列表
+          return {
+            ...item,
+            starLevel: parseFloat(item.starLevel),
+            saleCount: parseFloat(item.saleCount),
+            minPrice: parseFloat(item.minPrice)
+          }
+        })
+        this.searchList = this.pageIndex == 0 ? list : this.searchList.concat(list);
+        this.tabTotal = searchList.data.total; // 搜索商品列表商品总数目
+        setTimeout(() => {
+          if (typeof this.$redrawVueMasonry === 'function') {
+            this.$redrawVueMasonry('homeMasonryContainer');
+          }
+        }, 50)
+      // }
+    } catch (error) {
+      console.log(error);
     }
-
-    // if (currencyType == 2) {
-    //   const algoliasearch = require('algoliasearch');
-    //   let client = algoliasearch('62MLEBY33X','7a8da9a5fd3f8137ea8cb70b60806e8d');
-    //   searchClient = client.initIndex('tospinoMall');
-    //   this.pageIndex = 0;
-    //   searchClient.search('', {
-    //     page: this.pageIndex, // 从0开始算起
-    //     hitsPerPage: this.pageSize
-    //   }).then(({hits, nbHits}) => {
-    //     this.tabTotal = nbHits;
-    //     this.searchList = hits;
-    //     this.loading = false;
-    //     this.finished = this.tabTotal == this.searchList.length ? true : false;
-    //     this.$toast.clear();
-    //     setTimeout(() => {
-    //       if (typeof this.$redrawVueMasonry === 'function') {
-    //         this.$redrawVueMasonry('homeMasonryContainer');
-    //       }
-    //     }, 50)
-    //   })
-    // } else {
-      this.pageIndex = 0;
-      const searchList = await this.$api.getProductSearch({ /*pageSize: this.pageSize,*/ pageIndex: this.pageIndex }); // 搜索商品列表
-      if (!searchList.data) return false;
-      
-      let list = searchList.data.items.map(item => { // 搜索商品列表
-        return {
-          ...item,
-          starLevel: parseFloat(item.starLevel),
-          saleCount: parseFloat(item.saleCount),
-          minPrice: parseFloat(item.minPrice)
-        }
-      })
-      this.searchList = this.pageIndex == 0 ? list : this.searchList.concat(list);
-      this.tabTotal = searchList.data.total; // 搜索商品列表商品总数目
-      setTimeout(() => {
-        if (typeof this.$redrawVueMasonry === 'function') {
-          this.$redrawVueMasonry('homeMasonryContainer');
-        }
-      }, 50)
-    // }
   },
   head() { // 头部设置，方便seo
     return {
@@ -534,6 +538,8 @@ export default {
         }, 50)
         this.finished = this.tabTotal == this.searchList.length ? true : false;
         this.tabTotal = res.data.total;
+      }).catch(error => {
+        console.log(error);
       })
     },
     onHotDetail(hotDetail) { // 点击热区图进行跳转 imageLinkType: 0:商品链接(商品详情页)，跳转到搜索页(1:前端分类id，2:后端分类id，3:品牌，4:FBT，5:FBM，) 6:外部链接(直接打开)
@@ -671,7 +677,9 @@ export default {
         
         // 加载状态结束
         this.loading = false;
-      });
+      }).catch(error => {
+        console.log(error);
+      })
     }
   },
   deactivated() {
