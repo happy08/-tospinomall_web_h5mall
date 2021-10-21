@@ -257,6 +257,10 @@ export default {
                 })
                 return false;
               }
+              if (res.code != 0) {
+                this.$toast(res.msg);
+                return false;
+              }
               this.$store.commit('user/SET_TOKEN', res.data.token_type + ' ' + res.data.access_token);
               this.$store.commit('user/SET_REFRESHTOKEN', res.data.refresh_token);
               this.$store.commit('user/SET_SCOPE', res.data.scope);
