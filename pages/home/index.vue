@@ -368,8 +368,8 @@ export default {
       meta: {},
       loading: false,
       finished: false,
-      pageIndex: 1,
-      pageSize: 10,
+      pageIndex: 0,
+      // pageSize: 10,
       tabTotal: 0,
       homeMasonryContainer: 'homeMasonryContainer',
       filterCategoryIds: []
@@ -395,35 +395,35 @@ export default {
       ...categoryList.data
     ];
     // 搜索商品列表如果已经达到最大查询再次进来页面时不调用接口
-    if (parseFloat(this.tabTotal) == this.searchList.length && this.pageIndex > 1) { // 没有下一页了
+    if (parseFloat(this.tabTotal) == this.searchList.length && this.pageIndex > 0) { // 没有下一页了
       this.finished = true;
       this.loading = false;
       return false;
     }
 
-    if (currencyType == 2) {
-      const algoliasearch = require('algoliasearch');
-      let client = algoliasearch('62MLEBY33X','7a8da9a5fd3f8137ea8cb70b60806e8d');
-      searchClient = client.initIndex('tospinoMall');
+    // if (currencyType == 2) {
+    //   const algoliasearch = require('algoliasearch');
+    //   let client = algoliasearch('62MLEBY33X','7a8da9a5fd3f8137ea8cb70b60806e8d');
+    //   searchClient = client.initIndex('tospinoMall');
+    //   this.pageIndex = 0;
+    //   searchClient.search('', {
+    //     page: this.pageIndex, // 从0开始算起
+    //     hitsPerPage: this.pageSize
+    //   }).then(({hits, nbHits}) => {
+    //     this.tabTotal = nbHits;
+    //     this.searchList = hits;
+    //     this.loading = false;
+    //     this.finished = this.tabTotal == this.searchList.length ? true : false;
+    //     this.$toast.clear();
+    //     setTimeout(() => {
+    //       if (typeof this.$redrawVueMasonry === 'function') {
+    //         this.$redrawVueMasonry('homeMasonryContainer');
+    //       }
+    //     }, 50)
+    //   })
+    // } else {
       this.pageIndex = 0;
-      searchClient.search('', {
-        page: this.pageIndex, // 从0开始算起
-        hitsPerPage: this.pageSize
-      }).then(({hits, nbHits}) => {
-        this.tabTotal = nbHits;
-        this.searchList = hits;
-        this.loading = false;
-        this.finished = this.tabTotal == this.searchList.length ? true : false;
-        this.$toast.clear();
-        setTimeout(() => {
-          if (typeof this.$redrawVueMasonry === 'function') {
-            this.$redrawVueMasonry('homeMasonryContainer');
-          }
-        }, 50)
-      })
-    } else {
-      this.pageIndex = 1;
-      const searchList = await this.$api.getProductSearch({ pageSize: this.pageSize, pageIndex: this.pageIndex }); // 搜索商品列表
+      const searchList = await this.$api.getProductSearch({ /*pageSize: this.pageSize,*/ pageIndex: this.pageIndex }); // 搜索商品列表
       if (!searchList.data) return false;
       
       let list = searchList.data.items.map(item => { // 搜索商品列表
@@ -434,14 +434,14 @@ export default {
           minPrice: parseFloat(item.minPrice)
         }
       })
-      this.searchList = this.pageIndex == 1 ? list : this.searchList.concat(list);
+      this.searchList = this.pageIndex == 0 ? list : this.searchList.concat(list);
       this.tabTotal = searchList.data.total; // 搜索商品列表商品总数目
       setTimeout(() => {
         if (typeof this.$redrawVueMasonry === 'function') {
           this.$redrawVueMasonry('homeMasonryContainer');
         }
       }, 50)
-    }
+    // }
   },
   head() { // 头部设置，方便seo
     return {
@@ -453,7 +453,15 @@ export default {
     }
   },
   activated() {
-    this.$fetch();
+    if (this.searchList.length == 0) {
+      this.$fetch();
+    } else {
+      setTimeout(() => {
+        if (typeof this.$redrawVueMasonry === 'function') {
+          this.$redrawVueMasonry('homeMasonryContainer');
+        }
+      }, 50)
+    }
   },
   computed: {
     gutter() {
@@ -472,44 +480,45 @@ export default {
     },
     async getSearchList(name, title) { // 获取搜索商品列表
       let categoryIds = {};
-      let facetFilters = [];
+      // let facetFilters = [];
       if (name > 0) {
         categoryIds.navCategoryIds = [name];
-        const getCategoryLinkMap = await this.$api.getCategoryLinkMap([this.tabCategoryActive]);
-        if (getCategoryLinkMap.data['productIds']) { // 商品id
-          facetFilters.push((getCategoryLinkMap.data['productIds'].map(item => {
-            return `productId:${item}`;
-          })));
-        }
-        if (getCategoryLinkMap.data['categoryIds']) { // 分类id
-          facetFilters.push((getCategoryLinkMap.data['categoryIds'].map(item => {
-            return `categoryIds:${item}`;
-          })));
-        }
-        this.filterCategoryIds = facetFilters;
+        // const getCategoryLinkMap = await this.$api.getCategoryLinkMap([this.tabCategoryActive]);
+        // if (getCategoryLinkMap.data['productIds']) { // 商品id
+        //   facetFilters.push((getCategoryLinkMap.data['productIds'].map(item => {
+        //     return `productId:${item}`;
+        //   })));
+        // }
+        // if (getCategoryLinkMap.data['categoryIds']) { // 分类id
+        //   facetFilters.push((getCategoryLinkMap.data['categoryIds'].map(item => {
+        //     return `categoryIds:${item}`;
+        //   })));
+        // }
+        // this.filterCategoryIds = facetFilters;
       }
-      this.finished = false;
-      this.pageIndex = currencyType == 2 ? 0 : 1;
-      if (currencyType == 2) { // algolia 搜索
-        searchClient.search('', {
-          page: this.pageIndex, // 从0开始算起
-          hitsPerPage: this.pageSize,
-          facetFilters: facetFilters
-        }).then(({hits, nbHits}) => {
-          this.tabTotal = nbHits;
-          this.searchList = hits;
-          this.loading = false;
-          this.finished = this.tabTotal == this.searchList.length ? true : false;
-          this.$toast.clear();
-          setTimeout(() => {
-            if (typeof this.$redrawVueMasonry === 'function') {
-              this.$redrawVueMasonry('homeMasonryContainer');
-            }
-          }, 50)
-        })
-        return false;
-      }
-      this.$api.getProductSearch({ ...categoryIds, pageIndex: this.pageIndex, pageSize: this.pageSize }).then(res => {
+      // this.finished = false;
+      // this.pageIndex = currencyType == 2 ? 0 : 1;
+      this.pageIndex = 0;
+      // if (currencyType == 2) { // algolia 搜索
+      //   searchClient.search('', {
+      //     page: this.pageIndex, // 从0开始算起
+      //     hitsPerPage: this.pageSize,
+      //     facetFilters: facetFilters
+      //   }).then(({hits, nbHits}) => {
+      //     this.tabTotal = nbHits;
+      //     this.searchList = hits;
+      //     this.loading = false;
+      //     this.finished = this.tabTotal == this.searchList.length ? true : false;
+      //     this.$toast.clear();
+      //     setTimeout(() => {
+      //       if (typeof this.$redrawVueMasonry === 'function') {
+      //         this.$redrawVueMasonry('homeMasonryContainer');
+      //       }
+      //     }, 50)
+      //   })
+      //   return false;
+      // }
+      this.$api.getProductSearch({ ...categoryIds, pageIndex: this.pageIndex/*, pageSize: this.pageSize*/ }).then(res => {
         this.searchList = res.data.items.map(item => {
           return {
             ...item,
@@ -518,7 +527,12 @@ export default {
             minPrice: parseFloat(item.minPrice)
           }
         })
-        this.$redrawVueMasonry('homeMasonryContainer');
+        setTimeout(() => {
+          if (typeof this.$redrawVueMasonry === 'function') {
+            this.$redrawVueMasonry('homeMasonryContainer');
+          }
+        }, 50)
+        this.finished = this.tabTotal == this.searchList.length ? true : false;
         this.tabTotal = res.data.total;
       })
     },
@@ -615,26 +629,26 @@ export default {
         categoryIds.navCategoryIds = [this.tabCategoryActive];
       }
 
-      if (currencyType == 2) { // algolia 搜索
-        searchClient.search('', {
-          page: this.pageIndex, // 从0开始算起
-          hitsPerPage: this.pageSize,
-          facetFilters: this.filterCategoryIds
-        }).then(({hits, nbHits}) => {
-          this.tabTotal = nbHits;
-          this.searchList = this.searchList.concat(hits);
-          this.loading = false;
-          this.finished = this.tabTotal == this.searchList.length ? true : false;
-          this.$toast.clear();
-          setTimeout(() => {
-            if (typeof this.$redrawVueMasonry === 'function') {
-              this.$redrawVueMasonry('homeMasonryContainer');
-            }
-          }, 50)
-        })
-        return false;
-      }
-      this.$api.getProductSearch({ ...categoryIds, pageSize: this.pageSize, pageIndex: this.pageIndex }).then(res => { // 搜索商品列表
+      // if (currencyType == 2) { // algolia 搜索
+      //   searchClient.search('', {
+      //     page: this.pageIndex, // 从0开始算起
+      //     hitsPerPage: this.pageSize,
+      //     facetFilters: this.filterCategoryIds
+      //   }).then(({hits, nbHits}) => {
+      //     this.tabTotal = nbHits;
+      //     this.searchList = this.searchList.concat(hits);
+      //     this.loading = false;
+      //     this.finished = this.tabTotal == this.searchList.length ? true : false;
+      //     this.$toast.clear();
+      //     setTimeout(() => {
+      //       if (typeof this.$redrawVueMasonry === 'function') {
+      //         this.$redrawVueMasonry('homeMasonryContainer');
+      //       }
+      //     }, 50)
+      //   })
+      //   return false;
+      // }
+      this.$api.getProductSearch({ ...categoryIds/*, pageSize: this.pageSize*/, pageIndex: this.pageIndex }).then(res => { // 搜索商品列表
         
         this.tabTotal = res.data.total;
         let list = res.data.items.map(item => { // 搜索商品列表
@@ -647,6 +661,7 @@ export default {
         })
 
         this.searchList = this.searchList.concat(list);
+        console.log(this.searchList)
         this.finished = parseFloat(this.tabTotal) == this.searchList.length ? true: false;
         setTimeout(() => {
           if (typeof this.$redrawVueMasonry === 'function') {
