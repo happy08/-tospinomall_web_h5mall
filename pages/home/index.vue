@@ -77,7 +77,7 @@
       <div v-for="(moduleItem, moduleIndex) in moduleData" :key="'module-data-' + moduleIndex">
         <h2 class="fs-18 mlr-12 fw black pt-12 lh-20 fm-din-alternate" v-if="moduleItem.moduleTitleDisplay">{{ moduleItem.moduleTitle }}</h2>
         <!-- 整屏轮播图 -->
-        <div v-if="moduleItem.type === 1" class="mt-12 mb-12">
+        <div v-if="moduleItem.type === 1" class="mt-12">
           <swiper
             :ref="'swiperFullScreenRef' + moduleIndex"
             class="swiper home-banner-swiper"
@@ -108,7 +108,7 @@
 
         <!-- 热区图片 -->
         <template v-if="moduleItem.type === 2">
-          <div class="fs-0 hot-container" :ref="'hotContainer' + moduleIndex">
+          <div class="fs-0 mt-12 hot-container" :ref="'hotContainer' + moduleIndex">
             <BmImage
               :url="moduleItem.imageUrl"
               :loadUrl="require('@/assets/images/product-bgd-375.png')"
