@@ -9,7 +9,7 @@
         :width="'.54rem'" 
         :height="'.6rem'"
         :isShow="false"
-        :alt="'Tospino logo'"
+        :alt="'TospinoMall logo'"
         class="home-page-nav-logo"
       />
       <!-- 搜索框 -->
@@ -27,7 +27,7 @@
               :width="'0.4rem'" 
               :height="'0.4rem'"
               :isShow="false"
-              :alt="'Tospino search logo'"
+              :alt="'TospinoMall search logo'"
             />
           </template>
           <template #right-icon>
@@ -52,7 +52,7 @@
             :height="'.64rem'"
             :isLazy="false"
             :isShow="false"
-            :alt="'Tospino message icon'"
+            :alt="'TospinoMall message icon'"
           />
         </van-badge>
       </nuxt-link>
@@ -113,7 +113,7 @@
               :url="moduleItem.imageUrl"
               :loadUrl="require('@/assets/images/product-bgd-375.png')"
               :errorUrl="require('@/assets/images/product-bgd-375.png')"
-              :alt="'Tospino hot moduleItem'"
+              :alt="'TospinoMall hot moduleItem'"
             />
             <!-- 图片坐标 -->
             <div v-for="hotItem, hotIndex in moduleItem.componentDetails" :key="'hot-picture-' + hotIndex" class="hot-container__position" :ref="'hotPosition' + moduleIndex + hotIndex" :style="hotStyle(hotItem, 'hotPosition' + moduleIndex + hotIndex, 'hotContainer' + moduleIndex)" @click="onHotDetail(hotItem)"></div>
@@ -393,7 +393,7 @@ export default {
         {
           name: this.$t('all')
         },
-        ...categoryList.data
+        ...categoryList.data || []
       ];
       // 搜索商品列表如果已经达到最大查询再次进来页面时不调用接口
       if (parseFloat(this.tabTotal) == this.searchList.length && this.pageIndex > 0) { // 没有下一页了
