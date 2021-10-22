@@ -15,7 +15,7 @@
               :isLazy="false"
               :isShow="false"
               :round="true"
-              :alt="'Tospino user icon'"
+              :alt="'TospinoMall'"
             />
           </div>
           <!-- 姓名、id -->
@@ -33,7 +33,7 @@
               :height="'.64rem'"
               :isLazy="false"
               :isShow="false"
-              :alt="'Tospino message icon'"
+              :alt="'TospinoMall'"
             />
           </van-badge>
         </nuxt-link>
@@ -74,7 +74,7 @@
               :height="'0.8rem'"
               :isLazy="false"
               :isShow="false"
-              :alt="'Tospino '+ $t(orderItem.text) +' icon'"
+              :alt="'TospinoMall'"
             />
           </van-badge>
           <p class="fs-14 black">{{ $t(orderItem.text) }}</p>

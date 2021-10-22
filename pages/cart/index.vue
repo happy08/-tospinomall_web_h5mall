@@ -95,7 +95,7 @@
                         :isLazy="false"
                         :isShow="false"
                         :fit="'cover'"
-                        :alt="'Tospino ship from tag'"
+                        :alt="'TospinoMall ship from tag'"
                       />
                       <span class="fs-10 plr-8 lh-12">{{ $t('ship_from') }}{{ singleItem.shipAddress }}</span>
                     </nuxt-link>

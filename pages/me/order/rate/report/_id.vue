@@ -21,7 +21,7 @@
                   :height="'0.32rem'"
                   :isLazy="false"
                   :isShow="false"
-                  :alt="'Tospino choose icon'"
+                  :alt="'TospinoMall choose icon'"
                 />
               </template>
               <p class="black fs-14">{{ item.description }}</p>

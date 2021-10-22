@@ -37,6 +37,9 @@ export default {
     this.$api.getLangs().then(res => {
       this.$toast.clear();
       this.langList = res.data.localeList;
+      this.$store.commit('SET_LANGLIST', res.data.localeList.map(item => {
+        return item.value;
+      }));
     }).catch(error => {
       console.log(error);
     })
@@ -44,6 +47,7 @@ export default {
   methods: {
     onConfirm() { // 切换语言
       this.$cookies.set('lang', this.locale);
+      // this.$store.commit('SET_LANG', this.locale);
       location.href = '/';
     }
   },

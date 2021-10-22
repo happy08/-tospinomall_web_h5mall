@@ -23,7 +23,7 @@
               :width="'0.4rem'" 
               :height="'0.4rem'"
               :isShow="false"
-              :alt="'Tospino search logo'"
+              :alt="'TospinoMall'"
             />
           </template>
         </van-search>
@@ -65,7 +65,7 @@
                   :height="'0.48rem'"
                   :isLazy="false"
                   @onClick="onDeleteFn(item.id)"
-                  :alt="'Tospino delete icon'"
+                  :alt="'TospinoMall'"
                 />
               </div>
             </OrderStoreSingle>
@@ -158,7 +158,7 @@
                       :height="'0.32rem'"
                       :isLazy="false"
                       :isShow="false"
-                      :alt="'Tospino choose icon'"
+                      :alt="'TospinoMall'"
                     />
                   </template>
                 </van-radio>

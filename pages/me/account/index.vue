@@ -16,7 +16,7 @@
               :isLazy="false"
               :isShow="false"
               :round="true"
-              :alt="'Tospino user icon'"
+              :alt="'TospinoMall'"
             />
             <!-- 姓名、id -->
             <dl class="ml-10">

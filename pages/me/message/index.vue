@@ -9,7 +9,7 @@
           :height="'0.48rem'"
           :isLazy="false"
           @onClick="deleteFn"
-          :alt="'Tospino clear icon'"
+          :alt="'TospinoMall'"
         />
       </div>
     </BmHeaderNav>

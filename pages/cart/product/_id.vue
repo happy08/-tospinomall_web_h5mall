@@ -934,12 +934,12 @@ export default {
   },
   head() {
     return {
-      title: this.meta.title + 'Tospino Ghana online shopping',
+      title: this.meta.title + 'TospinoMall Ghana online shopping',
       meta: [
-        { hid: 'description', name: 'description', content: this.meta.description || 'Tospino Ghana online shopping' },
-        { hid: 'keywords', name: 'keywords', content: this.meta.keyword || 'Tospino Ghana online shopping' },
-        { hid: 'og:title', property: 'og:title', content: this.meta.title || 'Tospino Ghana online shopping' },
-        { hid: 'og:description', property: 'og:description', content: this.meta.description || 'Tospino Ghana online shopping' }
+        { hid: 'description', name: 'description', content: this.meta.description || 'TospinoMall Ghana online shopping' },
+        { hid: 'keywords', name: 'keywords', content: this.meta.keyword || 'TospinoMall Ghana online shopping' },
+        { hid: 'og:title', property: 'og:title', content: this.meta.title || 'TospinoMall Ghana online shopping' },
+        { hid: 'og:description', property: 'og:description', content: this.meta.description || 'TospinoMall Ghana online shopping' }
       ]
     }
   },

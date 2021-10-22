@@ -10,7 +10,7 @@
         :height="'0.96rem'"
         :isLazy="false"
         :isShow="false"
-        :alt="'Tospino '+ logo +' icon'"
+        :alt="'TospinoMall '+ logo +' icon'"
       />
       <h3 class="fs-16 black mt-24">{{ $t('awaiting_payment') }}</h3>
       <p class="mt-12 fs-14 black">{{ $t('if_you_have_paid') }}</p>

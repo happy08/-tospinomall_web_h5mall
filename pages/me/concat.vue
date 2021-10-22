@@ -15,7 +15,7 @@
             :height="'0.32rem'"
             :isLazy="false"
             :isShow="false"
-            :alt="'Tospino online icon'"
+            :alt="'TospinoMall'"
           />
           <span class="ml-6">{{ $t('concat_customer_service_online') }}</span>
         </div>
@@ -29,7 +29,7 @@
                 :height="'0.32rem'"
                 :isLazy="false"
                 :isShow="false"
-                :alt="'Tospino online icon'"
+                :alt="'TospinoMall'"
               />
               <span class="ml-6">{{ $t('concat_customer_service_tel') }}</span>
             </div>
@@ -43,7 +43,7 @@
             :height="'0.26rem'"
             :isLazy="false"
             :isShow="false"
-            :alt="'Tospino online icon'"
+            :alt="'TospinoMall'"
           />
           <span class="ml-6">{{ $t('concat_customer_service_email') }}</span>
         </div>

@@ -52,7 +52,7 @@
             :height="'0.32rem'"
             :isLazy="false"
             :isShow="false"
-            :alt="'Tospino choose icon'"
+            :alt="'TospinoMall choose icon'"
           />
         </template>
         <span class="fs-14 lh-20 grey-666">{{ $t('anonymous_buyer') }}</span>

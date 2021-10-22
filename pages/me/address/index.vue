@@ -21,7 +21,7 @@
             :height="'0.48rem'"
             :isLazy="false"
             :isShow="false"
-            :alt="'Tospino edit icon'"
+            :alt="'TospinoMall'"
           />
         </div>
       </div>
@@ -35,7 +35,7 @@
           :height="'0.32rem'"
           :isLazy="false"
           :isShow="false"
-          :alt="'Tospino choose icon'"
+          :alt="'TospinoMall'"
         />
         <span :class="{'fm-helvetica fs-14 ml-8': true, 'red': item.isDefault}">{{ item.isDefault ? $t('defaultText'): $t('set_as_default') }}</span>
       </div>

@@ -62,7 +62,7 @@
                 :fit="'cover'"
                 :round="true"
                 :errorUrl="require('@/assets/images/icon/user-icon.png')"
-                :alt="'Tospino user icon'"
+                :alt="'TospinoMall user icon'"
               />
               <p class="ml-14 fs-14 black fw">{{ item.buyerName }}</p>          
             </div>
@@ -141,7 +141,7 @@
                 :isShow="false"
                 :fit="'cover'"
                 class="ml-4"
-                :alt="'Tospino message icon'"
+                :alt="'TospinoMall message icon'"
               />
             </div>
             <div class="ml-12 flex vcenter black fs-14">

@@ -19,7 +19,7 @@
                 :width="'0.4rem'" 
                 :height="'0.4rem'"
                 :isShow="false"
-                :alt="'Tospino search logo'"
+                :alt="'TospinoMall search logo'"
               />
             </template>   
           </van-search>

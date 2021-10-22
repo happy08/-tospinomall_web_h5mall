@@ -15,7 +15,7 @@
               :height="'0.48rem'"
               :isLazy="false"
               :isShow="false"
-              :alt="'Tospino ' + item.label + ' icon'"
+              :alt="'TospinoMall ' + item.label + ' icon'"
             />
           </template>
           <!-- 右侧图标-单选图标 -->
@@ -28,7 +28,7 @@
                   :height="'0.32rem'"
                   :isLazy="false"
                   :isShow="false"
-                  :alt="'Tospino choose icon'"
+                  :alt="'TospinoMall choose icon'"
                 />
               </template>
             </van-radio>

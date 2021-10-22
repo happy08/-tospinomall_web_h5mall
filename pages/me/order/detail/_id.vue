@@ -54,7 +54,7 @@
     </van-cell>
     
     <!-- 定位地址 -->
-    <van-cell class="p-20" :title="'Fulfillment by Tospino'" title-class="black ml-12">
+    <van-cell class="p-20" title-class="black ml-12">
       <!-- 左侧图标 -->
       <template #icon>
         <van-icon :name="require('@/assets/images/icon/address-icon.png')" size="0.48rem" />
@@ -198,7 +198,7 @@
                       :height="'0.32rem'"
                       :isLazy="false"
                       :isShow="false"
-                      :alt="'Tospino choose icon'"
+                      :alt="'TospinoMall'"
                     />
                   </template>
                 </van-radio>

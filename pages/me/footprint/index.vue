@@ -36,7 +36,7 @@
                       :height="'0.32rem'"
                       :isLazy="false"
                       :isShow="false"
-                      :alt="'Tospino choose icon'"
+                      :alt="'TospinoMall'"
                     />
                   </template>
                 </van-checkbox>
@@ -65,7 +65,7 @@
                         class="ml-12"
                         v-if="item.isValid == 1"
                         @onClick="onSKu(item)"
-                        :alt="'Tospino add cart icon'"
+                        :alt="'TospinoMall'"
                       />
                     </div>
 
@@ -93,7 +93,7 @@
                   :height="'0.32rem'"
                   :isLazy="false"
                   :isShow="false"
-                  :alt="'Tospino choose icon'"
+                  :alt="'TospinoMall'"
                 />
               </template>
               <span class="ml-14 fs-14 lh-20 black">{{ $t('all') }}</span>

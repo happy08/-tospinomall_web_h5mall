@@ -28,7 +28,7 @@
           :isShow="false"
           class="mt-8 flex-shrink"
           @onClick="goCart"
-          :alt="'Tospino add cart icon'"
+          :alt="'TospinoMall add cart icon'"
         />
       </div>
     </van-sticky>
@@ -48,7 +48,7 @@
               :fit="'cover'"
               :round="true"
               :errorUrl="require('@/assets/images/icon/user-icon.png')"
-              :alt="'Tospino user icon'"
+              :alt="'TospinoMall user icon'"
             />
           </div>
           <p class="ml-14 fs-14 black fw">{{ detailData.buyerName }}</p>          
@@ -120,7 +120,7 @@
                   :fit="'cover'"
                   :round="true"
                   :errorUrl="require('@/assets/images/icon/user-icon.png')"
-                  :alt="'Tospino user icon'"
+                  :alt="'TospinoMall user icon'"
                 />
                 <span class="black ml-10">{{ replyItem.replyName }} </span>
               </div>
@@ -149,7 +149,7 @@
           :isLazy="false"
           :isShow="false"
           :fit="'cover'"
-          :alt="'Tospino message icon'"
+          :alt="'TospinoMall message icon'"
         />
       </div>
       <!-- 点赞 -->

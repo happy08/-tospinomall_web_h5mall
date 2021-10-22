@@ -37,7 +37,7 @@
 
         <p class="fs-12 light-grey mt-10" v-if="(detail.status == 7 && (detail.involvedStatus == 2 || detail.involvedStatus == 1) && detail.surplusTime <= 0)">{{ detail.updateTime }}</p>
         <!-- 倒计时 -->
-        <div class="light-grey fs-14 mt-8 flex flex-wrap vcenter" v-if="detail.surplusTime > 0">
+        <div class="orange fs-14 mt-8 flex flex-wrap vcenter" v-if="detail.surplusTime > 0">
           <span>{{ $t('refund_countdown') }}</span>
           <van-count-down :time="detail.surplusTime" :format="$t('count_down_format_label')" class="ml-4" @finish="getReturnDetail" />
         </div>
@@ -54,7 +54,7 @@
                 :isLazy="false"
                 :isShow="false"
                 :round="true"
-                :alt="'Tospino circle active icon'"
+                :alt="'TospinoMall'"
               />
             </template>
             <!-- 已完成状态图标 -->
@@ -66,7 +66,7 @@
                 :isLazy="false"
                 :isShow="false"
                 :round="true"
-                :alt="'Tospino circle finished icon'"
+                :alt="'TospinoMall'"
               />
             </template>
             <div v-html="stepItem"></div>
@@ -127,7 +127,7 @@
     <div class="mt-12 bg-green-linear ptb-12 plr-8" v-if="detail.status == 7 && detail.involvedStatus === 0">
       <div class="bg-white ptb-20 plr-8 round-13">
         <p class="fw fs-14 black ml-10" v-if="detail.involvedStatus == 0">{{ $t('refund_return_state_tip_16', { replace_tip: detail.orderType == 1 ? $t('merchant'): $t('platform') }) }}</p>
-        <div class="light-grey fs-14 mt-8 ml-10 flex flex-wrap vcenter" v-if="detail.surplusTime > 0">
+        <div class="orange fs-14 mt-8 ml-10 flex flex-wrap vcenter" v-if="detail.surplusTime > 0">
           <span>{{ $t('refund_countdown') }}</span>
           <van-count-down :time="detail.surplusTime" :format="$t('count_down_format_label')" class="ml-4" @finish="getReturnDetail" />
         </div>
