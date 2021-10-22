@@ -66,7 +66,7 @@
             ></BmImage>
           </template>
           <div class="fs-14">
-            {{ $t('me_read_and_agreen_server') }}<nuxt-link class="clr-blue" :to="{ name: 'service-type', params: { type: 'serve' }, query: { isH5: 1 } }">TospinoMall's {{ $t('term_of_service') }}</nuxt-link> {{ $t('with_and') }} <nuxt-link class="clr-blue" :to="{ name: 'service-type', params: { type: 'privacy' }, query: { isH5: 1 } }">{{ $t('privacy_policy') }}</nuxt-link>
+            {{ $t('me_read_and_agreen_server') }}<nuxt-link class="clr-blue" :to="{ name: 'service-type', params: { type: 'serve' }, query: { isH5: 1 } }"> TospinoMall's {{ $t('term_of_service') }}</nuxt-link> {{ $t('with_and') }} <nuxt-link class="clr-blue" :to="{ name: 'service-type', params: { type: 'privacy' }, query: { isH5: 1 } }">{{ $t('privacy_policy') }}</nuxt-link>
           </div>
         </van-checkbox>
       </div>
