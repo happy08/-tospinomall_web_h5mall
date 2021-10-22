@@ -345,7 +345,7 @@ export default {
   }
 }
 .login-page__container{
-  margin-top: 40px;
+  margin-top: 50px;
 }
 .login-page__container--forgot{
   color: #BFBFBF;

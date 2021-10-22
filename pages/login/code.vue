@@ -1,7 +1,7 @@
 <template>
   <!-- 登录-验证码登录页面 -->
-  <div>
-    <BmHeaderNav :left="{ isShow: true, url: '/home' }" :border="false" />
+  <div class="pt-46">
+    <BmHeaderNav :left="{ isShow: true, url: '/home' }" :border="false" :fixed="true" />
     <div class="mlr-20 pb-30 flex between column login-page">
       <div>
         <!-- 语言切换 -->
@@ -65,13 +65,13 @@
           </van-field>
           <!-- 登录 -->
           <van-button
-            class="mt-60 btn_h48 fw fs-16 w-100" 
+            class="mt-60 btn_h48 fw fs-16 w-100 round-8" 
             color="linear-gradient(270deg, #3EB5AE 0%, #70CEB6 100%)"
             :disabled="account.length === 0 || code.length === 0"
             @click="login">
             {{ $t('log_in') }}
           </van-button>
-          <nuxt-link :to="{ name: 'login' }" replace class="tc green mt-10 block">{{ $t('password_login') }}</nuxt-link>
+          <nuxt-link :to="{ name: 'login' }" replace class="tc green lh-20 mt-10 fs-14 block">{{ $t('password_login') }}</nuxt-link>
         </div>
       </div>
 
@@ -374,13 +374,14 @@ export default {
 
 <style lang="less" scoped>
 .login-page{
-  padding-top: 32px;
-  height: calc(100vh - 46px);
+  padding-top: 20px;
+  // height: calc(100vh - 46px);
   .lagin-page__title{
     font-size: 28px;
     line-height: 34px;
   }
   .login-page__btm{
+    margin-top: 36px;
     .login-page__btm--concat{
       margin: 0 auto;
       width: fit-content;
