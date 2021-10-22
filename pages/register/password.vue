@@ -22,7 +22,7 @@
       <p class="fs-14 register-pwd__tip">{{ $t('password_limit_tips') }}</p>
       <!-- 注册 -->
       <van-button 
-        class="mt-60 btn_h48 fw fs-16 w-100"
+        class="mt-60 btn_h48 fw fs-16 w-100 round-8"
         color="linear-gradient(270deg, #3EB5AE 0%, #70CEB6 100%)"
         :disabled="password.length < 6"
         maxlength="20"
