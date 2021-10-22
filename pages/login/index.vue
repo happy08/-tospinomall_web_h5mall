@@ -1,7 +1,7 @@
 <template>
   <!-- 登录-账号密码登录页面 -->
-  <div>
-    <BmHeaderNav :left="{ isShow: true, url: '/home' }" :border="false" />
+  <div class="pt-46">
+    <BmHeaderNav :left="{ isShow: true, url: '/home' }" :border="false" :fixed="true" />
     <div class="mlr-20 pb-30 flex between column login-page">
       <div>
         <!-- 语言切换 -->
@@ -37,7 +37,7 @@
           <nuxt-link :to="{ name: 'register', query: { type: 'forgot' } }" class="fs-14 tr block mt-12 lh-20 login-page__container--forgot">{{ $t('forgot_password') }}</nuxt-link>
           <!-- 登录 -->
           <van-button
-            class="btn_h48 fw fs-16 w-100 login-btn"
+            class="btn_h48 fw fs-16 w-100 login-btn round-8"
             color="linear-gradient(270deg, #3EB5AE 0%, #70CEB6 100%)"
             :disabled="account.length === 0 || password.length < 6"
             @click="login">
@@ -319,13 +319,16 @@ export default {
 
 <style lang="less" scoped>
 .login-page{
-  padding-top: 32px;
-  height: calc(100vh - 46px);
+  // position: fixed;
+  padding-top: 20px;
+  // min-height: 100%;
+  // padding-bottom: 10px;
   .lagin-page__title{
     font-size: 28px;
     line-height: 34px;
   }
   .login-page__btm{
+    margin-top: 36px;
     .login-page__btm--concat{
       margin: 0 auto;
       width: fit-content;
@@ -342,7 +345,7 @@ export default {
   }
 }
 .login-page__container{
-  margin-top: 50px;
+  margin-top: 40px;
 }
 .login-page__container--forgot{
   color: #BFBFBF;

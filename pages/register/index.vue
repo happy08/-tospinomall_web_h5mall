@@ -1,9 +1,9 @@
 <template>
   <!-- 登录-注册 -->
-  <div>
-    <BmHeaderNav :left="{ isShow: true, url: '/login' }" :title="title" ></BmHeaderNav>
+  <div class="v-percent-100 pt-46">
+    <BmHeaderNav :left="{ isShow: true, url: '/login' }" :title="title" :fixed="true"></BmHeaderNav>
     
-    <div class="mlr-20 pb-30 flex between column register-page">
+    <div class="plr-20 mt-10 flex between column register-page">
       <div>
         <!-- 邮箱 -->
         <van-field
@@ -51,7 +51,7 @@
           </template>
         </van-field>
         <!-- 注册，点击跳转到设置密码页面 -->
-        <van-button class="mt-60 btn_h48 fw fs-16 w-100" color="linear-gradient(270deg, #3EB5AE 0%, #70CEB6 100%)" :disabled="(isType == 'email' && account_email.length === 0) || (isType != 'email' && account.length === 0) || code.length === 0" @click="jumpPwd">
+        <van-button class="mt-60 btn_h48 fw fs-16 w-100 round-8" color="linear-gradient(270deg, #3EB5AE 0%, #70CEB6 100%)" :disabled="(isType == 'email' && account_email.length === 0) || (isType != 'email' && account.length === 0) || code.length === 0" @click="jumpPwd">
           {{ $t('next') }}
         </van-button> 
         <van-checkbox v-model="checked" class="mt-20" v-if="($route.query.type && $route.query.type != 'forgot') || !$route.query.type">
@@ -327,8 +327,15 @@ export default {
   border: none;
 }
 .register-page{
-  height: calc(100vh - 46px);
+  // height: calc(100vh - 46px - 30px);
+  width: 100%;
+  // position: fixed;
+  // min-height: 90%;
+  // padding-bottom: 60px;
+  // bottom: 20px;
+  // margin-top: 80px;
   .login-page__btm{
+    margin-top: 100px;
     .login-page__btm--concat{
       margin: 0 auto;
       width: fit-content;
