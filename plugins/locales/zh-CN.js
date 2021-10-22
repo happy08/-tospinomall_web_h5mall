@@ -328,7 +328,7 @@ const cn = {
   minimum_price: '最低价',
   maximum_price: '最高价',
   service_discount: '折扣/服务',
-  tospino_logistics: 'TospinoMall物流',
+  tospino_logistics: 'Tospino物流',
   only_see_stock: '仅看有货',
   overseas_purchase: '海外购',
   return_to_home_page: '返回首页',

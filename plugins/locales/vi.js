@@ -328,7 +328,7 @@ const vi = {
   minimum_price: 'Giá thấp nhất',
   maximum_price: 'Giá cao nhất',
   service_discount: 'Giảm giá/dịch vụ',
-  tospino_logistics: 'TospinoMall Logistics',
+  tospino_logistics: 'Tospino Logistics',
   only_see_stock: 'Chỉ xem trong kho',
   overseas_purchase: 'Mua ở nước ngoài',
   return_to_home_page: 'quay lại trang chủ',

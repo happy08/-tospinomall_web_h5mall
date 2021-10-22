@@ -328,7 +328,7 @@ const en = {
   minimum_price: 'minimum price',
   maximum_price: 'Highest price',
   service_discount: 'Discounts/services',
-  tospino_logistics: 'TospinoMall Logistics',
+  tospino_logistics: 'Tospino Logistics',
   only_see_stock: 'Just look at the goods',
   overseas_purchase: 'Overseas outsourcing',
   return_to_home_page: 'Return to home page',

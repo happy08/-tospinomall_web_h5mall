@@ -328,7 +328,7 @@
   minimum_price: 'Menor preço',
   maximum_price: 'Preço mais alto',
   service_discount: 'Descontos/serviços',
-  tospino_logistics: 'Logística TospinoMall',
+  tospino_logistics: 'Logística Tospino',
   only_see_stock: 'Ver apenas em estoque',
   overseas_purchase: 'Compra no exterior',
   return_to_home_page: 'Voltar à página inicial',
