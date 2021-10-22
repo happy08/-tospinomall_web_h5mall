@@ -9,15 +9,15 @@ export default {
   },
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    title: 'Tospino',
+    title: 'TospinoMall',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, viewport-fit=cover, user-scalable=0' },
-      { hid: 'description', name: 'description', content: 'Tospino Ghana online shopping' },
-      { hid: 'keywords', name: 'keywords', content: 'Tospino Ghana online shopping' },
+      { hid: 'description', name: 'description', content: 'TospinoMall Ghana online shopping' },
+      { hid: 'keywords', name: 'keywords', content: 'TospinoMall Ghana online shopping' },
       { name: 'google-signin-scope', content: 'profile email' },
-      { hid: 'og:title', property: 'og:title', content: 'Tospino Ghana online shopping' },
-      { hid: 'og:description', property: 'og:description', content: 'Tospino Ghana online shopping' },
+      { hid: 'og:title', property: 'og:title', content: 'TospinoMall Ghana online shopping' },
+      { hid: 'og:description', property: 'og:description', content: 'TospinoMall Ghana online shopping' },
       { hid: 'og:image', property: 'og:image', content: '/logo.png' }
     ],
     link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
@@ -76,16 +76,16 @@ export default {
   proxy: {
     //登录、退出登录、刷新token、第三方登录接口地址
     '/apiLogin': {
-        // target: 'https://auth.fyynet.com',
-        target: 'http://192.168.2.35:19999',
+        target: 'https://auth.fyynet.com',
+        // target: 'http://192.168.2.35:19999',
         pathRewrite: {
             '^/apiLogin': '/'
         }
     },
     '/api': {
-      target: 'http://192.168.2.34:9999', //120.78.145.142
+      // target: 'http://192.168.2.34:9999', //120.78.145.142
       // target: 'http://192.168.2.70:9999',
-      // target: 'https://tospinomallapi.fyynet.com',
+      target: 'https://tospinomallapi.fyynet.com',
       // target: 'http://192.168.2.35:9999',
       //target: 'http://120.78.145.142:9999',
       pathRewrite: {
