@@ -18,7 +18,7 @@ export default {
       { name: 'google-signin-scope', content: 'profile email' },
       { hid: 'og:title', property: 'og:title', content: 'Tospino Ghana online shopping' },
       { hid: 'og:description', property: 'og:description', content: 'Tospino Ghana online shopping' },
-      { hid: 'og:image', property: 'og:image', content: '/favicon.ico' }
+      { hid: 'og:image', property: 'og:image', content: '/logo.png' }
     ],
     link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
     script: [
@@ -83,10 +83,10 @@ export default {
         }
     },
     '/api': {
-      // target: 'http://192.168.2.34:9999', //120.78.145.142
+      target: 'http://192.168.2.34:9999', //120.78.145.142
       // target: 'http://192.168.2.70:9999',
       // target: 'https://tospinomallapi.fyynet.com',
-      target: 'http://192.168.2.35:9999',
+      // target: 'http://192.168.2.35:9999',
       //target: 'http://120.78.145.142:9999',
       pathRewrite: {
         '^/api': '/'
