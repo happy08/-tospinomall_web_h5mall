@@ -715,7 +715,8 @@ const cn = {
   concat_customer_service_tip: '如有需要或无法解决的问题，请联系我们的客服。',
   concat_customer_service_online: '在线沟通',
   concat_customer_service_tel: '电话联系',
-  concat_customer_service_email: '邮箱联系'
+  concat_customer_service_email: '邮箱联系',
+  return_to_previous_page: '返回上一页'
 }
 
 export default cn;

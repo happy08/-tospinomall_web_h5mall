@@ -715,7 +715,8 @@
   concat_customer_service_tip: 'Se você tiver algum problema que precise ou não possa resolver, entre em contato com nosso atendimento ao cliente.',
   concat_customer_service_online: 'Comunicação online',
   concat_customer_service_tel: 'Contatando por telefone',
-  concat_customer_service_email: 'Contato de email'
+  concat_customer_service_email: 'Contato de email',
+  return_to_previous_page: 'Voltar para a página anterior'
 }
 
 export default por;

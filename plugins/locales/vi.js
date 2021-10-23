@@ -715,7 +715,8 @@ const vi = {
   concat_customer_service_tip: 'Nếu bạn có bất kỳ vấn đề nào mà bạn cần hoặc không thể giải quyết, vui lòng liên hệ với bộ phận chăm sóc khách hàng của chúng tôi.',
   concat_customer_service_online: 'Giao tiếp trực tuyến',
   concat_customer_service_tel: 'Liên hệ qua điện thoại',
-  concat_customer_service_email: 'Liên hệ qua email'
+  concat_customer_service_email: 'Liên hệ qua email',
+  return_to_previous_page: 'Trở lại trang trước'
 }
 
 export default vi;
