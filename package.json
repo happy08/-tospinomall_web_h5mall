@@ -5,7 +5,9 @@
   "scripts": {
     "dev": "nuxt",
     "serve": "nuxt",
-    "build": "nuxt build",
+    "build": "cross-env process.env.NODE_ENV=production nuxt build",
+    "build:test": "cross-env process.env.NODE_ENV=ghana process.env.DOMAIN_API=https://tospinomallapi.fyynet.com process.env.DOMAIN_LOGIN=https://auth.fyynet.com process.env.VUE_APP_TITLE=test nuxt build",
+    "build:ghana": "cross-env process.env.NODE_ENV=ghana process.env.DOMAIN_API=https://tospinomallapi1.tospinomall.com.gh process.env.DOMAIN_LOGIN=https://oauthapi1.tospinomall.com.gh process.env.VUE_APP_TITLE=production nuxt build",
     "start": "nuxt start",
     "generate": "nuxt generate"
   },
@@ -16,6 +18,7 @@
     "clipboard": "^2.0.8",
     "cookie-universal-nuxt": "^2.1.4",
     "core-js": "^3.9.1",
+    "cross-env": "^7.0.3",
     "crypto-js": "^4.0.0",
     "moment": "^2.29.1",
     "net": "^1.0.2",

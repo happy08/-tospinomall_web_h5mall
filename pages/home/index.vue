@@ -243,7 +243,7 @@
         </div>
       </div> -->
       <!-- 滚动标签栏部分 -->
-      <van-tabs sticky swipeable animated :offset-top="'0.88rem'" color="#42B7AE" v-model="tabCategoryActive" @change="getSearchList" class="mh-60 mt-12 custom-home-tab" :ellipsis="false" :lazy-render="false">
+      <van-tabs sticky swipeable animated :offset-top="'0.88rem'" color="#42B7AE" v-model="tabCategoryActive" @change="getSearchList" class="mh-60 mt-12 custom-home-tab" :ellipsis="false" :lazy-render="false" v-if="categoryList.length > 0">
         <van-tab v-for="(categoryItem, tabIndex) in categoryList" :title="categoryItem.name" :key="'scroll-tab-' + tabIndex" :name="categoryItem.id">
           <empty-status v-if="searchList.length === 0" :image="require('@/assets/images/empty/order.png')" class="mh-60" />
           <van-list
@@ -344,6 +344,8 @@ export default {
           el: '.swiper-group-pagination',
           clickable: true,
         },
+        observer: true,
+        observeParents: true
       },
       swiperFullScreenOption: { // 一屏一个 整屏展示
         pagination: {
@@ -389,12 +391,15 @@ export default {
       this.moduleData = homeData.data.components; // 需要展示的模块数据
 
       const categoryList = await this.$api.getCategoryList(); // 分类列表
-      this.categoryList = [ // 分类列表
-        {
-          name: this.$t('all')
-        },
-        ...categoryList.data || []
-      ];
+      if (categoryList.data && categoryList.data.length > 0) {
+        this.categoryList = [ // 分类列表
+          {
+            name: this.$t('all')
+          },
+          ...categoryList.data
+        ];
+      }
+      
       // 搜索商品列表如果已经达到最大查询再次进来页面时不调用接口
       if (parseFloat(this.tabTotal) == this.searchList.length && this.pageIndex > 0) { // 没有下一页了
         this.finished = true;

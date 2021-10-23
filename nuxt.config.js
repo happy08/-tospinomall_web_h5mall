@@ -38,6 +38,13 @@ export default {
     middleware: ['vue-i18n'] //路由中间件
   },
 
+  env: {
+    NODE_ENV: process.env.NODE_ENV,
+    DOMAIN_API: process.env.DOMAIN_API,
+    DOMAIN_LOGIN: process.env.DOMAIN_LOGIN,
+    VUE_APP_TITLE: process.env.VUE_APP_TITLE
+  },
+
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
     '@/plugins/global-components',

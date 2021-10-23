@@ -6,7 +6,7 @@
       <!-- 搜索 -->
       <div :class="{'plr-20 bg-white ptb-12': true, 'border-b': isShowTip != -1}">
         <van-search
-          v-model="searchVal"
+          v-model.trim="searchVal"
           shape="round"
           :placeholder="hintName"
           :class="{'search-container': true}"
@@ -223,6 +223,8 @@ import PullRefresh from '@/components/PullRefresh';
 let searchClient;
 let currencyType;
 let client;
+// 测试环境和正式环境搜索分开
+let currenOTO = process.env.VUE_APP_TITLE == 'production' ? 'tospinoMall' : 'test';
 
 export default {
   name: 'search',
@@ -384,7 +386,7 @@ export default {
       if (currencyType == 2) {
         const algoliasearch = require('algoliasearch');
         client = algoliasearch('62MLEBY33X','7a8da9a5fd3f8137ea8cb70b60806e8d');
-        searchClient = client.initIndex('tospinoMall');
+        searchClient = client.initIndex(currenOTO);
       }
 
       this.params = {...this.params, pageIndex: this.pageIndex, pageSize: this.pageSize};
@@ -501,7 +503,7 @@ export default {
         
         // 获得底纹词
         const hintList = await this.$api.getHintResult();
-        this.hintName = hintList.data.result[0].name;
+        this.hintName = hintList.data ? hintList.data.result[0].name : '';
       // }
 
       this.searchHistoryList = this.$store.state.searchProductList.filter((item, index) => {
@@ -597,14 +599,14 @@ export default {
       if (currencyType == 2) { // algolia搜索
         this.pageIndex = 0;
         if (index == 1) { // 销量
-          searchClient = client.initIndex('tospinoMall_sales_des');
+          searchClient = client.initIndex(currenOTO + '_sales_des');
         } else if (index == 0) { 
           if (this.dropdownVal == 0) { // 综合排序
-            searchClient = client.initIndex('tospinoMall');
+            searchClient = client.initIndex(currenOTO);
           } else if (this.dropdownVal == 1) { // 价格升序
-            searchClient = client.initIndex('tospinoMall_price_asc');
+            searchClient = client.initIndex(currenOTO + '_price_asc');
           } else if (this.dropdownVal == 2) { // 价格降序
-            searchClient = client.initIndex('tospinoMall_price_des');
+            searchClient = client.initIndex(currenOTO + '_price_des');
           }
         }
         this.getProductList();
@@ -649,13 +651,13 @@ export default {
     getDropSearchList(value) {
       if (currencyType == 2) { // algolia搜索
         if (value == 0) { // 综合排序
-          searchClient = client.initIndex('tospinoMall');
+          searchClient = client.initIndex(currenOTO);
         }
         this.pageIndex = 0;
         if (value == 1) { // 价格升序
-          searchClient = client.initIndex('tospinoMall_price_asc');
+          searchClient = client.initIndex(currenOTO + '_price_asc');
         } else if (value == 2) { // 价格降序
-          searchClient = client.initIndex('tospinoMall_price_des');
+          searchClient = client.initIndex(currenOTO + '_price_des');
         }
         this.getProductList();
         return false;
@@ -823,7 +825,7 @@ export default {
     },
     getSearchPull() { // 获取搜索下拉列表 仅阿里搜索有
       getSearchPull({ queryName: this.searchVal, hits: 10 }).then(res => {
-        this.searchPullList = res.data.suggestions;
+        this.searchPullList = res.data ? res.data.suggestions : [];
         this.list = [];
       }).catch(error => {
         console.log(error);
