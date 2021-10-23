@@ -1,6 +1,6 @@
 <template>
   <!-- 商品详情页面 -->
-  <div class="v-percent-100 bg-grey pb-56 product-detail-content">
+  <div class="v-percent-100 bg-grey pb-56 product-detail-content" v-if="isDetail">
     <van-sticky
       ref="detailStickyContainer"
       @scroll="stickyScroll"
@@ -250,19 +250,29 @@
             </template>
           </van-cell>
           <!-- 商品图片 -->
-          <div class="flex pr-10">
-            <BmImage
-              :url="selectItem.attrPicture"
-              :width="'2rem'"
-              :height="'2rem'"
-              :isLazy="false"
-              :isShow="true"
-              :fit="'cover'"
-              v-for="(selectItem, selectIndex) in selectCarousel"
-              :key="'select-' + selectIndex"
-              :class="{'round-4 border': true, 'ml-12': selectIndex != 0}"
-              :alt="goodSpuVo.goodTitle + selectItem.attrValue"
-            />
+          <div class="pr-10">
+            <swiper
+              ref="swiperRecommendRef"
+              :options="selectOption"
+              class="review-swiper"
+              v-if="selectCarousel.length"
+            >
+              <swiper-slide
+                v-for="(selectItem, selectIndex) in selectCarousel"
+                :key="'like-index-' + selectIndex"
+              >
+                <BmImage
+                  :url="selectItem.attrPicture"
+                  :width="'0.6rem'"
+                  :height="'0.6rem'"
+                  :isLazy="false"
+                  :isShow="true"
+                  :fit="'cover'"
+                  :class="{'round-4 border': true}"
+                  :alt="goodSpuVo.goodTitle + selectItem.attrValue"
+                />
+              </swiper-slide>
+            </swiper>
           </div>
           <!-- 商品服务与承诺 -->
           <van-cell
@@ -578,6 +588,7 @@
     <!-- 分享 -->
     <van-share-sheet v-model="showShare" :options="shareOptions" :title="$t('share_title')" :cancel-text="$t('cancel')" @select="onShare" />
   </div>
+  <empty-status v-else :image="require('@/assets/images/empty/order.png')" class="mh-60" :btn="{ btn: '返回上一页', isEmit: true }" @emptyClick="$router.go(-1)" />
 </template>
 
 <script>
@@ -592,6 +603,7 @@ import { getShareDetail } from '@/api/user';
 import shareFacebook from '@/assets/images/icon/share-facebook.png';
 import shareInfo from '@/assets/images/icon/share-info.png';
 import shareLink from '@/assets/images/icon/share-link.png';
+import EmptyStatus from '@/components/EmptyStatus';
 
 export default {
   components: {
@@ -608,7 +620,8 @@ export default {
     swiper: Swiper,
     swiperSlide: SwiperSlide,
     vanShareSheet: ShareSheet,
-    ProductSku
+    ProductSku,
+    EmptyStatus
   },
   data() {
     return {
@@ -639,6 +652,10 @@ export default {
       recommendOption: {
         slidesPerView: 'auto',
         spaceBetween: 12
+      },
+      selectOption: {
+        slidesPerView: 'auto',
+        spaceBetween: 6
       },
       searchVal: '',
       tabActive: 'Short',
@@ -691,7 +708,8 @@ export default {
       ],
       shareDetail: {},
       meta: {},
-      isNext: false
+      isNext: false,
+      isDetail: null
     }
   },
   async fetch() {
@@ -708,6 +726,7 @@ export default {
       }
       const detailData = await this.$api.getProductDetail(this.$route.params.id, _detailParams); // 获取商品详情;
       this.$toast.clear();
+      this.isDetail = detailData.data ? true : false; // 判断当前商品是否有数据
       if (!detailData.data) return false;
 
       this.carouselMapUrls = detailData.data.carouselMapUrls; // 商品轮播图
@@ -757,7 +776,8 @@ export default {
           // if (attrIndex == 0) {
           //   _initSku.push(attrItem);
           // }
-          if (_selectCarousel.length < 3 && _selectCarousel.length < item.attrValues.length) { // 商品选择的图片集展示
+          // if (_selectCarousel.length < 3 && _selectCarousel.length < item.attrValues.length) { // 商品选择的图片集展示
+          if (_selectCarousel.length < item.attrValues.length) { // 商品选择的图片集展示
             _selectCarousel.push(attrItem);
           }
           this.sku.tree[itemInxdex].v.push({
@@ -862,8 +882,10 @@ export default {
         //   })
         // } else { // 阿里搜索
           const recommendData = await this.$api.getRecommendList({ shopId: this.storeInfo.storeId, categoryId: this.goodSpuVo.categoryId });
-          if (!recommendData.data) return false;
-          this.likeList = recommendData.data;
+          if (recommendData.data) {
+            this.likeList = recommendData.data;
+          }
+          
         // }
       }
 
