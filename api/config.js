@@ -13,7 +13,7 @@ let production = { // 默认配置
   DOMAIN_API: 'https://tospinomallapi.fyynet.com', //请求地址
   DOMAIN_LOGIN: 'https://auth.fyynet.com' // 测试环境 登录、退出登录、刷新token、第三方登录接口地址
 };
-console.log(process.env.APP_MODE)
+
 if (process.env.APP_MODE == 'test') { // 测试环境
   production = {
     ...production,
