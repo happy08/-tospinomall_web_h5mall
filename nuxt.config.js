@@ -39,10 +39,8 @@ export default {
   },
 
   env: {
-    NODE_ENV: process.env.NODE_ENV,
-    DOMAIN_API: process.env.DOMAIN_API,
-    DOMAIN_LOGIN: process.env.DOMAIN_LOGIN,
-    VUE_APP_TITLE: process.env.VUE_APP_TITLE
+    APP_ENV: process.env.APP_ENV,
+    APP_MODE: process.env.APP_MODE
   },
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins

@@ -5,9 +5,9 @@
   "scripts": {
     "dev": "nuxt",
     "serve": "nuxt",
-    "build": "cross-env process.env.NODE_ENV=production nuxt build",
-    "build:test": "cross-env process.env.NODE_ENV=ghana process.env.DOMAIN_API=https://tospinomallapi.fyynet.com process.env.DOMAIN_LOGIN=https://auth.fyynet.com process.env.VUE_APP_TITLE=test nuxt build",
-    "build:ghana": "cross-env process.env.NODE_ENV=ghana process.env.DOMAIN_API=https://tospinomallapi1.tospinomall.com.gh process.env.DOMAIN_LOGIN=https://oauthapi1.tospinomall.com.gh process.env.VUE_APP_TITLE=production nuxt build",
+    "build": "nuxt build",
+    "build:test": "cross-env process.env.APP_MODE=test process.env.APP_ENV=test nuxt build",
+    "build:ghana": "cross-env process.env.APP_MODE=ghana process.env.APP_ENV=production nuxt build",
     "start": "nuxt start",
     "generate": "nuxt generate"
   },

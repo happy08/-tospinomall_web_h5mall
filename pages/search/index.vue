@@ -224,7 +224,7 @@ let searchClient;
 let currencyType;
 let client;
 // 测试环境和正式环境搜索分开
-let currenOTO = process.env.VUE_APP_TITLE == 'production' ? 'tospinoMall' : 'test';
+let currenOTO = process.env.APP_ENV == 'production' ? 'tospinoMall' : 'test';
 
 export default {
   name: 'search',

@@ -7,14 +7,28 @@ const development = {
 };
 
 //线上配置
-const production = {
-  // DOMAIN_API: 'https://tospinomallapi1.tospinomall.com.gh', //请求地址 加纳环境
-  DOMAIN_API: process.env.DOMAIN_API, //请求地址 测试环境
+let production = { // 默认配置
   PATH_API: '', //接口路径  api/
   VERSION_API: '', //版本
-  // DOMAIN_LOGIN: 'https://oauthapi1.tospinomall.com.gh' // 加纳环境 登录、退出登录、刷新token、第三方登录接口地址
-  DOMAIN_LOGIN: process.env.DOMAIN_LOGIN // 测试环境 登录、退出登录、刷新token、第三方登录接口地址
+  DOMAIN_API: 'https://tospinomallapi.fyynet.com', //请求地址
+  DOMAIN_LOGIN: 'https://auth.fyynet.com' // 测试环境 登录、退出登录、刷新token、第三方登录接口地址
 };
+console.log(process.env.APP_MODE)
+if (process.env.APP_MODE == 'test') { // 测试环境
+  production = {
+    ...production,
+    DOMAIN_API: 'https://tospinomallapi.fyynet.com',
+    DOMAIN_LOGIN: 'https://auth.fyynet.com'
+  }
+}
+
+if (process.env.APP_MODE == 'ghana') { // ghana站点
+  production = {
+    ...production,
+    DOMAIN_API: 'https://tospinomallapi1.tospinomall.com.gh',
+    DOMAIN_LOGIN: 'https://oauthapi1.tospinomall.com.gh'
+  }
+}
 
 const isDev = process.env.NODE_ENV === 'development';
 let config = {};
