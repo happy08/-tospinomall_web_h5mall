@@ -61,6 +61,61 @@ const utils = {
     // const minute = preZero(date.getMinutes())
     // const second = preZero(date.getSeconds())
     return y + '-' + m + '-' + d; // + ' ' + h + ':' + minute + ':' + second
+  },
+
+  // 图片压缩
+  compressImg(file) {
+    var fileSize = parseFloat(parseInt(file['size']) / 1024 / 1024).toFixed(2);
+    var read = new FileReader()
+    read.readAsDataURL(file)
+    return new Promise(function(resolve, reject) {
+      read.onload = function(e) {
+        let img = new Image();
+        img.src = e.target.result;
+        img.onload = function() {
+          // 默认按比例压缩
+          let w = this.width;
+          let h = this.height;
+          let ration;
+          if (w * h > 2000000) { // 压缩尺寸
+            ration = Math.sqrt(w * h / 2000000);
+            w /= ration;
+            h /= ration;
+          }
+          // 生成canvas
+          let canvas = document.createElement('canvas');
+          let ctx = canvas.getContext('2d');
+          let base64;
+          // 创建属性节点
+          canvas.setAttribute('width', w);
+          canvas.setAttribute('height', h);
+          ctx.drawImage(this, 0, 0, w, h);
+          // 压缩像素
+          if (fileSize < 1) {
+            // 如果图片小于一兆 那么不执行压缩操作
+            base64 = canvas.toDataURL(file['type'], 1);
+          } else if (fileSize > 1 && fileSize < 3) {
+            // 如果图片大于1M并且小于3M 那么压缩0.7
+            base64 = canvas.toDataURL(file['type'], 0.6);
+          } else {
+            // 如果图片超过3M 那么压缩0.4
+            base64 = canvas.toDataURL(file['type'], 0.4);
+          }
+          // 回调函数返回file的值（将base64编码转成file）
+          resolve(base64)
+        }
+      }
+    })
+  },
+
+  // 将base64图片转为blob格式
+  convertBase64UrlToBlob (urlData) {
+    let arr = urlData.split(','), mime = arr[0].match(/:(.*?);/)[1],
+      bstr = window.atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new Blob([u8arr], {type: mime});
   }
 };
 

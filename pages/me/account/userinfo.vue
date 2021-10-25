@@ -123,13 +123,28 @@ export default {
       this.updateUserInfo({ birthday: this.$utils.formatStandardDate(val) });
       this.isPickerShow = false;
     },
-    uploadAvatar(file) { // 上传头像
+    async uploadAvatar(file) { // 上传头像
+      // 加载图标
+      this.$toast.loading({
+        forbidClick: true,
+        loadingType: 'spinner',
+        duration: 0
+      });
+      // 图片压缩
+      let data = await this.$utils.compressImg(file.file);
+      // 图片base格式转为blob格式
+      let blob = this.$utils.convertBase64UrlToBlob(data);
+      
       let formData = new FormData();
-      formData.append('object', file.file);
+      // formData.append('object', file.file);
+      formData.append('object', blob);
+      console.log(formData)
+      
 
       getPicUrl(formData).then(res => {
         this.updateUserInfo({ headPictureUrl: res.data });
       }).catch(error => {
+        this.$toast.clear();
         console.log(error);
       })
     },
@@ -158,7 +173,12 @@ export default {
     },
     updateUserInfo(data) { // 修改用户信息
       updateUserInfo(data).then(res => {
+        if (!res.data) {
+          this.$toast.clear();
+          return false;
+        }
         this.$store.commit('user/SET_USERINFO', res.data);
+        this.$toast.clear();
         this.userInfo = {
           ...res.data,
           sex: this.$t('gander')[res.data.sex-1],
@@ -168,9 +188,10 @@ export default {
         };
         this.isPickerShow = false;
       }).catch(error => {
+        this.$toast.clear();
         console.log(error);
       })
     }
-  },
+  }
 }
 </script>

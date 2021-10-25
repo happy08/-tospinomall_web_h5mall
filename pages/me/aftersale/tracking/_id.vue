@@ -80,25 +80,41 @@ export default {
   },
   methods: {
     async afterRead(file) { // 上传图片
+      // 加载图标
+      this.$toast.loading({
+        forbidClick: true,
+        loadingType: 'spinner',
+        duration: 0
+      });
       if (Array.isArray(file)) { // 多张图片
         for (let i = 0; i < file.length; i++) {
-          let formData = new FormData();
-          formData.append('object', file[i].file);
-          const data = await getPicUrl(formData);
-          if (data.code != 0) return false;
+          // 图片压缩
+          let compressImg = await this.$utils.compressImg(file[i].file);
+          // 图片base格式转为blob格式
+          let blob = this.$utils.convertBase64UrlToBlob(compressImg);
 
-          this.imgList.push(data.data);
+          let formData = new FormData();
+          formData.append('object', blob);
+          const data = await getPicUrl(formData);
+          if (data.data) {
+            this.imgList.push(data.data);
+          }
         }
       } else {
         // 单张图片上传
-        let formData = new FormData();
-        formData.append('object', file.file);
-        const data = await getPicUrl(formData);
-        if (data.code != 0) return false;
 
-        this.imgList.push(data.data);
+        // 图片压缩
+        let compressImg = await this.$utils.compressImg(file.file);
+        // 图片base格式转为blob格式
+        let blob = this.$utils.convertBase64UrlToBlob(compressImg);
+        let formData = new FormData();
+        formData.append('object', blob);
+        const data = await getPicUrl(formData);
+        if (data.data) {
+          this.imgList.push(data.data);
+        }
       }
-      
+      this.$toast.clear();
       this.fileList = this.imgList.map(item => {
         return {
           url: item,

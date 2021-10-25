@@ -82,24 +82,43 @@ export default {
   },
   methods: {
     async afterRead(file) { // 获取到对应的file对象
+      // 加载图标
+      this.$toast.loading({
+        forbidClick: true,
+        loadingType: 'spinner',
+        duration: 0
+      });
       if (Array.isArray(file)) { // 多张图片
         for (let i = 0; i < file.length; i++) {
+          // 图片压缩
+          let compressImg = await this.$utils.compressImg(file[i].file);
+          // 图片base格式转为blob格式
+          let blob = this.$utils.convertBase64UrlToBlob(compressImg);
+
           let formData = new FormData();
-          formData.append('object', file[i].file);
+          formData.append('object', blob);
           const data = await getPicUrl(formData);
-          if (data.code != 0) return false;
-          this.imgList.push(data.data);
+          this.$toast.clear();
+          if (data.data) {
+            this.imgList.push(data.data);
+          }
         }
         return false;
       }
       // 单张图片上传
+
+      // 图片压缩
+      let compressImg = await this.$utils.compressImg(file.file);
+      // 图片base格式转为blob格式
+      let blob = this.$utils.convertBase64UrlToBlob(compressImg);
+
       let formData = new FormData();
-      formData.append('object', file.file);
+      formData.append('object', blob);
       getPicUrl(formData).then(res => {
-        if (res.code != 0) return false;
-        
+        this.$toast.clear();
         this.imgList.push(res.data);
       }).catch(error => {
+        this.$toast.clear();
         console.log(error);
       })
     },
