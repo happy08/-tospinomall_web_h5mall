@@ -214,4 +214,8 @@ export default {
 .bg-ddd {
   background: #dddddd !important;
 }
+::v-deep .van-sku-header .van-image{
+  width: 58px;
+  height: 58px;
+}
 </style>

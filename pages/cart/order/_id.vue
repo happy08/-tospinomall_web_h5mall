@@ -398,6 +398,8 @@ export default {
             sendType:  Object.values(item.deliveryTypeSkuItemMap)[0].sendTypeEstimateVoList.length > 0 ? Object.values(item.deliveryTypeSkuItemMap)[0].sendTypeEstimateVoList.filter(sendItem => sendItem.sendType === Object.values(item.deliveryTypeSkuItemMap)[0].choiceSendType)[0].sendType : 0
           }
         })
+        // 支付方式处理
+        this.paymentRadio = '1';
       }).catch(error => {
         console.log(error)
         this.codeData = {
