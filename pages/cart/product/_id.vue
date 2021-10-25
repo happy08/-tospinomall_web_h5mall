@@ -588,7 +588,7 @@
     <!-- 分享 -->
     <van-share-sheet v-model="showShare" :options="shareOptions" :title="$t('share_title')" :cancel-text="$t('cancel')" @select="onShare" />
   </div>
-  <empty-status v-else :image="require('@/assets/images/empty/order.png')" class="mh-60" :btn="{ btn: '返回上一页', isEmit: true }" @emptyClick="$router.go(-1)" />
+  <empty-status v-else-if="isDetail == false" :image="require('@/assets/images/empty/order.png')" class="mh-60" :btn="{ btn: '返回上一页', isEmit: true }" @emptyClick="$router.go(-1)" />
 </template>
 
 <script>
@@ -901,12 +901,6 @@ export default {
     }
   },
   mounted() {
-    if (this.$store.state.user.authToken) {
-      let customer_service = document.createElement('script');
-      let language = this.$i18n.locale == 'zh-CN' ? 'ZHCN' : 'EN';
-      customer_service.src = `https://ykf-webchat.7moor.com/javascripts/7moorInit.js?accessId=79b98c00-2fd7-11ec-bee1-5126bd69b6e2&autoShow=false&language=${language}`;
-      document.head.appendChild(customer_service);
-    }
   },
   activated() {
     if (this.$store.state.user.authToken) {

@@ -91,10 +91,17 @@ export default {
   },
   async fetch() {
     try {
+      // 加载图标
+      this.$toast.loading({
+        forbidClick: true,
+        loadingType: 'spinner',
+        duration: 0
+      });
       const [listData, metaData] = await Promise.all([
         this.$api.getCategoryList(), // 分类列表
         this.$api.getCategorySeo() // 获取SEO信息
       ])
+      this.$toast.clear();
       let _all_categories = [];
       listData.data.forEach(item => {
         _all_categories.push(item.name);
