@@ -716,7 +716,8 @@ const vi = {
   concat_customer_service_online: 'Giao tiếp trực tuyến',
   concat_customer_service_tel: 'Liên hệ qua điện thoại',
   concat_customer_service_email: 'Liên hệ qua email',
-  return_to_previous_page: 'Trở lại trang trước'
+  return_to_previous_page: 'Trở lại trang trước',
+  no_support_video: 'Trình duyệt của bạn không hỗ trợ thẻ video'
 }
 
 export default vi;

@@ -716,7 +716,8 @@
   concat_customer_service_online: 'Comunicação online',
   concat_customer_service_tel: 'Contatando por telefone',
   concat_customer_service_email: 'Contato de email',
-  return_to_previous_page: 'Voltar para a página anterior'
+  return_to_previous_page: 'Voltar para a página anterior',
+  no_support_video: 'Seu navegador não suporta a tag de vídeo'
 }
 
 export default por;

@@ -66,7 +66,13 @@
                 :isShow="false"
                 :fit="'cover'"
                 :alt="goodSpuVo.goodTitle"
+                v-if="productItem.fileType == 1"
               />
+              <div v-else-if="productItem.fileType == 2" class="bg-black">
+                <video :src="productItem.imgUrl" autoplay="autoplay" controls="controls" style="width:100%;height:7.5rem;">
+                  {{ $t('no_support_video') }}
+                </video>
+              </div>
             </swiper-slide>
             <div class="swiper-pagination" slot="pagination"></div>
           </swiper>
@@ -1321,6 +1327,9 @@ export default {
 .address-container-height{
   height: calc(100% - 30px);
   overflow: scroll;
+}
+.bg-black{
+  background-color: #000;
 }
 </style>
 
