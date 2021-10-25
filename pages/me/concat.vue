@@ -56,7 +56,7 @@
 import ClipboardJS from 'clipboard';
 
 export default {
-  middleware: 'authenticated',
+  // middleware: 'authenticated',
   mounted() {
   },
   methods: {
