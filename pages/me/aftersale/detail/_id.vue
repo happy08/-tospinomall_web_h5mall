@@ -39,7 +39,7 @@
         <!-- 倒计时 -->
         <div class="orange fs-14 mt-8 flex flex-wrap vcenter" v-if="detail.surplusTime > 0">
           <span>{{ $t('refund_countdown') }}</span>
-          <van-count-down :time="detail.surplusTime" :format="$t('count_down_format_label')" class="ml-4" @finish="getReturnDetail" />
+          <van-count-down :time="detail.surplusTime" :format="$t('count_down_format_label')" class="ml-4 orange" @finish="getReturnDetail" />
         </div>
 
         <!-- 步骤条 -->
@@ -129,7 +129,7 @@
         <p class="fw fs-14 black ml-10" v-if="detail.involvedStatus == 0">{{ $t('refund_return_state_tip_16', { replace_tip: detail.orderType == 1 ? $t('merchant'): $t('platform') }) }}</p>
         <div class="orange fs-14 mt-8 ml-10 flex flex-wrap vcenter" v-if="detail.surplusTime > 0">
           <span>{{ $t('refund_countdown') }}</span>
-          <van-count-down :time="detail.surplusTime" :format="$t('count_down_format_label')" class="ml-4" @finish="getReturnDetail" />
+          <van-count-down :time="detail.surplusTime" :format="$t('count_down_format_label')" class="ml-4 orange" @finish="getReturnDetail" />
         </div>
       </div>
     </div>
