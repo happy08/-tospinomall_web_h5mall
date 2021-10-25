@@ -302,7 +302,7 @@ export default {
     fLogin() { // facebook登录
       console.log(FB)
       FB.init({
-        appId: '231779648840263',
+        appId: '178159111159220',
         scope: 'public_profile, email',
         version: 'v11.0'
       })
