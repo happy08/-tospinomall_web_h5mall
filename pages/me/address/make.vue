@@ -88,43 +88,47 @@
     </div>
 
     <!-- 修改地址 -->
-    <van-popup v-model="addressShow" position="bottom" closeable class="ptb-20" style="min-height: 80%;" @close="closePopup">
-      <h4 class="fs-18 black lh-20 tc plr-20">{{ $t('choose_a_country_or_region') }}</h4>
-      <!-- 地址选择步骤条 -->
-      <van-steps direction="vertical" :active="stepActive" class="mt-24" @click-step="stepClick">
-        <van-step v-for="item, stepIndex in stepArr" :key="stepIndex">
-          <template #active-icon>
-            <BmIcon :name="'dot1'" :color="'#42b7ae'"></BmIcon>
-          </template>
-          <template #inactive-icon>
-            <BmIcon :name="'dot1'" :color="'#eee'"></BmIcon>
-          </template>
-          <template #finish-icon>
-            <BmIcon :name="'dot1'" :color="'#42b7ae'"></BmIcon>
-          </template>
-          <p class="fs-16 black">{{ item.name ? item.name : chooseTitle }}</p>
-        </van-step>
-        <van-step v-if="isShowChooseTitle">
-          <template #active-icon>
-            <BmIcon :name="'dot1'" :color="'#42b7ae'"></BmIcon>
-          </template>
-          <template #inactive-icon>
-            <BmIcon :name="'dot1'" :color="'#eee'"></BmIcon>
-          </template>
-          <template #finish-icon>
-            <BmIcon :name="'dot1'" :color="'#42b7ae'"></BmIcon>
-          </template>
-          <p class="fs-16 black">{{ chooseTitle }}</p>
-        </van-step>
-      </van-steps>
-      <div class="border-b mt-10 w-100"></div>
-      <!-- 进行选择 -->
-      <div class="mt-20 plr-24">
-        <p class="fs-14 grey-1">{{ chooseTitle }}</p>
-        <ul class="plr-24 fs-16 black">
-          <li :class="{'mt-20': true, 'green': stepArr.length > 0 && city.name == stepArr[stepArr.length - 1].name}" v-for="city, cityIndex in chooseList" :key="cityIndex" @click="changeCity(city)">{{ city.name }}</li>
-        </ul>
+    <van-popup v-model="addressShow" position="bottom" closeable class="pt-20" style="height: 80%;" @close="closePopup">
+      <h4 class="fs-18 black lh-20 tc plr-20 pb-10">{{ $t('choose_a_country_or_region') }}</h4>
+
+      <div class="address-container-height">
+        <!-- 地址选择步骤条 -->
+        <van-steps direction="vertical" :active="stepActive" class="mt-14" @click-step="stepClick">
+          <van-step v-for="item, stepIndex in stepArr" :key="stepIndex">
+            <template #active-icon>
+              <BmIcon :name="'dot1'" :color="'#42b7ae'"></BmIcon>
+            </template>
+            <template #inactive-icon>
+              <BmIcon :name="'dot1'" :color="'#eee'"></BmIcon>
+            </template>
+            <template #finish-icon>
+              <BmIcon :name="'dot1'" :color="'#42b7ae'"></BmIcon>
+            </template>
+            <p class="fs-16 black">{{ item.name ? item.name : chooseTitle }}</p>
+          </van-step>
+          <van-step v-if="isShowChooseTitle">
+            <template #active-icon>
+              <BmIcon :name="'dot1'" :color="'#42b7ae'"></BmIcon>
+            </template>
+            <template #inactive-icon>
+              <BmIcon :name="'dot1'" :color="'#eee'"></BmIcon>
+            </template>
+            <template #finish-icon>
+              <BmIcon :name="'dot1'" :color="'#42b7ae'"></BmIcon>
+            </template>
+            <p class="fs-16 black">{{ chooseTitle }}</p>
+          </van-step>
+        </van-steps>
+        <div class="border-b mt-10 w-100"></div>
+        <!-- 进行选择 -->
+        <div class="mt-20 plr-24 pb-10">
+          <p class="fs-14 grey-1">{{ chooseTitle }}</p>
+          <ul class="plr-24 fs-16 black">
+            <li :class="{'mt-20': true, 'green': stepArr.length > 0 && city.name == stepArr[stepArr.length - 1].name}" v-for="city, cityIndex in chooseList" :key="cityIndex" @click="changeCity(city)">{{ city.name }}</li>
+          </ul>
+        </div>
       </div>
+      
     </van-popup>
   </div>
 </template>
@@ -448,6 +452,10 @@ export default {
 }
 .grey-1{
   color: #909AA2;
+}
+.address-container-height{
+  height: calc(100% - 30px);
+  overflow: scroll;
 }
 </style>
 

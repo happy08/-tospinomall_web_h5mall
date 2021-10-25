@@ -416,7 +416,7 @@
           </div>
         </div>
       </van-tab>
-      <van-tab :title="$t('details')" name="Details" class="fs-0">
+      <van-tab :title="$t('details')" name="Details" class="fs-0 product-container">
         <!-- 产品说明信息 -->
         <div
           class="mt-12 bg-white ptb-12 plr-20 fs-14 black fm-helvetica word-break mb-12"
@@ -519,42 +519,44 @@
     </van-popup>
 
     <!-- 地址选择 -->
-    <van-popup v-model="addressShow" position="bottom" closeable class="ptb-20" style="min-height: 80%;" @close="closePopup">
-      <h4 class="fs-18 black lh-20 tc plr-20">{{ $t('choose_a_country_or_region') }}</h4>
-      <!-- 地址选择步骤条 -->
-      <van-steps direction="vertical" :active="stepActive" class="mt-24" @click-step="stepClick">
-        <van-step v-for="item, stepIndex in stepArr" :key="'step-' + stepIndex">
-          <template #active-icon>
-            <BmIcon :name="'dot1'" :color="'#42b7ae'" />
-          </template>
-          <template #inactive-icon>
-            <BmIcon :name="'dot1'" :color="'#eee'" />
-          </template>
-          <template #finish-icon>
-            <BmIcon :name="'dot1'" :color="'#42b7ae'" />
-          </template>
-          <p class="fs-16 black">{{ item.name ? item.name : chooseTitle }}</p>
-        </van-step>
-        <van-step v-if="isShowChooseTitle">
-          <template #active-icon>
-            <BmIcon :name="'dot1'" :color="'#42b7ae'" />
-          </template>
-          <template #inactive-icon>
-            <BmIcon :name="'dot1'" :color="'#eee'" />
-          </template>
-          <template #finish-icon>
-            <BmIcon :name="'dot1'" :color="'#42b7ae'" />
-          </template>
-          <p class="fs-16 black">{{ chooseTitle }}</p>
-        </van-step>
-      </van-steps>
-      <div class="border-b mt-10 w-100"></div>
-      <!-- 进行选择 -->
-      <div class="mt-20 plr-24">
-        <p class="fs-14 grey-1">{{ chooseTitle }}</p>
-        <ul class="plr-24 fs-16 black">
-          <li :class="{'mt-20': true, 'green': stepArr.length > 0 && city.name == stepArr[stepArr.length - 1].name}" v-for="city, cityIndex in chooseList" :key="'city-' + cityIndex" @click="changeCity(city)">{{ city.name }}</li>
-        </ul>
+    <van-popup v-model="addressShow" position="bottom" closeable class="pt-20" style="height: 80%;" @close="closePopup">
+      <h4 class="fs-18 black lh-20 tc plr-20 pb-10">{{ $t('choose_a_country_or_region') }}</h4>
+      <div class="address-container-height">
+        <!-- 地址选择步骤条 -->
+        <van-steps direction="vertical" :active="stepActive" class="mt-14" @click-step="stepClick">
+          <van-step v-for="item, stepIndex in stepArr" :key="'step-' + stepIndex">
+            <template #active-icon>
+              <BmIcon :name="'dot1'" :color="'#42b7ae'" />
+            </template>
+            <template #inactive-icon>
+              <BmIcon :name="'dot1'" :color="'#eee'" />
+            </template>
+            <template #finish-icon>
+              <BmIcon :name="'dot1'" :color="'#42b7ae'" />
+            </template>
+            <p class="fs-16 black">{{ item.name ? item.name : chooseTitle }}</p>
+          </van-step>
+          <van-step v-if="isShowChooseTitle">
+            <template #active-icon>
+              <BmIcon :name="'dot1'" :color="'#42b7ae'" />
+            </template>
+            <template #inactive-icon>
+              <BmIcon :name="'dot1'" :color="'#eee'" />
+            </template>
+            <template #finish-icon>
+              <BmIcon :name="'dot1'" :color="'#42b7ae'" />
+            </template>
+            <p class="fs-16 black">{{ chooseTitle }}</p>
+          </van-step>
+        </van-steps>
+        <div class="border-b mt-10 w-100"></div>
+        <!-- 进行选择 -->
+        <div class="mt-20 plr-24">
+          <p class="fs-14 grey-1">{{ chooseTitle }}</p>
+          <ul class="plr-24 fs-16 black pb-10">
+            <li :class="{'mt-20': true, 'green': stepArr.length > 0 && city.name == stepArr[stepArr.length - 1].name}" v-for="city, cityIndex in chooseList" :key="'city-' + cityIndex" @click="changeCity(city)">{{ city.name }}</li>
+          </ul>
+        </div>
       </div>
     </van-popup>
 
@@ -881,7 +883,7 @@ export default {
         //     this.likeList = hits;
         //   })
         // } else { // 阿里搜索
-          const recommendData = await this.$api.getRecommendList({ shopId: this.storeInfo.storeId, categoryId: this.goodSpuVo.categoryId });
+          const recommendData = await this.$api.getRecommendList({ shopId: this.storeInfo.storeId, categoryId: this.goodSpuVo.categoryId, productId: this.goodSpuVo.id });
           if (recommendData.data) {
             this.likeList = recommendData.data;
           }
@@ -1043,8 +1045,7 @@ export default {
     getNextArea(city, flag, isNext) {
       getNextArea({ parentId: city.id }).then(res => {
         if (res.data.length === 0) { // 没有下一级的数据处理
-          this.isNext = true;
-          if (this.isNext) { // 已经是最后一级的话
+          if (!this.isNext) { // 已经是最后一级的话
             this.stepArr.splice(this.stepActive, 1, city);
           } else { // 如果还是true就要增加数据
             if (flag) { // 下一级处理
@@ -1052,6 +1053,7 @@ export default {
               this.stepArr.push(city);
             }
           }
+          this.isNext = false;
           this.addressShow = false;
           this.isShowChooseTitle = false;
           return false;
@@ -1312,6 +1314,13 @@ export default {
 .ptb-2{
   padding-top: 2px;
   padding-bottom: 2px;
+}
+::v-deep .product-container a{
+  color: #007aff;
+}
+.address-container-height{
+  height: calc(100% - 30px);
+  overflow: scroll;
 }
 </style>
 
