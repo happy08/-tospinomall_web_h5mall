@@ -225,8 +225,8 @@ export default {
       });
       this.$api.authCodeLogin({
         code: this.code, 
-        mobile: this.$route.query.changeWay === 'email' ? this.account : this.account, 
-        phonePrefix: this.$route.query.changeWay === 'email' ? '' : this.prefixCode
+        mobile: this.$route.query.changeWay === 'email' ? this.account : this.prefixCode + this.account, 
+        // phonePrefix: this.$route.query.changeWay === 'email' ? '' : this.prefixCode
         // userType: 'buyer'
       }).then(res => {
         this.$toast.clear();

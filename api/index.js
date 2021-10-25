@@ -248,9 +248,9 @@ export default ({ app }, inject) => {
     },
     authCodeLogin(params) { // 手机/邮箱 验证码登录
       return app.$axios({
-        url: `${urlLogin}/auth/mobile/token/sms`,
+        url: `${urlLogin}/auth/mobile/token/sms?grant_type=mobile&${qs.stringify(params)}`,
         method: 'post',
-        data: qs.stringify({ grant_type: 'mobile', ...params }),
+        // data: qs.stringify({ ...params }),
         headers: {
           clientType: 'h5',
           version: '1.0.0',

@@ -76,7 +76,7 @@ let headers;
 // request拦截器
 service.interceptors.request.use(config => {
   config.headers['clientType'] = 'h5';
-  config.headers['site'] = 'ghana';
+  config.headers['site'] = $nuxt.$store.state.rate.site || 'ghana';
   
   if (config.headers.Authorization) {
     config.headers['Authorization'] = config.headers.Authorization || 'Basic YnV5ZXI6YnV5ZXI=';

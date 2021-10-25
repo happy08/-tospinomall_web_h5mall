@@ -2,7 +2,7 @@
   <!-- 购物车-确认订单 -->
   <div class="v-percent-100 bg-grey pb-68 pb-46" v-if="detail.storeSaleInfoList">
     <BmHeaderNav :left="{ isShow: true, isEmit: true }" :fixed="true" :title="$t('confirm_the_order')" @leftClick="leftClick" />
-
+    
     <div v-if="codeData.code == 0">
       <!-- 个人信息 -->
       <div class="bg-white">
@@ -249,11 +249,11 @@ export default {
   methods: {
     deliveryFormat(item, type) {
       if (type == 'estimeate') {
-        return item.sendTypeEstimateVoList.filter(sendItem => sendItem.sendType == item.choiceSendType)[0].estimeate;
+        return item.sendTypeEstimateVoList.filter(sendItem => sendItem.sendType == item.choiceSendType).length > 0 ? item.sendTypeEstimateVoList.filter(sendItem => sendItem.sendType == item.choiceSendType)[0].estimeate : '';
       }
       let _type = '';
       if (type == 'list') {
-        _type = item.sendTypeEstimateVoList.filter(sendItem => sendItem.sendType == item.choiceSendType)[0].sendType;
+        _type = item.sendTypeEstimateVoList.filter(sendItem => sendItem.sendType == item.choiceSendType).length > 0 ? item.sendTypeEstimateVoList.filter(sendItem => sendItem.sendType == item.choiceSendType)[0].sendType : '';
       } else {
         _type = item;
       }
@@ -364,6 +364,7 @@ export default {
           code: res.code,
           msg: res.msg
         }
+        
         this.$toast.clear();
         this.detail = {
           ...res.data,
@@ -393,9 +394,10 @@ export default {
         })
         
         this.confirmTransportModes = res.data.storeSaleInfoList.map(item => {
+          let sendType = Object.values(item.deliveryTypeSkuItemMap)[0].sendTypeEstimateVoList.length > 0 ? Object.values(item.deliveryTypeSkuItemMap)[0].sendTypeEstimateVoList.filter(sendItem => sendItem.sendType === Object.values(item.deliveryTypeSkuItemMap)[0].choiceSendType) : [];
           return {
             storeId: item.storeId,
-            sendType:  Object.values(item.deliveryTypeSkuItemMap)[0].sendTypeEstimateVoList.length > 0 ? Object.values(item.deliveryTypeSkuItemMap)[0].sendTypeEstimateVoList.filter(sendItem => sendItem.sendType === Object.values(item.deliveryTypeSkuItemMap)[0].choiceSendType)[0].sendType : 0
+            sendType: sendType.length > 0 ? sendType[0].sendType : 0
           }
         })
         // 支付方式处理
