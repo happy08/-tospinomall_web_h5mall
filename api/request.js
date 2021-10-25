@@ -152,7 +152,7 @@ service.interceptors.response.use(response => { // 成功
     return Promise.reject(response);
   } else {
     // 处理断网的情况
-    tip('网络异常');
+    tip($nuxt._i18n.t('axios_tip_502'));
     return Promise.reject();
   }
 })
