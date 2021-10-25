@@ -8,7 +8,7 @@
     <van-cell-group>
       <van-cell class="w-100 plr-20 ptb-20">
         <template #title>
-          <div class="flex">
+          <div class="flex vcenter">
             <div>
               <BmImage
                 :url="detail.goodImg"
@@ -21,7 +21,7 @@
                 :alt="detail.goodName"
               />
             </div>
-            <p class="fs-14 black ml-12">{{ detail.goodName }}</p>
+            <p class="fs-14 black ml-12 hidden-2">{{ detail.goodName }}</p>
           </div>
         </template>
       </van-cell>
