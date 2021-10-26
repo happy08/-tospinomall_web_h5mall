@@ -154,19 +154,36 @@
 
         <!-- 一行两列 -->
         <template v-if="moduleItem.type === 4">
-          <div class="mlr-12 flex between mt-12">
-            <nuxt-link 
-              :to="{ name: 'cart-product-id', params: { id: productType4Item.goodsId } }"
-              class="iblock" 
-              v-for="(productType4Item, productIndex) in moduleItem.componentDetails" 
-              :key="productIndex"
+          <div class="mlr-12 mt-12">
+            <swiper
+              ref="swiperComponentRef"
+              :class="{ 'swiper home-page__global-swiper': true, 'swiper-no-swiping' : moduleItem.componentDetails.length <= 2, 'pb-34': moduleItem.effect == 1 && moduleItem.componentDetails.length > 2 }"
+              :options="{
+                ...swiperComponent2Option,
+                loop: moduleItem.componentDetails.length > 2,
+                loopFillGroupWithBlank: moduleItem.componentDetails.length > 2
+              }"
             >
-              <ProductTopBtmSingle
-                :img="{ url: productType4Item.mainPictureUrl, width: '3.4rem', height: '3.4rem', loadImage: require('@/assets/images/product-bgd-170.png') }" 
-                :detail="{ desc: productType4Item.goodTitle, price: parseFloat(productType4Item.price), rate: parseFloat(productType4Item.starLevel), volumn: parseFloat(productType4Item.salesVolume), ellipsis: 2 }"
-                :isHeight="true"
-              />
-            </nuxt-link>
+              <swiper-slide v-for="(productType4Item, productIndex) in moduleItem.componentDetails" :key="productIndex">
+                <nuxt-link 
+                  :to="{ name: 'cart-product-id', params: { id: productType4Item.goodsId } }"
+                  class="iblock"
+                >
+                  <ProductTopBtmSingle
+                    :img="{ url: productType4Item.mainPictureUrl, width: '3.4rem', height: '3.4rem', loadImage: require('@/assets/images/product-bgd-170.png') }" 
+                    :detail="{ desc: productType4Item.goodTitle, price: parseFloat(productType4Item.price), rate: parseFloat(productType4Item.starLevel), volumn: parseFloat(productType4Item.salesVolume), ellipsis: 2 }"
+                    :isHeight="true"
+                  />
+                </nuxt-link>
+              </swiper-slide>
+
+              <template v-if="moduleItem.componentDetails.length < 2">
+                <swiper-slide v-for="addItem in (2 - parseFloat(moduleItem.componentDetails.length))" :key="'self-add-' + addItem"></swiper-slide>
+              </template>
+              
+              <div class="swiper-pagination swiper-group2-pagination" v-show="moduleItem.effect == 1 && moduleItem.componentDetails.length > 2" slot="pagination"></div>
+            </swiper>
+            
           </div>
         </template>
       </div>
@@ -334,7 +351,7 @@ export default {
     return {
       searchVal: '',
       // clearanceTime: 30*60*60*1000,
-      swiperComponentOption: { // 一排三列 滚动
+      swiperComponentOption: { // 一行三列 滚动
         slidesPerView: 3,
         slidesPerGroup: 3,
         spaceBetween: 0,
@@ -342,6 +359,19 @@ export default {
         // loopFillGroupWithBlank: true,
         pagination: {
           el: '.swiper-group-pagination',
+          clickable: true,
+        },
+        observer: true,
+        observeParents: true
+      },
+      swiperComponent2Option: { // 一行两列 滚动
+        slidesPerView: 2,
+        slidesPerGroup: 2,
+        spaceBetween: 0,
+        // loop: true,
+        // loopFillGroupWithBlank: true,
+        pagination: {
+          el: '.swiper-group2-pagination',
           clickable: true,
         },
         observer: true,

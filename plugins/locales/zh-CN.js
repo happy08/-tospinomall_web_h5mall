@@ -123,7 +123,7 @@ const cn = {
   return_after_sale: '退货/售后',
   shot: '快照',
   param: '参数',
-  details: '详细信息',
+  details: '详情',
   similar: '相似',
   add_to_cart: '加入购物车',
   followers: '人关注',
