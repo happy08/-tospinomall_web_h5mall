@@ -35,7 +35,34 @@ export default {
 
   router: {
     //路由配置
-    middleware: ['vue-i18n'] //路由中间件
+    middleware: ['vue-i18n'], //路由中间件
+    extendRoutes(routes, resolve) {
+      const routeList = [
+        {
+          path: "/home.html",
+          component: resolve(__dirname, "./pages/home/index.vue")
+        },
+        {
+          path: "/index.html",
+          component: resolve(__dirname, "./pages/home/index.vue")
+        },
+        {
+          path: "/categories.html",
+          component: resolve(__dirname, "./pages/categories/index.vue")
+        },
+        // {
+        //   // name: "reg",
+        //   path: "/reg.html",
+        //   component: resolve(__dirname, "./pages/reg/index.vue")
+        // },
+        // {
+        //   // name: "forgot-password",
+        //   path: "/forgot-password.html",
+        //   component: resolve(__dirname, "./pages/forgot-password/index.vue")
+        // }
+      ];
+      routes.push(...routeList);
+    }
   },
 
   env: {
@@ -82,7 +109,7 @@ export default {
     //登录、退出登录、刷新token、第三方登录接口地址
     '/apiLogin': {
         target: 'https://auth.fyynet.com',
-        // target: 'http://192.168.2.35:19999',
+        // target: 'http://192.168.2.70:19999',
         pathRewrite: {
             '^/apiLogin': '/'
         }
