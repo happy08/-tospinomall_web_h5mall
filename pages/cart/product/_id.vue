@@ -19,7 +19,7 @@
             v-show="!isScroll"
             @click="leftBack"
           />
-          <div class="sticky-opacity ml-14" @click="$router.replace({ name: 'search', query: { back: 'cart-product-id', backId: $route.params.id } })">
+          <div class="sticky-opacity ml-14" v-show="isScroll" @click="$router.replace({ name: 'search', query: { back: 'cart-product-id', backId: $route.params.id } })">
             <van-search v-model="searchVal" disabled class="round-20 hidden" />
           </div>
         </div>
@@ -58,7 +58,18 @@
         <div>
           <!-- 商品轮播图 -->
           <swiper ref="swiperComponentRef" :options="swiperOption" class="swiper-container fs-0">
-            <swiper-slide v-for="(productItem, productIndex) in carouselMapUrls" :key="productIndex" @click.native="onPreviewPic(productIndex)">
+            <swiper-slide v-for="(productItem, productIndex) in carouselMapUrls" :key="productIndex" @click.native="isShowPreview = productIndex" class="video-container">
+              <BmImage
+                :url="require('@/assets/images/icon/video.png')"
+                :height="'1rem'"
+                :width="'1rem'"
+                :isLazy="false"
+                :isShow="false"
+                :fit="'cover'"
+                :alt="goodSpuVo.goodTitle"
+                class="video-container__icon"
+                v-if="productItem.fileType == 2"
+              />
               <BmImage
                 :url="productItem.imgUrl"
                 :height="'7.5rem'"
@@ -66,13 +77,31 @@
                 :isShow="false"
                 :fit="'cover'"
                 :alt="goodSpuVo.goodTitle"
-                v-if="productItem.fileType == 1"
               />
-              <div v-else-if="productItem.fileType == 2" class="bg-black">
-                <video :src="productItem.imgUrl" autoplay="autoplay" controls="controls" style="width:100%;height:7.5rem;">
+              <!-- <div v-else-if="productItem.fileType == 2" class="bg-black flex vcenter h-100 video-container">
+                <BmImage
+                  :url="require('@/assets/images/icon/video.png')"
+                  :height="'1rem'"
+                  :width="'1rem'"
+                  :isLazy="false"
+                  :isShow="false"
+                  :fit="'cover'"
+                  :alt="goodSpuVo.goodTitle"
+                  class="video-container__icon"
+                /> -->
+                <!-- <BmImage
+                  :url="productItem.imgUrl"
+                  :height="'7.5rem'"
+                  :isLazy="false"
+                  :isShow="false"
+                  :fit="'cover'"
+                  :alt="goodSpuVo.goodTitle"
+                  v-if="productItem.fileType == 1"
+                /> -->
+                <!-- <video :src="productItem.imgUrl" preload="auto" style="width:100%;height:7.5rem;" @click="isShowPreview = productIndex" :poster="carouselMapUrls[0].imgUrl">
                   {{ $t('no_support_video') }}
-                </video>
-              </div>
+                </video> -->
+              <!-- </div> -->
             </swiper-slide>
             <div class="swiper-pagination" slot="pagination"></div>
           </swiper>
@@ -499,23 +528,23 @@
         >
           <template #icon>
             <van-icon
-              v-if="deliveryItem.type == 1"
+              v-if="deliveryItem.sendType == 1"
               :name="require('@/assets/images/icon/plane-active.png')"
               size="0.36rem"
             />
             <van-icon
-              v-if="deliveryItem.type == 2"
+              v-if="deliveryItem.sendType == 2"
               :name="require('@/assets/images/icon/steamer-active.png')"
               size="0.36rem"
             />
             <van-icon
-              v-if="deliveryItem.type == 3"
+              v-if="deliveryItem.sendType == 3"
               :name="require('@/assets/images/icon/truck-active.png')"
               size="0.36rem"
             />
           </template>
           <template #label>
-            <div class="fs-16">{{ deliveryItem.type == 1 ? $t('air_freight') : deliveryItem.type == 2 ? $t('sea_transportation') : deliveryItem.type == 3 ? $t('land_transportation') : ''}} · {{ $t('delivery_freight_arrive_time') }}</div>
+            <div class="fs-16">{{ deliveryItem.sendType == 1 ? $t('air_freight') : deliveryItem.sendType == 2 ? $t('sea_transportation') : deliveryItem.sendType == 3 ? $t('land_transportation') : ''}} · {{ $t('delivery_freight_arrive_time') }}</div>
             <div class="fs-14 mt-12">
               {{ deliveryItem.estimeate }}
             </div>
@@ -595,12 +624,15 @@
 
     <!-- 分享 -->
     <van-share-sheet v-model="showShare" :options="shareOptions" :title="$t('share_title')" :cancel-text="$t('cancel')" @select="onShare" />
+
+    <!-- 预览 -->
+    <bm-preview v-if="isShowPreview != 'false'" :isShowPreview="isShowPreview" :carouselMapUrls="carouselMapUrls" :initialSlide="isShowPreview" @onClose="isShowPreview = 'false'" @onPreviewChange="onPreviewPic($event)"></bm-preview>
   </div>
   <empty-status v-else-if="isDetail == false" :image="require('@/assets/images/empty/order.png')" class="mh-60" :btn="{ btn: '返回上一页', isEmit: true }" @emptyClick="$router.go(-1)" />
 </template>
 
 <script>
-import { ImagePreview, Cell, Step, Steps, Rate, Sticky, Search, Tab, Tabs, Popup, Stepper, ShareSheet } from 'vant';
+import { Cell, Step, Steps, Rate, Sticky, Search, Tab, Tabs, Popup, Stepper, ShareSheet } from 'vant';
 import { getDeliveryInfo, attentionProduct, cancelAttentionProduct } from '@/api/cart';
 import { getCurrentDefaultAddress, getNextArea } from '@/api/address';
 import ProductSku from '@/components/ProductSku';
@@ -612,6 +644,7 @@ import shareFacebook from '@/assets/images/icon/share-facebook.png';
 import shareInfo from '@/assets/images/icon/share-info.png';
 import shareLink from '@/assets/images/icon/share-link.png';
 import EmptyStatus from '@/components/EmptyStatus';
+import BmPreview from '@/components/_global/BmPreview';
 
 export default {
   components: {
@@ -629,7 +662,8 @@ export default {
     swiperSlide: SwiperSlide,
     vanShareSheet: ShareSheet,
     ProductSku,
-    EmptyStatus
+    EmptyStatus,
+    BmPreview
   },
   data() {
     return {
@@ -717,17 +751,22 @@ export default {
       shareDetail: {},
       meta: {},
       isNext: false,
-      isDetail: null
+      isDetail: null,
+      isShowPreview: 'false',
+      previewIndex: 0
     }
   },
   async fetch() {
     try {
       // 判断登录之后，获取详情时要带userid
-      this.$toast.loading({
-        forbidClick: true,
-        loadingType: 'spinner',
-        duration: 0
-      });
+      if (this.goodSpuVo.id != this.$route.params.id) {
+        this.$toast.loading({
+          forbidClick: true,
+          loadingType: 'spinner',
+          duration: 0
+        });
+      }
+      
       let _detailParams = {};
       if (this.$store.state.user.userInfo) {
         _detailParams.userId = this.$store.state.user.userInfo.id
@@ -1039,14 +1078,7 @@ export default {
       }
     },
     onPreviewPic(index) { // 轮播图预览
-      let _this = this;
-      ImagePreview({
-        images: this.previewImages,
-        startPosition: index,
-        onChange(previewIndex) {
-          _this.$refs.swiperComponentRef.$swiper.slideTo(previewIndex);
-        }
-      })
+      this.$refs.swiperComponentRef.$swiper.slideTo(index);
     },
     getNextArea(city, flag, isNext) {
       getNextArea({ parentId: city.id }).then(res => {
@@ -1237,6 +1269,9 @@ export default {
         return false;
       }
       qimoChatClick();
+    },
+    onPreviewChange(index) { // 预览切换时
+      this.previewIndex = index;
     }
   },
 }
@@ -1330,6 +1365,16 @@ export default {
 }
 .bg-black{
   background-color: #000;
+}
+.video-container{
+  position: relative;
+  .video-container__icon{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+  }
 }
 </style>
 
