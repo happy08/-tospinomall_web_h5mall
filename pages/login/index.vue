@@ -201,25 +201,9 @@ export default {
             loadingType: 'spinner',
             duration: 0
           });
-          this.$api.thirdPartyLogin({ mobile: success.getAuthResponse().id_token, grant_type: 'google' }).then(res => {
-            this.$store.commit('user/SET_TOKEN', res.data.token_type + ' ' + res.data.access_token);
-            this.$store.commit('user/SET_REFRESHTOKEN', res.data.refresh_token);
-            this.$store.commit('user/SET_SCOPE', res.data.scope);
-            // 获取用户信息
-            this.$store.dispatch('user/GetUserInfo', res.data.token_type + ' ' + res.data.access_token);
-            // 获取消息信息
-            this.$store.commit('user/SET_WEBSOCKET', res.data.user_info.passUrl);
-            // 当前登录账号
-            this.$store.commit('user/SET_ACCOUNT', res.data.user_info.email);
-            this.$toast.clear();
-            // 登录成功跳转到首页
-            setTimeout(() => {
-              this.account = '';
-              this.password = '';
-              this.$router.push({
-                name: 'home'
-              })
-            }, 100);
+          this.$axios.get(`https://oauth2.googleapis.com/tokeninfo?id_token=${success.getAuthResponse().id_token}`).then(googleRes => {
+            console.log(googleRes);
+            this.thirdPartyLogin({ mobile: { userId: googleRes.data.sub, name: googleRes.data.name }, grant_type: 'google' });
           }).catch(error => {
             console.log(error);
           })
@@ -232,7 +216,7 @@ export default {
     fLogin() { // facebook登录
       console.log(FB)
       FB.init({
-        appId: '178159111159220',
+        appId: '249151913934308',
         scope: 'public_profile, email',
         version: 'v11.0'
       })
@@ -248,51 +232,7 @@ export default {
               loadingType: 'spinner',
               duration: 0
             });
-            this.$api.thirdPartyLogin({ mobile: { userId: user.id, email: user.email, name: user.name }, grant_type: 'facebook' }).then(res => {
-              console.log(res)
-              this.$toast.clear();
-              if (res.code == 11001) {
-                this.$router.push({
-                  name: 'login-bind',
-                  query: {
-                    userId: user.id,
-                    name: user.name
-                  }
-                })
-                return false;
-              }
-              this.$store.commit('user/SET_TOKEN', res.data.token_type + ' ' + res.data.access_token);
-              this.$store.commit('user/SET_REFRESHTOKEN', res.data.refresh_token);
-              this.$store.commit('user/SET_SCOPE', res.data.scope);
-              // 获取用户信息
-              this.$store.dispatch('user/GetUserInfo', res.data.token_type + ' ' + res.data.access_token);
-              // 获取消息信息
-              this.$store.commit('user/SET_WEBSOCKET', res.data.user_info.passUrl);
-              // 当前登录账号
-              this.$store.commit('user/SET_ACCOUNT', res.data.user_info.email);
-              // 登录成功跳转到首页
-              setTimeout(() => {
-                this.account = '';
-                this.password = '';
-                this.$router.push({
-                  name: 'home'
-                })
-              }, 100);
-            }).catch(error => {
-              console.log(error)
-              this.$toast.clear();
-              if (error.code == 11001) { // 未绑定邮箱 11001
-                this.$router.push({
-                  name: 'login-bind',
-                  query: {
-                    userId: user.id,
-                    name: user.name
-                  }
-                })
-              } else {
-                this.$toast(error.msg);
-              }
-            })
+            this.thirdPartyLogin({ mobile: { userId: user.id, email: user.email, name: user.name }, grant_type: 'facebook' }, user);
           })
         }
       });
@@ -312,6 +252,53 @@ export default {
     onInput(value) {
       let reg = /^\d{1,}$/;
       this.isPhone = reg.test(value) ? true : false;
+    },
+    thirdPartyLogin(params, userInfo) { // 第三方登录 userInfo是用户信息 facebook登录时才需要绑定邮箱
+      this.$api.thirdPartyLogin(params).then(res => {
+        console.log(res)
+        this.$toast.clear();
+        if (res.code == 11001 && userInfo) {
+          this.$router.push({
+            name: 'login-bind',
+            query: {
+              userId: userInfo.id,
+              name: userInfo.name
+            }
+          })
+          return false;
+        }
+        this.$store.commit('user/SET_TOKEN', res.data.token_type + ' ' + res.data.access_token);
+        this.$store.commit('user/SET_REFRESHTOKEN', res.data.refresh_token);
+        this.$store.commit('user/SET_SCOPE', res.data.scope);
+        // 获取用户信息
+        this.$store.dispatch('user/GetUserInfo', res.data.token_type + ' ' + res.data.access_token);
+        // 获取消息信息
+        this.$store.commit('user/SET_WEBSOCKET', res.data.user_info.passUrl);
+        // 当前登录账号
+        this.$store.commit('user/SET_ACCOUNT', res.data.user_info.email);
+        // 登录成功跳转到首页
+        setTimeout(() => {
+          this.account = '';
+          this.password = '';
+          this.$router.push({
+            name: 'home'
+          })
+        }, 100);
+      }).catch(error => {
+        console.log(error)
+        this.$toast.clear();
+        if (error.code == 11001 && userInfo) { // 未绑定邮箱 11001
+          this.$router.push({
+            name: 'login-bind',
+            query: {
+              userId: userInfo.id,
+              name: userInfo.name
+            }
+          })
+        } else {
+          this.$toast(error.msg);
+        }
+      })
     }
   },
 }
