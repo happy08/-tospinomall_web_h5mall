@@ -259,8 +259,9 @@ export default ({ app }, inject) => {
       })
     },
     thirdPartyLogin(data, headers = {}) { // 第三方登录
+      const _data = qs.stringify({...data, mobile: `${JSON.stringify(data.mobile)}`});
       return app.$axios({
-        url: `${urlLogin}/auth/mobile/token/social?${qs.stringify(data)}`,
+        url: `${urlLogin}/auth/mobile/token/social?${_data}`,
         method: 'post',
         // data: qs.stringify(data),
         headers: {

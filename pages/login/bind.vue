@@ -104,7 +104,7 @@ export default {
       }
       checkEmailCode({ code: this.code, email: this.account_email, userType: 'buyer', isDelCode: 0 }).then(() => {
         // 校验成功自动登录
-        this.$api.thirdPartyLogin({ mobile: { userId: this.$route.query.userId, email: this.account_email, name: this.$route.query.name }, grant_type: 'facebook' }, { email: this.account_email, code: this.code }).then(res => {
+        this.$api.thirdPartyLogin({ mobile: { userId: this.$route.query.userId, email: this.account_email, name: this.$route.query.name }, grant_type: this.$route.query.grant_type }, { email: this.account_email, code: this.code }).then(res => {
           this.isNextFlag = false;
           this.$store.commit('user/SET_TOKEN', res.data.token_type + ' ' + res.data.access_token);
           this.$store.commit('user/SET_REFRESHTOKEN', res.data.refresh_token);

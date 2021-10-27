@@ -203,7 +203,7 @@ export default {
           });
           this.$axios.get(`https://oauth2.googleapis.com/tokeninfo?id_token=${success.getAuthResponse().id_token}`).then(googleRes => {
             console.log(googleRes);
-            this.thirdPartyLogin({ mobile: { userId: googleRes.data.sub, name: googleRes.data.name }, grant_type: 'google' });
+            this.thirdPartyLogin({ mobile: { userId: googleRes.data.sub, name: googleRes.data.name }, grant_type: 'google' }, { id: googleRes.data.sub, name: googleRes.data.name });
           }).catch(error => {
             console.log(error);
             this.$toast.clear();
@@ -233,7 +233,7 @@ export default {
               loadingType: 'spinner',
               duration: 0
             });
-            this.thirdPartyLogin({ mobile: { userId: user.id, email: user.email, name: user.name }, grant_type: 'facebook' }, user);
+            this.thirdPartyLogin({ mobile: { userId: user.id, name: user.name }, grant_type: 'facebook' }, user);
           })
         }
       });
@@ -254,7 +254,7 @@ export default {
       let reg = /^\d{1,}$/;
       this.isPhone = reg.test(value) ? true : false;
     },
-    thirdPartyLogin(params, userInfo) { // 第三方登录 userInfo是用户信息 facebook登录时才需要绑定邮箱
+    thirdPartyLogin(params, userInfo) { // 第三方登录 userInfo是用户信息 登录时才需要绑定邮箱
       this.$api.thirdPartyLogin(params).then(res => {
         console.log(res)
         this.$toast.clear();
@@ -263,7 +263,8 @@ export default {
             name: 'login-bind',
             query: {
               userId: userInfo.id,
-              name: userInfo.name
+              name: userInfo.name,
+              grant_type: params.grant_type
             }
           })
           return false;
@@ -293,7 +294,8 @@ export default {
             name: 'login-bind',
             query: {
               userId: userInfo.id,
-              name: userInfo.name
+              name: userInfo.name,
+              grant_type: params.grant_type
             }
           })
         } else {
