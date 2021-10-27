@@ -99,7 +99,7 @@
                 <nuxt-link 
                   v-for="(searchItem, searchIndex) in list" 
                   :key="'search-list-' + searchIndex"
-                  :to="{ name: 'cart-product-id', params: { id: searchItem.productId } }"
+                  :to="{ name: 'product-id', params: { id: searchItem.productId } }"
                   class="mt-12 custom-grid-item"
                   v-masonry-tile="searchMasonryContainer"
                 >
@@ -116,7 +116,7 @@
               <nuxt-link 
                 v-for="(searchItem, searchIndex) in list" 
                 :key="'search-list-' + searchIndex"
-                :to="{ name: 'cart-product-id', params: { id: searchItem.productId } }"
+                :to="{ name: 'product-id', params: { id: searchItem.productId } }"
               >
                 <div :class="{'flex vcenter pt-20 pb-30 hidden bg-white': true, 'border-229 border-b': searchIndex !== list.length - 1} ">
                   <BmImage 

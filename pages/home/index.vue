@@ -135,7 +135,7 @@
           >
             <swiper-slide v-for="(productItem, productIndex) in moduleItem.componentDetails" :key="productIndex">
               <!-- 图片、标题、价格 id goodsId productItem.mainPictureUrl -->
-              <nuxt-link :to="{ name: 'cart-product-id', params: { id: productItem.goodsId } }" class="block">
+              <nuxt-link :to="{ name: 'product-id', params: { id: productItem.goodsId } }" class="block">
                 <ProductTopBtmSingle
                   class="m-auto"
                   :img="{ url: productItem.mainPictureUrl, width: '2.24rem', height: '2.24rem', loadImage: require('@/assets/images/product-bgd-90.png') }" 
@@ -166,7 +166,7 @@
             >
               <swiper-slide v-for="(productType4Item, productIndex) in moduleItem.componentDetails" :key="productIndex">
                 <nuxt-link 
-                  :to="{ name: 'cart-product-id', params: { id: productType4Item.goodsId } }"
+                  :to="{ name: 'product-id', params: { id: productType4Item.goodsId } }"
                   class="iblock"
                 >
                   <ProductTopBtmSingle
@@ -296,7 +296,7 @@
               <nuxt-link
                 v-for="(searchItem, searchIndex) in searchList"
                 :key="'search-list-' + searchIndex"
-                :to="{ name: 'cart-product-id', params: { id: searchItem.productId } }"
+                :to="{ name: 'product-id', params: { id: searchItem.productId } }"
                 class="iblock mt-10 custom-grid-item"
                 v-masonry-tile="homeMasonryContainer">
                 <client-only placeholder="">
@@ -585,7 +585,7 @@ export default {
       
       if (hotDetail.imageLinkType == 0) { // 商品详情页
         this.$router.push({
-          name: 'cart-product-id',
+          name: 'product-id',
           params: {
             id: hotDetail.goodsId
           }

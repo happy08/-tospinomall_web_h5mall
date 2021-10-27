@@ -203,7 +203,7 @@ export default {
   },
   beforeRouteEnter (to, from, next) {
     next(vm => {
-      if (from.name == 'cart' || from.name == 'cart-product-id' || from.name == 'me-order' || from.name == 'me-order-rate-detail-id') {
+      if (from.name == 'cart' || from.name == 'product-id' || from.name == 'me-order' || from.name == 'me-order-rate-detail-id') {
         vm.paymentRadio = '1';
       }
     })

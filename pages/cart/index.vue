@@ -58,7 +58,7 @@
                 <van-card class="bg-white pt-24 ml-12 plr-0 pb-0 lh-20 width-313 fm-helvetica">
                   <!-- 自定义图片 -->
                   <template #thumb>
-                    <nuxt-link :to="{ name: 'cart-product-id', params: { id: singleItem.productId } }">
+                    <nuxt-link :to="{ name: 'product-id', params: { id: singleItem.productId } }">
                       <SoldOut :isShow="singleItem.status == 1 ? false: true">
                         <BmImage
                           :url="singleItem.mainPictureUrl"
@@ -74,7 +74,7 @@
                   </template>
                   <!-- 自定义标题 -->
                   <template #title>
-                    <nuxt-link :to="{ name: 'cart-product-id', params: { id: singleItem.productId } }" class="hidden-2">{{ singleItem.productName }}</nuxt-link>
+                    <nuxt-link :to="{ name: 'product-id', params: { id: singleItem.productId } }" class="hidden-2">{{ singleItem.productName }}</nuxt-link>
                   </template>
                   <!-- 自定义描述区域，改为展示商品型号 -->
                   <template #desc>
@@ -87,7 +87,7 @@
                   </template>
                   <!-- 标签 -->
                   <template #tags>
-                    <nuxt-link :to="{ name: 'cart-product-id', params: { id: singleItem.productId } }" class="flex mt-8 vcenter hidden round-8 product-tag" v-if="singleItem.status == 1">
+                    <nuxt-link :to="{ name: 'product-id', params: { id: singleItem.productId } }" class="flex mt-8 vcenter hidden round-8 product-tag" v-if="singleItem.status == 1">
                       <BmImage
                         :url="require('@/assets/images/icon/plane-icon.png')"
                         :width="'0.36rem'" 
@@ -107,7 +107,7 @@
                   </template>
                   <!-- 自定义价格 -->
                   <template #price>
-                    <nuxt-link :to="{ name: 'cart-product-id', params: { id: singleItem.productId } }" class="mt-8 block">
+                    <nuxt-link :to="{ name: 'product-id', params: { id: singleItem.productId } }" class="mt-8 block">
                       <span class="red fs-16 fw" v-if="$store.state.rate">{{ $store.state.rate.currency }}{{ singleItem.isPriceReduction == 1 ? singleItem.productPrice : singleItem.addCartPrice }}</span>
                       <span class="grey fs-12 ml-4 line-through" v-if="singleItem.isPriceReduction == 1">{{ $store.state.rate.currency }}{{ singleItem.addCartPrice }}</span>
                     </nuxt-link>
@@ -151,7 +151,7 @@
             stagger="0.03s"
             gutter="10"
           >
-            <nuxt-link :to="{ name: 'cart-product-id', params: { id: searchItem.productId } }" v-for="(searchItem, searchIndex) in recommendList" :key="'search-list-' + searchIndex" class="mb-12 custom-grid-item" v-masonry-tile>
+            <nuxt-link :to="{ name: 'product-id', params: { id: searchItem.productId } }" v-for="(searchItem, searchIndex) in recommendList" :key="'search-list-' + searchIndex" class="mb-12 custom-grid-item" v-masonry-tile>
               <ProductTopBtmSingle
                 :img="{ url: searchItem.mainPictureUrl, width: '3.4rem', height: '3.4rem', loadImage: require('@/assets/images/product-bgd-170.png') }" 
                 :detail="{ desc: searchItem.productTitle, price: searchItem.minPrice, rate: parseFloat(searchItem.starLevel), volumn: searchItem.saleCount, ellipsis: 2, country: searchItem.supplyCountryName, country_url: searchItem.supplyCountryIcon }"

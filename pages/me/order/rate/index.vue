@@ -180,7 +180,7 @@ export default {
         return false;
       }
       this.$router.push({
-        name: 'cart-product-id',
+        name: 'product-id',
         params: {
           id: productItem.goodId
         }

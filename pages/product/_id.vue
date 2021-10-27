@@ -19,7 +19,7 @@
             v-show="!isScroll"
             @click="leftBack"
           />
-          <div class="sticky-opacity ml-14" v-show="isScroll" @click="$router.replace({ name: 'search', query: { back: 'cart-product-id', backId: $route.params.id } })">
+          <div class="sticky-opacity ml-14" v-show="isScroll" @click="$router.replace({ name: 'search', query: { back: 'product-id', backId: $route.params.id } })">
             <van-search v-model="searchVal" disabled class="round-20 hidden" />
           </div>
         </div>
@@ -1199,7 +1199,7 @@ export default {
     },
     onClick(id) { // 推荐商品点击跳转到商品详情
       this.$router.push({
-        name: 'cart-product-id',
+        name: 'product-id',
         params: {
           id: id
         }

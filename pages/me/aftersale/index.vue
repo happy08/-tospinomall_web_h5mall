@@ -247,7 +247,7 @@ export default {
     },
     goProduct(productId) { // 跳转到商品详情页
       this.$router.push({
-        name: 'cart-product-id',
+        name: 'product-id',
         params:{
           id: productId
         }

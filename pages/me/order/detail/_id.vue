@@ -143,7 +143,7 @@
           stagger="0.03s"
           gutter="10"
         >
-          <nuxt-link :to="{ name: 'cart-product-id', params: { id: searchItem.productId } }" v-for="(searchItem, searchIndex) in recommendList" :key="'search-list-' + searchIndex" class="mb-12 bg-white custom-grid-item" v-masonry-tile>
+          <nuxt-link :to="{ name: 'product-id', params: { id: searchItem.productId } }" v-for="(searchItem, searchIndex) in recommendList" :key="'search-list-' + searchIndex" class="mb-12 bg-white custom-grid-item" v-masonry-tile>
             <ProductTopBtmSingle
               :img="{ url: searchItem.mainPictureUrl, width: '3.4rem', height: '3.4rem', loadImage: require('@/assets/images/product-bgd-170.png') }" 
               :detail="{ desc: searchItem.productTitle, price: searchItem.productPrice, rate: parseFloat(searchItem.starLevel), volumn: searchItem.saleCount, ellipsis: 2, country: searchItem.supplyCountryName, country_url: searchItem.supplyCountryIcon }"
@@ -374,7 +374,7 @@ export default {
     // },
     onClick(goodId) { // 跳转到商品详情页
       this.$router.push({
-        name: 'cart-product-id',
+        name: 'product-id',
         params: {
           id: goodId
         }

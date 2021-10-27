@@ -238,7 +238,7 @@ export default {
   },
   beforeRouteEnter (to, from, next) {
     next(vm => {
-      if (from.name === 'cart-product-id') {
+      if (from.name === 'product-id') {
         vm.tabActive = 0;
       }
     });

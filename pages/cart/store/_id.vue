@@ -184,7 +184,7 @@
             >
               <swiper-slide v-for="(productItem, productIndex) in moduleItem.componentDetails" :key="productIndex">
                 <!-- 图片、标题、价格 id goodsId productItem.mainPictureUrl -->
-                <nuxt-link :to="{ name: 'cart-product-id', params: { id: productItem.goodsId } }" class="block">
+                <nuxt-link :to="{ name: 'product-id', params: { id: productItem.goodsId } }" class="block">
                   <ProductTopBtmSingle
                     class="m-auto"
                     :img="{ url: productItem.mainPictureUrl, width: '2.24rem', height: '1.9rem', loadImage: require('@/assets/images/product-bgd-90.png') }" 
@@ -200,7 +200,7 @@
           <template v-if="moduleItem.type === 4">
             <div class="mlr-12 mt-20 flex between">
               <nuxt-link 
-                :to="{ name: 'cart-product-id', params: { id: productType4Item.goodsId } }"
+                :to="{ name: 'product-id', params: { id: productType4Item.goodsId } }"
                 class="iblock" 
                 v-for="(productType4Item, productIndex) in moduleItem.componentDetails" 
                 :key="productIndex"
@@ -232,7 +232,7 @@
             class="flex ptb-20 mlr-20 border-b"
             v-for="(productItem, productIndex) in productList"
             :key="'product-item-' + productIndex"
-            :to="{ name: 'cart-product-id', params: { id: productItem.productId } }">
+            :to="{ name: 'product-id', params: { id: productItem.productId } }">
             <!-- 商品图片 -->
             <BmImage 
               :url="productItem.mainPictureUrl"
@@ -252,7 +252,7 @@
                   <!-- <span class="fs-10 line-through bg-grey ml-8">{{ $store.state.rate.currency }}450</span> -->
                 </div>
                 <!-- 购买 -->
-                <nuxt-link :to="{ name: 'cart-product-id', params: { id: productItem.productId } }">
+                <nuxt-link :to="{ name: 'product-id', params: { id: productItem.productId } }">
                   <van-button plain class="border round-8 h-25 black">{{ $t('buy') }}</van-button>
                 </nuxt-link>
               </div>
@@ -530,7 +530,7 @@ export default {
       
       if (hotDetail.imageLinkType == 0) { // 商品详情页
         this.$router.push({
-          name: 'cart-product-id',
+          name: 'product-id',
           params: {
             id: hotDetail.goodsId
           }
