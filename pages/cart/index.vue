@@ -242,7 +242,7 @@ export default {
       checked: false,
       isEdit: false,
       total: 0,
-      pageNum: 1,
+      pageNum: 0,
       pageSize: 10,
       queryType: 1, // 查询类型（ 1 查询全部 2降价查询 3经常购买 4 关注商品列表）
       totalAmount: 0, // 总金额
@@ -351,7 +351,7 @@ export default {
     },
     getList() { // 获取列表数据
       this.queryType = this.tabActive + 1;
-      this.pageNum = 1;
+      this.pageNum = 0;
       this.$fetch();
     },
     storeCheckAll(store, isAll) { // 店铺内部全选与否
@@ -501,7 +501,7 @@ export default {
       })
     },
     async onRefresh() { // 下拉刷新
-      this.pageNum = 1;
+      this.pageNum = 0;
       this.getCartCount(); // 总数查询
       this.$fetch();
     },

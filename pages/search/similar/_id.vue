@@ -56,7 +56,7 @@ export default {
   data() {
     return {
       lists: [],
-      pageNum: 1,
+      pageNum: 0,
       pageSize: 10,
       total: 0,
       refreshing: {
@@ -70,7 +70,7 @@ export default {
     try {
       // if (this.$store.state.searchType == 0) {
         const listData = await this.$api.getSimilarGood({ pageNum: this.pageNum, pageSize: this.pageSize, goodId: this.$route.params.id });
-        this.lists = this.pageNum == 1 ? listData.data.items : this.lists.concat(listData.data.items);
+        this.lists = this.pageNum == 0 ? listData.data.items : this.lists.concat(listData.data.items);
         setTimeout(() => {
           if (typeof this.$redrawVueMasonry === 'function') {
             this.$redrawVueMasonry();
@@ -90,7 +90,7 @@ export default {
   },
   methods: {
     onRefresh() {
-      this.pageNum = 1;
+      this.pageNum = 0;
       this.$fetch();
     },
     onLoad() {

@@ -124,7 +124,7 @@
     </div> -->
     
     <!-- 店铺首页热图 -->
-    <PullRefresh :refreshing="refreshing" @refresh="onRefresh">
+    <PullRefresh :refreshing="refreshing" @refresh="onRefresh" class="pb-20">
       <div v-if="tabbarActive == 1 && scrollTop < 40" class="h-50"></div>
       <template v-if="tabbarActive == 0">
         <div v-for="(moduleItem, moduleIndex) in moduleData" :key="'module-data-' + moduleIndex">
@@ -350,7 +350,7 @@ export default {
         },
       },
       productList: [],
-      pageIndex: 1,
+      pageIndex: 0,
       pageSize: 10,
       loading: false,
       finished: false,
@@ -391,7 +391,7 @@ export default {
       
       // 商品列表数据
       // if (this.$store.state.searchType == 0) { // 阿里搜索
-        this.pageIndex = 1;
+        this.pageIndex = 0;
         this.sort = {
           shopId: this.$route.params.id, pageIndex: this.pageIndex, pageSize: this.pageSize
         }
@@ -642,7 +642,7 @@ export default {
       //   return false;
       // }
       // 阿里搜索
-      this.pageIndex = 1;
+      this.pageIndex = 0;
       if (index == 0) { // 推荐列表
         this.sort = {
           shopId: this.$route.params.id, pageIndex: this.pageIndex, pageSize: this.pageSize
@@ -789,6 +789,8 @@ export default {
   background-repeat: no-repeat;
   width: 100%;
   height: 114px;
+  position: relative;
+  z-index: 100;
 }
 .h-68{
   height: 68px;

@@ -215,14 +215,16 @@ export default {
         show: false
       },
       recommendList: [],
-      recommendTotal: 0,
-      isLoadRecommend: false
+      recommendTotal: -1,
+      isLoadRecommend: false,
+      recommendPageNum: -1
     }
   },
   async fetch() {
     try {
       this.active = 0;
       this.pageNum = 1;
+      this.recommendPageNum = -1;
       if (parseFloat(this.$route.query.active) == 1 && this.isFirst == true) this.active = parseFloat(this.$route.query.active);
 
       this.edit = false;
@@ -230,32 +232,14 @@ export default {
       // 获取商品列表
       const listData = this.active == 0 ? await this.$api.getLikeProduct({ pageNum: this.pageNum, pageSize: this.pageSize }) : await this.$api.getLikeStoreList({ pageNum: this.pageNum, pageSize: this.pageSize }); // 获取关注商品/店铺列表
       this.refreshing.isFresh = false;
-      if (listData.code != 0) return false;
+      if (listData.data) {
+        this.list = listData.data.records; // 关注商品/店铺列表
+        this.total = listData.data.total; // 商品/店铺总数
+      };
       
-      this.list = listData.data.records; // 关注商品/店铺列表
-      this.total = listData.data.total; // 商品/店铺总数
       this.isFirst = false;
       // 加载状态结束
       this.loading = false;
-      // if (this.active == 0 && this.$store.state.searchType == 0) {
-        const recommendData = await this.$api.getRecommend({ type: 1, pageNum: this.pageNum, pageSize: this.pageSize});
-        if (!recommendData.data) {
-          this.isLoadRecommend = true;
-          return false;
-        };
-
-        this.recommendList = this.pageNum == 1 ? recommendData.data.items : this.recommendList.concat(recommendData.data.items);
-        setTimeout(() => {
-          if (typeof this.$redrawVueMasonry === 'function') {
-            this.$redrawVueMasonry();
-          }
-        }, 50)
-        this.recommendTotal = recommendData.data.total;
-        
-        if (parseFloat(recommendData.data.total) == this.recommendList.length) {
-          this.isLoadRecommend = true;
-        }
-      // }
     } catch (error) {
       console.log(error);
     }
@@ -306,7 +290,8 @@ export default {
     },
     getTabList() { // 切换tab时数据要初始化
       this.pageNum = 1;
-      // this.finished = false;
+      this.recommendPageNum = -1;
+      this.finished = false;
       this.list = [];
       this.recommendList = [];
       this.recommendTotal = 0;
@@ -332,16 +317,6 @@ export default {
     async onLoad() { // 收藏商品加载下一页，加载最后一页时开始加载推荐商品列表，店铺没有推荐
       if (parseFloat(this.total) == this.list.length) { // 没有下一页了
         if (this.active == 0 && !this.edit) {
-          this.pageNum = this.recommendList.length > 0 && this.pageNum >= 1 ? this.pageNum : 0;
-          if (!this.isLoadRecommend && this.recommendList.length == parseFloat(this.recommendTotal) && this.pageNum > 0) {
-            this.finished = true;
-            this.loading = false;
-            return false;
-          }
-          // if (this.$store.state.searchType == 2) { // algolia 搜索
-          //   this.loading = false;
-          //   return false;
-          // }
           this.onRecommendLoad();
         } else {
           this.finished = true;
@@ -359,32 +334,32 @@ export default {
       // 加载状态结束
       this.loading = false;
     },
-    async onRecommendLoad() { // 加载推荐商品列表
-      if (this.recommendTotal == this.recommendList.length && this.pageNum > 1) { // 没有下一页了
+    onRecommendLoad() { // 加载推荐商品列表
+      if (this.recommendTotal == this.recommendList.length && this.recommendPageNum != -1) { // 没有下一页了
         this.finished = true;
         this.loading = false;
         return false;
       }
-      this.pageNum += 1;
-      const recommendData = await this.$api.getRecommend({ type: 1, pageNum: this.pageNum, pageSize: this.pageSize});
-      if (!recommendData.data) {
-        this.isLoadRecommend = true;
+      if (this.isLoadRecommend == true) { // 加载完一页再加载下一页
         return false;
-      };
-
-      this.recommendList = this.pageNum == 1 ? recommendData.data.items : this.recommendList.concat(recommendData.data.items);
-      setTimeout(() => {
-        if (typeof this.$redrawVueMasonry === 'function') {
-          this.$redrawVueMasonry();
-        }
-      }, 50)
-      this.recommendTotal = recommendData.data.total;
-      this.finished = this.recommendTotal == this.recommendList.length && this.pageNum > 0 ? true : false;
-      // 加载状态结束
-      this.loading = false;
-      if (parseFloat(recommendData.data.total) == this.recommendList.length) {
-        this.isLoadRecommend = true;
       }
+      this.isLoadRecommend = true;
+
+      this.recommendPageNum += 1;
+      this.$api.getRecommend({ type: 1, pageNum: this.recommendPageNum, pageSize: this.pageSize}).then(recommendData => {
+        if (recommendData.code != 0) return false;
+        this.recommendList = this.recommendPageNum == 0 ? recommendData.data.items : this.recommendList.concat(recommendData.data.items);
+        setTimeout(() => {
+          if (typeof this.$redrawVueMasonry === 'function') {
+            this.$redrawVueMasonry();
+          }
+        }, 50)
+        this.recommendTotal = recommendData.data.total;
+        this.finished = this.recommendTotal == this.recommendList.length ? true : false;
+        // // 加载状态结束
+        this.loading = false;
+        this.isLoadRecommend = false;
+      })
     },
     onSKu(productItem) { // 获取产品规格
       getGoodAttr(productItem.productId).then(res => {
@@ -470,6 +445,7 @@ export default {
       this.finished = parseFloat(this.total) == this.list.length ? true: false;
       this.isFirst = false;
       if (this.active == 0) {
+        this.finished = false;
         this.onLoad();
       }
     }
