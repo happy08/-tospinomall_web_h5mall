@@ -279,7 +279,7 @@ export default {
           });
           this.$axios.get(`https://oauth2.googleapis.com/tokeninfo?id_token=${success.getAuthResponse().id_token}`).then(googleRes => {
             console.log(googleRes);
-            this.thirdPartyLogin({ mobile: { userId: googleRes.data.sub, name: googleRes.data.name }, grant_type: 'google' }, { id: googleRes.data.sub, name: googleRes.data.name });
+            this.thirdPartyLogin({ mobile: { userId: googleRes.sub, name: googleRes.name }, grant_type: 'google' }, { id: googleRes.sub, name: googleRes.name });
           }).catch(error => {
             console.log(error);
             this.$toast.clear();
