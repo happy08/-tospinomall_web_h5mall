@@ -5,7 +5,7 @@
       <BmHeaderNav :left="{ isShow: true }" :border="false" :title="$t('bill')" :class="{'is-show': isHeader}" />
 
       <!-- 搜索框 -->
-      <div class="bg-white plr-12 ptb-10 border-b">
+      <!-- <div class="bg-white plr-12 ptb-10 border-b">
         <van-search 
           v-model="searchVal" 
           :placeholder="$t('bill_search_placeholder')"
@@ -16,7 +16,7 @@
           @cancel="onCancel"
           maxlength="30"
         />
-      </div>
+      </div> -->
     </van-sticky>
 
     <!-- 账单列表 -->
