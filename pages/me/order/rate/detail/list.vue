@@ -77,18 +77,32 @@
           <p class="black fs-14 mt-10 plr-20" @click="goDetail(item)">{{ item.content }}</p>
           <!-- 展示图片 -->
           <div class="mt-12 flex flex-wrap plr-20" v-if="item.pictures.length > 0">
-            <div v-for="(picItem, picIndex) in item.pictures" :key="'pic-' + picItem.id">
-              <BmImage
-                :url="picItem.imgUrl"
-                :width="item.pictures.length > 1 ? '2.12rem' : '6.68rem'" 
-                :height="item.pictures.length > 1 ? '2.12rem' : '6.68rem'"
-                :isLazy="false"
-                :isShow="true"
-                :fit="'cover'"
-                :class="{'border round-2 hidden block mt-8': true, 'ml-8': picIndex % 3 != 0}"
-                @onClick="onPreview(item.pictures, picIndex)"
-                :alt="item.goodTitle"
-              />
+            <div v-for="(picItem, picIndex) in item.pictures" :key="'pic-' + picItem.id" ref="showRatePreview">
+              <div class="video-container">
+                <BmImage
+                  :url="require('@/assets/images/icon/video.png')"
+                  :height="'0.6rem'"
+                  :width="'0.6rem'"
+                  :isLazy="false"
+                  :isShow="false"
+                  :fit="'cover'"
+                  :alt="item.goodTitle"
+                  class="video-container__icon"
+                  v-if="picItem.fileType == 2"
+                  @onClick="onPreview(item.pictures, picIndex)"
+                />
+                <BmImage
+                  :url="picItem.imgUrl"
+                  :width="item.pictures.length > 1 ? '2.12rem' : '6.68rem'" 
+                  :height="item.pictures.length > 1 ? '2.12rem' : '6.68rem'"
+                  :isLazy="false"
+                  :isShow="true"
+                  :fit="'cover'"
+                  :class="{'border round-2 hidden block mt-8': true, 'ml-8': picIndex % 3 != 0}"
+                  @onClick="onPreview(item.pictures, picIndex)"
+                  :alt="item.goodTitle"
+                />
+              </div>
             </div>
           </div>
           
@@ -99,8 +113,8 @@
               <div v-for="addItem in item.additionalEvaluates" :key="'add-review-' + addItem.id">
                 <p class="black fs-14 mt-10" @click="goDetail(item)">{{ addItem.content }}</p>
                 <div class="mt-10 flex flex-wrap between">
-                  <div v-for="(addPicItem, addPicIndex) in addItem.pictures" :key="'add-pic-' + addPicItem.id">
-                    <BmImage
+                  <div v-for="(addPicItem, addPicIndex) in addItem.pictures" :key="'add-pic-' + addPicIndex" :class="{'ml-8': addPicIndex % 3 != 0, 'video-container': true}">
+                    <!-- <BmImage
                       :url="addPicItem.imgUrl"
                       :width="'2.12rem'" 
                       :height="'2.12rem'"
@@ -111,7 +125,32 @@
                       v-if="addPicItem.fileType == 1"
                       @onClick="onPreview(addItem.pictures, addPicIndex)"
                       :alt="item.goodTitle"
-                    />
+                    /> -->
+                    <!-- <div class="video-container"> -->
+                      <BmImage
+                        :url="require('@/assets/images/icon/video.png')"
+                        :height="'0.6rem'"
+                        :width="'0.6rem'"
+                        :isLazy="false"
+                        :isShow="false"
+                        :fit="'cover'"
+                        :alt="addPicItem.goodTitle"
+                        class="video-container__icon"
+                        v-if="addPicItem.fileType == 2"
+                        @onClick="onPreview(addItem.pictures, addPicIndex)"
+                      />
+                      <BmImage
+                        :url="addPicItem.imgUrl"
+                        :width="addItem.pictures.length > 1 ? '2.12rem' : '6.68rem'" 
+                        :height="addItem.pictures.length > 1 ? '2.12rem' : '6.68rem'"
+                        :isLazy="false"
+                        :isShow="true"
+                        :fit="'cover'"
+                        :class="{'border round-2 hidden block mt-8': true}"
+                        @onClick="onPreview(addItem.pictures, addPicIndex)"
+                        :alt="item.goodTitle"
+                      />
+                    <!-- </div> -->
                   </div>
                 </div>
               </div>
@@ -153,6 +192,9 @@
       </van-list>
     
     </PullRefresh>
+
+    <!-- 预览 -->
+    <bm-preview v-if="isPreviewIndex != 'false'" :isPreviewIndex="isPreviewIndex" :carouselMapUrls="carouselMapUrls" :initialSlide="isPreviewIndex" @onClose="isPreviewIndex = 'false'"></bm-preview>
   </div>
 </template>
 
@@ -161,6 +203,7 @@ import { Checkbox, Cell, Tab, Tabs, Rate, CellGroup, List, ImagePreview, Sticky 
 import { getRateList, addGive } from '@/api/product';
 import PullRefresh from '@/components/PullRefresh';
 import EmptyStatus from '@/components/EmptyStatus';
+import BmPreview from '@/components/_global/BmPreview';
 
 export default {
   components: {
@@ -173,7 +216,8 @@ export default {
     vanList: List,
     vanSticky: Sticky,
     PullRefresh,
-    EmptyStatus
+    EmptyStatus,
+    BmPreview
   },
   data() {
     return {
@@ -188,6 +232,8 @@ export default {
       total: 0,
       loading: false,
       finished: false,
+      isPreviewIndex: 'false',
+      carouselMapUrls: []
     }
   },
   beforeRouteEnter (to, from, next) {
@@ -239,9 +285,9 @@ export default {
         let list = res.data.records.map(item => {
           return {
             ...item,
-            pictures: item.pictures.filter((picItem, picIndex) => {
-              return picItem.fileType == 1; // 1.0版本只展示图片
-            }),
+            // pictures: item.pictures.filter((picItem, picIndex) => {
+            //   return picItem.fileType == 1; // 1.0版本只展示图片
+            // }),
             sellerReplyList: item.sellerReplyList.length > 0 ? [item.sellerReplyList[0]] : []
           }
         });
@@ -317,14 +363,18 @@ export default {
       this.getList();
     },
     onPreview(item, index) { // 图片预览
-      const imgs = item.map(picItem => {
-        return picItem.imgUrl;
-      });
-      ImagePreview({
-        images: imgs,
-        startPosition: index,
-        loop: false
-      })
+      console.log('-----')
+      this.carouselMapUrls = item;
+      this.isPreviewIndex = index;
+      // const imgs = item.map(picItem => {
+      //   return picItem.imgUrl;
+      // });
+      // ImagePreview({
+      //   images: imgs,
+      //   startPosition: index,
+      //   loop: false
+      // })
+      // this.$refs.showRatePreview.$swiper.slideTo(index);
     },
     onChangeTab() { // tab切换
       this.pageNum = 1;
@@ -349,5 +399,15 @@ export default {
 .time-out{
   border-color: #eee!important;
   background-color: transparent!important;
+}
+.video-container{
+  position: relative;
+  .video-container__icon{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+  }
 }
 </style>

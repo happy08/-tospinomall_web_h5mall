@@ -64,7 +64,7 @@
       <p class="black fs-14 mt-10">{{ detailData.content }}</p>
       <!-- 展示图片 -->
       <div v-for="(picItem, picIndex) in detailData.pictures" :key="'pic-' + picIndex" class="mt-10">
-        <BmImage
+        <!-- <BmImage
           :url="picItem.imgUrl"
           :width="'6.68rem'" 
           :height="'6.68rem'"
@@ -75,7 +75,32 @@
           v-if="picItem.fileType == 1"
           @onClick="onPreview(detailData.pictures, picIndex)"
           :alt="detailData.goodTitle"
-        />
+        /> -->
+        <div class="video-container">
+          <BmImage
+            :url="require('@/assets/images/icon/video.png')"
+            :height="'0.8rem'"
+            :width="'0.8rem'"
+            :isLazy="false"
+            :isShow="false"
+            :fit="'cover'"
+            :alt="detailData.goodTitle"
+            class="video-container__icon"
+            v-if="picItem.fileType == 2"
+            @onClick="onPreview(detailData.pictures, picIndex)"
+          />
+          <BmImage
+            :url="picItem.imgUrl"
+            :width="'6.68rem'" 
+            :height="'6.68rem'"
+            :isLazy="false"
+            :isShow="true"
+            :fit="'cover'"
+            :class="{'border round-8 hidden': true}"
+            @onClick="onPreview(detailData.pictures, picIndex)"
+            :alt="detailData.goodTitle"
+          />
+        </div>
       </div>
       <!-- 追加评论 -->
       <template v-if="detailData.additionalEvaluates && detailData.additionalEvaluates.length > 0">
@@ -86,7 +111,7 @@
           <!-- 展示图片 -->
           <div class="flex flex-wrap">
             <div v-for="(addPicItem, addPicIndex) in addItem.pictures" :key="'add-pic-' + addPicIndex">
-              <BmImage
+              <!-- <BmImage
                 :url="addPicItem.imgUrl"
                 :width="'6.68rem'" 
                 :height="'6.68rem'"
@@ -96,7 +121,31 @@
                 :class="{'border round-8 hidden mt-10 block': true}"
                 @onClick="onPreview(addItem.pictures, addPicIndex)"
                 :alt="detailData.goodTitle"
-              />
+              /> -->
+              <div class="video-container" @click="onPreview(addItem.pictures, addPicIndex)">
+                <BmImage
+                  :url="require('@/assets/images/icon/video.png')"
+                  :height="'0.8rem'"
+                  :width="'0.8rem'"
+                  :isLazy="false"
+                  :isShow="false"
+                  :fit="'cover'"
+                  :alt="detailData.goodTitle"
+                  class="video-container__icon"
+                  v-if="addPicItem.fileType == 2"
+                  @onClick="onPreview(addItem.pictures, addPicIndex)"
+                />
+                <BmImage
+                  :url="addPicItem.imgUrl"
+                  :width="'6.68rem'" 
+                  :height="'6.68rem'"
+                  :isLazy="false"
+                  :isShow="true"
+                  :fit="'cover'"
+                  :class="{'border round-8 hidden mt-10 block': true}"
+                  :alt="detailData.goodTitle"
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -160,6 +209,9 @@
     </div>
 
     <ProductSku :productShow="productShow" :goodSpuVo="goodSpuVo" :initialSku="initialSku" :sku="sku" />
+
+    <!-- 预览 -->
+    <bm-preview v-if="isPreviewIndex != 'false'" :isPreviewIndex="isPreviewIndex" :carouselMapUrls="carouselMapUrls" :initialSlide="isPreviewIndex" @onClose="isPreviewIndex = 'false'"></bm-preview>
   </div>
 </template>
 
@@ -168,6 +220,7 @@ import { Rate, Field, Cell, Sticky, ImagePreview } from 'vant';
 import { getRateDetail, addGive, getGoodAttr, replyEvaluate } from '@/api/product';
 import ProductSku from '@/components/ProductSku';
 import EmptyStatus from '@/components/EmptyStatus';
+import BmPreview from '@/components/_global/BmPreview';
 
 export default {
   components: {
@@ -176,7 +229,8 @@ export default {
     vanCell: Cell,
     vanSticky: Sticky,
     ProductSku,
-    EmptyStatus
+    EmptyStatus,
+    BmPreview
   },
   data() {
     return {
@@ -188,6 +242,8 @@ export default {
       productShow: {
         show: false
       },
+      isPreviewIndex: 'false',
+      carouselMapUrls: []
     }
   },
   activated() {
@@ -277,9 +333,9 @@ export default {
         if (!res.data) return false;
         this.detailData = {
           ...res.data,
-          pictures: res.data.pictures.filter(item => {
-            return item.fileType == 1; // 1.0版本只展示图片
-          })
+          // pictures: res.data.pictures.filter(item => {
+          //   return item.fileType == 1; // 1.0版本只展示图片
+          // })
         };
       }).catch(error => {
         console.log(error);
@@ -324,14 +380,16 @@ export default {
       })
     },
     onPreview(item, index) { // 图片预览
-      const imgs = item.map(picItem => {
-        return picItem.imgUrl;
-      });
-      ImagePreview({
-        images: imgs,
-        startPosition: index,
-        loop: false
-      })
+      this.isPreviewIndex = index;
+      this.carouselMapUrls = item;
+      // const imgs = item.map(picItem => {
+      //   return picItem.imgUrl;
+      // });
+      // ImagePreview({
+      //   images: imgs,
+      //   startPosition: index,
+      //   loop: false
+      // })
     }
   },
 }
@@ -361,5 +419,15 @@ export default {
 .flex-1{
   flex: 1;
   width: 0;
+}
+.video-container{
+  position: relative;
+  .video-container__icon{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+  }
 }
 </style>

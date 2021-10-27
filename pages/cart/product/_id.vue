@@ -58,7 +58,7 @@
         <div>
           <!-- 商品轮播图 -->
           <swiper ref="swiperComponentRef" :options="swiperOption" class="swiper-container fs-0">
-            <swiper-slide v-for="(productItem, productIndex) in carouselMapUrls" :key="productIndex" @click.native="isShowPreview = productIndex" class="video-container">
+            <swiper-slide v-for="(productItem, productIndex) in carouselMapUrls" :key="productIndex" @click.native="isPreviewIndex = productIndex" class="video-container">
               <BmImage
                 :url="require('@/assets/images/icon/video.png')"
                 :height="'1rem'"
@@ -362,15 +362,27 @@
                 <swiper-slide
                   v-for="(reviewPicItem, reviewPicIndex) in reviewItem.pictures"
                   :key="'review-picture-' + reviewPicIndex"
+                  class="video-container"
                 >
+                  <BmImage
+                    :url="require('@/assets/images/icon/video.png')"
+                    :height="'0.6rem'"
+                    :width="'0.6rem'"
+                    :isLazy="false"
+                    :isShow="false"
+                    :fit="'cover'"
+                    :alt="goodSpuVo.goodTitle"
+                    class="video-container__icon"
+                    v-if="reviewPicItem.fileType == 2"
+                  />
                   <BmImage
                     :url="reviewPicItem.imgUrl"
                     :width="'2rem'"
                     :height="'2rem'"
                     :isLazy="false"
-                    :isShow="false"
                     :fit="'cover'"
                     class="border round-4"
+                    :isShow="true"
                     :alt="goodSpuVo.goodTitle + ' evaluates picture'"
                   />
                 </swiper-slide>
@@ -602,7 +614,7 @@
     <van-share-sheet v-model="showShare" :options="shareOptions" :title="$t('share_title')" :cancel-text="$t('cancel')" @select="onShare" />
 
     <!-- 预览 -->
-    <bm-preview v-if="isShowPreview != 'false'" :isShowPreview="isShowPreview" :carouselMapUrls="carouselMapUrls" :initialSlide="isShowPreview" @onClose="isShowPreview = 'false'" @onPreviewChange="onPreviewPic($event)"></bm-preview>
+    <bm-preview v-if="isPreviewIndex != 'false'" :isPreviewIndex="isPreviewIndex" :carouselMapUrls="carouselMapUrls" :initialSlide="isPreviewIndex" @onClose="isPreviewIndex = 'false'" @onPreviewChange="onPreviewPic($event)"></bm-preview>
   </div>
   <empty-status v-else-if="isDetail == false" :image="require('@/assets/images/empty/order.png')" class="mh-60" :btn="{ btn: '返回上一页', isEmit: true }" @emptyClick="$router.go(-1)" />
 </template>
@@ -728,7 +740,7 @@ export default {
       meta: {},
       isNext: false,
       isDetail: null,
-      isShowPreview: 'false',
+      isPreviewIndex: 'false',
       previewIndex: 0
     }
   },
@@ -762,9 +774,9 @@ export default {
         lists: detailData.data.hotEvaluates.map(item => {
           return {
             ...item,
-            pictures: item.pictures.filter(picItem => {
-              return picItem.fileType == 1;
-            })
+            // pictures: item.pictures.filter(picItem => {
+            //   return picItem.fileType == 1;
+            // })
           }
         })
       };

@@ -1,6 +1,6 @@
 <template>
   <!-- 预览 图片/视频 -->
-  <div class="preview-container" v-if="isShowPreview != 'false'">
+  <div class="preview-container" v-if="isPreviewIndex != 'false'">
     <swiper :options="{...swiperOption, initialSlide: initialSlide}" @slideChange="onSlideChange" ref="previewSwiper">
       <swiper-slide v-for="(productItem, productIndex) in carouselMapUrls" :key="productIndex" @click.native="onClick" class="flex between h-100 vcenter">
         <!-- 图片 -->
@@ -48,7 +48,7 @@ export default {
       type: Number,
       default: 0
     },
-    isShowPreview: {
+    isPreviewIndex: {
       default: 'false'
     }
   },
@@ -114,5 +114,8 @@ export default {
 ::v-deep .swiper-pagination-preview{
   // z-index: 1002;
   color: #fff;
+}
+::v-deep .van-image{
+  max-height: 100%;
 }
 </style>

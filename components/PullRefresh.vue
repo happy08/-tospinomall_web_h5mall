@@ -32,7 +32,6 @@ export default {
     }
   },
   activated() {
-    console.log('进入')
   },
   components: {
     vanLoading: Loading,
