@@ -71,37 +71,13 @@
                 v-if="productItem.fileType == 2"
               />
               <BmImage
-                :url="productItem.imgUrl"
+                :url="productItem.fileType == 2 ? goodSpuVo.mainPictureUrl : productItem.imgUrl"
                 :height="'7.5rem'"
                 :isLazy="false"
                 :isShow="false"
                 :fit="'cover'"
                 :alt="goodSpuVo.goodTitle"
               />
-              <!-- <div v-else-if="productItem.fileType == 2" class="bg-black flex vcenter h-100 video-container">
-                <BmImage
-                  :url="require('@/assets/images/icon/video.png')"
-                  :height="'1rem'"
-                  :width="'1rem'"
-                  :isLazy="false"
-                  :isShow="false"
-                  :fit="'cover'"
-                  :alt="goodSpuVo.goodTitle"
-                  class="video-container__icon"
-                /> -->
-                <!-- <BmImage
-                  :url="productItem.imgUrl"
-                  :height="'7.5rem'"
-                  :isLazy="false"
-                  :isShow="false"
-                  :fit="'cover'"
-                  :alt="goodSpuVo.goodTitle"
-                  v-if="productItem.fileType == 1"
-                /> -->
-                <!-- <video :src="productItem.imgUrl" preload="auto" style="width:100%;height:7.5rem;" @click="isShowPreview = productIndex" :poster="carouselMapUrls[0].imgUrl">
-                  {{ $t('no_support_video') }}
-                </video> -->
-              <!-- </div> -->
             </swiper-slide>
             <div class="swiper-pagination" slot="pagination"></div>
           </swiper>

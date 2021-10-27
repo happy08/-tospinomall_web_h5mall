@@ -75,7 +75,6 @@ export default {
   },
   methods: {
     onClick(e) {
-      console.log(e.target.id)
       if (e.target.id && e.target.id == 'prew-video') {
         // if (this.video.paused) {
         //   this.video.play();
@@ -86,18 +85,11 @@ export default {
       }
       this.$emit('onClose');
     },
-    onSlideChange() {
+    onSlideChange() { // 切换slide
       if (this.carouselMapUrls[this.$refs.previewSwiper.$swiper.activeIndex].fileType != 2) {
-        // if (this.video.paused) {
-        //   this.video.play();
-        // } else {
-        //   this.video.pause();
-        // }
         this.video.pause();
-        // document.getElementById('prew-video').style.visibility="visible";
       }
       
-      // this.video.load();
       this.$emit('onPreviewChange', this.$refs.previewSwiper.$swiper.activeIndex);
     }
   }

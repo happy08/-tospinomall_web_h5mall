@@ -225,6 +225,7 @@ import PullRefresh from '@/components/PullRefresh';
 // let client;
 // // 测试环境和正式环境搜索分开
 // let currenOTO = process.env.APP_ENV == 'production' ? 'tospinoMall' : 'test';
+// 目前搜索商品统一使用后台接口获取
 
 export default {
   name: 'search',

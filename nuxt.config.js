@@ -108,11 +108,11 @@ export default {
   proxy: {
     //登录、退出登录、刷新token、第三方登录接口地址
     '/apiLogin': {
-        target: 'https://auth.fyynet.com',
-        // target: 'http://192.168.2.70:19999',
-        pathRewrite: {
-            '^/apiLogin': '/'
-        }
+      target: 'https://auth.fyynet.com',
+      // target: 'http://192.168.2.70:19999',
+      pathRewrite: {
+        '^/apiLogin': '/'
+      }
     },
     '/api': {
       // target: 'http://192.168.2.34:9999', //120.78.145.142
