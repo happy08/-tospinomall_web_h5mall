@@ -260,9 +260,9 @@ export default ({ app }, inject) => {
     },
     thirdPartyLogin(data, headers = {}) { // 第三方登录
       return app.$axios({
-        url: `${urlLogin}/auth/mobile/token/social`,
+        url: `${urlLogin}/auth/mobile/token/social?${qs.stringify(data)}`,
         method: 'post',
-        data: qs.stringify(data),
+        // data: qs.stringify(data),
         headers: {
           clientType: 'h5',
           version: '1.0.0',

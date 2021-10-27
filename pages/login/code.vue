@@ -282,6 +282,7 @@ export default {
             this.thirdPartyLogin({ mobile: { userId: googleRes.data.sub, name: googleRes.data.name }, grant_type: 'google' });
           }).catch(error => {
             console.log(error);
+            this.$toast.clear();
           })
         }, err => {
           console.log('err: ');

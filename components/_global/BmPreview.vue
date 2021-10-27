@@ -15,16 +15,6 @@
         />
         <!-- 视频 -->
         <div v-else-if="productItem.fileType == 2" class="w-100">
-          <!-- <BmImage
-            :url="require('@/assets/images/icon/video.png')"
-            :height="'1rem'"
-            :width="'1rem'"
-            :isLazy="false"
-            :isShow="false"
-            :fit="'cover'"
-            :alt="'TospinoMall'"
-            class="video-container__icon"
-          /> -->
           <video :src="productItem.imgUrl" :poster="carouselMapUrls[0].imgUrl" controls="controls" preload="auto" controlslist="nodownload nofullscreen" style="width:100%;height:7.5rem;" id="prew-video" webkit-playsinline="true" playsinline="true" x-webkit-airplay="allow" x5-video-player-type="h5" x5-playsinline="" >
             {{ $t('no_support_video') }}
           </video>

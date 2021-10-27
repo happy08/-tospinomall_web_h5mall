@@ -81,8 +81,8 @@
               <div class="video-container">
                 <BmImage
                   :url="require('@/assets/images/icon/video.png')"
-                  :height="'0.6rem'"
-                  :width="'0.6rem'"
+                  :height="'0.64rem'"
+                  :width="'0.64rem'"
                   :isLazy="false"
                   :isShow="false"
                   :fit="'cover'"
@@ -129,8 +129,8 @@
                     <!-- <div class="video-container"> -->
                       <BmImage
                         :url="require('@/assets/images/icon/video.png')"
-                        :height="'0.6rem'"
-                        :width="'0.6rem'"
+                        :height="'0.64rem'"
+                        :width="'0.64rem'"
                         :isLazy="false"
                         :isShow="false"
                         :fit="'cover'"

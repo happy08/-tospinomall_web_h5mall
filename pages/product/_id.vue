@@ -61,8 +61,8 @@
             <swiper-slide v-for="(productItem, productIndex) in carouselMapUrls" :key="productIndex" @click.native="isPreviewIndex = productIndex" class="video-container">
               <BmImage
                 :url="require('@/assets/images/icon/video.png')"
-                :height="'1rem'"
-                :width="'1rem'"
+                :height="'0.88rem'"
+                :width="'0.88rem'"
                 :isLazy="false"
                 :isShow="false"
                 :fit="'cover'"
@@ -366,8 +366,8 @@
                 >
                   <BmImage
                     :url="require('@/assets/images/icon/video.png')"
-                    :height="'0.6rem'"
-                    :width="'0.6rem'"
+                    :height="'0.64rem'"
+                    :width="'0.64rem'"
                     :isLazy="false"
                     :isShow="false"
                     :fit="'cover'"
