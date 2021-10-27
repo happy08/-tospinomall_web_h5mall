@@ -166,7 +166,7 @@ export default {
         this.checked = false;
       }
       
-      if (to.query.changeWay != 'email' || !to.query.changeWay) {
+      if ((to.query.changeWay != 'email' || !to.query.changeWay) && to.name == 'register') {
         this.getPhonePrefix();
       }
     }
@@ -231,7 +231,8 @@ export default {
       // 接口返回操作
       _axios.then(res => {
         this.isCodeFlag = false;
-        this.$toast(res.data); // 提示验证码
+        // this.$toast(res.data); // 提示验证码
+        this.$toast.clear();
         this.countdown = 60; // 设置倒计时60s
         let timer = setInterval(() => {
           if (this.countdown === 0) {

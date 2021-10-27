@@ -148,7 +148,7 @@ export default {
     "$route"(e) {
       this.account = '';
       this.code = '';
-      if (e.query.changeWay !== 'email' || !e.query.changeWay) {
+      if ((e.query.changeWay !== 'email' || !e.query.changeWay) && e.name == 'login-code') {
         this.getPhonePrefix()
       }
     }
@@ -163,7 +163,8 @@ export default {
   created() {
     // 手机号注册或者忘记密码时 需要先获取手机号前缀
     if (this.$route.query.changeWay !== 'email' || !this.$route.query.changeWay) {
-      this.getPhonePrefix()
+      this.prefixCode = this.$t('prefix_tip');
+      this.getPhonePrefix();
     }
   },
   mounted() {
@@ -208,7 +209,8 @@ export default {
       // 接口返回操作
       _axios.then(res => {
         this.isCodeFlag = false;
-        this.$toast(res.data); // 提示验证码
+        // this.$toast(res.data); // 提示验证码
+        this.$toast.clear();
         this.countdown = 60; // 设置倒计时60s
         let timer = setInterval(() => {
           if (this.countdown === 0) {

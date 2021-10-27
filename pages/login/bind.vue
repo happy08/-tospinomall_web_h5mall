@@ -72,7 +72,8 @@ export default {
       // 接口返回操作
       getEmailCode({ email: this.account_email, userType: 'buyer', type: 1 }).then(res => {
         this.isCodeFlag = false;
-        this.$toast(res.data); // 提示验证码
+        // this.$toast(res.data); // 提示验证码
+        this.$toast.clear();
         this.countdown = 60; // 设置倒计时60s
         let timer = setInterval(() => {
           if (this.countdown === 0) {

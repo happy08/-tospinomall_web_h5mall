@@ -103,7 +103,8 @@ export default {
       _axios = this.$route.query.changeWay === 'email' ? getCurrentCode(2) : getCurrentCode(1);
       // 接口返回操作
       _axios.then(res => {
-        this.$toast(res.data); // 提示验证码
+        // this.$toast(res.data); // 提示验证码
+        this.$toast.clear();
         this.countdown = 60; // 设置倒计时60s
         let timer = setInterval(() => {
           if (this.countdown === 0) {
