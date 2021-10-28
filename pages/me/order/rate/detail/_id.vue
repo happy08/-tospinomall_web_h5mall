@@ -253,7 +253,7 @@ export default {
     goCart() { // 加入购物车
       if (!this.$store.state.user.authToken) {
         this.$router.push({
-          name: 'login'
+          path: '/login.html'
         })
         return false;
       }
@@ -344,7 +344,7 @@ export default {
     addGive(item) { // 点赞取消点赞
       if (!this.$store.state.user.authToken) {
         this.$router.push({
-          name: 'login'
+          path: '/login.html'
         })
         return false;
       }
@@ -361,7 +361,7 @@ export default {
     onSend() { // 新增商品回复
       if (!this.$store.state.user.authToken) {
         this.$router.push({
-          name: 'login'
+          path: '/login.html'
         })
         return false;
       }

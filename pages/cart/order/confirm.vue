@@ -118,7 +118,7 @@ export default {
   methods: {
     goHome() { // 返回首页
       this.$router.push({
-        name: 'home'
+        path: '/home.html'
       })
     },
     goViewOrder() { // 查看订单详情

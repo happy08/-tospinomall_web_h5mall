@@ -1,7 +1,7 @@
 <template>
   <!-- 登录-账号密码登录页面 -->
   <div class="pt-46">
-    <BmHeaderNav :left="{ isShow: true, url: '/home' }" :border="false" :fixed="true" />
+    <BmHeaderNav :left="{ isShow: true, url: '/home.html' }" :border="false" :fixed="true" />
     <div class="mlr-20 pb-30 flex between column login-page">
       <div>
         <!-- 语言切换 -->
@@ -173,7 +173,7 @@ export default {
           this.account = '';
           this.password = '';
           this.$router.push({
-            name: 'home'
+            path: '/home.html'
           })
         }, 100);
       }).catch(error => {
@@ -283,7 +283,7 @@ export default {
           this.account = '';
           this.password = '';
           this.$router.push({
-            name: 'home'
+            path: '/home.html'
           })
         }, 100);
       }).catch(error => {

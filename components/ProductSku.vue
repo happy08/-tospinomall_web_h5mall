@@ -114,7 +114,7 @@ export default {
       // 未登录情况下跳转到登录页面
       if (!this.$store.state.user.authToken) {
         this.$router.push({
-          name: 'login',
+          path: '/login.html'
         })
         return false;
       }

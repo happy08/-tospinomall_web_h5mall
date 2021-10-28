@@ -306,7 +306,7 @@ export default {
     onReport(id) { // 举报
       if (!this.$store.state.user.authToken) {
         this.$router.push({
-          name: 'login'
+          path: '/login.html'
         })
         return false;
       }
@@ -320,7 +320,7 @@ export default {
     addGive(item) { // 点赞
       if (!this.$store.state.user.authToken) {
         this.$router.push({
-          name: 'login'
+          path: '/login.html'
         })
         return false;
       }

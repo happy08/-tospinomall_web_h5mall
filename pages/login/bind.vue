@@ -1,6 +1,6 @@
 <template>
   <div>
-    <BmHeaderNav :left="{ isShow: true, url: '/login' }" :title="$t('associated_mailbox')" ></BmHeaderNav>
+    <BmHeaderNav :left="{ isShow: true, url: '/login.html' }" :title="$t('associated_mailbox')" ></BmHeaderNav>
 
     <div class="mlr-20 pb-30 flex between column register-page">
       <van-field
@@ -123,7 +123,7 @@ export default {
             this.code = '';
             this.countdown = 0;
             this.$router.push({
-              name: 'home'
+              path: '/home.html'
             })
           }, 100);
         }).catch(() => {

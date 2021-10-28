@@ -1,7 +1,7 @@
 <template>
   <!-- 登录-注册 -->
   <div class="v-percent-100 pt-46">
-    <BmHeaderNav :left="{ isShow: true, url: '/login' }" :title="title" :fixed="true"></BmHeaderNav>
+    <BmHeaderNav :left="{ isShow: true, url: '/login.html' }" :title="title" :fixed="true"></BmHeaderNav>
     
     <div class="plr-20 mt-10 flex between column register-page">
       <div>

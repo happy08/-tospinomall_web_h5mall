@@ -1056,7 +1056,7 @@ export default {
     },
     leftBack() {
       if (this.$route.query.isShare) { // 如果是分享出去的页面，点击回退按钮时跳转到首页
-        this.$router.replace('/home');
+        this.$router.replace('/home.html');
         return false;
       }
       if(window.history.length < 2){ //解决部分机型拿不到history
@@ -1174,7 +1174,7 @@ export default {
     attentionProduct() { // 关注商品
       if (!this.$store.state.user.authToken) {
         this.$router.push({
-          name: 'login',
+          path: '/login.html'
         })
         return false;
       }
@@ -1252,7 +1252,7 @@ export default {
     qimoChatClick() { // 唤起客服
       if (!this.$store.state.user.authToken) {
         this.$router.push({
-          name: 'login'
+          path: '/login.html'
         })
         return false;
       }

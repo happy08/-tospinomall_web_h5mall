@@ -247,6 +247,11 @@ export default {
   activated() {
     this.isFirst = true;
     this.$fetch();
+    setTimeout(() => {
+      if (typeof this.$redrawVueMasonry === 'function') {
+        this.$redrawVueMasonry();
+      }
+    }, 50)
   },
   methods: {
     isTrue(val, list) { // 判断是否选中
@@ -285,7 +290,7 @@ export default {
     },
     emptyClick() { // 关注列表没数据时，点击按钮跳转到首页
       this.$router.push({
-        name: 'home'
+        path: '/home.html'
       })
     },
     getTabList() { // 切换tab时数据要初始化

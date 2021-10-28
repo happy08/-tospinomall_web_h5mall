@@ -63,7 +63,7 @@ export default {
     qimoChatClick() { // 唤起客服
       if (!this.$store.state.user.authToken) {
         this.$router.push({
-          name: 'login'
+          path: '/login.html'
         })
         return false;
       }

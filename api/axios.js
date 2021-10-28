@@ -65,7 +65,7 @@ export default function({ $axios, app, redirect, store }) {
         console.log('响应成功')
         store.commit('user/SET_TOKEN', null);
         redirect({
-          name: 'login'
+          path: '/login.html'
         })
       } else {
         if (res.data.msg) {
@@ -91,7 +91,7 @@ export default function({ $axios, app, redirect, store }) {
         console.log(error)
         store.commit('user/SET_TOKEN', null);
         redirect({
-          name: 'login'
+          path: '/login.html'
         })
       }
       tip(error.msg);

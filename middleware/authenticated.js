@@ -4,6 +4,6 @@ export default function ({ store, redirect }) {
   console.log('权限验证')
   console.log(store.state.user.authToken)
   if (!store.state.user.authToken) {
-    return redirect('/login');
+    return redirect('/login.html');
   }
 }

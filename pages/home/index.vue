@@ -44,7 +44,7 @@
         </van-search>
       </div>
       <!-- 信息入口 -->
-      <nuxt-link :to="{ name: $store.state.user.authToken ? 'me-message' : 'login' }">
+      <nuxt-link :to="{ path: $store.state.user.authToken ? '/me/message' : '/login.html' }">
         <van-badge :dot="$store.state.user.isNewMessage" class="home-page-nav__message">
           <BmImage
             :url="require('@/assets/images/message-icon.png')"

@@ -429,7 +429,7 @@ export default {
     },
     onLogin() { // 去登录
       this.$router.push({
-        name: 'login'
+        path: '/login.html'
       })
     },
     goStoreDetail(storeInfo) { // 跳转到店铺详情
@@ -456,7 +456,7 @@ export default {
     },
     goHome() { // 点击跳转到首页
       this.$router.push({
-        name: 'home'
+        path: '/home.html'
       })
     },
     onOftenBy(product) { // 设置经常购买

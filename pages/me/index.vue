@@ -221,7 +221,7 @@ export default {
   methods: {
     goLogin() { // 跳转到登录页面
       this.$router.push({
-        name: 'login'
+        path: '/login.html'
       })
     },
     goAccount() { // 去账户设置页面, 登录之后才可以跳转

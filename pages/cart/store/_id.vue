@@ -460,7 +460,7 @@ export default {
     onSubscribe(flag) { // 订阅/取消订阅 flag: true 订阅 false 取消订阅
       if (!this.$store.state.user.authToken) {
         this.$router.push({
-          name: 'login'
+          path: '/login.html'
         })
         return false;
       }

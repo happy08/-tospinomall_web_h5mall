@@ -1,7 +1,7 @@
 <template>
   <!-- 登录-验证码登录页面 -->
   <div class="pt-46">
-    <BmHeaderNav :left="{ isShow: true, url: '/home' }" :border="false" :fixed="true" />
+    <BmHeaderNav :left="{ isShow: true, url: '/home.html' }" :border="false" :fixed="true" />
     <div class="mlr-20 pb-30 flex between column login-page">
       <div>
         <!-- 语言切换 -->
@@ -71,7 +71,7 @@
             @click="login">
             {{ $t('log_in') }}
           </van-button>
-          <nuxt-link :to="{ name: 'login' }" replace class="tc green lh-20 mt-10 fs-14 block">{{ $t('password_login') }}</nuxt-link>
+          <nuxt-link to="/login.html" replace class="tc green lh-20 mt-10 fs-14 block">{{ $t('password_login') }}</nuxt-link>
         </div>
       </div>
 
@@ -251,7 +251,7 @@ export default {
           this.account = '';
           this.code = '';
           this.$router.push({
-            name: 'home'
+            path: '/home.html'
           })
         }, 100);
       }).catch(error => {
@@ -345,7 +345,7 @@ export default {
           this.account = '';
           this.password = '';
           this.$router.push({
-            name: 'home'
+            path: '/home.html'
           })
         }, 100);
       }).catch(error => {

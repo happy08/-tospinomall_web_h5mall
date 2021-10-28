@@ -50,6 +50,18 @@ export default {
           path: "/categories.html",
           component: resolve(__dirname, "./pages/categories/index.vue")
         },
+        {
+          path: "/cart.html",
+          component: resolve(__dirname, "./pages/cart/index.vue")
+        },
+        {
+          path: "/me.html",
+          component: resolve(__dirname, "./pages/me/index.vue")
+        },
+        {
+          path: "/login.html",
+          component: resolve(__dirname, "./pages/login/index.vue")
+        },
         // {
         //   // name: "reg",
         //   path: "/reg.html",

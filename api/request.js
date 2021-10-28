@@ -117,7 +117,7 @@ service.interceptors.response.use(response => { // 成功
       tip(response.data.msg);
       $nuxt.$store.commit('user/SET_TOKEN', null); // 用户凭证已过期，先刷新token
       $nuxt.$router.push({
-        name: 'login'
+        path: '/login.html'
       })
       
       return response.data;
@@ -137,7 +137,7 @@ service.interceptors.response.use(response => { // 成功
       Toast.clear();
       $nuxt.$store.commit('user/SET_TOKEN', null); // 用户凭证已过期，先刷新token
       $nuxt.$router.push({
-        name: 'login'
+        path: '/login.html'
       })
     }
     console.log('error:');

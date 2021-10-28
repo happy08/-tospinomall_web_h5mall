@@ -95,7 +95,7 @@ export const actions = {
         commit('SET_TOKEN', null);
         this.$cookies.set('authToken', null);
         this.$router.push({
-          name: 'login'
+          path: '/login.html'
         })
         reject(error);
       })
@@ -107,7 +107,7 @@ export const actions = {
         commit('SET_TOKEN', null);
         commit('SET_USERINFO', null);
         this.$router.push({
-          name: 'login'
+          path: '/login.html'
         })
         resolve(res);
       }).catch(error => {

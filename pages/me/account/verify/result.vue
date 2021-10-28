@@ -79,7 +79,7 @@ export default {
           this.account = '';
           this.password = '';
           this.$router.push({
-            name: 'home'
+            path: '/home.html'
           })
         }, 100);
       }).catch(error => {

@@ -48,7 +48,7 @@ export default {
     login() { // 点击登录 
       if (this.$route.query.type) { // 忘记密码
         this.$router.push({
-          name: 'login'
+          path: '/login.html'
         })
         return false;
       }
@@ -77,7 +77,7 @@ export default {
         // 登录成功跳转到首页
         setTimeout(() => {
           this.$router.push({
-            name: 'home'
+            path: '/home.html'
           })
         }, 100);
       }).catch(error => {
