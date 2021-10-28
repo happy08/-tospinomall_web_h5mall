@@ -247,10 +247,7 @@ export default {
     },
     goProduct(productId) { // 跳转到商品详情页
       this.$router.push({
-        name: 'product-id',
-        params:{
-          id: productId
-        }
+        path: '/product/' + productId + '.html'
       })
     },
     afterSales(orderItem) { // 跳转到售后申请页面

@@ -69,7 +69,7 @@
 
                     <!-- 商品的样式 -->
                     <div class="pt-26 pr-20" v-if="active == 0">
-                      <nuxt-link :to="{ name: 'product-id', params: { id: item.productId } }">
+                      <nuxt-link :to="'/product/' + item.productId + '.html'">
                         <OrderSingle class="pl-30 pt-20" :isShowRight="false" :product_desc="item.productName" :image="item.productImg" :price="item.productPrice" :stock="item.isValid == 1 ? 100 : 0" />
                       </nuxt-link>
                       
@@ -142,7 +142,7 @@
             gutter="10"
           >
             <nuxt-link
-              :to="{ name: 'product-id', params: { id: searchItem.productId } }" 
+              :to="'/product/' + searchItem.productId + '.html'" 
               v-for="(searchItem, searchIndex) in recommendList"
               :key="'search-list-' + searchIndex"
               class="custom-grid-item"

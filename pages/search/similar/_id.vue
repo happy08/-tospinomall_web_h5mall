@@ -22,7 +22,7 @@
           gutter="10"
         >
           <nuxt-link
-            :to="{ name: 'product-id', params: { id: item.productId } }" 
+            :to="'/product/' + item.productId + '.html'" 
             v-for="(item, index) in lists" :key="'similar-' + index"
             class="custom-grid-item"
             v-masonry-tile

@@ -19,7 +19,7 @@
             v-show="!isScroll"
             @click="leftBack"
           />
-          <div class="sticky-opacity ml-14" v-show="isScroll" @click="$router.replace({ name: 'search', query: { back: 'product-id', backId: $route.params.id } })">
+          <div class="sticky-opacity ml-14" v-show="isScroll" @click="$router.replace({ name: 'search', query: { back: 'product-id', backId: goodId } })">
             <van-search v-model="searchVal" disabled class="round-20 hidden" />
           </div>
         </div>
@@ -431,7 +431,7 @@
                   :isShow="false"
                   :fit="'cover'"
                   class="border round-4 hidden"
-                  @onClick="onClick(productItem.productId)"
+                  @onClick="$router.push('/product/' + productItem.productId + '.html')"
                   :alt="productItem.productTitle"
                 />
               </swiper-slide>
@@ -741,13 +741,19 @@ export default {
       isNext: false,
       isDetail: null,
       isPreviewIndex: 'false',
-      previewIndex: 0
+      previewIndex: 0,
+      goodId: ''
     }
   },
   async fetch() {
     try {
       // 判断登录之后，获取详情时要带userid
-      if (this.goodSpuVo.id != this.$route.params.id) {
+      this.goodId = this.$route.params.id;
+      // 处理伪静态
+      if (this.goodId.indexOf('.html')) {
+        this.goodId = this.goodId.replace('.html', '');
+      }
+      if (this.goodSpuVo.id != this.goodId) {
         this.$toast.loading({
           forbidClick: true,
           loadingType: 'spinner',
@@ -759,7 +765,7 @@ export default {
       if (this.$store.state.user.userInfo) {
         _detailParams.userId = this.$store.state.user.userInfo.id
       }
-      const detailData = await this.$api.getProductDetail(this.$route.params.id, _detailParams); // 获取商品详情;
+      const detailData = await this.$api.getProductDetail(this.goodId, _detailParams); // 获取商品详情;
       this.$toast.clear();
       this.isDetail = detailData.data ? true : false; // 判断当前商品是否有数据
       if (!detailData.data) return false;
@@ -974,7 +980,7 @@ export default {
       }
     }
     // 获取分享内容
-    getShareDetail(this.$route.params.id).then(res => {
+    getShareDetail(this.goodId).then(res => {
       if (!res.data) return false;
       this.shareDetail = res.data;
     }).catch(error => {
@@ -1197,14 +1203,6 @@ export default {
       this.skuType = 'buy';
       this.productShow.show = true;
     },
-    onClick(id) { // 推荐商品点击跳转到商品详情
-      this.$router.push({
-        name: 'product-id',
-        params: {
-          id: id
-        }
-      })
-    },
     onShare(option, index) { // 分享操作
       if (index == 0) { // facebook
         window.open("https://www.facebook.com/share.php?u=".concat(encodeURIComponent(this.shareDetail.url)));
@@ -1350,7 +1348,7 @@ export default {
     color: #007aff;
   }
   img{
-    width: 100%;
+    max-width: 100%;
   }
 }
 .address-container-height{

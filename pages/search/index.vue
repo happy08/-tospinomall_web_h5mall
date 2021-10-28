@@ -99,7 +99,7 @@
                 <nuxt-link 
                   v-for="(searchItem, searchIndex) in list" 
                   :key="'search-list-' + searchIndex"
-                  :to="{ name: 'product-id', params: { id: searchItem.productId } }"
+                  :to="'/product/' + searchItem.productId + '.html'"
                   class="mt-12 custom-grid-item"
                   v-masonry-tile="searchMasonryContainer"
                 >
@@ -116,7 +116,7 @@
               <nuxt-link 
                 v-for="(searchItem, searchIndex) in list" 
                 :key="'search-list-' + searchIndex"
-                :to="{ name: 'product-id', params: { id: searchItem.productId } }"
+                :to="'/product/' + searchItem.productId + '.html'"
               >
                 <div :class="{'flex vcenter pt-20 pb-30 hidden bg-white': true, 'border-229 border-b': searchIndex !== list.length - 1} ">
                   <BmImage 
@@ -934,13 +934,20 @@ export default {
     leftClick() {
       if (!this.$route.query.searchKeyword && this.backName != '') {
         if (this.backNameId != '') { // 商品详情
-          this.$router.replace({
-            name: this.backName,
-            params: {
-              id: this.backNameId
-            },
-            query: this.backQuery
-          });
+          if (this.backName == 'product-id') {
+            this.$router.replace({
+              path: '/product/' + this.backNameId,
+              query: this.backQuery
+            })
+          } else {
+            this.$router.replace({
+              name: this.backName,
+              params: {
+                id: this.backNameId
+              },
+              query: this.backQuery
+            });
+          }
         } else {
           this.$router.replace({
             name: this.backName

@@ -75,7 +75,7 @@
     <div class="bg-white p-20 tr mt-12">
       <OrderStoreSingle :name="detail.storeName" :showArrow="false" />
       <div v-for="(item, index) in detail.items" :key="'order-product-' + index">
-        <OrderSingle class="mt-20 w-100" :product_num="item.goodQuantity" :product_desc="item.goodName" :product_size="item.goodAttr" :price="item.goodPrice" :image="item.goodImg" @onClick="onClick(item.goodId)" />
+        <OrderSingle class="mt-20 w-100" :product_num="item.goodQuantity" :product_desc="item.goodName" :product_size="item.goodAttr" :price="item.goodPrice" :image="item.goodImg" @onClick="$router.push('/product/' + item.goodId + '.html')" />
 
         <!-- 待付款状态/待发货/已取消/超时关闭/已拒收 -->
         <!-- <BmButton v-if="detail.status == 0 || detail.status == 1 || detail.status == 5 || detail.status == 6 || detail.status == 7" type="info" plain class="plr-12 round-8 h-30 mt-24" @click="addCart(item)">{{ $t('add_shopping_cart') }}</BmButton> -->
@@ -143,7 +143,7 @@
           stagger="0.03s"
           gutter="10"
         >
-          <nuxt-link :to="{ name: 'product-id', params: { id: searchItem.productId } }" v-for="(searchItem, searchIndex) in recommendList" :key="'search-list-' + searchIndex" class="mb-12 bg-white custom-grid-item" v-masonry-tile>
+          <nuxt-link :to="'/product/' + searchItem.productId + '.html'" v-for="(searchItem, searchIndex) in recommendList" :key="'search-list-' + searchIndex" class="mb-12 bg-white custom-grid-item" v-masonry-tile>
             <ProductTopBtmSingle
               :img="{ url: searchItem.mainPictureUrl, width: '3.4rem', height: '3.4rem', loadImage: require('@/assets/images/product-bgd-170.png') }" 
               :detail="{ desc: searchItem.productTitle, price: searchItem.productPrice, rate: parseFloat(searchItem.starLevel), volumn: searchItem.saleCount, ellipsis: 2, country: searchItem.supplyCountryName, country_url: searchItem.supplyCountryIcon }"
@@ -372,14 +372,6 @@ export default {
     //     }
     //   })
     // },
-    onClick(goodId) { // 跳转到商品详情页
-      this.$router.push({
-        name: 'product-id',
-        params: {
-          id: goodId
-        }
-      })
-    },
     addCart(item) {
       addCart({ quantity: item.goodQuantity, skuId: item.skuId }).then(res => {
         if (res.code != 0) return false;

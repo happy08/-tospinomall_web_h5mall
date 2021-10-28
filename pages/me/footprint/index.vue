@@ -46,7 +46,7 @@
                 <!-- <van-swipe-cell :disabled="edit"> -->
                   <!-- 商品的样式 -->
                   <div class="pb-26 pr-20">
-                    <nuxt-link :to="{ name: 'product-id', params: { id: item.goodId } }">
+                    <nuxt-link :to="'/product/' + item.goodId + '.html'">
                       <OrderSingle class="pl-30 pt-20" :isShowRight="false" :product_desc="item.goodTitle" :image="item.img" :price="item.price" :stock="item.isValid" />
                     </nuxt-link>
                     <div class="flex hend">

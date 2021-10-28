@@ -62,11 +62,10 @@ export default {
           path: "/login.html",
           component: resolve(__dirname, "./pages/login/index.vue")
         },
-        // {
-        //   // name: "reg",
-        //   path: "/reg.html",
-        //   component: resolve(__dirname, "./pages/reg/index.vue")
-        // },
+        {
+          path: "/product.html",
+          component: resolve(__dirname, "./pages/product/_id.vue")
+        },
         // {
         //   // name: "forgot-password",
         //   path: "/forgot-password.html",
