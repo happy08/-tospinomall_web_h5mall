@@ -439,7 +439,7 @@
           </div>
         </div>
       </van-tab>
-      <van-tab :title="$t('details')" name="Details" class="fs-0 product-container">
+      <van-tab :title="$t('details')" name="Details" class="fs-0 w-100 product-container">
         <!-- 产品说明信息 -->
         <div
           class="mt-12 bg-white ptb-12 plr-20 fs-14 black fm-helvetica word-break mb-12"
@@ -1344,8 +1344,13 @@ export default {
   padding-top: 2px;
   padding-bottom: 2px;
 }
-::v-deep .product-container a{
-  color: #007aff;
+::v-deep .product-container{
+  a{
+    color: #007aff;
+  }
+  img{
+    width: 100%;
+  }
 }
 .address-container-height{
   height: calc(100% - 30px);
