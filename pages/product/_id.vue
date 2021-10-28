@@ -1345,6 +1345,7 @@ export default {
   padding-bottom: 2px;
 }
 ::v-deep .product-container{
+  overflow: hidden;
   a{
     color: #007aff;
   }
