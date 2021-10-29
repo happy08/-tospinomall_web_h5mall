@@ -75,9 +75,9 @@
         imageLinkType: 图片链接类型（0:商品链接，1:前端分类id，2:后端分类id，3:品牌，4:FBT，5:FBM，6:外部链接）
       -->
       <div v-for="(moduleItem, moduleIndex) in moduleData" :key="'module-data-' + moduleIndex">
-        <h2 class="fs-18 mlr-12 fw black pt-12 lh-20 fm-din-alternate" v-if="moduleItem.moduleTitleDisplay">{{ moduleItem.moduleTitle }}</h2>
+        <h2 class="fs-18 mlr-12 fw black pb-12 lh-20 fm-din-alternate" v-if="moduleItem.moduleTitleDisplay">{{ moduleItem.moduleTitle }}</h2>
         <!-- 整屏轮播图 -->
-        <div v-if="moduleItem.type === 1" class="mt-12">
+        <div v-if="moduleItem.type === 1" class="mt-12 mb-12">
           <swiper
             :ref="'swiperFullScreenRef' + moduleIndex"
             class="swiper home-banner-swiper"
@@ -108,7 +108,7 @@
 
         <!-- 热区图片 -->
         <template v-if="moduleItem.type === 2">
-          <div class="fs-0 mt-12 hot-container" :ref="'hotContainer' + moduleIndex">
+          <div class="fs-0 hot-container" :ref="'hotContainer' + moduleIndex">
             <BmImage
               :url="moduleItem.imageUrl"
               :loadUrl="require('@/assets/images/product-bgd-375.png')"
@@ -122,7 +122,7 @@
         
 
         <!-- 一行三列 -->
-        <div class="mlr-12 home-page__global" v-if="moduleItem.type === 3">
+        <div class="mlr-12 mb-12 home-page__global" v-if="moduleItem.type === 3">
           <!-- 轮播展示 -->
           <swiper
             ref="swiperComponentRef"
@@ -154,7 +154,7 @@
 
         <!-- 一行两列 -->
         <template v-if="moduleItem.type === 4">
-          <div class="mlr-12 mt-12">
+          <div class="mlr-12 mb-12">
             <swiper
               ref="swiperComponentRef"
               :class="{ 'swiper home-page__global-swiper': true, 'swiper-no-swiping' : moduleItem.componentDetails.length <= 2, 'pb-34': moduleItem.effect == 1 && moduleItem.componentDetails.length > 2 }"
@@ -260,7 +260,7 @@
         </div>
       </div> -->
       <!-- 滚动标签栏部分 -->
-      <van-tabs sticky swipeable animated :offset-top="'0.88rem'" color="#42B7AE" v-model="tabCategoryActive" @change="getSearchList" class="mh-60 mt-12 custom-home-tab" :ellipsis="false" :lazy-render="false" v-if="categoryList.length > 0">
+      <van-tabs sticky swipeable animated :offset-top="'0.88rem'" color="#42B7AE" v-model="tabCategoryActive" @change="getSearchList" class="mh-60 custom-home-tab" :ellipsis="false" :lazy-render="false" v-if="categoryList.length > 0">
         <van-tab v-for="(categoryItem, tabIndex) in categoryList" :title="categoryItem.name" :key="'scroll-tab-' + tabIndex" :name="categoryItem.id">
           <empty-status v-if="searchList.length === 0" :image="require('@/assets/images/empty/order.png')" class="mh-60" />
           <van-list
