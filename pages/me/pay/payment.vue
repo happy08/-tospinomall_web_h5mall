@@ -121,35 +121,35 @@ export default {
     });
   },
   activated() {
-    if (this.$route.query.phonePrefix && this.list.length > 0) { // 从选择电话的页面回跳回来的
-      this.list = this.list.map(item => {
-        return {
-          ...item,
-          prefixCode: this.$route.query.phonePrefix && item.label == this.$route.query.paymentWay ? this.$route.query.phonePrefix : item.prefixCode
-        }
-      });
-      return false;
-    }
-    this.$toast.loading({
-      forbidClick: true,
-      loadingType: 'spinner',
-      duration: 0
-    });
+    // if (this.$route.query.phonePrefix && this.list.length > 0) { // 从选择电话的页面回跳回来的
+    //   this.list = this.list.map(item => {
+    //     return {
+    //       ...item,
+    //       prefixCode: this.$route.query.phonePrefix && item.label == this.$route.query.paymentWay ? this.$route.query.phonePrefix : item.prefixCode
+    //     }
+    //   });
+    //   return false;
+    // }
+    // this.$toast.loading({
+    //   forbidClick: true,
+    //   loadingType: 'spinner',
+    //   duration: 0
+    // });
     this.list = [];
     if (this.payRadio == 100) {
       this.balanceShow = false;
     }
-    getAvailable().then(res => {
-      this.$toast.clear();
-      if (!res.data) return false;
+    // getAvailable().then(res => {
+    //   this.$toast.clear();
+    //   if (!res.data) return false;
 
-      this.list = res.data.map(item => {
-        return {
-          label: item,
-          phone: '',
-          prefixCode: this.$route.query.phonePrefix && item == this.$route.query.paymentWay ? this.$route.query.phonePrefix : this.$t('prefix_tip')
-        }
-      });
+    //   this.list = res.data.map(item => {
+    //     return {
+    //       label: item,
+    //       phone: '',
+    //       prefixCode: this.$route.query.phonePrefix && item == this.$route.query.paymentWay ? this.$route.query.phonePrefix : this.$t('prefix_tip')
+    //     }
+    //   });
 
       if (this.$route.query.type == 'order') { // 说明是从订单结算页面跳转过来的，支付方式就有余额
         this.list.push({
@@ -157,14 +157,14 @@ export default {
           phone: ''
         });
       }
-    }).catch(() => { // 接口报错，又是订单结算页面跳过来的话，要先展示余额
-      if (this.$route.query.type == 'order') { // 说明是从订单结算页面跳转过来的，支付方式就有余额
-        this.list = [{
-          label: 'balance',
-          phone: ''
-        }];
-      }
-    })
+    // }).catch(() => { // 接口报错，又是订单结算页面跳过来的话，要先展示余额
+    //   if (this.$route.query.type == 'order') { // 说明是从订单结算页面跳转过来的，支付方式就有余额
+    //     this.list = [{
+    //       label: 'balance',
+    //       phone: ''
+    //     }];
+    //   }
+    // })
   },
   methods: {
     onPay() { // 提交支付,成功跳转到确认订单页面
