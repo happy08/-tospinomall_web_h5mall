@@ -65,6 +65,14 @@ export default {
       confirmPwdType: 'password'
     }
   },
+  beforeRouteEnter (to, from, next) {
+    next(vm => {
+      if (from.name === 'register') {
+        vm.pwd = '';
+        vm.confirmPwd = '';
+      }
+    });
+  },
   methods: {
     changeType(key, val) {
       this[key] = val;

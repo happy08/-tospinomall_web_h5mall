@@ -37,42 +37,19 @@ export default {
     //路由配置
     middleware: ['vue-i18n'], //路由中间件
     extendRoutes(routes, resolve) {
-      const routeList = [
-        {
-          path: "/home.html",
-          component: resolve(__dirname, "./pages/home/index.vue")
-        },
-        {
-          path: "/index.html",
-          component: resolve(__dirname, "./pages/home/index.vue")
-        },
-        {
-          path: "/categories.html",
-          component: resolve(__dirname, "./pages/categories/index.vue")
-        },
-        {
-          path: "/cart.html",
-          component: resolve(__dirname, "./pages/cart/index.vue")
-        },
-        {
-          path: "/me.html",
-          component: resolve(__dirname, "./pages/me/index.vue")
-        },
-        {
-          path: "/login.html",
-          component: resolve(__dirname, "./pages/login/index.vue")
-        },
-        {
-          path: "/product.html",
-          component: resolve(__dirname, "./pages/product/_id.vue")
-        },
-        // {
-        //   // name: "forgot-password",
-        //   path: "/forgot-password.html",
-        //   component: resolve(__dirname, "./pages/forgot-password/index.vue")
-        // }
-      ];
-      routes.push(...routeList);
+      let oldRoutes = [];
+      routes.forEach(ele => {
+        let path = ele.path;
+        if (ele.name == 'login' || ele.name == 'home' || ele.name == 'cart' || ele.name == 'categories' || ele.name == 'me' || ele.name == 'product-id') {
+          // 因为要加.html如果路由名一样则会出现路由警告，所以原始的路由名改个名，通过name跳转时就跳转到有.html的路径
+          oldRoutes.push({ 
+            ...ele,
+            name: ele.name + '-old'
+          })
+          ele.path = path + '.html';
+        }
+      })
+      routes.push(...oldRoutes);
     }
   },
 
