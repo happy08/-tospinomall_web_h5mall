@@ -273,14 +273,18 @@ export default {
         getAuthInstance.signIn().then(success => {
           console.log('success');
           // console.log(success);
-          console.log(success.getAuthResponse())
+          // console.log(success.getAuthResponse())
           this.$toast.loading({
             forbidClick: true,
             loadingType: 'spinner',
             duration: 0
           });
-          this.$axios.get(`https://oauth2.googleapis.com/tokeninfo?id_token=${success.getAuthResponse().id_token}`).then(googleRes => {
-            console.log(googleRes);
+          this.$axios.get(`https://oauth2.googleapis.com/tokeninfo?id_token=${success.getAuthResponse().id_token}`, {
+            headers: {
+              'Access-Control-Allow-Origin': '*'
+            }
+          }).then(googleRes => {
+            // console.log(googleRes);
             this.thirdPartyLogin({ mobile: { userId: googleRes.sub, name: googleRes.name }, grant_type: 'google' }, { id: googleRes.sub, name: googleRes.name });
           }).catch(error => {
             console.log(error);

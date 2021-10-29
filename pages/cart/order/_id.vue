@@ -423,7 +423,7 @@ export default {
         this.$router.go(-2);
         return false;
       }
-      console.log(window.history)
+      
       if(window.history.length < 2){ //解决部分机型拿不到history
         this.$router.replace('/');
       }else{

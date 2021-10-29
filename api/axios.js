@@ -24,7 +24,7 @@ export default function({ $axios, app, redirect, store }) {
     } else {
       config.headers['Content-Type'] = config.headers['Content-Type'] || 'application/json';
     }
-    console.log(2222222222)
+    // console.log(2222222222)
     // 登录之后要重新复值token
     // if (store.state.user.authToken && config.url != '/auth/oauth/token?grant_type=refresh_token') {
     //   config.headers['Authorization'] = `${store.state.user.authToken}`;
@@ -37,7 +37,7 @@ export default function({ $axios, app, redirect, store }) {
       config.headers['Authorization'] = 'Basic YnV5ZXI6YnV5ZXI=';
     }
     config.headers.language = store.state.locale;
-    console.log(config)
+    // console.log(config)
     // const _local = JSON.parse(localStorage.getItem('b2c-store'));
     // console.log(localStorage.getItem('b2c-store'))
     // if (_local.user.authToken) { // 已登录需要改变头部token

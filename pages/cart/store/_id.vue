@@ -409,7 +409,6 @@ export default {
             }
           });
           this.finished = this.total == this.productList.length ? true : false;
-          console.log(this.finished)
         }
       // } else {
         // this.pageIndex = 0;

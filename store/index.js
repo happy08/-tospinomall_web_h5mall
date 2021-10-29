@@ -58,7 +58,7 @@ export const actions = {
     try {
       const authToken = $cookies.get('authToken'); // 用户token
       console.log('持久化')
-      console.log(authToken)
+      // console.log(authToken)
       
       // 获取初始化信息
       const initData = await $api.getInitData();
