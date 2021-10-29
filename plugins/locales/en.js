@@ -682,7 +682,7 @@ const en = {
   axios_tip_408: 'Request timed out',
   axios_tip_500: 'Server Error',
   axios_tip_501: 'Service not implemented',
-  axios_tip_502: 'Network Error',
+  axios_tip_502: 'Network Anomaly',
   axios_tip_503: 'service is not available',
   axios_tip_504: 'network timeout',
   axios_tip_505: 'HTTP version is not supported',

@@ -683,7 +683,7 @@ const cn = {
   axios_tip_408: '请求超时',
   axios_tip_500: '服务器错误',
   axios_tip_501: '服务未实现',
-  axios_tip_502: '网络错误',
+  axios_tip_502: '网络异常',
   axios_tip_503: '服务不可用',
   axios_tip_504: '网络超时',
   axios_tip_505: 'HTTP版本不受支持',

@@ -8,7 +8,7 @@ import { getCookie } from './utils';
 
 const service = axios.create({
   baseURL: url,
-  timeout: 30000 // 请求超时时间
+  timeout: 60000 // 请求超时时间
 })
 
 // 全局提示

@@ -683,7 +683,7 @@
   axios_tip_408: 'A solicitação expirou',
   axios_tip_500: 'erro de servidor',
   axios_tip_501: 'Serviço não implementado',
-  axios_tip_502: 'Erro de rede',
+  axios_tip_502: 'Anomalia de rede',
   axios_tip_503: 'serviço não está disponível',
   axios_tip_504: 'tempo limite da rede',
   axios_tip_505: 'A versão HTTP não é compatível',
