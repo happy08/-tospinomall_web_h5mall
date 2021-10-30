@@ -518,6 +518,11 @@ export default {
       }
     },
     async getSearchList(name, title) { // 获取搜索商品列表
+      this.$toast.loading({
+        forbidClick: true,
+        loadingType: 'spinner',
+        duration: 0
+      });
       let categoryIds = {};
       // let facetFilters = [];
       if (name > 0) {
@@ -558,6 +563,7 @@ export default {
       //   return false;
       // }
       this.$api.getProductSearch({ ...categoryIds, pageIndex: this.pageIndex/*, pageSize: this.pageSize*/ }).then(res => {
+        this.$toast.clear();
         this.searchList = res.data.items.map(item => {
           return {
             ...item,
@@ -574,6 +580,7 @@ export default {
         this.finished = this.tabTotal == this.searchList.length ? true : false;
         this.tabTotal = res.data.total;
       }).catch(error => {
+        this.$toast.clear();
         console.log(error);
       })
     },
