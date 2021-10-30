@@ -194,15 +194,15 @@ export default {
         const getAuthInstance = gapi.auth2.getAuthInstance();
         getAuthInstance.signIn().then(success => {
           console.log('success');
-          // console.log(success);
-          console.log(success.getAuthResponse())
           this.$toast.loading({
             forbidClick: true,
             loadingType: 'spinner',
             duration: 0
           });
           // 防止带上全局设置的参数所以不用axios
-          fetch(`https://oauth2.googleapis.com/tokeninfo?id_token=${success.getAuthResponse().id_token}`).then(googleRes => {
+          fetch(`https://oauth2.googleapis.com/tokeninfo?id_token=${success.getAuthResponse().id_token}`).then(res => {
+            return res.json();
+          }).then(googleRes => {
             this.thirdPartyLogin({ mobile: { userId: googleRes.sub, name: googleRes.name }, grant_type: 'google' }, { id: googleRes.sub, name: googleRes.name });
           }).catch(error => {
             console.log(error);
@@ -215,7 +215,6 @@ export default {
       })
     },
     fLogin() { // facebook登录
-      console.log(FB)
       FB.init({
         appId: '249151913934308',
         scope: 'public_profile, email',
@@ -223,11 +222,8 @@ export default {
       })
 
       FB.login(response => {
-        console.log(response)
         if (response.status == 'connected') { // 连接成功
           FB.api('/me?fields=name,email', user => { // 获取用户信息
-            console.log('user')
-            console.log(user);
             this.$toast.loading({
               forbidClick: true,
               loadingType: 'spinner',
@@ -256,7 +252,6 @@ export default {
     },
     thirdPartyLogin(params, userInfo) { // 第三方登录 userInfo是用户信息 登录时才需要绑定邮箱
       this.$api.thirdPartyLogin(params).then(res => {
-        console.log(res)
         this.$toast.clear();
         if (res.code == 11001 && userInfo) {
           this.$router.push({

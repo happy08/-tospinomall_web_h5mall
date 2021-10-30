@@ -40,6 +40,7 @@
                       :isShow="true"
                       class="round-8 hidden"
                       :errorUrl="require('@/assets/images/store-bgd.png')"
+                      :loadUrl="require('@/assets/images/store-bgd.png')"
                       :alt="detailData.storeName"
                     />
                     <!-- 店铺名、关注数 -->
