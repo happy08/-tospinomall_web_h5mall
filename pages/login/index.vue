@@ -201,8 +201,8 @@ export default {
             loadingType: 'spinner',
             duration: 0
           });
-          this.$axios.get(`https://oauth2.googleapis.com/tokeninfo?id_token=${success.getAuthResponse().id_token}`).then(googleRes => {
-            console.log(googleRes);
+          // 防止带上全局设置的参数所以不用axios
+          fetch(`https://oauth2.googleapis.com/tokeninfo?id_token=${success.getAuthResponse().id_token}`).then(googleRes => {
             this.thirdPartyLogin({ mobile: { userId: googleRes.sub, name: googleRes.name }, grant_type: 'google' }, { id: googleRes.sub, name: googleRes.name });
           }).catch(error => {
             console.log(error);
