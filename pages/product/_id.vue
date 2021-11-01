@@ -616,7 +616,7 @@
     <!-- 预览 -->
     <bm-preview v-if="isPreviewIndex != 'false'" :isPreviewIndex="isPreviewIndex" :carouselMapUrls="carouselMapUrls" :initialSlide="isPreviewIndex" @onClose="isPreviewIndex = 'false'" @onPreviewChange="onPreviewPic($event)"></bm-preview>
   </div>
-  <empty-status v-else-if="isDetail == false" :image="require('@/assets/images/empty/order.png')" class="mh-60" :btn="{ btn: '返回上一页', isEmit: true }" @emptyClick="$router.go(-1)" />
+  <empty-status v-else-if="isDetail == false" :image="require('@/assets/images/empty/order.png')" class="mh-60" :btn="{ btn: $t('return_to_previous_page'), isEmit: true }" @emptyClick="$router.go(-1)" />
 </template>
 
 <script>

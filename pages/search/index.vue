@@ -389,7 +389,6 @@ export default {
       //   client = algoliasearch('62MLEBY33X','7a8da9a5fd3f8137ea8cb70b60806e8d');
       //   searchClient = client.initIndex(currenOTO);
       // }
-
       this.params = {...this.params, pageIndex: this.pageIndex, pageSize: this.pageSize};
 
       // 如果带着搜索的参数跳转过来的需要先获取相对应的搜索数据
@@ -534,11 +533,12 @@ export default {
     }
   },
   watch: {
-    '$route'(newRoute, oldRoute) {
-      console.log(newRoute, oldRoute)
-      if (oldRoute.name == 'search' && newRoute.name == 'search') {
+    '$route.query'() {
+      console.log('-----')
+      // if (oldRoute.name == 'search' && newRoute.name == 'search') {
         this.$fetch();
-      }
+      //   console.log('-----')
+      // }
     }
   },
   computed: {
