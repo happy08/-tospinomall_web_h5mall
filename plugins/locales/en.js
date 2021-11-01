@@ -717,7 +717,8 @@ const en = {
   concat_customer_service_tel: 'Telephone contact',
   concat_customer_service_email: 'Email contact',
   return_to_previous_page: 'Return to previous page',
-  no_support_video: 'Your browser does not support the video tag'
+  no_support_video: 'Your browser does not support the video tag',
+  please_read_checked: 'Please read and tick the agreement',
 }
 
 export default en;
