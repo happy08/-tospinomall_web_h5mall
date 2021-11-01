@@ -135,6 +135,11 @@ export default {
       console.log(error);
     }
   },
+  activated() {
+    if (this.list.length == 0) {
+      this.$fetch();
+    }
+  },
   methods: {
     changeNavEvent(currentIndex) { // 点击左侧切换tab栏
       this.leftLists = this.catrgoriesList[currentIndex].children
