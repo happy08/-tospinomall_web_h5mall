@@ -262,7 +262,7 @@
       <!-- 滚动标签栏部分 -->
       <van-tabs sticky swipeable animated :offset-top="'0.88rem'" color="#42B7AE" v-model="tabCategoryActive" @change="getSearchList" class="mh-60 custom-home-tab" :ellipsis="false" :lazy-render="false" v-if="categoryList.length > 0">
         <van-tab v-for="(categoryItem, tabIndex) in categoryList" :title="categoryItem.name" :key="'scroll-tab-' + tabIndex" :name="categoryItem.id">
-          <empty-status v-if="searchList.length === 0" :image="require('@/assets/images/empty/order.png')" class="mh-60" />
+          <empty-status v-if="categoryItem.items.length === 0" :image="require('@/assets/images/empty/order.png')" class="mh-60" />
           <van-list
             v-else
             v-model="loading"
@@ -294,7 +294,7 @@
               stagger="0s"
             >
               <nuxt-link
-                v-for="(searchItem, searchIndex) in searchList"
+                v-for="(searchItem, searchIndex) in categoryItem.items"
                 :key="'search-list-' + searchIndex"
                 :to="'/product/' + searchItem.productId + '.html'"
                 class="iblock mt-10 custom-grid-item"
@@ -389,18 +389,18 @@ export default {
           disableOnInteraction: false,
         },
       },
-      tabCategoryActive: this.$t('all'),
+      tabCategoryActive: 0,
       refreshing: {
         isFresh: false
       },
       hotSearch: [],
       moduleData: [],
-      categoryList: [],
+      categoryList: {},
       searchList: [],
       meta: {},
       loading: false,
       finished: false,
-      pageIndex: 0,
+      // pageIndex: 0,
       // pageSize: 10,
       tabTotal: 0,
       homeMasonryContainer: 'homeMasonryContainer',
@@ -409,8 +409,7 @@ export default {
   },
   async fetch() {
     try {
-      currencyType = this.$store.state.searchType; // 0 阿里搜索 2 algolia搜索
-      this.refreshing.isFresh = false;
+      // currencyType = this.$store.state.searchType; // 0 阿里搜索 2 algolia搜索
       const metaData = await this.$api.getHomeSeo(); // 获取SEO信息
       this.meta = metaData.data;
 
@@ -420,22 +419,35 @@ export default {
       const homeData = await this.$api.getHomeData(); // 组件数据
       this.moduleData = homeData.data.components; // 需要展示的模块数据
 
-      const categoryList = await this.$api.getCategoryList(); // 分类列表
+      // 分类列表
+      this.tabCategoryActive = '0';
+      const categoryList = await this.$api.getCategoryList(); 
       if (categoryList.data && categoryList.data.length > 0) {
-        this.categoryList = [ // 分类列表
+        this.categoryList = [
           {
-            name: this.$t('all')
+            name: this.$t('all'),
+            items: [],
+            total: 0,
+            id: 0,
+            pageIndex: 0
           },
-          ...categoryList.data
+          ...categoryList.data.map(item => {
+            return {
+              ...item,
+              items: [],
+              total: 0,
+              pageIndex: 0
+            }
+          })
         ];
       }
       
       // 搜索商品列表如果已经达到最大查询再次进来页面时不调用接口
-      if (parseFloat(this.tabTotal) == this.searchList.length && this.pageIndex > 0) { // 没有下一页了
-        this.finished = true;
-        this.loading = false;
-        return false;
-      }
+      // if (parseFloat(this.tabTotal) == this.searchList.length && this.pageIndex > 0) { // 没有下一页了
+      //   this.finished = true;
+      //   this.loading = false;
+      //   return false;
+      // }
 
       // if (currencyType == 2) {
       //   const algoliasearch = require('algoliasearch');
@@ -458,8 +470,8 @@ export default {
       //     }, 50)
       //   })
       // } else {
-        this.pageIndex = 0;
-        const searchList = await this.$api.getProductSearch({ /*pageSize: this.pageSize,*/ pageIndex: this.pageIndex }); // 搜索商品列表
+        const searchList = await this.$api.getProductSearch({ /*pageSize: this.pageSize,*/ pageIndex: 0 }); // 搜索商品列表
+        this.refreshing.isFresh = false;
         if (!searchList.data) return false;
         
         let list = searchList.data.items.map(item => { // 搜索商品列表
@@ -470,8 +482,9 @@ export default {
             minPrice: parseFloat(item.minPrice)
           }
         })
-        this.searchList = this.pageIndex == 0 ? list : this.searchList.concat(list);
-        this.tabTotal = searchList.data.total; // 搜索商品列表商品总数目
+        this.categoryList[0].items = list;
+        this.categoryList[0].total = searchList.data.total;
+        this.finished = list.length == searchList.data.total ? true : false;
         setTimeout(() => {
           if (typeof this.$redrawVueMasonry === 'function') {
             this.$redrawVueMasonry('homeMasonryContainer');
@@ -492,15 +505,15 @@ export default {
     }
   },
   activated() {
-    if (this.searchList.length == 0) {
-      this.$fetch();
-    } else {
-      setTimeout(() => {
+    // if (this.searchList.length == 0) {
+    //   this.$fetch();
+    // } else {
+      // setTimeout(() => {
         if (typeof this.$redrawVueMasonry === 'function') {
           this.$redrawVueMasonry('homeMasonryContainer');
         }
-      }, 50)
-    }
+      // }, 50)
+    // }
   },
   computed: {
     gutter() {
@@ -517,16 +530,11 @@ export default {
         this.$refs.headerStickyContainer.$el.classList.remove('sticky-scroll');
       }
     },
-    async getSearchList(name, title) { // 获取搜索商品列表
-      this.$toast.loading({
-        forbidClick: true,
-        loadingType: 'spinner',
-        duration: 0
-      });
+    getSearchList(id, title) { // 获取搜索商品列表
       let categoryIds = {};
       // let facetFilters = [];
-      if (name > 0) {
-        categoryIds.navCategoryIds = [name];
+      if (id > 0) { // 非首页
+        categoryIds.navCategoryIds = [id];
         // const getCategoryLinkMap = await this.$api.getCategoryLinkMap([this.tabCategoryActive]);
         // if (getCategoryLinkMap.data['productIds']) { // 商品id
         //   facetFilters.push((getCategoryLinkMap.data['productIds'].map(item => {
@@ -542,7 +550,7 @@ export default {
       }
       // this.finished = false;
       // this.pageIndex = currencyType == 2 ? 0 : 1;
-      this.pageIndex = 0;
+      
       // if (currencyType == 2) { // algolia 搜索
       //   searchClient.search('', {
       //     page: this.pageIndex, // 从0开始算起
@@ -562,27 +570,22 @@ export default {
       //   })
       //   return false;
       // }
-      this.$api.getProductSearch({ ...categoryIds, pageIndex: this.pageIndex/*, pageSize: this.pageSize*/ }).then(res => {
-        this.$toast.clear();
-        this.searchList = res.data.items.map(item => {
-          return {
-            ...item,
-            starLevel: parseFloat(item.starLevel),
-            saleCount: parseFloat(item.saleCount),
-            minPrice: parseFloat(item.minPrice)
-          }
-        })
-        setTimeout(() => {
-          if (typeof this.$redrawVueMasonry === 'function') {
-            this.$redrawVueMasonry('homeMasonryContainer');
-          }
-        }, 50)
-        this.finished = this.tabTotal == this.searchList.length ? true : false;
-        this.tabTotal = res.data.total;
-      }).catch(error => {
-        this.$toast.clear();
-        console.log(error);
+      // 过滤 当前tab对应的id
+      let currentCategoryList = this.categoryList.filter(item => {
+        return item.id == id;
       })
+
+      // 如果长度为0需要重新获取第一页的数据
+      if (currentCategoryList[0].items.length == 0) {
+        this.$toast.loading({
+          forbidClick: true,
+          loadingType: 'spinner',
+          duration: 0
+        });
+        this.getProductSearchList(currentCategoryList, categoryIds);
+      } else {
+        this.finished = currentCategoryList[0].total == currentCategoryList[0].items.length ? true : false;
+      }
     },
     onHotDetail(hotDetail) { // 点击热区图进行跳转 imageLinkType: 0:商品链接(商品详情页)，跳转到搜索页(1:前端分类id，2:后端分类id，3:品牌，4:FBT，5:FBM，) 6:外部链接(直接打开)
       if (hotDetail.imageLinkType == 6) { // 打开外部链接
@@ -663,16 +666,28 @@ export default {
       this.$fetch();
     },
     async onLoad() { // 滚动加载
-      if (parseFloat(this.tabTotal) == this.searchList.length || this.finished == true) { // 没有下一页了
+      let currentCategoryList = this.categoryList.filter(item => {
+        return item.id == this.tabCategoryActive;
+      })
+
+      if (currentCategoryList.length == 0) {
+        return false;
+      }
+
+      // 没有下一页了
+      if (parseFloat(currentCategoryList[0].total) <= currentCategoryList[0].items.length || this.finished == true) {
         this.finished = true;
         this.loading = false;
         return false;
       }
-      this.pageIndex += 1;
+
+      currentCategoryList[0].pageIndex += 1;
       let categoryIds = {};
       if (parseFloat(this.tabCategoryActive) > 0) {
         categoryIds.navCategoryIds = [this.tabCategoryActive];
       }
+
+      this.getProductSearchList(currentCategoryList, categoryIds);
 
       // if (currencyType == 2) { // algolia 搜索
       //   searchClient.search('', {
@@ -693,30 +708,31 @@ export default {
       //   })
       //   return false;
       // }
-      this.$api.getProductSearch({ ...categoryIds/*, pageSize: this.pageSize*/, pageIndex: this.pageIndex }).then(res => { // 搜索商品列表
-        
-        this.tabTotal = res.data.total;
-        let list = res.data.items.map(item => { // 搜索商品列表
-          return {
-            ...item,
-            starLevel: parseFloat(item.starLevel),
-            saleCount: parseFloat(item.saleCount),
-            minPrice: parseFloat(item.minPrice)
-          }
-        })
-
-        this.searchList = this.searchList.concat(list);
-        console.log(this.searchList)
-        this.finished = parseFloat(this.tabTotal) == this.searchList.length ? true: false;
+    },
+    getProductSearchList(currentCategoryList, categoryIds) {
+      this.$api.getProductSearch({ ...categoryIds, pageIndex: currentCategoryList[0].pageIndex/*, pageSize: this.pageSize */}).then(res => {
+        this.$toast.clear();
+        if (currentCategoryList.length > 0) {
+          currentCategoryList[0].items = currentCategoryList[0].items.concat(res.data.items.map(item => {
+            return {
+              ...item,
+              starLevel: parseFloat(item.starLevel),
+              saleCount: parseFloat(item.saleCount),
+              minPrice: parseFloat(item.minPrice)
+            }
+          }))
+          currentCategoryList[0].total = res.data.total;
+        }
         setTimeout(() => {
           if (typeof this.$redrawVueMasonry === 'function') {
             this.$redrawVueMasonry('homeMasonryContainer');
           }
         }, 50)
-        
-        // 加载状态结束
         this.loading = false;
+        this.finished = currentCategoryList[0].total == currentCategoryList[0].items.length ? true : false;
+        // this.tabTotal = res.data.total;
       }).catch(error => {
+        this.$toast.clear();
         console.log(error);
       })
     }
