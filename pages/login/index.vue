@@ -85,6 +85,7 @@
         </div>
       </div>
     </div>
+    <button class="awesome-checkout-button"></button>
 
     <!-- 手机前缀选择 -->
     <van-popup v-model="showPicker" round position="bottom">
@@ -134,6 +135,11 @@ export default {
       })[0].text;
     }
   },
+  head: {
+    script: [
+      { src: 'https://developer.tingg.africa/checkout/v2/tingg-checkout.js', type: 'text/javascript', charset: 'utf-8' }
+    ]
+  },
   activated() {
     this.prefixCode = this.$t('prefix_tip');
     this.getPhonePrefix();
@@ -146,6 +152,62 @@ export default {
     let fScript = document.createElement('script');
     fScript.src = 'https://connect.facebook.net/en_US/sdk.js';
     document.head.appendChild(fScript);
+
+
+    const payload = {
+        // un-encrypted parameters collected against a request in json format
+        merchantTransactionID: "1111111ae111111", // 必须是15位
+        requestAmount: "100",
+        currencyCode: "GHS",
+        accountNumber: "10092019",
+        serviceCode: "TOSDEV2425",
+        // dueDate: "2019-06-01 23:59:59", //Must be a future date
+        // requestDescription: "Dummy merchant transaction",
+        countryCode: "GH",
+        languageCode: "en",
+        payerClientCode: "",
+        // MSISDN: "+2547XXXXXXXX", //Must be a valid number
+        // customerFirstName: "John",
+        // customerLastName: "Smith",
+        // customerEmail: "john.smith@example.com",
+        successRedirectUrl: "http://192.168.2.45:8000/login.html",
+        failRedirectUrl: "http://192.168.2.45:8000/login.html",
+        pendingRedirectUrl: "http://192.168.2.45:8000/login.html",
+        paymentWebhookUrl: "http://192.168.2.45:8000/login.html"
+    };
+    const checkoutType = 'redirect'; // or 'modal'
+    // Render the checkout button
+    Tingg.renderPayButton({
+        className: 'awesome-checkout-button', 
+        checkoutType
+    });
+    document
+    .querySelector('.awesome-checkout-button')
+    .addEventListener('click', function() {
+    
+        //Call the encryption URL to encrypt the params and render checkout
+        function encrypt() {
+            return fetch(
+                "http://localhost:3000/checkout-encryption",
+                {
+                    method: 'POST',
+                    body: JSON.stringify(payload),
+                    mode: 'cors',
+                    header: {
+                      'Content-Type': 'application/x-www-form-urlencoded'
+                    }
+                }).then(response => response.json())
+        }
+        encrypt().then(response => {
+                // Render the checkout page on click event
+                Tingg.renderCheckout({
+                    checkoutType,
+                    merchantProperties: response,
+                });
+            }
+        )
+            .catch(error => console.log(error));
+    });
   },
   methods: {
     login() {
