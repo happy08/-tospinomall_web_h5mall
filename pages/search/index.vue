@@ -288,7 +288,7 @@ export default {
       deliveryType: false,
       available: false,
       pageIndex: 0,
-      pageSize: 10,
+      pageSize: 20,
       params: {},
       refreshing: {
         isFresh: false
@@ -495,29 +495,11 @@ export default {
           }, 50)
         // }
       }
-
-      // if (currencyType == 0) { // 阿里搜索
-        // 搜索发现数据
-        const findList = await this.$api.getSearchHot();
-        this.searchFindList = findList.data ? findList.data.result : [];
-        
-        // 获得底纹词
-        const hintList = await this.$api.getHintResult();
-        this.hintName = hintList.data ? hintList.data.result[0].name : '';
-      // }
-
+      // 搜索历史
       this.searchHistoryList = this.$store.state.searchProductList.filter((item, index) => {
         return index < 6;
       });
       this.historyNum = this.$store.state.searchProductList.length > 6 ? true: false;
-
-      // 获取seo信息
-      const metaData = await this.$api.getSearchListSEO();
-      this.meta = {
-        title: metaData.data.title.replace('{userKeywords}', this.searchVal),
-        description: metaData.data.description.replace('{userKeywords}', this.searchVal),
-        keyword: metaData.data.keyword.replace('{userKeywords}', this.searchVal)
-      }
     } catch (error) {
       console.log(error);
     }
@@ -573,6 +555,26 @@ export default {
       if (!this.isFirst) {
         this.$fetch();
       }
+
+      this.$nextTick(async () => {
+        // if (currencyType == 0) { // 阿里搜索
+          // 搜索发现数据
+          const findList = await this.$api.getSearchHot();
+          this.searchFindList = findList.data ? findList.data.result : [];
+          
+          // 获得底纹词
+          const hintList = await this.$api.getHintResult();
+          this.hintName = hintList.data ? hintList.data.result[0].name : '';
+        // }
+
+        // 获取seo信息
+        const metaData = await this.$api.getSearchListSEO();
+        this.meta = {
+          title: metaData.data.title.replace('{userKeywords}', this.searchVal),
+          description: metaData.data.description.replace('{userKeywords}', this.searchVal),
+          keyword: metaData.data.keyword.replace('{userKeywords}', this.searchVal)
+        }
+      })
     // }
   },
   deactivated() {
@@ -694,6 +696,12 @@ export default {
     onSearch(val) { // 搜索
       let value = val.trim().length > 0 ? val.trim() : this.hintName.length > 0 ? this.hintName : '';
       if (value.length == 0) return false;
+      this.list = [];
+
+      if (value == this.$route.query.val) {
+        this.$fetch();
+        return false;
+      }
 
       if (this.isRouteBack != 0) {
         this.$router.replace({
@@ -836,7 +844,7 @@ export default {
     getSearchPull() { // 获取搜索下拉列表 仅阿里搜索有
       getSearchPull({ queryName: this.searchVal, hits: 10 }).then(res => {
         this.searchPullList = res.data ? res.data.suggestions : [];
-        this.list = [];
+        // this.list = [];
       }).catch(error => {
         console.log(error);
       })
