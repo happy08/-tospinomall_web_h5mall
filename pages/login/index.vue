@@ -103,6 +103,7 @@
 <script>
 import { Divider, Field, DropdownMenu, DropdownItem, Cell, Popup, Picker } from 'vant';
 import { getPhonePrefix } from '@/api/login';
+const Encryption = require('@/assets/js/encryption')
 
 export default {
   components: {
@@ -156,7 +157,7 @@ export default {
 
     const payload = {
         // un-encrypted parameters collected against a request in json format
-        merchantTransactionID: "1111111ae111111", // 必须是15位
+        merchantTransactionID: "1111111ae5611111", // 必须是15位
         requestAmount: "100",
         currencyCode: "GHS",
         accountNumber: "10092019",
@@ -193,11 +194,28 @@ export default {
                     method: 'POST',
                     body: JSON.stringify(payload),
                     mode: 'cors',
-                    header: {
-                      'Content-Type': 'application/x-www-form-urlencoded'
-                    }
+                    // header: {
+                    //   'Accept': 'application/json',
+                    //   'Content-Type': 'application/json'
+                    // }
                 }).then(response => response.json())
         }
+    //     const ivKey = 'wJf8Vjch2rbGmy47';
+    // const secretKey = 'FtWH6ZGc2qQTMbvw';
+    // const accessKey = '$2a$08$wvWtdcwhPCEK1lhWXuP8lO6qnx5Pw5XpxcwtAV0aGn9tXLcLMAxoi';
+    // const algorithm = "aes-256-cbc";
+    //     const encryption = new Encryption(ivKey,secretKey, algorithm);
+
+    // const payload = JSON
+    //     .stringify(requestBody)
+    //     .replace(/\//g, '\\/');
+    // console.log(req.body)
+    // console.log(`https://developer.tingg.africa/checkout/v2/express/?params=${encryption.encrypt(payload)}&accessKey=${accessKey}&countryCode=${requestBody.countryCode}`)
+    // res.json({
+    //     params: encryption.encrypt(payload),
+    //     accessKey,
+    //     countryCode: requestBody.countryCode
+    // });
         encrypt().then(response => {
                 // Render the checkout page on click event
                 Tingg.renderCheckout({
