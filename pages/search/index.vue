@@ -305,7 +305,8 @@ export default {
       searchMasonryContainer: 'searchMasonryContainer',
       brandResult: [],
       categoryResult: [],
-      filterCheckType: 0
+      filterCheckType: 0,
+      isFirst: true
     }
   },
   beforeRouteEnter (to, from, next) {
@@ -334,6 +335,7 @@ export default {
         this.brandResult = [];
         this.categoryResult = [];
       }
+      this.isFirst = false; // 是否首次进入
       this.searchVal = this.$route.query.val || ''; // 搜索value
       this.isShowTip = this.searchVal.length > 0 ? false : true;
 
@@ -390,7 +392,6 @@ export default {
       //   searchClient = client.initIndex(currenOTO);
       // }
       this.params = {...this.params, pageIndex: this.pageIndex, pageSize: this.pageSize};
-
       // 如果带着搜索的参数跳转过来的需要先获取相对应的搜索数据
       if (this.searchVal != '' || (Object.keys(this.$route.query).length > 0 && !this.$route.query.back)) {
         // 加载图标
@@ -533,12 +534,10 @@ export default {
     }
   },
   watch: {
-    '$route.query'() {
-      console.log('-----')
-      // if (oldRoute.name == 'search' && newRoute.name == 'search') {
+    '$route'(newRoute, oldRoute) {
+      if (oldRoute.name == 'search' && newRoute.name == 'search') {
         this.$fetch();
-      //   console.log('-----')
-      // }
+      }
     }
   },
   computed: {
@@ -547,7 +546,6 @@ export default {
     }
   },
   activated() {
-    this.$fetch();
     if (this.$route.query.shopId) { // 从店铺搜索跳转过来的
       this.shopId = this.$route.query.shopId;
     }
@@ -570,6 +568,11 @@ export default {
         }
         this.getSearchPull();
       }, 300);
+      
+      // 首次进来不需要重新调用fetch
+      if (!this.isFirst) {
+        this.$fetch();
+      }
     // }
   },
   deactivated() {
