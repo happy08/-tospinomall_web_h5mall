@@ -29,3 +29,9 @@ export default {
   }
 }
 </script>
+
+<style lang="less">
+#chatBtn{
+  display: none!important;
+}
+</style>
