@@ -157,8 +157,8 @@ export default {
 
     const payload = {
         // un-encrypted parameters collected against a request in json format
-        merchantTransactionID: "1111111ae5611111", // 必须是15位
-        requestAmount: "100",
+        merchantTransactionID: "211112623211112", // 必须是15位
+        requestAmount: "5",
         currencyCode: "GHS",
         accountNumber: "10092019",
         serviceCode: "TOSDEV2425",
@@ -172,7 +172,7 @@ export default {
         // customerLastName: "Smith",
         // customerEmail: "john.smith@example.com",
         successRedirectUrl: "http://192.168.2.45:8000/login.html",
-        failRedirectUrl: "http://192.168.2.45:8000/login.html",
+        failRedirectUrl: "http://192.168.2.45:8000/login/code",
         pendingRedirectUrl: "http://192.168.2.45:8000/login.html",
         paymentWebhookUrl: "http://192.168.2.45:8000/login.html"
     };
