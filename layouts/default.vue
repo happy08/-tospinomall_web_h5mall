@@ -23,7 +23,7 @@ export default {
     // if (this.$store.state.user.authToken) {
       let customer_service = document.createElement('script');
       let language = this.$i18n.locale == 'zh-CN' ? 'ZHCN' : 'EN';
-      customer_service.src = `https://ykf-webchat.7moor.com/javascripts/7moorInit.js?accessId=48ebab00-d14e-11ea-89a3-afb3231772e9&autoShow=true&language=${language}`;
+      customer_service.src = `https://webchat.7moor.com/javascripts/7moorInit.js?accessId=8171fc80-d163-11ea-bfcd-0ba873f67cbc&autoShow=true&language=${language}`;
       document.head.appendChild(customer_service);
     // }
   }
