@@ -391,7 +391,7 @@ export default {
       //   client = algoliasearch('62MLEBY33X','7a8da9a5fd3f8137ea8cb70b60806e8d');
       //   searchClient = client.initIndex(currenOTO);
       // }
-      this.params = {...this.params, pageIndex: this.pageIndex, pageSize: this.pageSize};
+      this.params = {...this.params, pageIndex: this.pageIndex, pageSize: this.pageSize, searchKeyword: this.searchVal};
       // 如果带着搜索的参数跳转过来的需要先获取相对应的搜索数据
       if (this.searchVal != '' || (Object.keys(this.$route.query).length > 0 && !this.$route.query.back)) {
         // 加载图标
@@ -463,7 +463,7 @@ export default {
               shopId: this.shopId
             }
           }
-          const listData = await this.$api.getProductSearch({ ...this.params, searchKeyword: this.searchVal});
+          const listData = await this.$api.getProductSearch({ ...this.params });
           this.isRouteBack = 1;
           
           // 数据列表需要格式化
@@ -697,6 +697,7 @@ export default {
       let value = val.trim().length > 0 ? val.trim() : this.hintName.length > 0 ? this.hintName : '';
       if (value.length == 0) return false;
       this.list = [];
+      this.pageIndex = 0;
 
       if (value == this.$route.query.val) {
         this.$fetch();
