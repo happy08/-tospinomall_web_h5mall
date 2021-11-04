@@ -14,7 +14,7 @@
       <van-field
         v-model="message"
         rows="2"
-        :placeholder="$t('apply_for_instructions_tips')"
+        :placeholder="$t('apply_for_instructions_tips_required')"
         type="textarea"
         class="plr-0"
         maxlength="255"
