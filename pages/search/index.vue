@@ -15,7 +15,6 @@
           @focus="onFocus"
           @clear="onClear"
           ref="searchContainer"
-          maxlength="200"
         >
           <template #left-icon>
             <BmImage 

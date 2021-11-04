@@ -30,6 +30,7 @@
           type="textarea"
           :placeholder="$t('please_enter_')"
           class="mt-10 bg-f8 fs-14"
+          maxlength="255"
         />
       </div>
 

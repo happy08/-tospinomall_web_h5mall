@@ -85,6 +85,7 @@
         type="textarea"
         :placeholder="$t('apply_for_instructions_tips')"
         :border="false"
+        maxlength="255"
       />
       <van-uploader v-model="fileList" multiple :max-count="9" preview-size="1.62rem" :after-read="afterRead" @delete="onDeleteFile">
         <div class="custom-proof-upload tc">
