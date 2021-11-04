@@ -244,7 +244,7 @@
       </van-tab>
       <van-tab :title="$t('param')" name="Param">
         <!-- 选择产品规格 -->
-        <div :class="{'mt-12 bg-white plr-20': true, 'pb-24': selectCarousel.length > 0 || servicePromises.length > 0}">
+        <div :class="{'mt-12 bg-white plr-20': true, 'pb-24': (selectCarousel.length > 0 && selectCarousel[0].attrPicture != '') || servicePromises.length > 0}">
           <van-cell
             class="ptb-14 plr-0"
             is-link
