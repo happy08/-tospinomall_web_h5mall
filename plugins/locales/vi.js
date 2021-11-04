@@ -681,7 +681,7 @@ const vi = {
   axios_tip_404: 'Tài nguyên được yêu cầu không tồn tại',
   axios_tip_connect: 'Lỗi kết nối!',
   axios_tip_408: 'Yêu cầu đã hết thời gian chờ',
-  axios_tip_500: 'Lỗi máy chủ',
+  axios_tip_500: 'Máy chủ đang bận, vui lòng thử lại sau.',
   axios_tip_501: 'Dịch vụ không được triển khai',
   axios_tip_502: 'Mạng bất thường',
   axios_tip_503: 'dịch vụ không khả dụng',

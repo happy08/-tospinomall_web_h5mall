@@ -680,7 +680,7 @@ const en = {
   axios_tip_404: 'The requested resource does not exist',
   axios_tip_connect: 'Connection error!',
   axios_tip_408: 'Request timed out',
-  axios_tip_500: 'Server Error',
+  axios_tip_500: 'Server busy,please try again later.',
   axios_tip_501: 'Service not implemented',
   axios_tip_502: 'Network Anomaly',
   axios_tip_503: 'service is not available',

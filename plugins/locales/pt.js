@@ -681,7 +681,7 @@
   axios_tip_404: 'O recurso solicitado não existe',
   axios_tip_connect: 'Erro de conexão!',
   axios_tip_408: 'A solicitação expirou',
-  axios_tip_500: 'erro de servidor',
+  axios_tip_500: 'O servidor está ocupado, tente novamente mais tarde.',
   axios_tip_501: 'Serviço não implementado',
   axios_tip_502: 'Anomalia de rede',
   axios_tip_503: 'serviço não está disponível',
