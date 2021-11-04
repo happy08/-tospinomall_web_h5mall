@@ -10,7 +10,7 @@
         :bg_color="!isScroll ? 'col-transparent' : 'white'"
         :border="false"
         :color="!isScroll ? 'white' : 'black'"
-        :class="{ fixed: !isScroll }"
+        :class="{ 'fixed': !isScroll }"
       >
         <div slot="header-left" class="flex between">
           <van-icon
@@ -46,7 +46,7 @@
       v-model="tabActive"
       scrollspy
       sticky
-      :offset-top="!isScroll ? 0 : '0.92rem'"
+      :offset-top="!isScroll ? '0rem' : '0.92rem'"
       title-active-color="#FF6666"
       line-height="0"
       title-inactive-color="#383838"
