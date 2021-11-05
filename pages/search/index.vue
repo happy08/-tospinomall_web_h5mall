@@ -374,12 +374,12 @@ export default {
         // }
         this.isShowTip = false;
       }
-      if (this.$route.query.supplyCountry) { // 国家编码
-        this.params.supplyCountry = Array.isArray(this.$route.query.supplyCountry) ? this.$route.query.supplyCountry : [this.$route.query.supplyCountry];
+      if (this.$route.query.countryCodes) { // 国家编码
+        this.params.countryCodes = Array.isArray(this.$route.query.countryCodes) ? this.$route.query.countryCodes : [this.$route.query.countryCodes];
         // if (currencyType == 2) { // algolia搜索
-        //   this.params.supplyCountry = Array.isArray(this.$route.query.supplyCountry) ? this.$route.query.supplyCountry.map(item => {
-        //     return `supplyCountry:${item}`;
-        //   }): [`supplyCountry:${this.$route.query.supplyCountry}`];
+        //   this.params.countryCodes = Array.isArray(this.$route.query.countryCodes) ? this.$route.query.countryCodes.map(item => {
+        //     return `countryCodes:${item}`;
+        //   }): [`countryCodes:${this.$route.query.countryCodes}`];
         // }
         
         this.params.deliveryType = this.$route.query.deliveryType ? this.$route.query.deliveryType : '';
@@ -406,7 +406,7 @@ export default {
         //   let facetFilters = this.params.facetFilters ? this.params.facetFilters : [];
         //   let productIdsFscet = this.params.productIds ? this.params.productIds : [];
         //   let brandIds = this.params.brandIds ? this.params.brandIds : [];
-        //   let supplyCountry = this.params.supplyCountry ? this.params.supplyCountry : [];
+        //   let countryCodes = this.params.countryCodes ? this.params.countryCodes : [];
         //   if (this.$route.query.navCategoryIds) {
         //     const getCategoryLinkMap = await this.$api.getCategoryLinkMap(this.params.navCategoryIds);
         //     if (getCategoryLinkMap.data['productIds']) { // 商品id
@@ -434,7 +434,7 @@ export default {
         //     hitsPerPage: this.pageSize,
         //     facets: ['brandName', 'categoryName'],
         //     filters: this.params.filters ? this.params.filters + (_filter.length > 0 ? ' AND ' + _filter.join(' AND ') : '') : (_filter.length > 0 ? _filter.join(' AND ') : ''),
-        //     facetFilters: [...facetFilters, ...productIdsFscet, ...brandIds, ...supplyCountry]
+        //     facetFilters: [...facetFilters, ...productIdsFscet, ...brandIds, ...countryCodes]
         //   }).then(({hits, nbHits, facets}) => {
         //     this.total = nbHits;
         //     this.list = hits;
@@ -880,13 +880,13 @@ export default {
       //   let facetFilters = this.params.facetFilters ? this.params.facetFilters : [];
       //   let facetProducts = this.params.productIds ? this.params.productIds : [];
       //   let brandIds = this.params.brandIds ? this.params.brandIds : [];
-      //   let supplyCountry = this.params.supplyCountry ? this.params.supplyCountry : [];
+      //   let countryCodes = this.params.countryCodes ? this.params.countryCodes : [];
 
       //   searchClient.search(this.params.productIds || this.params.categoryIds ? '' : this.searchVal, {
       //     page: this.pageIndex, // 从0开始算起
       //     hitsPerPage: this.pageSize,
       //     filters: this.params.filters ? this.params.filters + (_filter.length > 0 ? ' AND ' + _filter.join(' AND ') : '') : (_filter.length > 0 ? _filter.join(' AND ') : ''),
-      //     facetFilters: [...facetFilters, ...facetProducts, ...brandIds, ...supplyCountry]
+      //     facetFilters: [...facetFilters, ...facetProducts, ...brandIds, ...countryCodes]
       //   }).then(({hits, nbHits}) => {
       //     this.total = nbHits;
       //     this.list = this.pageIndex == 0 ? hits : this.list.concat(hits);
