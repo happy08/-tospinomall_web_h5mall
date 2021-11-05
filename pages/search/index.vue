@@ -34,7 +34,7 @@
             <template #title="props" v-if="productItem.type === 0">
               {{ props }}
               <van-dropdown-menu active-color="#42B7AE" class="custom-dropdown-menu">
-                <van-dropdown-item v-model="dropdownVal" @change="getDropSearchList" :options="$t('search_filter_price')">
+                <van-dropdown-item v-model="dropdownVal" @change="getDropSearchList" :options="$t('search_filter_price')" ref="customDropdownMenu" :disabled="isDisabledDropdownMenu">
                   <template #title v-if="dropdownVal == 0">
                     {{ $t('all') }}
                   </template>
@@ -305,7 +305,8 @@ export default {
       brandResult: [],
       categoryResult: [],
       filterCheckType: 0,
-      isFirst: true
+      isFirst: true,
+      isDisabledDropdownMenu: false // tab栏全部下面的排序条件菜单是否禁用, 主要是为了解决从销量的tab切换到下拉框条件的tab时第一次不展示下拉框
     }
   },
   beforeRouteEnter (to, from, next) {
@@ -602,6 +603,11 @@ export default {
     },
     getSearchList(index, title) { // 获取分类列表
       this.finished = false;
+      this.$toast.loading({
+        forbidClick: true,
+        loadingType: 'spinner',
+        duration: 0
+      });
       // if (currencyType == 2) { // algolia搜索
       //   this.pageIndex = 0;
       //   if (index == 1) { // 销量
@@ -621,6 +627,7 @@ export default {
       this.pageIndex = 0;
       this.params = { ...this.params, searchKeyword: this.searchVal };
       if (index == 1) { // 销量
+        this.isDisabledDropdownMenu = true;
         this.params = {
           ...this.params,
           sortMap: {
@@ -628,7 +635,8 @@ export default {
             value: 0
           }
         }
-      } else if (index == 0) { 
+      } else if (index == 0) {
+        this.isDisabledDropdownMenu = false;
         if (this.dropdownVal == 0) { // 综合排序
           this.params = {
             ...this.params,
@@ -671,6 +679,11 @@ export default {
       // if (value == 0) { // 综合排序
       //   this.typeActive = this.$t('search_filter_overall');
       // }
+      this.$toast.loading({
+        forbidClick: true,
+        loadingType: 'spinner',
+        duration: 0
+      });
       this.pageIndex = 0;
       this.params = { ...this.params, searchKeyword: this.searchVal, sortMap: {} };
       if (value == 1) { // 价格升序
@@ -793,6 +806,12 @@ export default {
         pageIndex: this.pageIndex,
         pageSize: this.pageSize
       };
+      this.filterPopup = false; // 筛选窗口隐藏
+      this.$toast.loading({
+        forbidClick: true,
+        loadingType: 'spinner',
+        duration: 0
+      });
       this.getProductList();
     },
     onReset() { // 筛选重置
@@ -849,7 +868,7 @@ export default {
         console.log(error);
       })
     },
-    getProductList() { // 获取商品列表
+    getProductList() { // 获取商品列表 flag 是否取消loading
       // if (currencyType == 2) { // algolia搜索
       //   let _filter = [];
       //   if (this.shopId != '') {
@@ -911,10 +930,10 @@ export default {
         this.list = this.pageIndex == 0 ? list : this.list.concat(list);
         this.total = res.data.total;
         this.isShowTip = false;
-        this.filterPopup = false; // 筛选窗口隐藏
         this.refreshing.isFresh = false;
         this.loading = false;
         this.finished = this.total == this.list.length ? true : false;
+        this.$toast.clear();
         setTimeout(() => {
           if (typeof this.$redrawVueMasonry === 'function') {
             this.$redrawVueMasonry('searchMasonryContainer');
@@ -1064,6 +1083,12 @@ export default {
   width: 229px;
   left: auto;
   right: 0;
+}
+::v-deep .van-dropdown-menu__item--disabled .van-dropdown-menu__title{
+  color: #383838;
+  &::after{
+    border-color: transparent transparent #383838 #383838;
+  }
 }
 </style>
 <style lang="less">
