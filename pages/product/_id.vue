@@ -133,17 +133,17 @@
                 <!-- 自定义未激活状态图标 -->
                 <template #inactive-icon>
                   <van-icon
-                    v-if="deliveryInfo[0].type == 1"
+                    v-if="deliveryInfo[0].sendType == 1"
                     :name="require('@/assets/images/icon/plane-default.png')"
                     size="0.48rem"
                   />
                   <van-icon
-                    v-if="deliveryInfo[0].type == 2"
+                    v-if="deliveryInfo[0].sendType == 2"
                     :name="require('@/assets/images/icon/steamer-default.png')"
                     size="0.48rem"
                   />
                   <van-icon
-                    v-if="deliveryInfo[0].type == 3"
+                    v-if="deliveryInfo[0].sendType == 3"
                     :name="require('@/assets/images/icon/truck-default.png')"
                     size="0.48rem"
                   />
@@ -151,17 +151,17 @@
                 <!-- 自定义激活状态图标 -->
                 <template #active-icon>
                   <van-icon
-                    v-if="deliveryInfo[0].type == 1"
+                    v-if="deliveryInfo[0].sendType == 1"
                     :name="require('@/assets/images/icon/plane-active.png')"
                     size="0.48rem"
                   />
                   <van-icon
-                    v-if="deliveryInfo[0].type == 2"
+                    v-if="deliveryInfo[0].sendType == 2"
                     :name="require('@/assets/images/icon/steamer-active.png')"
                     size="0.48rem"
                   />
                   <van-icon
-                    v-if="deliveryInfo[0].type == 3"
+                    v-if="deliveryInfo[0].sendType == 3"
                     :name="require('@/assets/images/icon/truck-active.png')"
                     size="0.48rem"
                   />
@@ -169,17 +169,17 @@
                 <!-- 自定义激活状态图标 -->
                 <template #finish-icon>
                   <van-icon
-                    v-if="deliveryInfo[0].type == 1"
+                    v-if="deliveryInfo[0].sendType == 1"
                     :name="require('@/assets/images/icon/plane-active.png')"
                     size="0.48rem"
                   />
                   <van-icon
-                    v-if="deliveryInfo[0].type == 2"
+                    v-if="deliveryInfo[0].sendType == 2"
                     :name="require('@/assets/images/icon/steamer-active.png')"
                     size="0.48rem"
                   />
                   <van-icon
-                    v-if="deliveryInfo[0].type == 3"
+                    v-if="deliveryInfo[0].sendType == 3"
                     :name="require('@/assets/images/icon/truck-active.png')"
                     size="0.48rem"
                   />
@@ -542,46 +542,7 @@
     </van-popup>
 
     <!-- 地址选择 -->
-    <van-popup v-model="addressShow" position="bottom" closeable class="pt-20" style="height: 80%;" @close="closePopup">
-      <h4 class="fs-18 black lh-20 tc plr-20 pb-10">{{ $t('choose_a_country_or_region') }}</h4>
-      <div class="address-container-height">
-        <!-- 地址选择步骤条 -->
-        <van-steps direction="vertical" :active="stepActive" class="mt-14" @click-step="stepClick">
-          <van-step v-for="item, stepIndex in stepArr" :key="'step-' + stepIndex">
-            <template #active-icon>
-              <BmIcon :name="'dot1'" :color="'#42b7ae'" />
-            </template>
-            <template #inactive-icon>
-              <BmIcon :name="'dot1'" :color="'#eee'" />
-            </template>
-            <template #finish-icon>
-              <BmIcon :name="'dot1'" :color="'#42b7ae'" />
-            </template>
-            <p class="fs-16 black">{{ item.name ? item.name : chooseTitle }}</p>
-          </van-step>
-          <van-step v-if="isShowChooseTitle">
-            <template #active-icon>
-              <BmIcon :name="'dot1'" :color="'#42b7ae'" />
-            </template>
-            <template #inactive-icon>
-              <BmIcon :name="'dot1'" :color="'#eee'" />
-            </template>
-            <template #finish-icon>
-              <BmIcon :name="'dot1'" :color="'#42b7ae'" />
-            </template>
-            <p class="fs-16 black">{{ chooseTitle }}</p>
-          </van-step>
-        </van-steps>
-        <div class="border-b mt-10 w-100"></div>
-        <!-- 进行选择 -->
-        <div class="mt-20 plr-24">
-          <p class="fs-14 grey-1">{{ chooseTitle }}</p>
-          <ul class="plr-24 fs-16 black pb-10">
-            <li :class="{'mt-20': true, 'green': stepArr.length > 0 && city.name == stepArr[stepArr.length - 1].name}" v-for="city, cityIndex in chooseList" :key="'city-' + cityIndex" @click="changeCity(city)">{{ city.name }}</li>
-          </ul>
-        </div>
-      </div>
-    </van-popup>
+    <BmAddress :stepArr="stepArr" :addressShow.sync="addressShow" @close="closePopup" :haveAddress="haveAddress"></BmAddress>
 
     <!-- 加入购入车/收藏/店铺/立即购买 -->
     <div class="bg-white flex vcenter between pl-10 product-detail__operate">
@@ -622,7 +583,7 @@
 <script>
 import { Cell, Step, Steps, Rate, Sticky, Search, Tab, Tabs, Popup, Stepper, ShareSheet } from 'vant';
 import { getDeliveryInfo, attentionProduct, cancelAttentionProduct } from '@/api/cart';
-import { getCurrentDefaultAddress, getNextArea } from '@/api/address';
+import { getCurrentDefaultAddress } from '@/api/address';
 import ProductSku from '@/components/ProductSku';
 import 'swiper/css/swiper.css';
 import { Swiper, SwiperSlide } from 'vue-awesome-swiper';
@@ -701,10 +662,7 @@ export default {
       },
       isScroll: false,
       addressShow: false,
-      stepActive: 0,
       stepArr: [],
-      isShowChooseTitle: true,
-      chooseList: [],
       form: {
         address: '', // 详细地址
         countryCode: '', //国家编码
@@ -742,7 +700,8 @@ export default {
       isDetail: null,
       isPreviewIndex: 'false',
       previewIndex: 0,
-      goodId: ''
+      goodId: '',
+      haveAddress: {}
     }
   },
   async fetch() {
@@ -941,35 +900,36 @@ export default {
       console.log(error);
     }
   },
-  mounted() {
-  },
   activated() {
+    this.stepArr = []; // 每次进来时要先清空地址栏
+    this.form = {
+      countryCode: '', //国家编码
+      provinceCode: '', // 省份编码
+      cityCode: '', // 市编码
+      districtCode: '' //区编码
+    }
+    this.haveAddress = {};
+    this.completeAddress = '';
+    this.assgnStepList = [];
     if (this.$store.state.user.authToken) {
       getCurrentDefaultAddress().then(res => { // 查看是否有默认地址
-        if (res.code != 0) return false;
-        
         if (!res.data || res.data.length === 0) { // 没有默认地址的情况下获取国家列表
-          this.getNextArea({ id: 0 });
           return false;
         };
-        this.stepArr = res.data.areaList;
-        this.stepActive = res.data.areaList.length - 1;
-        this.isShowChooseTitle = false;
+        this.assgnStepList = this.stepArr = res.data.areaList;
         this.form = {
-          // address: res.data.address, // 详细地址
           countryCode: res.data.countryCode, //国家编码
           provinceCode: res.data.provinceCode, // 省份编码
           cityCode: res.data.cityCode, // 市编码
           districtCode: res.data.districtCode //区编码
         }
+        console.log(res.data.completeAddress)
         this.completeAddress = res.data.completeAddress; // 完整地址
         // 获取地址的时候默认是最后一级
-        this.getNextArea(res.data.areaList[res.data.areaList.length - 2], false, true);
+        this.haveAddress = res.data.areaList[res.data.areaList.length - 2];
       }).catch(error => {
         console.log(error);
       })
-    } else {
-      this.getNextArea({ id: 0 });
     }
     this.$fetch();
     if (this.goodSpuVo.goodTitle) {
@@ -986,8 +946,6 @@ export default {
     }).catch(error => {
       console.log(error);
     })
-    
-    // this.$refs.productSku.resetSelectedSku();
   },
   head() {
     return {
@@ -1008,20 +966,6 @@ export default {
       return arr.map(item => {
         return item.k + ':' + item.name;
       }).join(',');
-    }
-  },
-  computed: {
-    chooseTitle() {
-      if (this.stepActive == -1) {
-        return this.$t('please_select_a_country');
-      }
-      if (this.stepActive == 0) {
-        return this.$t('please_select_a_state_province_region');
-      }
-      if (this.stepActive == 1) {
-        return this.$t('Please_select_city');
-      }
-      return this.$t('please_select_district_county');
     }
   },
   methods: {
@@ -1047,19 +991,6 @@ export default {
       this.productShow.show = true;
       this.skuType = 'product';
     },
-    stepClick(step) { // step点击事件
-      if (step == this.stepArr.length && this.isShowChooseTitle) return false;
-      this.getNextArea(step == 0 ? {id: 0} : this.stepArr[step-1], 'step' + step); // 获取下一步选择
-    },
-    changeCity(city) { // 选择城市
-      if (this.isNext == true) { // true 有下一级
-        this.getNextArea(city, true);
-      } else {
-        this.addressShow = false;
-        this.isShowChooseTitle = false;
-        this.stepArr.splice(this.stepActive, 1, city);
-      }
-    },
     leftBack() {
       if (this.$route.query.isShare) { // 如果是分享出去的页面，点击回退按钮时跳转到首页
         this.$router.replace('/home.html');
@@ -1074,50 +1005,13 @@ export default {
     onPreviewPic(index) { // 轮播图预览
       this.$refs.swiperComponentRef.$swiper.slideTo(index);
     },
-    getNextArea(city, flag, isNext) {
-      getNextArea({ parentId: city.id }).then(res => {
-        if (res.data.length === 0) { // 没有下一级的数据处理
-          if (!this.isNext) { // 已经是最后一级的话
-            this.stepArr.splice(this.stepActive, 1, city);
-          } else { // 如果还是true就要增加数据
-            if (flag) { // 下一级处理
-              this.stepActive += 1;
-              this.stepArr.push(city);
-            }
-          }
-          this.isNext = false;
-          this.addressShow = false;
-          this.isShowChooseTitle = false;
-          return false;
-        }
-        this.isNext = isNext ? false : true;
-        this.chooseList = res.data;
-
-        if (flag == true) { // 下一级处理
-          this.stepActive += 1;
-          this.stepArr.push(city);
-          return false;
-        }
-
-        if (flag && flag.indexOf('step') > -1) { // 点击跳转到选择的步骤
-          this.stepArr.splice(flag.split('step')[1], this.stepActive + 1);
-          this.stepActive = flag.split('step')[1] - 1;
-          this.isShowChooseTitle = true;
-          return false;
-        }
-      }).catch(error => {
-        console.log(error);
-      })
-    },
-    closePopup() { // 关闭修改地址弹窗时触发, 数据处理
-      if (!this.isNext) {
-        this.assgnStepList = this.stepArr;
+    closePopup(form) { // 关闭修改地址弹窗时触发, 数据处理
+      if (form) {
         this.form = {
-          countryCode: this.assgnStepList[0] ? this.assgnStepList[0].code : '',
-          provinceCode: this.assgnStepList[1] ? this.assgnStepList[1].code : '',
-          cityCode: this.assgnStepList[2] ? this.assgnStepList[2].code : '',
-          districtCode: this.assgnStepList[3] ? this.assgnStepList[3].code : ''
-        }
+          ...this.form,
+          ...form
+        };
+        this.assgnStepList = this.stepArr;
         if (this.selectedSkuCombId) {
           this.getDeliveryInfo();
         }
