@@ -717,7 +717,9 @@ const vi = {
   concat_customer_service_tel: 'Liên hệ qua điện thoại',
   concat_customer_service_email: 'Liên hệ qua email',
   return_to_previous_page: 'Trở lại trang trước',
-  no_support_video: 'Trình duyệt của bạn không hỗ trợ thẻ video'
+  no_support_video: 'Trình duyệt của bạn không hỗ trợ thẻ video',
+  my_coupon: '我的优惠券',
+  coupon_use_instruction: '使用说明'
 }
 
 export default vi;

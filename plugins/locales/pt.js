@@ -717,7 +717,9 @@
   concat_customer_service_tel: 'Contatando por telefone',
   concat_customer_service_email: 'Contato de email',
   return_to_previous_page: 'Voltar para a página anterior',
-  no_support_video: 'Seu navegador não suporta a tag de vídeo'
+  no_support_video: 'Seu navegador não suporta a tag de vídeo',
+  my_coupon: '我的优惠券',
+  coupon_use_instruction: '使用说明'
 }
 
 export default por;
