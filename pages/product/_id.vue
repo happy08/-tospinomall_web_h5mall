@@ -133,17 +133,17 @@
                 <!-- 自定义未激活状态图标 -->
                 <template #inactive-icon>
                   <van-icon
-                    v-if="deliveryInfo[0].type == 1"
+                    v-if="deliveryInfo[0].sendType == 1"
                     :name="require('@/assets/images/icon/plane-default.png')"
                     size="0.48rem"
                   />
                   <van-icon
-                    v-if="deliveryInfo[0].type == 2"
+                    v-if="deliveryInfo[0].sendType == 2"
                     :name="require('@/assets/images/icon/steamer-default.png')"
                     size="0.48rem"
                   />
                   <van-icon
-                    v-if="deliveryInfo[0].type == 3"
+                    v-if="deliveryInfo[0].sendType == 3"
                     :name="require('@/assets/images/icon/truck-default.png')"
                     size="0.48rem"
                   />
@@ -151,17 +151,17 @@
                 <!-- 自定义激活状态图标 -->
                 <template #active-icon>
                   <van-icon
-                    v-if="deliveryInfo[0].type == 1"
+                    v-if="deliveryInfo[0].sendType == 1"
                     :name="require('@/assets/images/icon/plane-active.png')"
                     size="0.48rem"
                   />
                   <van-icon
-                    v-if="deliveryInfo[0].type == 2"
+                    v-if="deliveryInfo[0].sendType == 2"
                     :name="require('@/assets/images/icon/steamer-active.png')"
                     size="0.48rem"
                   />
                   <van-icon
-                    v-if="deliveryInfo[0].type == 3"
+                    v-if="deliveryInfo[0].sendType == 3"
                     :name="require('@/assets/images/icon/truck-active.png')"
                     size="0.48rem"
                   />
@@ -169,17 +169,17 @@
                 <!-- 自定义激活状态图标 -->
                 <template #finish-icon>
                   <van-icon
-                    v-if="deliveryInfo[0].type == 1"
+                    v-if="deliveryInfo[0].sendType == 1"
                     :name="require('@/assets/images/icon/plane-active.png')"
                     size="0.48rem"
                   />
                   <van-icon
-                    v-if="deliveryInfo[0].type == 2"
+                    v-if="deliveryInfo[0].sendType == 2"
                     :name="require('@/assets/images/icon/steamer-active.png')"
                     size="0.48rem"
                   />
                   <van-icon
-                    v-if="deliveryInfo[0].type == 3"
+                    v-if="deliveryInfo[0].sendType == 3"
                     :name="require('@/assets/images/icon/truck-active.png')"
                     size="0.48rem"
                   />
