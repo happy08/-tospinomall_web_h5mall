@@ -271,6 +271,13 @@ export default ({ app }, inject) => {
           ...headers
         }
       })
+    },
+    getService(params) { // 查询服务信息
+      return app.$axios({
+        url: `${url}/basics/operateSinglePage/findByQuery`,
+        method: 'get',
+        params
+      })
     }
   };
 

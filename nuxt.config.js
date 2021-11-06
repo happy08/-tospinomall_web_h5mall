@@ -40,7 +40,7 @@ export default {
       let oldRoutes = [];
       routes.forEach(ele => {
         let path = ele.path;
-        if (ele.name == 'login' || ele.name == 'home' || ele.name == 'cart' || ele.name == 'categories' || ele.name == 'me' || ele.name == 'product-id') {
+        if (ele.name == 'login' || ele.name == 'home' || ele.name == 'cart' || ele.name == 'categories' || ele.name == 'me' || ele.name == 'product-id' || ele.name == 'service-type') {
           // 因为要加.html如果路由名一样则会出现路由警告，所以原始的路由名改个名，通过name跳转时就跳转到有.html的路径
           oldRoutes.push({ 
             ...ele,
