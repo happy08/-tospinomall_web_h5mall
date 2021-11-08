@@ -1,5 +1,5 @@
 <template>
-  <!-- 我的-我的优惠券 -->
+  <!-- 我的-优惠券领券中心 -->
   <div class="bg-grey v-percent-100 pb-64">
     <van-sticky>
       <BmHeaderNav :left="{ isShow: true }" :title="$t('my_coupon')">
@@ -7,7 +7,7 @@
         <nuxt-link slot="header-right" class="fs-16 green" :to="{ name: 'service-type', params: { type: 'coupon' }, query: { isH5: 1 } }">{{ $t('coupon_use_instruction') }}</nuxt-link>
       </BmHeaderNav>
 
-      <van-tabs v-model="tabActive" color="#42B7AE" class="customs-van-tabs">
+      <van-tabs v-model="centerTabActive" color="#42B7AE" class="customs-van-tabs">
         <van-tab title="全部"></van-tab>
         <van-tab title="平台券"></van-tab>
         <van-tab title="店铺券"></van-tab>
@@ -16,11 +16,6 @@
 
     <div class="mlr-10">
       <coupon-single v-for="item in 10" :key="item" class="mt-12"></coupon-single>
-    </div>
-
-    <div class="flex tc coupon-tabbar">
-      <nuxt-link :to="{ name: 'me-coupon-record' }" class="fw black flex-1 pb-14 pt-20 border-r">优惠券使用记录</nuxt-link>
-      <nuxt-link :to="{ name: 'me-coupon-center' }" class="fw black flex-1 pb-14 pt-20">去领券中心</nuxt-link>
     </div>
   </div>
 </template>
@@ -38,40 +33,8 @@ export default {
   },
   data() {
     return {
-      tabActive: 0
+      centerTabActive: 0
     }
   }
 }
 </script>
-
-<style lang="less" scoped>
-.coupon-tabbar{
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background-color: #fff;
-  z-index: 10;
-  min-height: 54px;
-}
-.flex-1{
-  flex: 1;
-}
-.border-r{
-  position: relative;
-  &::after{
-    content: '';
-    display: block;
-    position: absolute;
-    right: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 1px;
-    height: 20px;
-    background-color: #F4F4F4;
-  }
-}
-.pb-64{
-  padding-bottom: 64px;
-}
-</style>
