@@ -98,7 +98,7 @@ const vi = {
   refund_failed: 'Hoàn tiền không thành công',
   method_of_payment: 'phương thức thanh toán',
   transaction_hour: 'giờ giao dịch',
-  order_number: 'số thứ tự',
+  order_number: 'Số thứ tự',
   merchant_order_number: 'Số đơn đặt hàng của người bán',
   search_product_of_interest: 'Tìm kiếm các sản phẩm quan tâm',
   search: 'Tìm kiếm',
