@@ -173,32 +173,35 @@
     </div>
 
     <!-- 选择申请类型type 货物状态status 申请原因reason -->
-    <van-popup v-model="isSelectType" position="bottom" closeable>
-      <van-radio-group v-model="typeRadio" :border="false">
-        <van-cell-group>
+    <van-popup v-model="isSelectType" position="bottom" closeable style="height: 80%;">
+      <van-radio-group v-model="typeRadio" :border="false" class="h-100">
+        <van-cell-group class="h-100">
           <van-cell class="p-20" :title="currentSelect.title" title-class="black fw fs-18" />
-          <van-cell class="p-20" :title="reasonItem" clickable v-for="(reasonItem, index) in currentSelect.list" :key="index" @click="typeRadio = index" title-class="fs-14 lh-20">
-            <template #right-icon>
-              <van-radio :name="index" icon-size="0.48rem">
-                <template #icon="props">
-                  <BmImage
-                    :url="props.checked ? require('@/assets/images/icon/choose-icon.png') : require('@/assets/images/icon/choose-default-icon.png')"
-                    :width="'0.32rem'" 
-                    :height="'0.32rem'"
-                    :isLazy="false"
-                    :isShow="false"
-                    :alt="'TospinoMall'"
-                  />
-                </template>
-              </van-radio>
-            </template>
-          </van-cell>
+          <div class="popup-container-height">
+            <van-cell class="p-20" :title="reasonItem" clickable v-for="(reasonItem, index) in currentSelect.list" :key="index" @click="typeRadio = index" title-class="fs-14 lh-20">
+              <template #right-icon>
+                <van-radio :name="index" icon-size="0.48rem">
+                  <template #icon="props">
+                    <BmImage
+                      :url="props.checked ? require('@/assets/images/icon/choose-icon.png') : require('@/assets/images/icon/choose-default-icon.png')"
+                      :width="'0.32rem'" 
+                      :height="'0.32rem'"
+                      :isLazy="false"
+                      :isShow="false"
+                      :alt="'TospinoMall'"
+                    />
+                  </template>
+                </van-radio>
+              </template>
+            </van-cell>
+            <!-- 提交按钮 -->
+            <div class="plr-20 mt-30 pb-60">
+              <BmButton class="fs-16 round-8 w-100" @click="onConfirm">{{ $t('confirm') }}</BmButton>
+            </div>
+          </div>
         </van-cell-group>
       </van-radio-group>
-      <!-- 提交按钮 -->
-      <div class="plr-20 mt-30 pb-60">
-        <BmButton class="fs-16 round-8 w-100" @click="onConfirm">{{ $t('confirm') }}</BmButton>
-      </div>
+      
     </van-popup>
 
     <!-- 退货方式 -->
@@ -794,5 +797,9 @@ export default {
       border-bottom-left-radius: 4px;
     }
   }
+}
+.popup-container-height{
+  height: calc(100% - 64px);
+  overflow: scroll;
 }
 </style>

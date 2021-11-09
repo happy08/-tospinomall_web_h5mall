@@ -139,8 +139,8 @@ export default {
     }
     
     
-    // 获取举证原因
-    getOrderReasonList({ orderType: 2, applyType: 0, goodsStatus: 0 }).then(res => {
+    // 获取举证原因 applyType申请类型，0：仅退款，1：退货退款
+    getOrderReasonList({ orderType: 2, applyType: this.detail.returnType}).then(res => {
       this.reasonList = res.data.map(item => {
         return {
           ...item,
