@@ -26,28 +26,24 @@ export default {
       customer_service.src = `https://webchat.7moor.com/javascripts/7moorInit.js?accessId=8171fc80-d163-11ea-bfcd-0ba873f67cbc&autoShow=true&language=${language}`;
       document.head.appendChild(customer_service);
     // }
-    // 添加facebook埋点
-    let facebook_pixel = document.createElement('script');
-    facebook_pixel.type = 'text/javascript';
-    facebook_pixel.innerHTML = `
-      !function(f,b,e,v,n,t,s)
-      {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-      n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-      n.queue=[];t=b.createElement(e);t.async=!0;
-      t.src=v;s=b.getElementsByTagName(e)[0];
-      s.parentNode.insertBefore(t,s)}(window, document,'script',
-      'https://connect.facebook.net/en_US/fbevents.js');
-      fbq('init', '1277339612726533');
-      fbq('track', 'PageView');
-    `;
-    document.head.appendChild(facebook_pixel);
-    // let facebook_pixel_nos = document.createElement('noscript');
-    // facebook_pixel_nos.type = 'text/javascript';
-    // facebook_pixel_nos.innerHTML = `
-    //   <img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=1277339612726533&ev=PageView&noscript=1" />
-    // `;
-    // document.head.appendChild(facebook_pixel_nos);
+    // 添加facebook埋点---只在正式环境添加
+    if (process.env.APP_MODE && process.env.APP_MODE != 'test') {
+      let facebook_pixel = document.createElement('script');
+      facebook_pixel.type = 'text/javascript';
+      facebook_pixel.innerHTML = `
+        !function(f,b,e,v,n,t,s)
+        {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+        n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+        if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+        n.queue=[];t=b.createElement(e);t.async=!0;
+        t.src=v;s=b.getElementsByTagName(e)[0];
+        s.parentNode.insertBefore(t,s)}(window, document,'script',
+        'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '1277339612726533');
+        fbq('track', 'PageView');
+      `;
+      document.head.appendChild(facebook_pixel);
+    }
   }
 }
 </script>
