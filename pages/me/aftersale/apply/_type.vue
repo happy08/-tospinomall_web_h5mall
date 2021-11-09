@@ -105,7 +105,7 @@
       <!-- 上门取件-有运费 -->
       <p class="fs-14 light-grey pb-10" v-if="returnMethodRadio == 0">{{ $t('after_sale_freight_tip', { replace_tip: $store.state.rate.currency + freightPrice }) }}</p>
       <!-- 上门取件,服务协议 -->
-      <van-checkbox class="flex vcenter" @click="isGreenment = !isGreenment" v-if="returnMethodRadio == 0">
+      <van-checkbox class="flex vcenter" v-if="returnMethodRadio == 0">
         <template #icon>
           <BmImage
             :url="isGreenment ? require('@/assets/images/icon/choose-icon.png') : require('@/assets/images/icon/choose-default-icon.png')"
@@ -114,9 +114,10 @@
             :isLazy="false"
             :isShow="false"
             :alt="'TospinoMall'"
+            @onClick="isGreenment = !isGreenment"
           />
         </template>
-        <span class="fs-14 lh-20 grey-666">{{ $t('pick_up_service_agreement') }}</span>
+        <nuxt-link target="_blank" :to="{ name: 'service-type', params: { type: 'take' }, query: { isH5: 1 } }" class="fs-14 lh-20 grey-666">{{ $t('pick_up_service_agreement') }}</nuxt-link>
       </van-checkbox>
 
       <!-- 上门取件-选择地址 -->
@@ -705,7 +706,7 @@ export default {
     },
     onChangeQuantity(value) { // 修改售后数量
       const max = this.$route.query.edit ? this.detail.totalreturnQuantity : this.orderList[0].canAfterApplyNum;
-      if (value > max) {
+      if (value > max || !value) {
         return false;
       }
       this.detail.returnAmount = this.detail.realPrice * 1000 * value / 1000;
