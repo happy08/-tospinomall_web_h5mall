@@ -26,8 +26,9 @@ export default {
       customer_service.src = `https://webchat.7moor.com/javascripts/7moorInit.js?accessId=8171fc80-d163-11ea-bfcd-0ba873f67cbc&autoShow=true&language=${language}`;
       document.head.appendChild(customer_service);
     // }
-    // 添加facebook埋点---只在正式环境添加
+    // 添加埋点---只在正式环境添加
     if (process.env.APP_MODE && process.env.APP_MODE != 'test') {
+      // facebook埋点
       let facebook_pixel = document.createElement('script');
       facebook_pixel.type = 'text/javascript';
       facebook_pixel.innerHTML = `
@@ -43,6 +44,20 @@ export default {
         fbq('track', 'PageView');
       `;
       document.head.appendChild(facebook_pixel);
+
+      // Google埋点
+      let google_pixel = document.createElement('script');
+      google_pixel.src = `https://www.googletagmanager.com/gtag/js?id=UA-197562633-2`;
+      document.head.appendChild(google_pixel);
+      let google_pixel_content = document.createElement('script');
+      google_pixel_content.innerHTML = `
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-197562633-2');
+      `;
+      document.head.appendChild(google_pixel_content);
     }
   }
 }
