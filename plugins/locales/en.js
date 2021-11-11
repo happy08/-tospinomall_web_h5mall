@@ -173,8 +173,8 @@ const en = {
   modify_the_amount: 'Modify the amount',
   replacement_goods: 'Exchange',
   apply_for_instructions: 'Apply for intructions',
-  apply_for_instructions_tips: 'Please fill in the application description in detail. You can enter 170 characters',
-  apply_for_instructions_tips_required: 'Required. Please fill in the application instructions in detail. You can enter 170 characters ',
+  apply_for_instructions_tips: 'Please fill in the application description in detail. You can enter 255 characters',
+  apply_for_instructions_tips_required: 'Required. Please fill in the application instructions in detail. You can enter 255 characters ',
   apply_after_sale_upload_tips: 'In order to help you solve the problem better,please be sure to upload valid credentials',
   contact_phone: 'Contact phone',
   I_want_a_refund_no_return: 'I want a refund (no return)',
@@ -680,7 +680,7 @@ const en = {
   axios_tip_404: 'The requested resource does not exist',
   axios_tip_connect: 'Connection error!',
   axios_tip_408: 'Request timed out',
-  axios_tip_500: 'Server Error',
+  axios_tip_500: 'Server busy,please try again later.',
   axios_tip_501: 'Service not implemented',
   axios_tip_502: 'Network Anomaly',
   axios_tip_503: 'service is not available',
@@ -717,7 +717,8 @@ const en = {
   concat_customer_service_tel: 'Telephone contact',
   concat_customer_service_email: 'Email contact',
   return_to_previous_page: 'Return to previous page',
-  no_support_video: 'Your browser does not support the video tag'
+  no_support_video: 'Your browser does not support the video tag',
+  please_read_checked: 'Please read and tick the agreement',
 }
 
 export default en;

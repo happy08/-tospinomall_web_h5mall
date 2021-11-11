@@ -10,7 +10,7 @@
         :bg_color="!isScroll ? 'col-transparent' : 'white'"
         :border="false"
         :color="!isScroll ? 'white' : 'black'"
-        :class="{ fixed: !isScroll }"
+        :class="{ 'fixed': !isScroll }"
       >
         <div slot="header-left" class="flex between">
           <van-icon
@@ -46,7 +46,7 @@
       v-model="tabActive"
       scrollspy
       sticky
-      :offset-top="!isScroll ? 0 : '0.92rem'"
+      :offset-top="!isScroll ? '0rem' : '0.92rem'"
       title-active-color="#FF6666"
       line-height="0"
       title-inactive-color="#383838"
@@ -133,17 +133,17 @@
                 <!-- 自定义未激活状态图标 -->
                 <template #inactive-icon>
                   <van-icon
-                    v-if="deliveryInfo[0].type == 1"
+                    v-if="deliveryInfo[0].sendType == 1"
                     :name="require('@/assets/images/icon/plane-default.png')"
                     size="0.48rem"
                   />
                   <van-icon
-                    v-if="deliveryInfo[0].type == 2"
+                    v-if="deliveryInfo[0].sendType == 2"
                     :name="require('@/assets/images/icon/steamer-default.png')"
                     size="0.48rem"
                   />
                   <van-icon
-                    v-if="deliveryInfo[0].type == 3"
+                    v-if="deliveryInfo[0].sendType == 3"
                     :name="require('@/assets/images/icon/truck-default.png')"
                     size="0.48rem"
                   />
@@ -151,17 +151,17 @@
                 <!-- 自定义激活状态图标 -->
                 <template #active-icon>
                   <van-icon
-                    v-if="deliveryInfo[0].type == 1"
+                    v-if="deliveryInfo[0].sendType == 1"
                     :name="require('@/assets/images/icon/plane-active.png')"
                     size="0.48rem"
                   />
                   <van-icon
-                    v-if="deliveryInfo[0].type == 2"
+                    v-if="deliveryInfo[0].sendType == 2"
                     :name="require('@/assets/images/icon/steamer-active.png')"
                     size="0.48rem"
                   />
                   <van-icon
-                    v-if="deliveryInfo[0].type == 3"
+                    v-if="deliveryInfo[0].sendType == 3"
                     :name="require('@/assets/images/icon/truck-active.png')"
                     size="0.48rem"
                   />
@@ -169,17 +169,17 @@
                 <!-- 自定义激活状态图标 -->
                 <template #finish-icon>
                   <van-icon
-                    v-if="deliveryInfo[0].type == 1"
+                    v-if="deliveryInfo[0].sendType == 1"
                     :name="require('@/assets/images/icon/plane-active.png')"
                     size="0.48rem"
                   />
                   <van-icon
-                    v-if="deliveryInfo[0].type == 2"
+                    v-if="deliveryInfo[0].sendType == 2"
                     :name="require('@/assets/images/icon/steamer-active.png')"
                     size="0.48rem"
                   />
                   <van-icon
-                    v-if="deliveryInfo[0].type == 3"
+                    v-if="deliveryInfo[0].sendType == 3"
                     :name="require('@/assets/images/icon/truck-active.png')"
                     size="0.48rem"
                   />
@@ -244,7 +244,7 @@
       </van-tab>
       <van-tab :title="$t('param')" name="Param">
         <!-- 选择产品规格 -->
-        <div class="mt-12 bg-white plr-20 pb-24">
+        <div :class="{'mt-12 bg-white plr-20': true, 'pb-24': (selectCarousel.length > 0 && selectCarousel[0].attrPicture != '') || servicePromises.length > 0}">
           <van-cell
             class="ptb-14 plr-0"
             is-link
@@ -266,7 +266,7 @@
               ref="swiperRecommendRef"
               :options="selectOption"
               class="review-swiper"
-              v-if="selectCarousel.length"
+              v-if="selectCarousel.length > 0 && selectCarousel[0].attrPicture != ''"
             >
               <swiper-slide
                 v-for="(selectItem, selectIndex) in selectCarousel"
@@ -616,7 +616,7 @@
     <!-- 预览 -->
     <bm-preview v-if="isPreviewIndex != 'false'" :isPreviewIndex="isPreviewIndex" :carouselMapUrls="carouselMapUrls" :initialSlide="isPreviewIndex" @onClose="isPreviewIndex = 'false'" @onPreviewChange="onPreviewPic($event)"></bm-preview>
   </div>
-  <empty-status v-else-if="isDetail == false" :image="require('@/assets/images/empty/order.png')" class="mh-60" :btn="{ btn: '返回上一页', isEmit: true }" @emptyClick="$router.go(-1)" />
+  <empty-status v-else-if="isDetail == false" :image="require('@/assets/images/empty/order.png')" class="mh-60" :btn="{ btn: $t('return_to_previous_page'), isEmit: true }" @emptyClick="$router.go(-1)" />
 </template>
 
 <script>

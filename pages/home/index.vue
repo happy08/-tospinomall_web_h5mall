@@ -610,7 +610,7 @@ export default {
       if (hotDetail.imageLinkType == 4) { // 搜索fbt
         _query = {
           deliveryType: 2,
-          supplyCountry: hotDetail.fbtCountrys,
+          countryCodes: hotDetail.fbtCountrys,
           // val: 2
         }
       }
@@ -618,7 +618,7 @@ export default {
         _query = {
           deliveryType: 1,
           // val: 1,
-          supplyCountry: hotDetail.fbmCountrys
+          countryCodes: hotDetail.fbmCountrys
         }
       }
       if (hotDetail.imageLinkType == 2) { // 搜索 2后端分类id

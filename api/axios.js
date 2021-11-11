@@ -75,7 +75,7 @@ export default function({ $axios, app, redirect, store }) {
           tip(res.data.msg);
         }
       }
-      return Promise.resolve(res.data);
+      return Promise.reject(res.data);
     } else {
       //无响应
       return Promise.reject(res);
@@ -86,17 +86,17 @@ export default function({ $axios, app, redirect, store }) {
     console.log('3333333')
     console.log(error)
     if (error.code > 0) {
-      if (error.code === 10401) { // 用户凭证过期跳转到登录页面
-        console.log('响应失败')
-        console.log(error)
-        store.commit('user/SET_TOKEN', null);
-        redirect({
-          path: '/login.html'
-        })
-      }
-      tip(error.msg);
+      // if (error.code === 10401) { // 用户凭证过期跳转到登录页面
+      //   console.log('响应失败')
+      //   console.log(error)
+      //   store.commit('user/SET_TOKEN', null);
+      //   redirect({
+      //     path: '/login.html'
+      //   })
+      // }
+      // tip(error.msg);
       
-      return Promise.reject(error);
+      return;
     }
     const { response } = error;
     if (response) {
@@ -112,6 +112,7 @@ export default function({ $axios, app, redirect, store }) {
       //     status: 100000000
       //   }
       // })
+      // errorHandle(response.status, redirect, store, app);
       return Promise.reject();
     }
   });

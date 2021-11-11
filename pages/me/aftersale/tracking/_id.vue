@@ -17,7 +17,7 @@
         :placeholder="$t('apply_for_instructions_tips_required')"
         type="textarea"
         class="plr-0"
-        maxlength="170"
+        maxlength="255"
         :border="false"
       />
 

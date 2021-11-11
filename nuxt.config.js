@@ -18,7 +18,8 @@ export default {
       { name: 'google-signin-scope', content: 'profile email' },
       { hid: 'og:title', property: 'og:title', content: 'TospinoMall Ghana online shopping' },
       { hid: 'og:description', property: 'og:description', content: 'TospinoMall Ghana online shopping' },
-      { hid: 'og:image', property: 'og:image', content: '/logo.png' }
+      { hid: 'og:image', property: 'og:image', content: '/logo.png' },
+      { name: 'facebook-domain-verification', content: 'tpeeavo6b4l7jb9wzm9r7gfgyd8vt4' }
     ],
     link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
     script: [
