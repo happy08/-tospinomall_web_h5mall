@@ -55,7 +55,7 @@
     <!-- tingg支付 -->
     <button class="awesome-checkout-button" @click="onTinggPay"></button>
     <!-- brij钱包支付 -->
-    <button class="brij-checkout-button">brij钱包支付</button>
+    <!-- <button class="brij-checkout-button">brij钱包支付</button> -->
 
     <!-- 底部金额以及支付按钮 -->
     <div class="w-100 bg-white flex between pl-20 vcenter pay-content__btn">
@@ -177,22 +177,22 @@ export default {
     // })
 
     // brij钱包支付
-    document
-      .querySelector('.brij-checkout-button')
-      .addEventListener('click', function () {
-        fetch('https://staging.orobo.site/api/v2/paywithbrij/api/pay', {
-            method: 'POST',
-            body: JSON.stringify({
-                "transaction_id" : "6",
-                "merchant_id" : "your-merchant-id",
-                "currency" : "GHS",
-                "payment_details" : {"momo_number": "+2337985027"},
-                "payment_method_id" : "7bd8b6d2-8b7d-4546-a716-a3553cd02aa9",
-                "amount" : "1"
-            }),
-            mode: 'no-cors',
-        }).then(response => console.log(response.json()))
-      })
+    // document
+    //   .querySelector('.brij-checkout-button')
+    //   .addEventListener('click', function () {
+    //     fetch('https://staging.orobo.site/api/v2/paywithbrij/api/pay', {
+    //         method: 'POST',
+    //         body: JSON.stringify({
+    //             "transaction_id" : "6",
+    //             "merchant_id" : "your-merchant-id",
+    //             "currency" : "GHS",
+    //             "payment_details" : {"momo_number": "+2337985027"},
+    //             "payment_method_id" : "7bd8b6d2-8b7d-4546-a716-a3553cd02aa9",
+    //             "amount" : "1"
+    //         }),
+    //         mode: 'no-cors',
+    //     }).then(response => console.log(response.json()))
+    //   })
 
     // tingg支付
     // Render the checkout button
@@ -378,8 +378,8 @@ export default {
         // un-encrypted parameters collected against a request in json format
         // merchantTransactionID: "211112623211120", // 必须是15位
         // merchantTransactionID: "12724665", // 必须是15位
-        merchantTransactionID: "12724670", // 最长是15位？最长限制是？有规则限制吗？
-        requestAmount: "10",
+        merchantTransactionID: "12724671", // 最长是15位？最长限制是？有规则限制吗？
+        requestAmount: "12",
         currencyCode: "GHS",
         accountNumber: "10092019",
         serviceCode: "TOSDEV2425",
@@ -392,13 +392,19 @@ export default {
         customerFirstName: "John",
         customerLastName: "Smith",
         customerEmail: "john.smith@example.com",
-        successRedirectUrl: "http://192.168.2.45:8000/login.html",
-        failRedirectUrl: "http://192.168.2.45:8000/login/code",
-        pendingRedirectUrl: "http://192.168.2.45:8000/login.html",
-        paymentWebhookUrl: "http://192.168.2.45:8000/login.html"
+        // successRedirectUrl: "http://192.168.2.45:8000/login.html",
+        // failRedirectUrl: "http://192.168.2.45:8000/login/code",
+        // pendingRedirectUrl: "http://192.168.2.45:8000/login.html",
+        // paymentWebhookUrl: "http://192.168.2.45:8000/login.html"
+        successRedirectUrl: location.href,
+        failRedirectUrl: location.href,
+        pendingRedirectUrl: location.href,
+        paymentWebhookUrl: location.href
 
         // successRedirectUrl和failRedirectUrl和pendingRedirectUrl和paymentWebhookUrl可以用同一个链接吗？同一个的话怎么知道是支付成功还是失败，有api可以获得吗？
       }
+
+      console.log(payload.successRedirectUrl)
 
       let payloadString = JSON.stringify(payload).replace(/\//g, '\\/');
 
