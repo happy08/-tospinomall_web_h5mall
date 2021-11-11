@@ -653,7 +653,7 @@ export default {
         duration: 0
       })
 
-      if (this.detail.status == 2 || this.detail.orderStatus) { // 待收货状态, 需要传退款数量
+      if ((!this.$route.query.edit && this.detail.status == 2) || (this.$route.query.edit && this.detail.orderStatus == 2)) { // 待收货状态, 需要传退款数量
         _data = {
           ..._data,
           productQuantity: this.applyNum
