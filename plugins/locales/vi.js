@@ -512,7 +512,7 @@ const vi = {
   confirm_submit: 'xác nhận gửi',
   submit_express_number_tips: 'Bắt buộc, vui lòng điền chi tiết hướng dẫn đăng ký',
   fill_express_number2: 'Điền vào số chuyển phát nhanh',
-  customer_service_intervention: 'Dịch vụ khách hàng can thiệp',
+  customer_service_intervention: 'Dịch vụ khách hàng',
   adduce_evidence: 'Bằng chứng bổ sung',
   modify_express_number: 'Sửa đổi số theo dõi',
   modify_return_express_number: 'Sửa đổi số chuyển phát nhanh tiền hoàn lại',
