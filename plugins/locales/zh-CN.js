@@ -718,7 +718,8 @@ const cn = {
   concat_customer_service_tel: '电话联系',
   concat_customer_service_email: '邮箱联系',
   return_to_previous_page: '返回上一页',
-  no_support_video: '您的浏览器不支持 video 标签'
+  no_support_video: '您的浏览器不支持 video 标签',
+  backOldWeb: "返回<br/>旧版"
 }
 
 export default cn;

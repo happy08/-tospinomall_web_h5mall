@@ -653,11 +653,8 @@ export default {
         duration: 0
       })
 
-      if ((!this.$route.query.edit && this.detail.status == 2) || (this.$route.query.edit && this.detail.orderStatus == 2)) { // 待收货状态, 需要传退款数量
-        _data = {
-          ..._data,
-          productQuantity: this.applyNum
-        }
+      if (this.applyType == 1) { // 退货退款
+        _data.productQuantity = this.orderList[0].returnQuantity;
       }
       
       // edit 存在表示修改申请 isBatchReturn:是否整批退 0否1是

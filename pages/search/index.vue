@@ -708,8 +708,13 @@ export default {
     onSearch(val) { // 搜索
       let value = val.trim().length > 0 ? val.trim() : this.hintName.length > 0 ? this.hintName : '';
       if (value.length == 0) return false;
+      // 数据初始化
       this.list = [];
       this.pageIndex = 0;
+      this.minPrice = this.maxPrice = '';
+      this.available = this.overseas = this.deliveryType = false;
+      this.params = {};
+      this.brandResult = this.categoryResult = [];
 
       if (value == this.$route.query.val) {
         this.$fetch();
@@ -801,7 +806,7 @@ export default {
       }
       this.pageIndex = 0;
       this.params = {
-        ...this.params,
+        // ...this.params,
         ..._data,
         pageIndex: this.pageIndex,
         pageSize: this.pageSize
@@ -818,8 +823,13 @@ export default {
       this.brandName = this.minPrice = this.maxPrice = this.categoryName = '';
       this.available = this.overseas = this.deliveryType = false;
       // if (currencyType == 2) { // algolia 搜索
-        this.$refs.brandCheckboxGroup.toggleAll(false);
-        this.$refs.categoryCheckboxGroup.toggleAll(false);
+        if (this.$refs.brandCheckboxGroup) {
+          this.$refs.brandCheckboxGroup.toggleAll(false);
+        }
+        if (this.$refs.categoryCheckboxGroup) {
+          this.$refs.categoryCheckboxGroup.toggleAll(false);
+        }
+        
         this.pageIndex = 0;
         // this.params = {
         //   filters: ''
