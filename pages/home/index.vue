@@ -653,10 +653,10 @@ export default {
             _h = this.$refs[container][0].clientHeight;
             if (_w > 0 && _h > 0) {
               clearInterval(timer);
-              this.$refs[ele][0].style.width = (hotItem.areaWidth / 100 * _w / 50) + 'rem';
-              this.$refs[ele][0].style.left = (hotItem.positionX / 100 * _w / 50) + 'rem';
-              this.$refs[ele][0].style.height =  (hotItem.areaHeight / 100 * _h / 50) + 'rem';
-              this.$refs[ele][0].style.top = (hotItem.positionY / 100 * _h / 50) + 'rem';
+              this.$refs[ele][0].style.width = hotItem.areaWidth + '%';
+              this.$refs[ele][0].style.left = hotItem.positionX + '%';
+              this.$refs[ele][0].style.height = hotItem.areaHeight + '%';
+              this.$refs[ele][0].style.top = hotItem.positionY + '%';
             }
           }, 300);
         })
