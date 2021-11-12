@@ -201,7 +201,7 @@ export default {
         checkoutType: 'redirect' // or 'modal'
     });
 
-    fetch('http://192.168.2.45:8000/me/pay/paymentTwo?amount=2&type=2', {
+    fetch('https://h5mall.fyynet.com/me/pay/webhook', {
       method: 'post'
     }).then(res => {
       return res.json();
@@ -397,10 +397,10 @@ export default {
         customerFirstName: "John",
         customerLastName: "Smith",
         customerEmail: "john.smith@example.com",
-        successRedirectUrl: location.href,
-        failRedirectUrl: location.href,
-        pendingRedirectUrl: location.href,
-        paymentWebhookUrl: 'http://192.168.2.45:8000/me/pay/paymentTwo?amount=2&type=2'
+        successRedirectUrl: location.href + '&success=1',
+        failRedirectUrl: location.href + '&failed=1',
+        pendingRedirectUrl: location.href + '&pending=1',
+        paymentWebhookUrl: 'https://h5mall.fyynet.com/me/pay/webhook'
       }
       let payloadString = JSON.stringify(payload).replace(/\//g, '\\/');
       // 发起结账请求
