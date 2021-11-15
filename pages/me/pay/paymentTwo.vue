@@ -177,10 +177,17 @@ export default {
     // })
 
     // brij钱包支付
+    fetch('https://staging.orobo.site/api/v2/payviabrij/paymentmethods', {
+      method: 'POST',
+      mode: 'no-cors',
+    }).then(response => {
+      console.log('检索所有付款方式')
+      console.log(response.json())
+    })
     document
       .querySelector('.brij-checkout-button')
       .addEventListener('click', function () {
-        fetch('https://staging.orobo.site/api/v2/paywithbrij/api/pay', {
+        fetch('https://staging.orobo.site/api/v2/payviabrij/pay', {
             method: 'POST',
             body: JSON.stringify({
                 "transaction_id" : "6",
@@ -201,13 +208,17 @@ export default {
         checkoutType: 'redirect' // or 'modal'
     });
 
-    fetch('https://h5mall.fyynet.com/me/pay/webhook', {
-      method: 'post'
-    }).then(res => {
-      return res.json();
-    }).then(response => {
-      console.log(response);
-    })
+    // fetch('http://rnzsgf7l.dongtaiyuming.net/order/tinggPay/callback', {
+    //   method: 'post',
+    //   body: JSON.stringify({}),
+    //   headers: {
+    //     'Content-Type': 'application/json'
+    //   }
+    // }).then(res => {
+    //   return res.json();
+    // }).then(response => {
+    //   console.log(response);
+    // })
   },
   methods: {
     onPay() { // 提交支付,成功跳转到确认订单页面
@@ -383,8 +394,8 @@ export default {
       const encryption = new Encryption(ivKey, secretKey, algorithm);
 
       const payload = {
-        merchantTransactionID: this.$route.query.merchantTransactionID || parseInt(Math.random()*200000), // 最长是15位，无规则限制
-        requestAmount: "12",
+        merchantTransactionID: 'DCFSN2111151755', // 最长是15位，无规则限制 this.$route.query.merchantTransactionID || parseInt(Math.random()*200000)
+        requestAmount: "100",
         currencyCode: "GHS",
         accountNumber: "10092019",
         serviceCode: "TOSDEV2425",
@@ -400,7 +411,7 @@ export default {
         successRedirectUrl: location.href + '&success=1',
         failRedirectUrl: location.href + '&failed=1',
         pendingRedirectUrl: location.href + '&pending=1',
-        paymentWebhookUrl: 'https://h5mall.fyynet.com/me/pay/webhook'
+        paymentWebhookUrl: 'http://rnzsgf7l.dongtaiyuming.net/order/tinggPay/callback'
       }
       let payloadString = JSON.stringify(payload).replace(/\//g, '\\/');
       // 发起结账请求
