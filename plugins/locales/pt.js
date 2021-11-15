@@ -512,7 +512,7 @@
   confirm_submit: 'confirmar submissão',
   submit_express_number_tips: 'Obrigatório, por favor, preencha as instruções de inscrição detalhadamente',
   fill_express_number2: 'Preencha o número do correio',
-  customer_service_intervention: 'Intervenção de atendimento ao cliente',
+  customer_service_intervention: 'Serviço ao cliente',
   adduce_evidence: 'Prova adicional',
   modify_express_number: 'Modifique o número de rastreamento',
   modify_return_express_number: 'Modifique o número do correio de reembolso',
@@ -718,6 +718,7 @@
   concat_customer_service_email: 'Contato de email',
   return_to_previous_page: 'Voltar para a página anterior',
   no_support_video: 'Seu navegador não suporta a tag de vídeo',
+  backOldWeb: "Versão Antiga",
   my_coupon: '我的优惠券',
   coupon_use_instruction: '使用说明'
 }

@@ -105,7 +105,7 @@
       <!-- 上门取件-有运费 -->
       <p class="fs-14 light-grey pb-10" v-if="returnMethodRadio == 0">{{ $t('after_sale_freight_tip', { replace_tip: $store.state.rate.currency + freightPrice }) }}</p>
       <!-- 上门取件,服务协议 -->
-      <van-checkbox class="flex vcenter" @click="isGreenment = !isGreenment" v-if="returnMethodRadio == 0">
+      <van-checkbox class="flex vcenter" v-if="returnMethodRadio == 0">
         <template #icon>
           <BmImage
             :url="isGreenment ? require('@/assets/images/icon/choose-icon.png') : require('@/assets/images/icon/choose-default-icon.png')"
@@ -114,9 +114,10 @@
             :isLazy="false"
             :isShow="false"
             :alt="'TospinoMall'"
+            @onClick="isGreenment = !isGreenment"
           />
         </template>
-        <span class="fs-14 lh-20 grey-666">{{ $t('pick_up_service_agreement') }}</span>
+        <nuxt-link target="_blank" :to="{ name: 'service-type', params: { type: 'take' }, query: { isH5: 1 } }" class="fs-14 lh-20 grey-666">{{ $t('pick_up_service_agreement') }}</nuxt-link>
       </van-checkbox>
 
       <!-- 上门取件-选择地址 -->
@@ -172,32 +173,35 @@
     </div>
 
     <!-- 选择申请类型type 货物状态status 申请原因reason -->
-    <van-popup v-model="isSelectType" position="bottom" closeable>
-      <van-radio-group v-model="typeRadio" :border="false">
-        <van-cell-group>
+    <van-popup v-model="isSelectType" position="bottom" closeable style="height: 80%;">
+      <van-radio-group v-model="typeRadio" :border="false" class="h-100">
+        <van-cell-group class="h-100">
           <van-cell class="p-20" :title="currentSelect.title" title-class="black fw fs-18" />
-          <van-cell class="p-20" :title="reasonItem" clickable v-for="(reasonItem, index) in currentSelect.list" :key="index" @click="typeRadio = index" title-class="fs-14 lh-20">
-            <template #right-icon>
-              <van-radio :name="index" icon-size="0.48rem">
-                <template #icon="props">
-                  <BmImage
-                    :url="props.checked ? require('@/assets/images/icon/choose-icon.png') : require('@/assets/images/icon/choose-default-icon.png')"
-                    :width="'0.32rem'" 
-                    :height="'0.32rem'"
-                    :isLazy="false"
-                    :isShow="false"
-                    :alt="'TospinoMall'"
-                  />
-                </template>
-              </van-radio>
-            </template>
-          </van-cell>
+          <div class="popup-container-height">
+            <van-cell class="p-20" :title="reasonItem" clickable v-for="(reasonItem, index) in currentSelect.list" :key="index" @click="typeRadio = index" title-class="fs-14 lh-20">
+              <template #right-icon>
+                <van-radio :name="index" icon-size="0.48rem">
+                  <template #icon="props">
+                    <BmImage
+                      :url="props.checked ? require('@/assets/images/icon/choose-icon.png') : require('@/assets/images/icon/choose-default-icon.png')"
+                      :width="'0.32rem'" 
+                      :height="'0.32rem'"
+                      :isLazy="false"
+                      :isShow="false"
+                      :alt="'TospinoMall'"
+                    />
+                  </template>
+                </van-radio>
+              </template>
+            </van-cell>
+            <!-- 提交按钮 -->
+            <div class="plr-20 mt-30 pb-60">
+              <BmButton class="fs-16 round-8 w-100" @click="onConfirm">{{ $t('confirm') }}</BmButton>
+            </div>
+          </div>
         </van-cell-group>
       </van-radio-group>
-      <!-- 提交按钮 -->
-      <div class="plr-20 mt-30 pb-60">
-        <BmButton class="fs-16 round-8 w-100" @click="onConfirm">{{ $t('confirm') }}</BmButton>
-      </div>
+      
     </van-popup>
 
     <!-- 退货方式 -->
@@ -649,11 +653,8 @@ export default {
         duration: 0
       })
 
-      if (this.detail.status == 2 || this.detail.orderStatus) { // 待收货状态, 需要传退款数量
-        _data = {
-          ..._data,
-          productQuantity: this.applyNum
-        }
+      if (this.applyType == 1) { // 退货退款
+        _data.productQuantity = this.orderList[0].returnQuantity;
       }
       
       // edit 存在表示修改申请 isBatchReturn:是否整批退 0否1是
@@ -705,7 +706,7 @@ export default {
     },
     onChangeQuantity(value) { // 修改售后数量
       const max = this.$route.query.edit ? this.detail.totalreturnQuantity : this.orderList[0].canAfterApplyNum;
-      if (value > max) {
+      if (value > max || !value) {
         return false;
       }
       this.detail.returnAmount = this.detail.realPrice * 1000 * value / 1000;
@@ -793,5 +794,9 @@ export default {
       border-bottom-left-radius: 4px;
     }
   }
+}
+.popup-container-height{
+  height: calc(100% - 64px);
+  overflow: scroll;
 }
 </style>

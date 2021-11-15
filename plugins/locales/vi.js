@@ -98,7 +98,7 @@ const vi = {
   refund_failed: 'Hoàn tiền không thành công',
   method_of_payment: 'phương thức thanh toán',
   transaction_hour: 'giờ giao dịch',
-  order_number: 'số thứ tự',
+  order_number: 'Số thứ tự',
   merchant_order_number: 'Số đơn đặt hàng của người bán',
   search_product_of_interest: 'Tìm kiếm các sản phẩm quan tâm',
   search: 'Tìm kiếm',
@@ -512,7 +512,7 @@ const vi = {
   confirm_submit: 'xác nhận gửi',
   submit_express_number_tips: 'Bắt buộc, vui lòng điền chi tiết hướng dẫn đăng ký',
   fill_express_number2: 'Điền vào số chuyển phát nhanh',
-  customer_service_intervention: 'Dịch vụ khách hàng can thiệp',
+  customer_service_intervention: 'Dịch vụ khách hàng',
   adduce_evidence: 'Bằng chứng bổ sung',
   modify_express_number: 'Sửa đổi số theo dõi',
   modify_return_express_number: 'Sửa đổi số chuyển phát nhanh tiền hoàn lại',
@@ -718,6 +718,7 @@ const vi = {
   concat_customer_service_email: 'Liên hệ qua email',
   return_to_previous_page: 'Trở lại trang trước',
   no_support_video: 'Trình duyệt của bạn không hỗ trợ thẻ video',
+  backOldWeb: "Phiên bản cũ",
   my_coupon: '我的优惠券',
   coupon_use_instruction: '使用说明'
 }

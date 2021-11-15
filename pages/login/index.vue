@@ -32,7 +32,14 @@
             </template>
           </van-field>
           <!-- 密码 -->
-          <van-field class="field-container" v-model="password" type="password" :placeholder="$t('your_password_6_20')" maxlength="20" clearable />
+          <van-field class="field-container" v-model="password" :type="loginPwdType" :placeholder="$t('your_password_6_20')" maxlength="20" clearable>
+            <template #button>
+            <!-- 睁眼 -->
+            <van-icon v-if="loginPwdType === 'text'" :name="require('@/assets/images/icon/eye-o.png')" size="0.48rem" @click="loginPwdType = 'password'" />
+            <!-- 闭眼 -->
+            <van-icon v-else :name="require('@/assets/images/icon/eye-close.png')" size="0.48rem" @click="loginPwdType = 'text'" />
+          </template>
+          </van-field>
           <!-- 忘记密码 -->
           <nuxt-link :to="{ name: 'register', query: { type: 'forgot' } }" class="fs-14 tr block mt-12 lh-20 login-page__container--forgot">{{ $t('forgot_password') }}</nuxt-link>
           <!-- 登录 -->
@@ -124,7 +131,8 @@ export default {
       prefixCode: '',
       showPicker: false,
       phonePrefixs: [],
-      isPhone: false
+      isPhone: false,
+      loginPwdType: 'password'
     }
   },
   computed: {

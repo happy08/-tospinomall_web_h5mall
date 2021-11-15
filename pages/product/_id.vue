@@ -348,7 +348,7 @@
               </div>
             </div>
             <!-- 描述 -->
-            <p class="mt-12 fs-14 black plr-20 fm-helvetica">
+            <p class="mt-12 fs-14 black plr-20 fm-helvetica word-break">
               {{ reviewItem.content }}
             </p>
             <!-- 图片 -->
@@ -399,7 +399,7 @@
             </div>
             <!-- 规格 -->
             <div class="mt-12 plr-20">
-              <span class="grey fs-14 ptb-2 plr-10 bgd-f8 round-4 fm-helvetica">{{ $t("specification") }}{{ reviewItem.saleAttr }}</span>
+              <div class="grey fs-14 ptb-2 plr-10 bgd-f8 round-4 fm-helvetica word-break">{{ $t("specification") }}{{ reviewItem.saleAttr }}</div>
             </div>
           </div>
         </div>
