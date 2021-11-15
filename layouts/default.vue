@@ -1,10 +1,10 @@
 <template>
   <!-- <div> -->
     <!-- <Nuxt keep-alive :keep-alive-props="{ max: 3 }" /> -->
-    <div>
+    <!-- <div> -->
       <Nuxt keep-alive v-show="isLoad" />
-      <a href="https://gh.tospino.com/" target="_black" class="center tc bg-green white fs-12 lh-12 back-old-version" v-html="$t('backOldWeb')"></a>
-    </div>
+      <!-- <a href="https://gh.tospino.com/" target="_black" class="center tc bg-green white fs-12 lh-12 back-old-version" v-html="$t('backOldWeb')"></a> -->
+    <!-- </div>s -->
     <!-- <div v-else class="flex vcenter hcenter v-percent-100">
       <img class="w-128" src="@/assets/images/home-loading.png" alt="loading picture">
     </div> -->
@@ -70,14 +70,14 @@ export default {
 #chatBtn{
   display: none!important;
 }
-.back-old-version{
-  position: fixed;
-  bottom: 15%;
-  width: 50px;
-  padding: 10px 2px;
-  z-index: 100000;
-  right: 0;
-  border-top-left-radius: 12px;
-  border-bottom-left-radius: 12px;
-}
+// .back-old-version{
+//   position: fixed;
+//   bottom: 15%;
+//   width: 50px;
+//   padding: 10px 2px;
+//   z-index: 100000;
+//   right: 0;
+//   border-top-left-radius: 12px;
+//   border-bottom-left-radius: 12px;
+// }
 </style>
