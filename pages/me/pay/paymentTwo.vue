@@ -55,7 +55,7 @@
     <!-- tingg支付 -->
     <button class="awesome-checkout-button" @click="onTinggPay"></button>
     <!-- brij钱包支付 -->
-    <!-- <button class="brij-checkout-button">brij钱包支付</button> -->
+    <button class="brij-checkout-button">brij钱包支付</button>
 
     <!-- 底部金额以及支付按钮 -->
     <div class="w-100 bg-white flex between pl-20 vcenter pay-content__btn">
@@ -177,22 +177,22 @@ export default {
     // })
 
     // brij钱包支付
-    // document
-    //   .querySelector('.brij-checkout-button')
-    //   .addEventListener('click', function () {
-    //     fetch('https://staging.orobo.site/api/v2/paywithbrij/api/pay', {
-    //         method: 'POST',
-    //         body: JSON.stringify({
-    //             "transaction_id" : "6",
-    //             "merchant_id" : "your-merchant-id",
-    //             "currency" : "GHS",
-    //             "payment_details" : {"momo_number": "+2337985027"},
-    //             "payment_method_id" : "7bd8b6d2-8b7d-4546-a716-a3553cd02aa9",
-    //             "amount" : "1"
-    //         }),
-    //         mode: 'no-cors',
-    //     }).then(response => console.log(response.json()))
-    //   })
+    document
+      .querySelector('.brij-checkout-button')
+      .addEventListener('click', function () {
+        fetch('https://staging.orobo.site/api/v2/paywithbrij/api/pay', {
+            method: 'POST',
+            body: JSON.stringify({
+                "transaction_id" : "6",
+                "merchant_id" : "003542",
+                "currency" : "GHS",
+                "payment_details" : {"momo_number": "+2337985027"},
+                "payment_method_id" : "7bd8b6d2-8b7d-4546-a716-a3553cd02aa9",
+                "amount" : "1"
+            }),
+            mode: 'no-cors',
+        }).then(response => console.log(response.json()))
+      })
 
     // tingg支付
     // Render the checkout button
