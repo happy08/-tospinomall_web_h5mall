@@ -17,28 +17,49 @@
     <div class="mlr-10">
       <coupon-single v-for="item in 10" :key="item" class="mt-12"></coupon-single>
     </div>
+    <button @click="isCouponShow = !isCouponShow">isCouponShow</button>
 
     <div class="flex tc coupon-tabbar">
       <nuxt-link :to="{ name: 'me-coupon-record' }" class="fw black flex-1 pb-14 pt-20 border-r">优惠券使用记录</nuxt-link>
       <nuxt-link :to="{ name: 'me-coupon-center' }" class="fw black flex-1 pb-14 pt-20">去领券中心</nuxt-link>
     </div>
+
+    <!-- 确认订单弹窗 -->
+    <van-popup v-model="isCouponShow" style="height: 80%" position="bottom" class="border-tlr-radius-12 coupon-popup">
+      <div class="coupon-popup__top">
+        <h1 class="fs-16 tc pt-12">优惠</h1>
+        <van-tabs v-model="couponActive" class="customs-van-tabs border-b">
+          <van-tab title="可用优惠券"></van-tab>
+          <van-tab title="不可用优惠券"></van-tab>
+        </van-tabs>
+        <p class="fs-12 p-10">您已选中优惠券1张，共抵用<span>¥120.0</span></p>
+      </div>
+      <div class="coupon-popup__bottom">
+        <coupon-order-single class="mt-10 mlr-10" v-for="item in 10" :key="item"></coupon-order-single>
+      </div>
+    </van-popup>
   </div>
 </template>
 
 <script>
 import CouponSingle from '@/components/CouponSingle';
-import { Tab, Tabs, Sticky } from 'vant';
+import CouponOrderSingle from '@/components/CouponOrderSingle';
+import { Tab, Tabs, Sticky, Popup } from 'vant';
 
 export default {
   components: {
     vanTab: Tab,
     vanTabs: Tabs,
     vanSticky: Sticky,
-    CouponSingle
+    vanPopup: Popup,
+    CouponSingle,
+    CouponOrderSingle
   },
   data() {
     return {
-      tabActive: 0
+      tabActive: 0,
+      isCouponShow: true,
+      couponActive: 0
     }
   }
 }
@@ -73,5 +94,16 @@ export default {
 }
 .pb-64{
   padding-bottom: 64px;
+}
+.border-tlr-radius-12{
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}
+.coupon-popup{
+  // position: relative;
+  .coupon-popup__bottom{
+    height: calc(100% - 113px);
+    overflow-y: auto;
+  }
 }
 </style>
