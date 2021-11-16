@@ -394,7 +394,7 @@ export default {
       const encryption = new Encryption(ivKey, secretKey, algorithm);
 
       const payload = {
-        merchantTransactionID: 'DCFSN2111151755', // 最长是15位，无规则限制 this.$route.query.merchantTransactionID || parseInt(Math.random()*200000)
+        merchantTransactionID: '202111151858', // 最长是15位，无规则限制 this.$route.query.merchantTransactionID || parseInt(Math.random()*200000)
         requestAmount: "100",
         currencyCode: "GHS",
         accountNumber: "10092019",
