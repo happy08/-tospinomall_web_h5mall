@@ -53,9 +53,9 @@
       </van-cell-group>
     </van-radio-group>
     <!-- tingg支付 -->
-    <button class="awesome-checkout-button" @click="onTinggPay"></button>
+    <button class="awesome-checkout-button" v-if="$route.query.tingg" @click="onTinggPay"></button>
     <!-- brij钱包支付 -->
-    <button class="brij-checkout-button">brij钱包支付</button>
+    <button class="plr-20 ptb-20 brij-checkout-button">brij钱包支付</button>
 
     <!-- 底部金额以及支付按钮 -->
     <div class="w-100 bg-white flex between pl-20 vcenter pay-content__btn">
@@ -176,37 +176,57 @@ export default {
     //   }
     // })
 
+    let myHeaders = new Headers();
+
+    myHeaders.append('Content-Type', 'application/json');
+    myHeaders.append('Authorization', 'Bearer 773|zuhKE0MLWvfAnZHo5dJU9oRQOUILNHt6JWokxeer');
+    // should return 'text/xml'
+
+
     // brij钱包支付
-    fetch('https://staging.orobo.site/api/v2/payviabrij/paymentmethods', {
+    // 获取所有的支付方式
+    let brijData = [];
+    fetch('/brij/api/v2/payviabrij/paymentmethods', {
       method: 'POST',
-      mode: 'no-cors',
+      body: JSON.stringify({
+        currency: 'GHS'
+      }),
+      headers: myHeaders,
+      // mode: 'no-cors',
+    }).then(res => {
+      return res.json();
     }).then(response => {
-      console.log('检索所有付款方式')
-      console.log(response.json())
+      brijData = response.data;
+      console.log(response);
     })
+
     document
       .querySelector('.brij-checkout-button')
       .addEventListener('click', function () {
-        fetch('https://staging.orobo.site/api/v2/payviabrij/pay', {
+        // 进行支付
+        fetch('/brij/api/v2/payviabrij/pay', {
             method: 'POST',
+            headers: myHeaders,
             body: JSON.stringify({
-                "transaction_id" : "6",
+                "transaction_id" : "brij6233220",
                 "merchant_id" : "003542",
                 "currency" : "GHS",
-                "payment_details" : {"momo_number": "+2337985027"},
-                "payment_method_id" : "7bd8b6d2-8b7d-4546-a716-a3553cd02aa9",
-                "amount" : "1"
+                "payment_details" : {"momo_number": "+233544203781"},
+                "payment_method_id" : brijData[0].id,
+                "amount" : "0.1"
             }),
-            mode: 'no-cors',
+            // mode: 'no-cors',
         }).then(response => console.log(response.json()))
       })
 
     // tingg支付
     // Render the checkout button
-    Tingg.renderPayButton({
-        className: 'awesome-checkout-button', 
-        checkoutType: 'redirect' // or 'modal'
-    });
+    if (this.$route.query.tingg) {
+      Tingg.renderPayButton({
+          className: 'awesome-checkout-button', 
+          checkoutType: 'redirect' // or 'modal'
+      });
+    }
 
     // fetch('http://rnzsgf7l.dongtaiyuming.net/order/tinggPay/callback', {
     //   method: 'post',

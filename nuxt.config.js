@@ -112,7 +112,19 @@ export default {
       pathRewrite: {
         '^/api': '/'
       }
-    }
+    },
+    "/brij": {
+      // target: "http://152.32.143.32:9999",
+      target: "https://staging.orobo.site",
+      // target: "http://192.168.2.34:9999",
+      //target: "http://192.168.2.11:9999",
+      // target: "http://192.168.2.35:9999",
+      //target: "http://192.168.2.70:9999",
+      //target: "http://120.78.145.142:9999",
+      pathRewrite: {
+          "^/brij": "/"
+      }
+  }
   },
 
   // PWA module configuration: https://go.nuxtjs.dev/pwa
