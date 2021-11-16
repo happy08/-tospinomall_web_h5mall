@@ -59,6 +59,39 @@ export default {
     APP_MODE: process.env.APP_MODE
   },
 
+  // manifest: {
+  //   name: "TospinoMall",
+  //   short_name: "TospinoMall",
+  //   description: "TospinoMall",
+  //   background_color: "#2baf88",
+  //   theme_color: "#2baf88",
+  //   lang: "en",
+  //   start_url: "/",
+  //   icons: [
+  //     { src: '/favicon.ico', size: '144*144', type: 'image/png' }
+  //   ]
+  // },
+  manifest: {    
+    name: 'TospinoMall',    
+    short_name: 'TospinoMall',    
+    lang: 'en',    
+    display: 'standalone'
+  },
+
+  render: {
+    http2: {
+      push: true
+    },
+    static: {
+      maxAge: "1y",
+      setHeaders(res, path) {
+        if (path.includes("sw.js")) {
+          res.setHeader("Cache-Control", `public, max-age=${15 * 60}`);
+        }
+      }
+    }
+  },
+
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
     '@/plugins/global-components',
