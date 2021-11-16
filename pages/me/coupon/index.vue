@@ -38,12 +38,15 @@
         <coupon-order-single class="mt-10 mlr-10" v-for="item in 10" :key="item"></coupon-order-single>
       </div>
     </van-popup>
+
+    <dialog-gift-coupon></dialog-gift-coupon>
   </div>
 </template>
 
 <script>
 import CouponSingle from '@/components/CouponSingle';
 import CouponOrderSingle from '@/components/CouponOrderSingle';
+import DialogGiftCoupon from '@/components/DialogGiftCoupon';
 import { Tab, Tabs, Sticky, Popup } from 'vant';
 
 export default {
@@ -53,12 +56,13 @@ export default {
     vanSticky: Sticky,
     vanPopup: Popup,
     CouponSingle,
-    CouponOrderSingle
+    CouponOrderSingle,
+    DialogGiftCoupon
   },
   data() {
     return {
       tabActive: 0,
-      isCouponShow: true,
+      isCouponShow: false,
       couponActive: 0
     }
   }
