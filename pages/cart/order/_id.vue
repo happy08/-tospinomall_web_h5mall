@@ -24,17 +24,17 @@
       <div class="mt-12">
         <van-cell-group>
           <!-- 支付方式 -->
-          <van-cell :title="$t('pay_by')" title-class="color-black-85" />
+          <van-cell :title="$t('payment_method')" title-class="color-black-85" />
           <van-radio-group v-model="paymentRadio">
             <van-cell-group>
               <!-- 货到付款 -->
-              <van-cell :title="$t('cash_on_delivery')" title-class="color-black-85" @click="paymentRadio = '2'" v-if="detail.isCashDelivery == 1">
+              <van-cell :title="$t('cash_on_delivery')" :title-class="{'color-black-85': paymentRadio == '1', 'green': paymentRadio == '2'}" @click="onChangePayWay('2')">
                 <!-- 右侧图标-单选图标 -->
                 <template #right-icon>
-                  <van-radio name="2" icon-size="0.48rem">
+                  <van-radio name="2" icon-size="0.48rem" :disabled="detail.isCashDelivery != 1">
                     <template #icon="props">
                       <BmImage
-                        :url="props.checked ? require('@/assets/images/icon/choose-icon.png') : require('@/assets/images/icon/choose-default-icon.png')"
+                        :url="detail.isCashDelivery != 1 ? require('@/assets/images/icon/unchoose-icon.png') : props.checked ? require('@/assets/images/icon/choose-icon.png') : require('@/assets/images/icon/choose-default-icon.png')"
                         :width="'0.32rem'" 
                         :height="'0.32rem'"
                         :isLazy="false"
@@ -46,7 +46,7 @@
                 </template>
               </van-cell>
               <!-- 在线支付 -->
-              <van-cell :title="$t('online')" title-class="color-black-85"  clickable @click="paymentRadio = '1'" :border="false">
+              <van-cell :title="$t('online')" :title-class="{'color-black-85': paymentRadio == '2', 'green': paymentRadio == '1'}"  clickable @click="onChangePayWay('1')" :border="false">
                 <!-- 右侧图标-单选图标 -->
                 <template #right-icon>
                   <van-radio name="1" icon-size="0.48rem">
@@ -478,6 +478,12 @@ export default {
       }else{
         history.back();
       }
+    },
+    onChangePayWay(paymentRadio) {
+      if (this.detail.isCashDelivery != 1 && paymentRadio == '2') {
+        return false;
+      }
+      this.paymentRadio = paymentRadio;
     }
   },
 }
