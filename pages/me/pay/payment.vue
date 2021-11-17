@@ -42,7 +42,7 @@
           :class="{'field-container phone-code-field pt-0 pb-20': true, 'is-active': payRadio == item.label}"
           type="number"
           maxlength="20"
-          v-if="item.label != 'balance' && item.label != 'Tingg'"
+          v-if="item.label != 'balance'"
         >
           <template #label>
             <span @click="$router.push({ name: 'me-address-areacode', query: { ...$route.query, paymentWay: item.label } })" class="iblock fs-14 black lh-20 pl-4">
@@ -83,13 +83,18 @@
         @input="onInput"
       />
     </van-popup>
+
+    <van-dialog v-model="isWaittingPay" title="" :showConfirmButton="false" class="tc ptb-30">
+      <p class="black fs-14 pb-24">{{ $t('wait_pay_result') }}</p>
+      <van-loading type="spinner" color="#42b7ae" />
+    </van-dialog>
      
   </div>
 </template>
 
 <script>
 import { RadioGroup, Radio, Cell, CellGroup, Field, Popup, Picker, NumberKeyboard, PasswordInput } from 'vant';
-import { getAvailable, buyerRecharge, payOrder } from '@/api/pay';
+import { getAvailable, buyerRecharge, payOrder, checkPayOrder } from '@/api/pay';
 const Encryption = require('@/assets/js/encryption');
 import { url } from '@/api/config'; // 导入配置域名
 
@@ -113,7 +118,8 @@ export default {
       phonePrefixs: [],
       isBackDialog: false,
       balanceShow: false,
-      payPwd: ''
+      payPwd: '',
+      isWaittingPay: false
     }
   },
   beforeRouteEnter(to, from, next) { // 从初始页面进入重置值为空
@@ -136,17 +142,25 @@ export default {
   },
   async fetch() {
     try {
-      if (this.$route.query.tingg) {
-        // 加载图标
-        this.$toast.loading({
-          forbidClick: true,
-          loadingType: 'spinner',
-          duration: 0
-        });
-
-        setTimeout(() => {
-          this.$toast.clear();
-        }, 1000)
+      if (this.$route.query.tingg && this.$route.query.tingg != 'pending') { // 只有成功和失败时才调取接口
+        this.isWaittingPay = true;
+        const checkData = await this.$api.checkPayOrder(this.$route.query.refNo);
+        console.log(checkData)
+        
+        if (this.$route.query.type == 'order') {
+          this.$router.push({ // 校验之后成功跳转到订单支付结果页面
+            name: 'cart-order-confirm',
+            query: {
+              orderId: this.$route.query.orderId,
+              isSuccess: checkData.code != 0 ? 2 : 0
+            }
+          })
+        } else {
+          this.$router.replace({
+            name: 'me-wallet'
+          })
+        }
+        this.isWaittingPay = false;
       }
     } catch (error) {
       console.log(error);
@@ -189,7 +203,8 @@ export default {
           phone: ''
         }, {
           label: 'Tingg',
-          phone: ''
+          phone: '',
+          prefixCode: this.$route.query.phonePrefix && 'Tingg' == this.$route.query.paymentWay ? this.$route.query.phonePrefix : this.$t('prefix_tip')
         }]);
       }
     // }).catch(() => { // 接口报错，又是订单结算页面跳过来的话，要先展示余额
@@ -271,14 +286,14 @@ export default {
         return item.label === this.payRadio;
       })[0].prefixCode;
       
-      if (phone.length == 0 && this.payRadio != 'Tingg') {
+      if (phone.length == 0) {
         return false;
       }
 
       // 订单支付
       if (this.$route.query.orderIds) {
         if (this.payRadio == 'Tingg') { // tingg支付
-          this.payOrder({ payType: 3, network: this.payRadio, sourceType: 4, orderIds: JSON.parse(this.$route.query.orderIds).orderIds });
+          this.payOrder({ payType: 3, network: this.payRadio, sourceType: 4, orderIds: JSON.parse(this.$route.query.orderIds).orderIds, phone: phone, phonePrefix: phonePrefix });
           return false;
         }
         this.payOrder({ payType: 2, network: this.payRadio, phone: phone, phonePrefix: phonePrefix, sourceType: 4, orderIds: JSON.parse(this.$route.query.orderIds).orderIds });
@@ -354,7 +369,7 @@ export default {
         return item.label === this.payRadio;
       })[0].phone;
       
-      if (phone.length == 0 && this.payRadio !== 'balance' && this.payRadio !== 'Tingg') {
+      if (phone.length == 0 && this.payRadio !== 'balance') {
         return false;
       }
 
@@ -375,7 +390,7 @@ export default {
           });
           console.log('tingg')
           console.log(res)
-          this.onTinggPay(res.data.tinggPayInfo);
+          this.onTinggPay({ ...res.data.tinggPayInfo, phone: params.phone, phonePrefix: params.phonePrefix });
           return false;
         }
         this.$toast.clear();
@@ -432,6 +447,7 @@ export default {
 
       const encryption = new Encryption(params.ivKey, params.secretKey, algorithm);
       const paymentWebhookUrl = url == '/api' ? 'http://rnzsgf7l.dongtaiyuming.net' : url;
+      
       const payload = {
         merchantTransactionID: params.merchantTransactionID, // 最长是15位，无规则限制
         requestAmount: params.requestAmount,
@@ -443,15 +459,20 @@ export default {
         countryCode: this.$store.state.rate.payParam.countryCode || "GH",
         languageCode: this.$store.state.rate.payParam.languageCode || "en",
         payerClientCode: "",
-        MSISDN: "+233240000000", //Must be a valid number
-        customerFirstName: "John",
-        customerLastName: "Smith",
-        customerEmail: "john.smith@example.com",
-        successRedirectUrl: location.href + '&tingg=success',
-        failRedirectUrl: location.href + '&tingg=failed',
-        pendingRedirectUrl: location.href + '&tingg=pending',
+        MSISDN: params.phonePrefix + '' + params.phone, //Must be a valid number
+        // customerFirstName: "John",
+        // customerLastName: "Smith",
+        // customerEmail: "john.smith@example.com",
+        successRedirectUrl: location.href + `&refNo=${params.merchantTransactionID}&tingg=success`,
+        failRedirectUrl: location.href + `&refNo=${params.merchantTransactionID}&tingg=failed`,
+        pendingRedirectUrl: location.href + `&tingg=pending`,
         paymentWebhookUrl: `${paymentWebhookUrl}/order/pay/tinggPay/callback`
       }
+      // 如果用户有绑定邮箱，则在参数中添加邮箱
+      if (this.$store.state.user.userInfo.email && this.$store.state.user.userInfo.email != '') {
+        payload.customerEmail = this.$store.state.user.userInfo.email;
+      }
+
       let payloadString = JSON.stringify(payload).replace(/\//g, '\\/');
       // 发起结账请求
       Tingg.renderCheckout({

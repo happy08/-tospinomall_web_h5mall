@@ -448,6 +448,7 @@ export default {
         pendingRedirectUrl: location.href + '&pending=1',
         paymentWebhookUrl: 'http://rnzsgf7l.dongtaiyuming.net/order/pay/callback'
       }
+      
       let payloadString = JSON.stringify(payload).replace(/\//g, '\\/');
       // 发起结账请求
       Tingg.renderCheckout({

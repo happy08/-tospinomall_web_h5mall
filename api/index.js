@@ -271,6 +271,15 @@ export default ({ app }, inject) => {
           ...headers
         }
       })
+    },
+    checkPayOrder(refNo) {
+      return app.$axios({
+        url: `${url}/order/pay/checkIsPay`,
+        method: 'get',
+        params: {
+          refNo: refNo
+        }
+      })
     }
   };
 
