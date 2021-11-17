@@ -55,7 +55,21 @@
     <!-- tingg支付 -->
     <button class="awesome-checkout-button" v-if="$route.query.tingg" @click="onTinggPay"></button>
     <!-- brij钱包支付 -->
-    <button class="plr-20 ptb-20 brij-checkout-button">brij钱包支付</button>
+    <button class="plr-20 ptb-20 brij-checkout-button">Brij钱包支付</button>
+    <!-- Payswitch支付 -->
+    <!-- <a class="ttlr_inline"
+      data-APIKey="MjM0Mjk3YzRkOWU2YThjNDI4YmEyOWRlZDY0YjllZWU="
+      data-transid="000000000000"
+      data-amount="1"
+      data-customer_email="email@customer.com"
+      data-currency="GHS"
+      data-redirect_url="http://192.168.2.45:8000/me/pay/paymentTwo?success=1"
+      data-pay_button_text="Pay Now"
+      data-custom_description="Payment Using InlineJS"
+      data-payment_method="both">
+      Payswitch支付
+    </a> -->
+    <button class="plr-20 ptb-20" @click="onPayswitch">Payswitch支付</button>
 
     <!-- 底部金额以及支付按钮 -->
     <div class="w-100 bg-white flex between pl-20 vcenter pay-content__btn">
@@ -127,7 +141,8 @@ export default {
   },
   head: {
     script: [
-      { src: 'https://developer.tingg.africa/checkout/v2/tingg-checkout.js', type: 'text/javascript', charset: 'utf-8' }
+      { src: 'https://developer.tingg.africa/checkout/v2/tingg-checkout.js', type: 'text/javascript', charset: 'utf-8' },
+      // { src: 'https://test.theteller.net/checkout/resource/api/inline/theteller_inline.js', type: 'text/javascript', charset: 'utf-8' }
     ]
   },
   activated() {
@@ -414,7 +429,7 @@ export default {
       const encryption = new Encryption(ivKey, secretKey, algorithm);
 
       const payload = {
-        merchantTransactionID: 'DCFSN2111151865', // 最长是15位，无规则限制
+        merchantTransactionID: 'PN2021111701006', // 最长是15位，无规则限制
         requestAmount: "100",
         currencyCode: "GHS",
         accountNumber: "10092019",
@@ -431,7 +446,7 @@ export default {
         successRedirectUrl: location.href + '&success=1',
         failRedirectUrl: location.href + '&failed=1',
         pendingRedirectUrl: location.href + '&pending=1',
-        paymentWebhookUrl: 'http://rnzsgf7l.dongtaiyuming.net/order/tinggPay/callback'
+        paymentWebhookUrl: 'http://rnzsgf7l.dongtaiyuming.net/order/pay/callback'
       }
       let payloadString = JSON.stringify(payload).replace(/\//g, '\\/');
       // 发起结账请求
@@ -443,7 +458,34 @@ export default {
             countryCode: payload.countryCode
           }
       })
-      // 下一步怎么处理呢？
+    },
+    onPayswitch() { // Payswitch支付
+      fetch('/payswitch/checkout/initiate', {
+        method: 'post',
+        headers: {
+          Authorization: `Basic dG9zcGlubzYxN2Y5NTAzODQ5Y2Y6TWpNME1qazNZelJrT1dVMllUaGpOREk0WW1FeU9XUmxaRFkwWWpsbFpXVT0=`,
+          'Cache-Control': 'no-cache',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          merchant_id: 'TTM-00006229',
+          transaction_id: '000000000000',
+          desc: 'Payswitch支付',
+          amount: '000000000001',
+          redirect_url: 'http://192.168.2.45:8000/me/pay/paymentTwo?tingg=1',
+          email: '1509567392@qq.com',
+          API_Key: 'MjM0Mjk3YzRkOWU2YThjNDI4YmEyOWRlZDY0YjllZWU=',
+          apiuser: 'tospino617f9503849cf'
+        })
+      }).then(res => {
+        return res.json();
+      }).then(response => {
+        console.log(response)
+        if (response.code == 200) { // 重定向到结账页面
+          location.href = response.checkout_url;
+          // http://192.168.2.45:8000/me/pay/paymentTwo?tingg=1%3Fcode%3D600&status=error&reason=Can%20not%20process%20request&transaction_id=000000000000
+        }
+      })
     }
   },
 }

@@ -98,9 +98,20 @@ export default {
     //登录、退出登录、刷新token、第三方登录接口地址
     '/apiLogin': {
       target: 'https://auth.fyynet.com',
-      // target: 'http://192.168.2.70:19999',
+      // target: 'http://192.168.2.35:19999',
       pathRewrite: {
         '^/apiLogin': '/'
+      }
+    },
+    '/api/order/pay/order': {
+      // target: 'http://192.168.2.34:9999', //120.78.145.142
+      // target: 'http://192.168.2.70:9999',
+      // target: 'https://tospinomallapi.fyynet.com',
+      // target: 'http://192.168.2.35:9999',
+      //target: 'http://120.78.145.142:9999',
+      target: 'http://rnzsgf7l.dongtaiyuming.net',
+      pathRewrite: {
+        '^/api/order/pay/order': '/order/pay/order'
       }
     },
     '/api': {
@@ -109,22 +120,23 @@ export default {
       target: 'https://tospinomallapi.fyynet.com',
       // target: 'http://192.168.2.35:9999',
       //target: 'http://120.78.145.142:9999',
+      // target: 'http://rnzsgf7l.dongtaiyuming.net',
       pathRewrite: {
         '^/api': '/'
       }
     },
     "/brij": {
-      // target: "http://152.32.143.32:9999",
       target: "https://staging.orobo.site",
-      // target: "http://192.168.2.34:9999",
-      //target: "http://192.168.2.11:9999",
-      // target: "http://192.168.2.35:9999",
-      //target: "http://192.168.2.70:9999",
-      //target: "http://120.78.145.142:9999",
       pathRewrite: {
           "^/brij": "/"
       }
-  }
+    },
+    "/payswitch": {
+      target: "https://test.theteller.net",
+      pathRewrite: {
+          "^/payswitch": "/"
+      }
+    }
   },
 
   // PWA module configuration: https://go.nuxtjs.dev/pwa

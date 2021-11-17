@@ -10,6 +10,7 @@
           <!-- 左侧图标 -->
           <template #icon>
             <BmImage
+              v-if="item.label != 'Tingg'"
               :url="require('@/assets/images/icon/'+ (item.label) +'.png')"
               :width="'0.48rem'" 
               :height="'0.48rem'"
@@ -41,7 +42,7 @@
           :class="{'field-container phone-code-field pt-0 pb-20': true, 'is-active': payRadio == item.label}"
           type="number"
           maxlength="20"
-          v-if="item.label != 'balance'"
+          v-if="item.label != 'balance' && item.label != 'Tingg'"
         >
           <template #label>
             <span @click="$router.push({ name: 'me-address-areacode', query: { ...$route.query, paymentWay: item.label } })" class="iblock fs-14 black lh-20 pl-4">
@@ -52,6 +53,11 @@
         </van-field>
       </van-cell-group>
     </van-radio-group>
+
+    <!-- tingg支付 -->
+    <button class="awesome-checkout-button" @click="onTinggPay"></button>
+    <!-- brij钱包支付 -->
+    <button class="plr-20 ptb-20 brij-checkout-button">Brij钱包支付</button>
 
     <!-- 底部金额以及支付按钮 -->
     <div class="w-100 bg-white flex between pl-20 vcenter pay-content__btn">
@@ -84,6 +90,8 @@
 <script>
 import { RadioGroup, Radio, Cell, CellGroup, Field, Popup, Picker, NumberKeyboard, PasswordInput } from 'vant';
 import { getAvailable, buyerRecharge, payOrder } from '@/api/pay';
+const Encryption = require('@/assets/js/encryption');
+import { url } from '@/api/config'; // 导入配置域名
 
 export default {
   middleware: 'authenticated',
@@ -120,6 +128,30 @@ export default {
       }
     });
   },
+  head: {
+    script: [
+      { src: 'https://developer.tingg.africa/checkout/v2/tingg-checkout.js', type: 'text/javascript', charset: 'utf-8' },
+      // { src: 'https://test.theteller.net/checkout/resource/api/inline/theteller_inline.js', type: 'text/javascript', charset: 'utf-8' }
+    ]
+  },
+  async fetch() {
+    try {
+      if (this.$route.query.tingg) {
+        // 加载图标
+        this.$toast.loading({
+          forbidClick: true,
+          loadingType: 'spinner',
+          duration: 0
+        });
+
+        setTimeout(() => {
+          this.$toast.clear();
+        }, 1000)
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  },
   activated() {
     // if (this.$route.query.phonePrefix && this.list.length > 0) { // 从选择电话的页面回跳回来的
     //   this.list = this.list.map(item => {
@@ -152,10 +184,13 @@ export default {
     //   });
 
       if (this.$route.query.type == 'order') { // 说明是从订单结算页面跳转过来的，支付方式就有余额
-        this.list.push({
+        this.list = this.list.concat([{
           label: 'balance',
           phone: ''
-        });
+        }, {
+          label: 'Tingg',
+          phone: ''
+        }]);
       }
     // }).catch(() => { // 接口报错，又是订单结算页面跳过来的话，要先展示余额
     //   if (this.$route.query.type == 'order') { // 说明是从订单结算页面跳转过来的，支付方式就有余额
@@ -165,6 +200,49 @@ export default {
     //     }];
     //   }
     // })
+
+    let myHeaders = new Headers();
+
+    myHeaders.append('Content-Type', 'application/json');
+    myHeaders.append('Authorization', 'Bearer 773|zuhKE0MLWvfAnZHo5dJU9oRQOUILNHt6JWokxeer');
+    // should return 'text/xml'
+
+
+    // brij钱包支付
+    // 获取所有的支付方式
+    let brijData = [];
+    fetch('/brij/api/v2/payviabrij/paymentmethods', {
+      method: 'POST',
+      body: JSON.stringify({
+        currency: 'GHS'
+      }),
+      headers: myHeaders,
+      // mode: 'no-cors',
+    }).then(res => {
+      return res.json();
+    }).then(response => {
+      brijData = response.data;
+      console.log(response);
+    })
+
+    document
+      .querySelector('.brij-checkout-button')
+      .addEventListener('click', function () {
+        // 进行支付
+        fetch('/brij/api/v2/payviabrij/pay', {
+          method: 'POST',
+          headers: myHeaders,
+          body: JSON.stringify({
+            "transaction_id" : "brij6233220",
+            "merchant_id" : "003542",
+            "currency" : "GHS",
+            "payment_details" : {"momo_number": "+233544203781"},
+            "payment_method_id" : brijData[0].id,
+            "amount" : "0.1"
+          }),
+          // mode: 'no-cors',
+        }).then(response => console.log(response.json()))
+      })
   },
   methods: {
     onPay() { // 提交支付,成功跳转到确认订单页面
@@ -193,12 +271,16 @@ export default {
         return item.label === this.payRadio;
       })[0].prefixCode;
       
-      if (phone.length == 0) {
+      if (phone.length == 0 && this.payRadio != 'Tingg') {
         return false;
       }
 
       // 订单支付
       if (this.$route.query.orderIds) {
+        if (this.payRadio == 'Tingg') { // tingg支付
+          this.payOrder({ payType: 3, network: this.payRadio, sourceType: 4, orderIds: JSON.parse(this.$route.query.orderIds).orderIds });
+          return false;
+        }
         this.payOrder({ payType: 2, network: this.payRadio, phone: phone, phonePrefix: phonePrefix, sourceType: 4, orderIds: JSON.parse(this.$route.query.orderIds).orderIds });
         return false;
       }
@@ -272,7 +354,7 @@ export default {
         return item.label === this.payRadio;
       })[0].phone;
       
-      if (phone.length == 0 && this.payRadio !== 'balance') {
+      if (phone.length == 0 && this.payRadio !== 'balance' && this.payRadio !== 'Tingg') {
         return false;
       }
 
@@ -284,8 +366,19 @@ export default {
       });
       payOrder(params).then(res => {
         if (res.code != 0) return false;
+        
+        // tingg支付
+        if (params.payType == 3) {
+          Tingg.renderPayButton({ // 按钮初始化
+            className: 'pay-content__btn--pay', 
+            checkoutType: 'redirect' // or 'modal'
+          });
+          console.log('tingg')
+          console.log(res)
+          this.onTinggPay(res.data.tinggPayInfo);
+          return false;
+        }
         this.$toast.clear();
-
         if (this.payRadio === 'balance') { // 余额支付，直接跳转到支付订单结果页
           this.$router.push({ // 校验之后成功跳转到订单支付结果页面
             name: 'cart-order-confirm',
@@ -328,6 +421,73 @@ export default {
             })
             return false;
           }
+        }
+      })
+    },
+    onTinggPay(params) { // tingg支付
+      // const ivKey = 'wJf8Vjch2rbGmy47';
+      // const secretKey = 'FtWH6ZGc2qQTMbvw';
+      // const accessKey = '$2a$08$wvWtdcwhPCEK1lhWXuP8lO6qnx5Pw5XpxcwtAV0aGn9tXLcLMAxoi';
+      const algorithm = "aes-256-cbc";
+
+      const encryption = new Encryption(params.ivKey, params.secretKey, algorithm);
+      const paymentWebhookUrl = url == '/api' ? 'http://rnzsgf7l.dongtaiyuming.net' : url;
+      const payload = {
+        merchantTransactionID: params.merchantTransactionID, // 最长是15位，无规则限制
+        requestAmount: params.requestAmount,
+        currencyCode: this.$store.state.rate.payParam.currencyCode || "GHS",
+        accountNumber: params.accountNumber,
+        serviceCode: params.serviceCode,
+        // dueDate: "2019-06-01 23:59:59", //Must be a future date
+        // requestDescription: "Dummy merchant transaction",
+        countryCode: this.$store.state.rate.payParam.countryCode || "GH",
+        languageCode: this.$store.state.rate.payParam.languageCode || "en",
+        payerClientCode: "",
+        MSISDN: "+233240000000", //Must be a valid number
+        customerFirstName: "John",
+        customerLastName: "Smith",
+        customerEmail: "john.smith@example.com",
+        successRedirectUrl: location.href + '&tingg=success',
+        failRedirectUrl: location.href + '&tingg=failed',
+        pendingRedirectUrl: location.href + '&tingg=pending',
+        paymentWebhookUrl: `${paymentWebhookUrl}/order/pay/tinggPay/callback`
+      }
+      let payloadString = JSON.stringify(payload).replace(/\//g, '\\/');
+      // 发起结账请求
+      Tingg.renderCheckout({
+          checkoutType: 'redirect', // or 'modal'
+          merchantProperties: {
+            params: encryption.encrypt(payloadString),
+            accessKey: params.accessKey,
+            countryCode: payload.countryCode
+          }
+      })
+    },
+    onPayswitch() { // Payswitch支付
+      fetch('/payswitch/checkout/initiate', {
+        method: 'post',
+        headers: {
+          Authorization: `Basic dG9zcGlubzYxN2Y5NTAzODQ5Y2Y6TWpNME1qazNZelJrT1dVMllUaGpOREk0WW1FeU9XUmxaRFkwWWpsbFpXVT0=`,
+          'Cache-Control': 'no-cache',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          merchant_id: 'TTM-00006229',
+          transaction_id: '000000000000',
+          desc: 'Payswitch支付',
+          amount: '000000000001',
+          redirect_url: 'http://192.168.2.45:8000/me/pay/paymentTwo?tingg=1',
+          email: '1509567392@qq.com',
+          API_Key: 'MjM0Mjk3YzRkOWU2YThjNDI4YmEyOWRlZDY0YjllZWU=',
+          apiuser: 'tospino617f9503849cf'
+        })
+      }).then(res => {
+        return res.json();
+      }).then(response => {
+        console.log(response)
+        if (response.code == 200) { // 重定向到结账页面
+          location.href = response.checkout_url;
+          // http://192.168.2.45:8000/me/pay/paymentTwo?tingg=1%3Fcode%3D600&status=error&reason=Can%20not%20process%20request&transaction_id=000000000000
         }
       })
     }
