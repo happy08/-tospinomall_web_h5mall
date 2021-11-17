@@ -414,7 +414,7 @@ export default {
       const encryption = new Encryption(ivKey, secretKey, algorithm);
 
       const payload = {
-        merchantTransactionID: 'DCFSN2111151864', // 最长是15位，无规则限制
+        merchantTransactionID: 'DCFSN2111151865', // 最长是15位，无规则限制
         requestAmount: "100",
         currencyCode: "GHS",
         accountNumber: "10092019",
