@@ -720,6 +720,7 @@ const en = {
   no_support_video: 'Your browser does not support the video tag',
   please_read_checked: 'Please read and tick the agreement',
   backOldWeb: "Old Version",
+  payment_method: 'Payment Method',
   wait_pay_result: 'Please wait patiently for the payment result'
 }
 

@@ -719,7 +719,9 @@ const vi = {
   return_to_previous_page: 'Trở lại trang trước',
   no_support_video: 'Trình duyệt của bạn không hỗ trợ thẻ video',
   backOldWeb: "Phiên bản cũ",
+  payment_method: 'Phương thức thanh toán',
   wait_pay_result: 'Hãy kiên nhẫn đợi kết quả thanh toán'
+  
 }
 
 export default vi;

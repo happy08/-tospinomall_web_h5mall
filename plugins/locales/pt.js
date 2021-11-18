@@ -719,6 +719,7 @@
   return_to_previous_page: 'Voltar para a página anterior',
   no_support_video: 'Seu navegador não suporta a tag de vídeo',
   backOldWeb: "Versão Antiga",
+  payment_method: 'Forma de pagamento',
   wait_pay_result: 'Por favor, aguarde pacientemente pelo resultado do pagamento'
 }
 
