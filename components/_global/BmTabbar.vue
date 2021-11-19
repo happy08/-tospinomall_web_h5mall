@@ -1,13 +1,13 @@
 <template>
   <van-tabbar active-color="#43B7AF" inactive-color="#B6B6B6" v-model="$route.name">
-    <nuxt-link :to="tabItem.path" class="van-tabbar-item ws-nowrap" v-for="(tabItem, index) in tabs" :key="'tab-' + index">
+    <nuxt-link :to="{ name: tabItem.name}" class="van-tabbar-item ws-nowrap" v-for="(tabItem, index) in tabs" :key="'tab-' + index">
     <!-- <van-tabbar-item v-for="(tabItem, index) in tabs" :key="'tab-' + index" class="ws-nowrap" :name="tabItem.name"> -->
       <!-- <template #icon="props"> -->
           <div class="van-tabbar-item__icon">
-            <img :src="$route.path == tabItem.path ? require('@/assets/images/icon/tab-' + tabItem.icon + '-active.png') : require('@/assets/images/icon/tab-' + tabItem.icon + '-normal.png')" />
+            <img :src="($route.name == tabItem.name || $route.name == tabItem.nameOld) ? require('@/assets/images/icon/tab-' + tabItem.icon + '-active.png') : require('@/assets/images/icon/tab-' + tabItem.icon + '-normal.png')" />
           </div>
       <!-- </template> -->
-      <div :class="{'van-tabbar-item__text': true, 'green': $route.path == tabItem.path, 'grey': $route.path != tabItem.path}">{{ $t(tabItem.text) }}</div>
+      <div :class="{'van-tabbar-item__text': true, 'green': ($route.name == tabItem.name || $route.name == tabItem.nameOld), 'grey': ($route.name != tabItem.name && $route.name != tabItem.nameOld)}">{{ $t(tabItem.text) }}</div>
       
     <!-- </van-tabbar-item> -->
     </nuxt-link>
@@ -26,22 +26,26 @@ export default {
     return {
       tabs: [
         {
-          path: '/home.html',
+          name: 'home',
+          nameOld: 'home-old',
           text: 'home',
           icon: 'home'
         },
         {
-          path: '/categories.html',
+          name: 'categories',
+          nameOld: 'categories-old',
           text: 'categories',
           icon: 'categories'
         },
         {
-          path: '/cart.html',
+          name: 'cart',
+          nameOld: 'cart-old',
           text: 'cart',
           icon: 'cart'
         },
         {
-          path: '/me.html',
+          name: 'me',
+          nameOld: 'me-old',
           text: 'me',
           icon: 'me'
         }

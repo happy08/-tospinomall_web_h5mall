@@ -173,16 +173,3 @@ export function cancelPayOrder(refNo) {
     }
   })
 }
-
-/**
- * 检查是否支付订单
- */
-export function checkPayOrder(refNo) {
-  return request({
-    url: '/order/pay/checkIsPay',
-    method: 'get',
-    params: {
-      refNo: refNo
-    }
-  })
-}

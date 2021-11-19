@@ -277,7 +277,10 @@ export default ({ app }, inject) => {
         url: `${url}/order/pay/checkIsPay`,
         method: 'get',
         params: {
-          refNo: refNo
+          refNo: refNo,
+        },
+        headers: {
+          Authorization: app.$cookies.get('authToken')
         }
       })
     }
