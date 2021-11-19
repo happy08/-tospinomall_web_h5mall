@@ -720,7 +720,9 @@
   no_support_video: 'Seu navegador não suporta a tag de vídeo',
   backOldWeb: "Versão Antiga",
   payment_method: 'Forma de pagamento',
-  wait_pay_result: 'Por favor, aguarde pacientemente pelo resultado do pagamento'
+  wait_pay_result: 'Por favor, aguarde pacientemente pelo resultado do pagamento',
+  payment_way: "Pagamento {replace_tip}",
+  tospinomall_wallet: 'Carteira TospinoMall'
 }
 
 export default por;

@@ -721,7 +721,9 @@ const en = {
   please_read_checked: 'Please read and tick the agreement',
   backOldWeb: "Old Version",
   payment_method: 'Payment Method',
-  wait_pay_result: 'Please wait patiently for the payment result'
+  wait_pay_result: 'Please wait patiently for the payment result',
+  payment_way: "{replace_tip} payment",
+  tospinomall_wallet: 'TospinoMall 钱包'
 }
 
 export default en;

@@ -720,7 +720,9 @@ const vi = {
   no_support_video: 'Trình duyệt của bạn không hỗ trợ thẻ video',
   backOldWeb: "Phiên bản cũ",
   payment_method: 'Phương thức thanh toán',
-  wait_pay_result: 'Hãy kiên nhẫn đợi kết quả thanh toán'
+  wait_pay_result: 'Hãy kiên nhẫn đợi kết quả thanh toán',
+  payment_way: "{replace_tip} thanh toán",
+  tospinomall_wallet: 'Ví TospinoMall'
   
 }
 

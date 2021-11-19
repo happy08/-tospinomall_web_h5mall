@@ -721,7 +721,9 @@ const cn = {
   no_support_video: '您的浏览器不支持 video 标签',
   backOldWeb: "返回<br/>旧版",
   payment_method: '支付方式',
-  wait_pay_result: '请耐心等待支付结果'
+  wait_pay_result: '请耐心等待支付结果',
+  payment_way: "{replace_tip}支付",
+  tospinomall_wallet: 'TospinoMall 钱包'
 }
 
 export default cn;
