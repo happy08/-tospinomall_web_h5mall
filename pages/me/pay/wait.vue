@@ -38,7 +38,7 @@
 </template>
 
 <script>
-import { cancelPayOrder, checkPayOrder, buyerCancelRecharge, checkBuyerRecharge, callBackRecharge } from '@/api/pay';
+import { cancelPayOrder, buyerCancelRecharge, checkBuyerRecharge, callBackRecharge } from '@/api/pay';
 
 export default {
   middleware: 'authenticated',
@@ -54,7 +54,7 @@ export default {
     async onPayCompleted() { // 支付完成
       let data;
       if (this.$route.query.orderId) { // 确认订单是否支付
-        data = await checkPayOrder(this.$route.query.refNo);
+        data = await this.$api.checkPayOrder(this.$route.query.refNo);
       } else {
         data = await checkBuyerRecharge(this.$route.query.refNo); // 判断买家充值是否成功
       }
