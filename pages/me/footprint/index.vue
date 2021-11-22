@@ -165,6 +165,7 @@ export default {
       
       // 获取列表数据
       const listData = await this.$api.getFootprintList({ pageSize: this.pageSize, pageNum: this.pageNum });
+      this.$toast.clear();
       if (listData.code != 0) return false;
 
       this.total = listData.data.total;
@@ -178,11 +179,15 @@ export default {
     next(vm => {
       if (from.name === 'me') {
         vm.pageNum = 1;
-        vm.$fetch();
       }
     });
   },
   activated() {
+    this.$toast.loading({
+      forbidClick: true,
+      loadingType: 'spinner',
+      duration: 0
+    });
     this.$fetch();
   },
   methods: {
