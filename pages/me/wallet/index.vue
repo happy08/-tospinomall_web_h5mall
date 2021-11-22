@@ -27,22 +27,22 @@
       </div>
 
       <!-- 可选择的充值额度选项 -->
-      <!-- <ul class="flex flex-wrap" v-if="detail.fixedRechargeCard && detail.fixedRechargeCard.cardItems">
+      <ul class="flex flex-wrap" v-if="detail.fixedRechargeCard && detail.fixedRechargeCard.cardItems">
         <li class="bg-grey round-8 fw tc fs-18 mt-10 black perse-li flex column center" v-for="(fixedCard, fixedCardIndex) in detail.fixedRechargeCard.cardItems" :key="'fixed-card-' + fixedCardIndex" @click="onRecharge(1, fixedCard.rechargeAmount)">{{ $store.state.rate.currency }} {{ fixedCard.rechargeAmount }}
           <div class="red fs-10 block lh-1" v-if="fixedCard.giftAmount > 0">{{ $t('give') }}{{ $store.state.rate.currency }}{{ fixedCard.giftAmount }}</div>
         </li>
-      </ul> -->
+      </ul>
       <!-- 自定义金额 -->
-      <!-- <van-field class="mt-24 border round-8" v-model="amount" type="number" maxlength="15" :placeholder="$t('enter_a_custom_amount')" :formatter="formatter" /> -->
+      <van-field class="mt-24 border round-8" v-model="amount" type="number" maxlength="15" :placeholder="$t('enter_a_custom_amount')" :formatter="formatter" />
     </div>
     
     <!-- 充值按钮 -->
-    <!-- <div class="mt-24 mlr-20">
+    <div class="mt-24 mlr-20">
       <BmButton class="w-100 round-8" :disabled="amount <= 0" @click.stop="onRecharge(2, amount)">{{ $t('recharge_now') }}</BmButton>
     
       <p class="mt-40 fs-14 black" v-if="detail.freeRechargeCard && detail.freeRechargeCard.rechargeExplain">{{ $t('recharge_instructions') }}</p>
       <p class="mt-8 fs-14 light-grey" v-if="detail.freeRechargeCard && detail.freeRechargeCard.rechargeExplain">{{ detail.freeRechargeCard.rechargeExplain }}</p>
-    </div> -->
+    </div>
   </div>
 </template>
 

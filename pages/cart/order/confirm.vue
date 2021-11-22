@@ -166,8 +166,12 @@ export default {
         this.$router.replace({
           name: 'me-order'
         });
-      }else if (this.$route.query.isSuccess && this.$route.query.isSuccess == 2) { // 订单余额支付
+      } else if (this.$route.query.isSuccess && this.$route.query.isSuccess == 2) { // 订单余额支付
         this.$router.go(-2);
+      } else if (this.$route.query.isSuccess && this.$route.query.isSuccess == 4) { // 订单tingg支付
+        this.$router.go(-5);
+      } else if (this.$route.query.isSuccess && this.$route.query.isSuccess == 5) { // 订单brij支付
+        this.$router.go(-4);
       } else { // 订单其他支付
         this.$router.go(-3);
       }

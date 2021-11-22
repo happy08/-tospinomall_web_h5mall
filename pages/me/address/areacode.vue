@@ -36,7 +36,13 @@ export default {
   },
   methods: {
     getLists() { // 获取国家列表
+      this.$toast.loading({
+        forbidClick: true,
+        loadingType: 'spinner',
+        duration: 0
+      });
       getPhonePrefix().then(res => {
+        this.$toast.clear();
         // 数据格式化
         this.countrylists = {};
         this.indexList.forEach(pref => {
@@ -52,12 +58,13 @@ export default {
           })
         })
       }).catch(error => {
+        this.$toast.clear();
         console.log(error);
       })
     },
     goBack(phonePrefix) {
       this.$router.replace({
-        name: this.$route.query.type == 'rebind' ? 'me-account-bind-rebind' : this.$route.query.paymentWay ? 'me-pay-payment' : 'me-address-make',
+        name: this.$route.query.type == 'rebind' ? 'me-account-bind-rebind' : this.$route.query.payment ? 'me-pay-payment' : this.$route.query.paymentWay ? 'me-pay-paymentWay' : 'me-address-make',
         query: {
           ...this.$route.query,
           phonePrefix: phonePrefix

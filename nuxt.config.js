@@ -103,17 +103,17 @@ export default {
         '^/apiLogin': '/'
       }
     },
-    '/api/order/pay/order': {
-      // target: 'http://192.168.2.34:9999', //120.78.145.142
-      // target: 'http://192.168.2.70:9999',
-      // target: 'https://tospinomallapi.fyynet.com',
-      // target: 'http://192.168.2.35:9999',
-      //target: 'http://120.78.145.142:9999',
-      target: 'http://rnzsgf7l.dongtaiyuming.net',
-      pathRewrite: {
-        '^/api/order/pay/order': '/order/pay/order'
-      }
-    },
+    // '/api/order/pay/order': {
+    //   // target: 'http://192.168.2.34:9999', //120.78.145.142
+    //   // target: 'http://192.168.2.70:9999',
+    //   // target: 'https://tospinomallapi.fyynet.com',
+    //   // target: 'http://192.168.2.35:9999',
+    //   //target: 'http://120.78.145.142:9999',
+    //   target: 'http://rnzsgf7l.dongtaiyuming.net',
+    //   pathRewrite: {
+    //     '^/api/order/pay/order': '/order/pay/order'
+    //   }
+    // },
     '/api': {
       // target: 'http://192.168.2.34:9999', //120.78.145.142
       // target: 'http://192.168.2.70:9999',
@@ -131,10 +131,22 @@ export default {
           "^/brij": "/"
       }
     },
+    "/theteller": {
+      target: "https://prod.theteller.net",
+      pathRewrite: {
+          "^/theteller": "/"
+      }
+    },
     "/payswitch": {
       target: "https://test.theteller.net",
       pathRewrite: {
           "^/payswitch": "/"
+      }
+    },
+    '/tingg': {
+      target: 'https://developer.tingg.africa',
+      pathRewrite: {
+        "^/tingg": "/"
       }
     }
   },

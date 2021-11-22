@@ -4,7 +4,8 @@ export const state = () => ({
   locales: [],
   locale: '',
   rate: {
-    currency: ''
+    currency: '',
+    payParamObj: {}
   },
   searchProductList: [], // 商品搜索历史
   searchType: 0, // 搜索类型
@@ -65,6 +66,7 @@ export const actions = {
       if (initData.data) {
         // 获取当前语言货币汇率
         commit('SET_RATE', initData.data.baseRate);
+        console.log(initData.data.baseRate)
         // 获取搜索类型
         commit('SET_SEARCHTYPE', initData.data.searchType);
         // 获取平台信息
