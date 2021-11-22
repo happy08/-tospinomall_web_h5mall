@@ -722,7 +722,8 @@ const vi = {
   payment_method: 'Phương thức thanh toán',
   wait_pay_result: 'Hãy kiên nhẫn đợi kết quả thanh toán',
   payment_way: "{replace_tip} thanh toán",
-  tospinomall_wallet: 'Ví TospinoMall'
+  tospinomall_wallet: 'Ví TospinoMall',
+  pay_again: 'Thử lại'
   
 }
 

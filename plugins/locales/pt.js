@@ -722,7 +722,8 @@
   payment_method: 'Forma de pagamento',
   wait_pay_result: 'Por favor, aguarde pacientemente pelo resultado do pagamento',
   payment_way: "Pagamento {replace_tip}",
-  tospinomall_wallet: 'Carteira TospinoMall'
+  tospinomall_wallet: 'Carteira TospinoMall',
+  pay_again: 'Pagar de novo'
 }
 
 export default por;

@@ -723,7 +723,8 @@ const cn = {
   payment_method: '支付方式',
   wait_pay_result: '请耐心等待支付结果',
   payment_way: "{replace_tip}支付",
-  tospinomall_wallet: 'TospinoMall 钱包'
+  tospinomall_wallet: 'TospinoMall 钱包',
+  pay_again: '重新支付'
 }
 
 export default cn;

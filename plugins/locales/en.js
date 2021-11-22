@@ -723,7 +723,8 @@ const en = {
   payment_method: 'Payment Method',
   wait_pay_result: 'Please wait patiently for the payment result',
   payment_way: "{replace_tip} payment",
-  tospinomall_wallet: 'TospinoMall 钱包'
+  tospinomall_wallet: 'TospinoMall Wallet',
+  pay_again: 'Pay Again'
 }
 
 export default en;
