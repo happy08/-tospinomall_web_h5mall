@@ -8,6 +8,7 @@
     "build": "nuxt build",
     "build:test": "cross-env process.env.APP_MODE=test process.env.APP_ENV=test nuxt build",
     "build:ghana": "cross-env process.env.APP_MODE=ghana process.env.APP_ENV=production nuxt build",
+    "build:vi": "cross-env process.env.APP_MODE=vi process.env.APP_ENV=production nuxt build",
     "start": "nuxt start",
     "generate": "nuxt generate"
   },

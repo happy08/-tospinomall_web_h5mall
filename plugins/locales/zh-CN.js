@@ -720,6 +720,7 @@ const cn = {
   return_to_previous_page: '返回上一页',
   no_support_video: '您的浏览器不支持 video 标签',
   backOldWeb: "返回<br/>旧版",
+  payment_method: '支付方式',
   my_coupon: '我的优惠券',
   coupon_use_instruction: '使用说明'
 }

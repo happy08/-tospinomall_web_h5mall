@@ -719,8 +719,9 @@ const vi = {
   return_to_previous_page: 'Trở lại trang trước',
   no_support_video: 'Trình duyệt của bạn không hỗ trợ thẻ video',
   backOldWeb: "Phiên bản cũ",
-  my_coupon: '我的优惠券',
-  coupon_use_instruction: '使用说明'
+  payment_method: 'Phương thức thanh toán',
+  my_coupon: 'Phiếu giảm giá của tôi',
+  coupon_use_instruction: 'Hướng dẫn sử dụng'
 }
 
 export default vi;

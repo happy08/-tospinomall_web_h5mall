@@ -719,8 +719,9 @@
   return_to_previous_page: 'Voltar para a página anterior',
   no_support_video: 'Seu navegador não suporta a tag de vídeo',
   backOldWeb: "Versão Antiga",
-  my_coupon: '我的优惠券',
-  coupon_use_instruction: '使用说明'
+  payment_method: 'Forma de pagamento',
+  my_coupon: 'Meu cupom de desconto',
+  coupon_use_instruction: 'Instruções de uso'
 }
 
 export default por;

@@ -720,8 +720,9 @@ const en = {
   no_support_video: 'Your browser does not support the video tag',
   please_read_checked: 'Please read and tick the agreement',
   backOldWeb: "Old Version",
-  my_coupon: '我的优惠券',
-  coupon_use_instruction: '使用说明'
+  payment_method: 'Payment Method',
+  my_coupon: 'My discount coupon',
+  coupon_use_instruction: 'Instructions for use'
 }
 
 export default en;
