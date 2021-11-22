@@ -533,6 +533,8 @@ export default {
             this.lists.splice(index, 1);
           }
         })
+
+        this.cancelRadio = 0;
       }).catch(error => {
         console.log(error);
       })
