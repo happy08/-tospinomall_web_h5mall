@@ -362,7 +362,13 @@ export default {
       })
     },
     getNextArea(city, flag, isNext) {
+      this.$toast.loading({
+        forbidClick: true,
+        loadingType: 'spinner',
+        duration: 0
+      });
       getNextArea({ parentId: city.id }).then(res => {
+        this.$toast.clear();
         if (res.data.length === 0) { // 没有下一级的数据处理
           if (!this.isNext) { // 已经是最后一级的话
             this.stepArr.splice(this.stepActive, 1, city);
@@ -393,6 +399,7 @@ export default {
           return false;
         }
       }).catch(error => {
+        this.$toast.clear();
         console.log(error);
       })
     },

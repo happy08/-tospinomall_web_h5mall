@@ -273,7 +273,12 @@ export default {
           cancelButtonColor: '#383838'
         }).then(() => {
           this.$router.push({
-            name: 'me-address'
+            name: 'me-address',
+            query: { 
+              back: 'car-order-id', 
+              cartOrderId: this.$route.params.id, 
+              otherQuery: this.$route.query
+            }
           })
         }).catch(() => {
           this.$router.go(-1);
