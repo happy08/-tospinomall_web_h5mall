@@ -80,7 +80,13 @@ export default {
       })
     },
     getAddressList() { // 获取地址列表
+      this.$toast.loading({
+        forbidClick: true,
+        loadingType: 'spinner',
+        duration: 0
+      });
       getAddressList().then(res => {
+        this.$toast.clear();
         this.lists = res.data.map(item => {
           return {
             ...item,
@@ -88,13 +94,20 @@ export default {
           }
         })
       }).catch(error => {
+        this.$toast.clear();
         console.log(error);
       })
     },
     onSetDeafult(id) { // 设置默认地址
+      this.$toast.loading({
+        forbidClick: true,
+        loadingType: 'spinner',
+        duration: 0
+      });
       updateDefaultAddress(id).then(() => {
         this.getAddressList();
       }).catch(error => {
+        this.$toast.clear();
         console.log(error);
       })
     },
