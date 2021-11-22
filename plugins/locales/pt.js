@@ -721,7 +721,7 @@
   backOldWeb: "Versão Antiga",
   payment_method: 'Forma de pagamento',
   my_coupon: 'Meu cupom de desconto',
-  coupon_use_instruction: 'Instruções de uso'
+  coupon_use_instruction: 'Instruções'
 }
 
 export default por;

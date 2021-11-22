@@ -10,12 +10,13 @@
         <div class="fs-10 mt-6 hidden-2">Buy Rp50,00 cap at Rp10,000 off</div>
       </div>
       <div class="round-8 coupon-orde-single__right">
+        <!-- 规则的展开与隐藏 -->
         <BmIcon :name="type != 0 ? 'collapsed' : 'collapse'" :width="'0.28rem'" :height="'0.28rem'" @iconClick="isOpenCollapse = !isOpenCollapse" class="coupon-collapse"></BmIcon>
         <h2 class="fs-14">Free Shipping</h2>
         <p class="fs-12 mt-2">Tospino specific product</p>
         <div class="flex between mt-18">
           <span class="fs-10 mt-4">5-5 Nov.2021</span>
-          <BmButton class="fs-12 fw white round-100 plr-12 h-24 bg-green-linear">COLLECT</BmButton>
+          <BmButton class="fs-12 fw white round-100 plr-12 h-24 bg-green-linear" v-if="type == -1">COLLECT</BmButton>
         </div>
       </div>
     </div>
@@ -28,9 +29,15 @@
 <script>
 export default {
   props: {
-    type: { // 优惠券状态 0未使用 1已使用 2 已过期 3用完
+    type: { // 优惠券状态 0未使用 1已使用 2 已过期 3用完 -1可领取
       type: Number,
       default: 0
+    },
+    item: {
+      type: Object,
+      default: {
+        checked: false
+      }
     }
   },
   data() {
@@ -75,5 +82,10 @@ export default {
 }
 .mt-6{
   margin-top: 6px;
+}
+.coupon-choose{
+  position: absolute;
+  right: 18px;
+  top: 47px;
 }
 </style>

@@ -721,7 +721,7 @@ const vi = {
   backOldWeb: "Phiên bản cũ",
   payment_method: 'Phương thức thanh toán',
   my_coupon: 'Phiếu giảm giá của tôi',
-  coupon_use_instruction: 'Hướng dẫn sử dụng'
+  coupon_use_instruction: 'Hướng dẫn'
 }
 
 export default vi;

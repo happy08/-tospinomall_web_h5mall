@@ -62,7 +62,7 @@ export default {
   data() {
     return {
       tabActive: 0,
-      isCouponShow: false,
+      isCouponShow: true,
       couponActive: 0
     }
   }

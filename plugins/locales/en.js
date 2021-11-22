@@ -721,8 +721,8 @@ const en = {
   please_read_checked: 'Please read and tick the agreement',
   backOldWeb: "Old Version",
   payment_method: 'Payment Method',
-  my_coupon: 'My discount coupon',
-  coupon_use_instruction: 'Instructions for use'
+  my_coupon: 'My coupons',
+  coupon_use_instruction: 'Instructions'
 }
 
 export default en;
