@@ -107,7 +107,7 @@ export function callBackRecharge(tradeNo) {
 }
 
 /**
- * 获取可用支付方式
+ * 获取可用支付方式-uniwallet聚合支付
  */
 export function getAvailable() {
   return request({
@@ -170,6 +170,44 @@ export function cancelPayOrder(refNo) {
     method: 'get',
     params: {
       refNo: refNo
+    }
+  })
+}
+
+/**
+ * 获取brij所有支付方式
+ * params: currencyCode 币种编码
+ */
+export function getBrijPayments(currencyCode) {
+  return request({
+    url: '/order/brijPay/fetchPayMethods',
+    method: 'get',
+    params: {
+      currencyCode
+    }
+  })
+}
+
+/**
+ * 获取所有支付方式
+ */
+export function getAllPayments() {
+  return request({
+    url: '/basics/dict/type/sys_pay_style',
+    method: 'get'
+  })
+}
+
+/**
+ * brij支付-支付订单接口调用之后去支付
+ */
+export function payBrij(data) {
+  return request({
+    url: '/order/brijPay/pay',
+    method: 'post',
+    data,
+    headers: {
+      'Content-Type': 'application/json'
     }
   })
 }
