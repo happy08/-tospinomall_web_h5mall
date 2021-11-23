@@ -5,12 +5,12 @@
     <!-- 支付详情 -->
     <div class="mt-24 tc plr-20">
       <BmImage
-        :url="require('@/assets/images/icon/'+ logo +'.png')"
+        :url="logo"
         :width="'0.96rem'" 
         :height="'0.96rem'"
         :isLazy="false"
         :isShow="false"
-        :alt="'TospinoMall '+ logo +' icon'"
+        :alt="'TospinoMall'"
       />
       <h3 class="fs-16 black mt-24">{{ $t('awaiting_payment') }}</h3>
       <p class="mt-12 fs-14 black">{{ $t('if_you_have_paid') }}</p>
@@ -44,7 +44,7 @@ export default {
   middleware: 'authenticated',
   computed: {
     logo() {
-      return this.$route.query.network ? this.$route.query.network : 'ARTLTIGO';
+      return this.$route.query.network && this.$route.query.network != 'payWay' ? require('@/assets/images/icon/'+ this.$route.query.network +'.png') : this.$route.query.iconUrl ? JSON.parse(this.$route.query.iconUrl).iconUrl : '';
     },
     paid_receive_prompt_tip() {
       return this.$t('paid_receive_prompt_tip', { replace_tip: `<span class="fs-18 red lh-20">${this.$route.query.phone}</span>`, replace_tip2: `<span class="fs-18 red lh-20">${this.$store.state.rate.currency}${ this.$route.query.amount }</span>` });
