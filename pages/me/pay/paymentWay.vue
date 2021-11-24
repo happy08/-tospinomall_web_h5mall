@@ -5,7 +5,7 @@
     <!-- brij钱包支付 -->
     <van-radio-group v-model="payRadio" v-if="brijData.length > 0">
       <van-cell-group v-for="(item, index) in brijData" :key="index" class="bg-white">
-        <van-cell class="ptb-20 vcenter" clickable @click="onChangePayment(item)" :border="false">
+        <van-cell class="ptb-10 mt-12 vcenter pl-6 pr-12" clickable @click="onChangePayment(item)" :border="false">
           <!-- 左侧图标 -->
           <template #icon>
             <BmImage
@@ -122,6 +122,11 @@ export default {
       // 买家充值
       buyerRecharge({ amount: parseFloat(this.$route.query.amount), msisdn: phone, network: this.payRadio, type: this.$route.query.type }).then(res => {
         if (res.code != 0) return false;
+        if (this.$route.query.payWay == 'Brij') {
+          // refNo = res.data.brijPayInfo.transactionId;
+          // this.onBrijPay({ ...res.data.brijPayInfo, phone: params.phone, phonePrefix: params.phonePrefix, orderId: JSON.stringify({orderId: res.data.orderIds}), iconUrl: JSON.stringify({ iconUrl: iconUrl })});
+          return false;
+        }
         this.$router.push({
           name: 'me-pay-wait',
           query: {
@@ -182,7 +187,7 @@ export default {
       payBrij({
         amount: params.amount,
         currency: this.$store.state.rate.payParamObj.currencyCode || 'GHS',
-        paymentDetails: { momo_number: params.phonePrefix + '' + params.phone },
+        paymentDetails: { momo_number: params.phonePrefix.split('+')[1] + '' + params.phone },
         paymentMethodId: this.payRadio,
         transactionId: params.transactionId
       }).then(res => {
