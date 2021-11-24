@@ -34,7 +34,7 @@
         <p class="fs-14 black fm-pf-r lh-20" v-if="detail.desc" v-html="detail.desc" :class="{ 'hidden-1': detail.ellipsis === 1, 'hidden-2': detail.ellipsis === 2 }"></p>
       </div>
       <!-- 评分 -->
-      <van-rate class="mt-10" v-if="detail.rate > 0" v-model="detail.rate" size="0.24rem" color="#F7B500" void-color="#DDDDDD" void-icon="star" />
+      <van-rate class="mt-10" v-if="detail.rate > 0" allow-half v-model="detail.rate" size="0.24rem" color="#F7B500" void-color="#DDDDDD" void-icon="star" />
       <div class="mt-12 flex between hidden-1 vcenter" v-if="detail.price >= 0 && String(detail.price) != ''">
         <span class="red fs-16 fw">
           <span class="fm-menlo" v-if="$store.state.rate">{{ $store.state.rate.currency }}</span><span class="fm-din">{{ detail.price }}</span>
