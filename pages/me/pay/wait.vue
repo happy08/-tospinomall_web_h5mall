@@ -71,7 +71,8 @@ export default {
         this.$router.push({ // 校验之后成功跳转到订单支付结果页面
           name: 'cart-order-confirm',
           query: {
-            orderId: this.$route.query.orderId
+            orderId: this.$route.query.orderId,
+            isSuccess: data.data == 1 ? 0 : 2
           }
         })
       } else {

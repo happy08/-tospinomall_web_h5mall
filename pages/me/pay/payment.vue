@@ -673,7 +673,7 @@ export default {
             name: 'cart-order-confirm',
             query: {
               orderId: this.$route.query.orderId,
-              isSuccess: checkData.code != 0 ? 2 : 4
+              isSuccess: checkData.data == 1 ? 0 : 2
             }
           })
         } else {
