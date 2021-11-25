@@ -106,25 +106,46 @@ export default {
       let phonePrefix = this.brijData.filter(item => {
         return item.id === this.payRadio;
       })[0].prefixCode;
+
+      // 获取当前支付方式logo
+      let iconUrl = this.brijData.filter(item => {
+        return item.id === this.payRadio;
+      })[0].iconUrl;
+
+      // 获取当前支付方式logo
+      let name = this.brijData.filter(item => {
+        return item.id === this.payRadio;
+      })[0].name;
       
       if (phone.length == 0) {
         return false;
       }
 
+      this.$toast.loading({
+        forbidClick: true,
+        loadingType: 'spinner',
+        duration: 0
+      });
+
       // 订单支付
       if (this.$route.query.orderIds) {
         let payType = this.$route.query.payWay == 'Brij' ? 4 : 2;
 
-        this.payOrder({ payType: payType, network: this.payRadio, phone: phone, phonePrefix: phonePrefix, sourceType: 4, orderIds: JSON.parse(this.$route.query.orderIds).orderIds });
+        this.payOrder({ payType: payType, network: this.payRadio, phone: phone, phonePrefix: phonePrefix, sourceType: 4, orderIds: JSON.parse(this.$route.query.orderIds).orderIds, iconUrl: iconUrl, name: name });
         return false;
       }
 
+      // payType 支付方式：0:系统支付， 1:余额支付，2:UniwalletPay支付 3 TINGG支付 4:brij 支付 5, 货到付款签收支付 6, paySwitch 支付
+      let payType = 1;
+      if (this.$route.query.payWay == 'Brij') {
+        payType = 4;
+      }
       // 买家充值
-      buyerRecharge({ amount: parseFloat(this.$route.query.amount), msisdn: phone, network: this.payRadio, type: this.$route.query.type }).then(res => {
+      buyerRecharge({ amount: parseFloat(this.$route.query.amount), type: this.$route.query.type, platformPayType: this.payRadio, payType: payType }).then(res => {
         if (res.code != 0) return false;
         if (this.$route.query.payWay == 'Brij') {
           // refNo = res.data.brijPayInfo.transactionId;
-          // this.onBrijPay({ ...res.data.brijPayInfo, phone: params.phone, phonePrefix: params.phonePrefix, orderId: JSON.stringify({orderId: res.data.orderIds}), iconUrl: JSON.stringify({ iconUrl: iconUrl })});
+          this.onBrijPay({ ...res.data, amount: res.data.balance, transactionId: res.data.refNo, phone: phone, phonePrefix: phonePrefix, iconUrl: JSON.stringify({ iconUrl: iconUrl }), name: name});
           return false;
         }
         this.$router.push({
@@ -136,33 +157,23 @@ export default {
             refNo: res.data.refNo
           }
         })
+        this.$toast.clear();
       }).catch(error => {
         console.log(error);
+        this.$toast.clear();
       })
     },
     onChangePayment(item) { // 选择支付方式
       this.payRadio = item.id;
     },
     payOrder(params) { // 订单支付 payType: 1余额支付 2UniwalletPay 0系统支付 3tingg支付 4brij支付, sourceType订单来源4->h5
-      // 加载图标
-      this.$toast.loading({
-        forbidClick: true,
-        loadingType: 'spinner',
-        duration: 0
-      });
-
       payOrder(params).then(res => {
         if (res.code != 0) return false;
-
-        // 获取当前支付方式名字
-        let iconUrl = this.brijData.filter(item => {
-          return item.id === this.payRadio;
-        })[0].iconUrl;
 
         let refNo = res.data.refNo;
         if (this.$route.query.payWay == 'Brij') {
           refNo = res.data.brijPayInfo.transactionId;
-          this.onBrijPay({ ...res.data.brijPayInfo, phone: params.phone, phonePrefix: params.phonePrefix, orderId: JSON.stringify({orderId: res.data.orderIds}), iconUrl: JSON.stringify({ iconUrl: iconUrl })});
+          this.onBrijPay({ ...res.data.brijPayInfo, phone: params.phone, phonePrefix: params.phonePrefix, orderId: JSON.stringify({orderId: res.data.orderIds}), iconUrl: JSON.stringify({ iconUrl: params.iconUrl }), name: params.name});
           return false;
         }
         
@@ -189,10 +200,12 @@ export default {
         currency: this.$store.state.rate.payParamObj.currencyCode || 'GHS',
         paymentDetails: { momo_number: params.phonePrefix.split('+')[1] + '' + params.phone },
         paymentMethodId: this.payRadio,
-        transactionId: params.transactionId
+        transactionId: params.transactionId,
+        name: params.name
       }).then(res => {
         if (res.code != 0) {
           // 支付失败
+          this.$toast.clear();
           this.$dialog.confirm({
             title: this.$t('payment_failed'),
             message: this.$t('order_payment_failed_tips'),

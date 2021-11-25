@@ -133,13 +133,13 @@ service.interceptors.response.use(response => { // 成功
   }
 }, error => { // 失败
   if (error.code > 0) {
-    if (error.code == 10401) {
-      Toast.clear();
-      $nuxt.$store.commit('user/SET_TOKEN', null); // 用户凭证已过期，先刷新token
-      $nuxt.$router.push({
-        path: '/login.html'
-      })
-    }
+    // if (error.code == 10401) {
+    //   Toast.clear();
+    //   $nuxt.$store.commit('user/SET_TOKEN', null); // 用户凭证已过期，先刷新token
+    //   $nuxt.$router.push({
+    //     path: '/login.html'
+    //   })
+    // }
     console.log('error:');
     console.log(error);
     return;

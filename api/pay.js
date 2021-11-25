@@ -63,7 +63,10 @@ export function buyerRecharge(data) {
   return request({
     url: '/finance/buyerExpensesDetail/buyer/rechargeBalance',
     method: 'post',
-    data: qs.stringify(data)
+    data: data,
+    headers: {
+      'Content-Type': 'application/json'
+    }
   })
 }
 
