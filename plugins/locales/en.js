@@ -221,7 +221,6 @@ const en = {
   complete_certification: 'Complete certification',
   use_other_authentication_method: 'Use other authentication method',
   enter_the_new_password: 'Enter the new password',
-  password_limit_tips: 'Must be 6-20 English letters, numbers or symbols (except spaces), and at least two types of letters, numbers and punctuation marks',
   email_verification: 'Email verification',
   setting_login_password: 'Setting login password',
   modify_6_digit_payment_password: 'Modify 6-digit payment password',
@@ -415,7 +414,7 @@ const en = {
   change_payment_method: 'Change payment method',
   cancel_payment: 'Cancel payment',
   authentication: 'Authentication',
-  verify_password_tip: 'It must be 6 – 20 English letters, numbers or symbols (except spaces), and at least two letters, numbers and punctuation marks',
+  verify_password_tip: 'The password must be at least 6 characters and must contain both letters and numbers, or special symbols.',
   enter_the_login_password: 'Please enter the login password',
   enter_the_current_login_password: 'Please enter the current login password',
   _6_20_new_password: '6 – 20 digit new password',
@@ -721,7 +720,8 @@ const en = {
   please_read_checked: 'Please read and tick the agreement',
   backOldWeb: 'Old Version',
   payment_method: 'Payment Method',
-  no_support_send: 'This address does not support delivery'
+  no_support_send: 'This address does not support delivery',
+  pwd_letter_number: 'The password must contain both letters and numbers'
 }
 
 export default en;

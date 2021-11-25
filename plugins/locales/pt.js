@@ -221,7 +221,6 @@
   complete_certification: 'Certificação completa',
   use_other_authentication_method: 'Use outros métodos de autenticação',
   enter_the_new_password: 'Insira uma nova senha',
-  password_limit_tips: 'Deve ter de 6 a 20 letras, números ou símbolos ingleses (exceto espaços) e pelo menos dois tipos de letras, números e sinais de pontuação',
   email_verification: 'Verificação de e-mail',
   setting_login_password: 'Configurando senha de login',
   modify_6_digit_payment_password: 'Modifique a senha de pagamento de 6 dígitos',
@@ -232,7 +231,7 @@
   message_authentication: 'Verificação de SMS',
   enter_password_again: 'Por favor insira a nova senha pagamento novamente',
   forgot_password_tips: `Pontas:\n1. Para garantir a segurança de sua conta, a verificação de identidade é necessária para alterar informações importantes.\n2. Se você tiver alguma dúvida durante o processo de verificação, entre em contato com o atendimento ao cliente.\n3. Altere o celular vinculado. Se o celular original estiver desabilitado e o código de verificação não puder ser obtido, entre em contato com o atendimento ao cliente.`,
-  the_two_passwords_entered_are_inconsistent: 'As duas senhas são inconsistentes',
+  the_two_passwords_entered_are_inconsistent: 'As duas senhas não coincidem',
   sign_up_now: 'Registre-se agora',
   t_please_enter_the_phone_number: 'Por favor insira o número do telefone',
   individual_registration: 'Inscrição individual',
@@ -415,7 +414,7 @@
   change_payment_method: 'Mudar o metodo de pagamento',
   cancel_payment: 'Cancelar pagamento',
   authentication: 'Certificação',
-  verify_password_tip: 'Deve ter de 6 a 20 letras, números ou símbolos ingleses (exceto espaços) e pelo menos dois tipos de letras, números e sinais de pontuação',
+  verify_password_tip: 'A senha deve ter pelo menos 6 caracteres e deve conter letras e números ou símbolos especiais.',
   enter_the_login_password: 'Por favor, insira sua senha',
   enter_the_current_login_password: 'Por favor, digite a senha de login atual',
   _6_20_new_password: '6-20 dígitos nova senha',
@@ -720,7 +719,8 @@
   no_support_video: 'Seu navegador não suporta a tag de vídeo',
   backOldWeb: 'Versão Antiga',
   payment_method: 'Forma de pagamento',
-  no_support_send: 'Este endereço não suporta entrega'
+  no_support_send: 'Este endereço não suporta entrega',
+  pwd_letter_number: 'A senha deve conter letras e números'
 }
 
 export default por;

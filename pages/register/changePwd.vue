@@ -37,6 +37,9 @@
         </template>
       </van-field>
 
+      <div class="red mt-14" v-show="isError">{{ $t(isError) }}</div>
+      <div class="mt-14">{{ $t('verify_password_tip') }}</div>
+
       <!-- 提交新密码 -->
       <van-button
         class="mt-30 btn_h48 fw fs-16 w-100" 
@@ -62,7 +65,8 @@ export default {
       pwd: '',
       confirmPwd: '',
       pwdType: 'password',
-      confirmPwdType: 'password'
+      confirmPwdType: 'password',
+      isError: false
     }
   },
   beforeRouteEnter (to, from, next) {
@@ -80,12 +84,14 @@ export default {
     submit() { // 忘记密码 提交新密码
       const reg = /^(?![\d]+$)(?![a-zA-Z]+$)(?![^\da-zA-Z]+$)(?=[\w!@~#\$%\^&\*\(\)\-\+=\{\}\[\]\|\\,\.<>\?/:;"']+$).{6,20}$/;
 
-      if (!reg.test(this.confirmPwd) || !reg.test(this.pwd)) {
-        this.$toast(this.$t('t_format_error'));
+      if (!reg.test(this.pwd)) {
+        // this.$toast(this.$t('t_format_error'));
+        this.isError = 'pwd_letter_number';
         return false;
       }
       if (this.pwd !== this.confirmPwd) {
-        this.$Toast(this.$t('the_two_passwords_entered_are_inconsistent'));
+        this.isError = 'the_two_passwords_entered_are_inconsistent';
+        // this.$Toast(this.$t('the_two_passwords_entered_are_inconsistent'));
         return false;
       }
       let _account = this.$route.query.email ? { email: this.$route.query.email } : { phone: this.$route.query.phone, phonePrefix: this.$route.query.phonePrefix };
@@ -96,6 +102,7 @@ export default {
             type: 'forgot'
           }
         })
+        this.isError = false;
       }).catch(error => {
         console.log(error);
       })

@@ -222,7 +222,6 @@ const cn = {
   complete_certification: '完成认证',
   use_other_authentication_method: '使用其它方式认证',
   enter_the_new_password: '输入新密码',
-  password_limit_tips: '必须是6-20个英文字母、数字或符号（空格除外），以及至少两种类型的字母、数字和标点符号',
   email_verification: '邮箱验证',
   setting_login_password: '设置登录密码',
   modify_6_digit_payment_password: '修改6位数字支付密码',
@@ -416,7 +415,7 @@ const cn = {
   change_payment_method: '更改支付方式',
   cancel_payment: '取消支付',
   authentication: '认证',
-  verify_password_tip: '必须是6–20个英文字母、数字或符号（空格除外），以及至少两种字母、数字和标点符号',
+  verify_password_tip: '密码必须至少为 6 个字符，并且必须同时包含字母和数字或特殊符号。',
   enter_the_login_password: '请输入登录密码',
   enter_the_current_login_password: '请输入当前登录密码',
   _6_20_new_password: '6–20位新密码',
@@ -721,7 +720,8 @@ const cn = {
   no_support_video: '您的浏览器不支持 video 标签',
   backOldWeb: '返回<br/>旧版',
   payment_method: '支付方式',
-  no_support_send: '该地址不支持配送'
+  no_support_send: '该地址不支持配送',
+  pwd_letter_number: '密码必须同时包含字母和数字'
 }
 
 export default cn;

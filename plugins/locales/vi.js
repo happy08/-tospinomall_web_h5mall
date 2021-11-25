@@ -221,7 +221,6 @@ const vi = {
   complete_certification: 'Hoàn thành chứng nhận',
   use_other_authentication_method: 'Sử dụng các phương pháp xác thực khác',
   enter_the_new_password: 'Nhập mật khẩu mới',
-  password_limit_tips: 'Phải có 6-20 chữ cái, số hoặc ký hiệu tiếng Anh (trừ dấu cách) và ít nhất hai loại chữ cái, số và dấu câu',
   email_verification: 'Email xác thực',
   setting_login_password: 'Đặt mật khẩu đăng nhập',
   modify_6_digit_payment_password: 'Sửa đổi mật khẩu thanh toán gồm 6 chữ số',
@@ -232,7 +231,7 @@ const vi = {
   message_authentication: 'Xác minh qua SMS',
   enter_password_again: 'Vui lòng nhập lại mật khẩu thanh toán mới',
   forgot_password_tips: `Lời khuyên:\n1. Để đảm bảo tính bảo mật cho tài khoản của bạn, cần phải xác minh danh tính để thay đổi thông tin quan trọng.\n2. Nếu bạn có bất kỳ câu hỏi nào trong quá trình xác minh, vui lòng liên hệ với bộ phận dịch vụ khách hàng.\n3. Thay đổi điện thoại di động bị ràng buộc. Nếu điện thoại di động ban đầu bị vô hiệu hóa và không thể lấy được mã xác minh, vui lòng liên hệ với bộ phận dịch vụ khách hàng.`,
-  the_two_passwords_entered_are_inconsistent: 'Hai mật khẩu không nhất quán',
+  the_two_passwords_entered_are_inconsistent: 'Hai mật khẩu không trùng khớp',
   sign_up_now: 'Đăng ký ngay',
   t_please_enter_the_phone_number: 'Vui lòng nhập số điện thoại',
   individual_registration: 'Đăng ký cá nhân',
@@ -415,7 +414,7 @@ const vi = {
   change_payment_method: 'Thay đổi phương pháp thanh toán',
   cancel_payment: 'Hủy thanh toán',
   authentication: 'Chứng nhận',
-  verify_password_tip: 'Phải có 6-20 chữ cái, số hoặc ký hiệu tiếng Anh (trừ dấu cách) và ít nhất hai chữ cái, số và dấu câu',
+  verify_password_tip: 'Mật khẩu phải có ít nhất 6 ký tự, phải chứa cả chữ và số hoặc các ký hiệu đặc biệt',
   enter_the_login_password: 'Vui lòng nhập mật khẩu của bạn',
   enter_the_current_login_password: 'Vui lòng nhập mật khẩu đăng nhập hiện tại',
   _6_20_new_password: 'Mật khẩu mới 6-20 chữ số',
@@ -720,7 +719,8 @@ const vi = {
   no_support_video: 'Trình duyệt của bạn không hỗ trợ thẻ video',
   backOldWeb: 'Phiên bản cũ',
   payment_method: 'Phương thức thanh toán',
-  no_support_send: 'Địa chỉ này tạm thời không giao hàng được'
+  no_support_send: 'Địa chỉ này tạm thời không giao hàng được',
+  pwd_letter_number: 'Mật khẩu phải bao gồm chữ cái và số'
 }
 
 export default vi;
