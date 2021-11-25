@@ -59,7 +59,7 @@ export default {
         data = await checkBuyerRecharge(this.$route.query.refNo); // 判断买家充值是否成功
       }
 
-      if (data.code != 0) {
+      if (data.data != 1) {
         this.$dialog.confirm({
           title: this.$t('payment_failed'),
           message: this.$t('order_payment_failed_tips'),

@@ -664,7 +664,7 @@ export default {
     checkPayOrder(num) {
       this.$api.checkPayOrder(this.$route.query.refNo).then(checkData => {
         num += 1;
-        if (checkData.code != 0 && num <= 3) {
+        if (checkData.data != 1 && num <= 3) {
           this.checkPayOrder();
           return false;
         }
