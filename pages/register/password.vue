@@ -19,7 +19,8 @@
           <van-icon v-else :name="require('@/assets/images/icon/eye-close.png')" size="0.48rem" @click="pwdType = 'text'" />
         </template>
       </van-field>
-      <p class="fs-14 register-pwd__tip">{{ $t('password_limit_tips') }}</p>
+      <p v-show="isError" class="fs-14 mt-14 red">{{ $t(isError) }}</p>
+      <p class="fs-14 mt-14 register-pwd__tip">{{ $t('verify_password_tip') }}</p>
       <!-- 注册 -->
       <van-button 
         class="mt-60 btn_h48 fw fs-16 w-100 round-8"
@@ -44,7 +45,8 @@ export default {
   data() {
     return {
       password: '',
-      pwdType: 'password'
+      pwdType: 'password',
+      isError: false
     }
   },
   beforeRouteEnter (to, from, next) {
@@ -58,7 +60,8 @@ export default {
     registerClick() { // 买家用户注册
       const reg = /^(?![\d]+$)(?![a-zA-Z]+$)(?![^\da-zA-Z]+$)(?=[\w!@~#\$%\^&\*\(\)\-\+=\{\}\[\]\|\\,\.<>\?/:;"']+$).{6,20}$/;
       if (!reg.test(this.password)) {
-        this.$toast(this.$t('t_format_error'));
+        // this.$toast(this.$t('t_format_error'));
+        this.isError = 'pwd_letter_number';
         return false;
       }
       this.$toast.loading({
@@ -82,6 +85,7 @@ export default {
             password: this.password,
           }
         })
+        this.isError = false;
       }).catch(error => {
         console.log(error);
       })
@@ -96,7 +100,6 @@ export default {
   background-color: #fff;
   .register-pwd__tip{
     line-height: 21px;
-    margin-top: 23px;
     color: rgba(153, 153, 153, .58);
   }
 }

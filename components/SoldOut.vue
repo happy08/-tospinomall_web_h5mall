@@ -1,7 +1,7 @@
 <template>
   <div class="soldout-container" :style="'width: ' + width + ';height: ' + height + ';'" @click="onClick">
-    <div class="white fs-12 lh-1 flex center soldout-container__tip"  v-if="isShow">
-      <span>{{ $t('sold_out') }}</span>
+    <div class="white fs-12 lh-1 flex center soldout-container__tip"  v-show="isShow">
+      <span>{{ tip }}</span>
     </div>
     <slot />
   </div>
@@ -21,6 +21,9 @@ export default {
     isShow: {
       type: Boolean,
       default: false
+    },
+    tip: {
+      type: String
     }
   },
   methods: {
@@ -34,10 +37,12 @@ export default {
 <style lang="less" scoped>
 .soldout-container{
   position: relative;
+  width: 100%;
+  height: 100%;
   .soldout-container__tip{
     position: absolute;
-    width: 78%;
-    height: 78%;
+    width: 70px;
+    height: 70px;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);

@@ -171,7 +171,7 @@
                 >
                   <ProductTopBtmSingle
                     :img="{ url: productType4Item.mainPictureUrl, width: '3.4rem', height: '3.4rem', loadImage: require('@/assets/images/product-bgd-170.png') }" 
-                    :detail="{ desc: productType4Item.goodTitle, price: parseFloat(productType4Item.price), rate: parseFloat(productType4Item.starLevel), volumn: parseFloat(productType4Item.salesVolume), ellipsis: 2 }"
+                    :detail="{ desc: productType4Item.goodTitle, price: parseFloat(productType4Item.price), rate: 0, volumn: parseFloat(productType4Item.salesVolume), ellipsis: 2 }"
                     :isHeight="true"
                   />
                 </nuxt-link>
@@ -302,7 +302,7 @@
                 <client-only placeholder="">
                   <ProductTopBtmSingle
                     :img="{ url: searchItem.mainPictureUrl, width: '3.4rem', height: '3.4rem', loadImage: require('@/assets/images/product-bgd-170.png') }" 
-                    :detail="{ desc: searchItem.productTitle, price: searchItem.minPrice, rate: searchItem.starLevel, volumn: searchItem.saleCount, ellipsis: 2 }"
+                    :detail="{ desc: searchItem.productTitle, price: searchItem.minPrice, rate: searchItem.starLevel, volumn: searchItem.saleCount, ellipsis: 2, stock: searchItem.stock }"
                   />
                 </client-only>
               </nuxt-link>
@@ -508,11 +508,11 @@ export default {
     // if (this.searchList.length == 0) {
     //   this.$fetch();
     // } else {
-      // setTimeout(() => {
+      setTimeout(() => {
         if (typeof this.$redrawVueMasonry === 'function') {
           this.$redrawVueMasonry('homeMasonryContainer');
         }
-      // }, 50)
+      }, 50)
     // }
   },
   computed: {
