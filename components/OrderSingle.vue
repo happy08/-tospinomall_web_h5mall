@@ -21,7 +21,7 @@
     <div class="tl product-detail">
       <p class="fs-14 black lh-20 hidden-2 fm-helvetica">{{ product_desc }}</p>
       <p class="fs-14 lh-20 grey mt-8 word-break" v-if="product_size">{{ product_size }}</p>
-      <div :class="{'fs-16 fw lh-20 mt-12': true, 'red': stock > 0, 'grey': stock == 0}" v-if="price >= 0 && isShowRight == false"><span class="fm-menlo">{{ $store.state.rate.currency }}</span><span class="fm-din">{{ price }}</span></div>
+      <div :class="{'fs-16 fw lh-20 mt-12': true, 'red': stock > 0, 'grey': stock == 0}" v-if="price > 0 && isShowRight == false"><span class="fm-menlo">{{ $store.state.rate.currency }}</span><span class="fm-din">{{ price }}</span></div>
     </div>
     
     <!-- 商品价格和数量 -->

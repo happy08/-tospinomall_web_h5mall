@@ -208,7 +208,7 @@
               >
                 <ProductTopBtmSingle
                   :img="{ url: productType4Item.mainPictureUrl, width: '3.4rem', height: '3.4rem', loadImage: require('@/assets/images/product-bgd-170.png') }" 
-                  :detail="{ desc: productType4Item.goodTitle, price: parseFloat(productType4Item.price), rate: parseFloat(productType4Item.starLevel), volumn: parseFloat(productType4Item.salesVolume), ellipsis: 2 }"
+                  :detail="{ desc: productType4Item.goodTitle, price: parseFloat(productType4Item.price), rate: 0, volumn: parseFloat(productType4Item.salesVolume), ellipsis: 2 }"
                 />
               </nuxt-link>
             </div>

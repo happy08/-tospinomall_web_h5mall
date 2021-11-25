@@ -1,6 +1,6 @@
 <template>
   <van-image
-    :src="url" 
+    :src="w_url" 
     :width="width" 
     :height="height" 
     :fit="fit"
@@ -10,6 +10,7 @@
     :lazy-load="isLazy"
     @click="onClick"
     :alt="alt"
+    ref="vanImage"
   >
     <template v-slot:error>
       <van-image
@@ -76,6 +77,16 @@ export default {
       type: String,
       default: ''
     }
+  },
+  data() {
+    return {
+      w_url: this.url
+    }
+  },
+  mounted() {
+    setTimeout(() => {
+      this.w_url = this.url.startsWith('https://') ? (this.url + '?x-oss-process=image/resize,w_' + (parseFloat(this.$refs.vanImage.$el.offsetWidth) * 2)) : this.url;
+    }, 100)
   },
   methods: {
     onClick() {
