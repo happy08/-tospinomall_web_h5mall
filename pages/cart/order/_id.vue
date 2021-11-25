@@ -443,6 +443,14 @@ export default {
           })
         };
 
+        // 不支持配送
+        if (this.detail.type == 3) {
+          this.$toast({
+            message: this.$t('no_support_send'),
+            duration: 3000
+          })
+        }
+
         // 支付方式处理
         this.paymentRadio = this.detail.isCashDelivery == 1 ? '2' : '1';
         this.messageList.forEach(item => {
