@@ -5,11 +5,11 @@
     <!-- brij钱包支付 -->
     <van-radio-group v-model="payRadio" v-if="brijData.length > 0">
       <van-cell-group v-for="(item, index) in brijData" :key="index" class="bg-white">
-        <van-cell class="ptb-20 vcenter" clickable @click="onChangePayment(item)" :border="false">
+        <van-cell class="ptb-10 mt-12 vcenter pl-6 pr-12" clickable @click="onChangePayment(item)" :border="false">
           <!-- 左侧图标 -->
           <template #icon>
             <BmImage
-              :url="item.icon_url"
+              :url="item.iconUrl"
               :width="'0.8rem'" 
               :height="'0.8rem'"
               :isLazy="false"
@@ -67,8 +67,7 @@
 
 <script>
 import { RadioGroup, Radio, Cell, CellGroup, Field } from 'vant';
-import { buyerRecharge, payOrder, checkBuyerRecharge } from '@/api/pay';
-const brijUrl = process.env.APP_ENV ? 'https://staging.orobo.site' : '/brij';
+import { buyerRecharge, payOrder, getBrijPayments, payBrij } from '@/api/pay';
 
 export default {
   middleware: 'authenticated',
@@ -82,50 +81,17 @@ export default {
   data() {
     return {
       brijData: [],
-      payRadio: 100,
-      secretKey: this.$store.state.rate.payParamObj.secretKey || '773|zuhKE0MLWvfAnZHo5dJU9oRQOUILNHt6JWokxeer'
-    }
-  },
-  fetch() {
-    this.brijData = [];
-    this.payRadio = this.$route.query.paymentWay || 100;
-    
-    this.$toast.loading({
-      forbidClick: true,
-      loadingType: 'spinner',
-      duration: 0
-    });
-
-    // brij钱包支付
-    if (this.$route.query.payWay && this.$route.query.payWay == 'Brij') {
-      // 获取所有的支付方式
-      fetch(brijUrl + '/api/v2/payviabrij/paymentmethods', {
-        method: 'POST',
-        body: JSON.stringify({
-          currency: 'GHS'
-        }),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + this.secretKey
-        },
-        // mode: 'no-cors',
-      }).then(res => {
-        return res.json();
-      }).then(response => {
-        console.log(response);
-        this.brijData = response.data.map(item => {
-          return {
-            ...item,
-            phone: '',
-            prefixCode: this.$route.query.phonePrefix && item.id == this.$route.query.paymentWay ? this.$route.query.phonePrefix : this.$t('prefix_tip')
-          }
-        });
-        this.$toast.clear();
-      })
+      payRadio: 100
     }
   },
   activated() {
-    this.$fetch();
+    this.brijData = [];
+    this.payRadio = this.$route.query.paymentWay || 100;
+    
+    // brij支付 获取所有支付方式
+    if (this.$route.query.payWay && this.$route.query.payWay == 'Brij') {
+      this.getBrijPayments();
+    }
   },
   methods: {
     onPay() { // 提交支付,成功跳转到确认订单页面
@@ -147,17 +113,20 @@ export default {
 
       // 订单支付
       if (this.$route.query.orderIds) {
-        if (this.$route.query.payWay == 'Brij') { // Brij支付
-          this.payOrder({ payType: 4, network: this.payRadio, sourceType: 4, orderIds: JSON.parse(this.$route.query.orderIds).orderIds, phone: phone, phonePrefix: phonePrefix });
-          return false;
-        }
-        // this.payOrder({ payType: 2, network: this.payRadio, phone: phone, phonePrefix: phonePrefix, sourceType: 4, orderIds: JSON.parse(this.$route.query.orderIds).orderIds });
+        let payType = this.$route.query.payWay == 'Brij' ? 4 : 2;
+
+        this.payOrder({ payType: payType, network: this.payRadio, phone: phone, phonePrefix: phonePrefix, sourceType: 4, orderIds: JSON.parse(this.$route.query.orderIds).orderIds });
         return false;
       }
 
       // 买家充值
       buyerRecharge({ amount: parseFloat(this.$route.query.amount), msisdn: phone, network: this.payRadio, type: this.$route.query.type }).then(res => {
         if (res.code != 0) return false;
+        if (this.$route.query.payWay == 'Brij') {
+          // refNo = res.data.brijPayInfo.transactionId;
+          // this.onBrijPay({ ...res.data.brijPayInfo, phone: params.phone, phonePrefix: params.phonePrefix, orderId: JSON.stringify({orderId: res.data.orderIds}), iconUrl: JSON.stringify({ iconUrl: iconUrl })});
+          return false;
+        }
         this.$router.push({
           name: 'me-pay-wait',
           query: {
@@ -174,15 +143,7 @@ export default {
     onChangePayment(item) { // 选择支付方式
       this.payRadio = item.id;
     },
-    payOrder(params) { // 订单支付 payType: 1余额支付 2UniwalletPay 0系统支付, sourceType订单来源4->h5
-      let phone = this.brijData.filter(item => {
-        return item.id === this.payRadio;
-      })[0].phone;
-      
-      if (phone.length == 0 && this.payRadio !== 'balance') {
-        return false;
-      }
-
+    payOrder(params) { // 订单支付 payType: 1余额支付 2UniwalletPay 0系统支付 3tingg支付 4brij支付, sourceType订单来源4->h5
       // 加载图标
       this.$toast.loading({
         forbidClick: true,
@@ -193,123 +154,89 @@ export default {
       payOrder(params).then(res => {
         if (res.code != 0) return false;
 
-        // brij支付
+        // 获取当前支付方式名字
+        let iconUrl = this.brijData.filter(item => {
+          return item.id === this.payRadio;
+        })[0].iconUrl;
+
+        let refNo = res.data.refNo;
         if (this.$route.query.payWay == 'Brij') {
-          // 进行支付
-          this.onBrijPay({ ...params, orderId: JSON.stringify({orderId: res.data.orderIds}), ...res.data.brijPayInfo });
+          refNo = res.data.brijPayInfo.transactionId;
+          this.onBrijPay({ ...res.data.brijPayInfo, phone: params.phone, phonePrefix: params.phonePrefix, orderId: JSON.stringify({orderId: res.data.orderIds}), iconUrl: JSON.stringify({ iconUrl: iconUrl })});
           return false;
         }
-        // tingg支付
-        // if (params.payType == 3) {
-        //   // Tingg.renderPayButton({ // 按钮初始化
-        //   //   className: 'pay-content__btn--pay', 
-        //   //   checkoutType: 'modal' // or 'modal'
-        //   // });
-          
-        //   this.onTinggPay({ ...res.data.tinggPayInfo, phone: params.phone, phonePrefix: params.phonePrefix, orderId: JSON.stringify({orderId: res.data.orderIds})});
-        //   return false;
-        // }
-        this.$toast.clear();
-        // 不是余额支付的话，需要先跳转到收银台
-        if (res.data.refNo) { // 有流水号跳转到收银台
-          this.$router.push({
-            name: 'me-pay-wait',
-            query: {
-              network: this.payRadio,
-              phone: phone,
-              amount: this.$route.query.amount,
-              refNo: res.data.refNo,
-              orderId: JSON.stringify({orderId: res.data.orderIds})
-            }
-          })
-        } else { // 没有流水号直接成功
-          this.$router.push({ // 校验之后成功跳转到订单支付结果页面
-            name: 'cart-order-confirm',
-            query: {
-              orderId: JSON.stringify({orderId: res.data.orderIds})
-            }
-          })
-        }
-      }).catch(error => {
-        if (error.code == 11000) { // 支付失败
-          if (this.payRadio === 'balance') { // 余额支付，直接跳转到支付订单结果页
-            this.$router.push({ // 校验之后成功跳转到订单支付结果页面
-              name: 'cart-order-confirm',
-              query: {
-                orderId: JSON.stringify({orderId: error.data.orderIds}),
-                isSuccess: 2
-              }
-            })
-            return false;
+        
+        // 第三方支付 需要先跳转到收银台
+        this.$router.push({
+          name: 'me-pay-wait',
+          query: {
+            network: 'payWay',
+            phone: params.phonePrefix + '' + params.phone,
+            amount: this.$route.query.amount,
+            refNo: refNo,
+            orderId: JSON.stringify({ orderId: res.data.orderIds }),
+            iconUrl: JSON.stringify({ iconUrl: iconUrl })
           }
-        }
-      })
-    },
-    onBrijPay(params) {
-      fetch(brijUrl + '/api/v2/payviabrij/pay', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + this.secretKey
-        },
-        body: JSON.stringify({
-          "transaction_id" : params.transactionId,
-          "merchant_id" : '003542',
-          "currency" : this.$store.state.rate.payParamObj.currencyCode || "GHS",
-          "payment_details" : {"momo_number": params.phonePrefix + '' + params.phone},
-          "payment_method_id" : this.payRadio,
-          "amount" : params.amount
-        }),
-        // mode: 'no-cors',
-      }).then(res => {
-        return res.json();
-      }).then(response => {
-        if (response.status == 200) { // 成功
-          this.onCheckPayOrder(params);
-          return false;
-        }
-        // 支付失败
-        this.$dialog.confirm({
-          title: this.$t('payment_failed'),
-          message: this.$t('order_payment_failed_tips'),
-          confirmButtonText: this.$t('pay_again')
-        }).then(() => { // 失败，重试
-          this.onPay();
         })
         this.$toast.clear();
       }).catch(() => {
         this.$toast.clear();
       })
     },
-    async onCheckPayOrder(params) {
-      let checkData;
-      if (this.$route.query.type == 'order') { // 确认订单是否支付
-        checkData = await this.$api.checkPayOrder(params.transactionId);
-      } else { // 判断买家充值是否成功
-        checkData = await checkBuyerRecharge(params.transactionId);
-      }
-      // if (checkData.data != 1) {
-      //   this.$dialog.confirm({
-      //     title: this.$t('payment_failed'),
-      //     message: this.$t('order_payment_failed_tips'),
-      //     confirmButtonText: this.$t('ok')
-      //   })
-      //   return false;
-      // }
-      if (this.$route.query.type == 'order') {
-        this.$router.push({ // 校验之后成功跳转到订单支付结果页面
-          name: 'cart-order-confirm',
+    onBrijPay(params) { // brij支付
+      payBrij({
+        amount: params.amount,
+        currency: this.$store.state.rate.payParamObj.currencyCode || 'GHS',
+        paymentDetails: { momo_number: params.phonePrefix.split('+')[1] + '' + params.phone },
+        paymentMethodId: this.payRadio,
+        transactionId: params.transactionId
+      }).then(res => {
+        if (res.code != 0) {
+          // 支付失败
+          this.$dialog.confirm({
+            title: this.$t('payment_failed'),
+            message: this.$t('order_payment_failed_tips'),
+            confirmButtonText: this.$t('pay_again')
+          }).then(() => { // 失败，重试
+            this.onPay();
+          })
+          return false;
+        }
+
+        this.$router.push({
+          name: 'me-pay-wait',
           query: {
+            network: 'payWay',
+            phone: params.phonePrefix + '' + params.phone,
+            amount: res.data.amount,
+            refNo: res.data.transactionId,
             orderId: params.orderId,
-            isSuccess: checkData.data != 1 ? 2 : 5
+            iconUrl: params.iconUrl
           }
         })
-      } else {
-        this.$router.replace({
-          name: 'me-wallet'
-        })
-      }
-      this.$toast.clear();
+        this.$toast.clear();
+      })
+    },
+    getBrijPayments() { // 获取brij所有支付方式
+      this.$toast.loading({
+        forbidClick: true,
+        loadingType: 'spinner',
+        duration: 0
+      });
+      const currencyCode = this.$store.state.rate.payParamObj.currencyCode || 'GHS';
+      getBrijPayments(currencyCode).then(res => {
+        this.brijData = res.data.map(item => {
+          return {
+            ...item,
+            phone: '',
+            prefixCode: this.$route.query.phonePrefix && item.id == this.$route.query.paymentWay ? this.$route.query.phonePrefix : this.$t('prefix_tip')
+          }
+        });
+        this.$toast.clear();
+      }).catch(error => {
+        console.log(error);
+        this.$toast.clear();
+      })
     }
   }
 }

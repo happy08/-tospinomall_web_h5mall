@@ -82,10 +82,10 @@ export default {
   },
   beforeRouteEnter (to, from, next) {
     next(vm => {
-      if (from.name == 'me' || from.name == 'me-order') {
+      if (from.name == 'me' || from.name == 'me-old' || from.name == 'me-order') {
         vm.tabActive = 0;
       }
-      if (from.name == 'me' || from.name == 'me-order' || from.name == 'me-order-rate-evalution-id') {
+      if (from.name == 'me' || from.name == 'me-old' || from.name == 'me-order' || from.name == 'me-order-rate-evalution-id') {
         vm.pageNum = 1;
         vm.$fetch();
       }

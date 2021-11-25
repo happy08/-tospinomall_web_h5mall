@@ -4,9 +4,9 @@
     <BmHeaderNav :left="{ isShow: true, isEmit: true }" :title="$t('payment')" @leftClick="leftClick" />
 
     <!-- 选择-单选 -->
-    <van-radio-group v-model="payRadio" v-if="list.length > 0">
+    <van-radio-group v-model="payRadio" v-if="list.length > 0" class="mlr-12">
       <van-cell-group v-for="(item, index) in list" :key="index" class="bg-white">
-        <van-cell class="ptb-20 vcenter" clickable @click="onChangePayment(item)" :border="false" :is-link="item.label == 'Brij'">
+        <van-cell class="ptb-10 mt-12 vcenter pl-6 pr-12" clickable @click="onChangePayment(item)" :border="false" :is-link="item.label == 'Brij'">
           <!-- 左侧图标 -->
           <template #icon>
             <BmImage
@@ -107,13 +107,19 @@
       <p class="black fs-14 pb-24">{{ $t('wait_pay_result') }}</p>
       <van-loading type="spinner" color="#42b7ae" />
     </van-dialog>
-     
+
+    <!-- <van-dialog v-model="isTinggPay" title="" :showConfirmButton="false" :style="{ width: '100%' }">
+      <div class="w-100 vh-100">
+        <iframe id="tinggIframe" name="mainFrame" scrolling="auto" frameborder="no" width="100%" title="mainFrame"></iframe>
+      </div>
+    </van-dialog> -->
+    
   </div>
 </template>
 
 <script>
 import { RadioGroup, Radio, Cell, CellGroup, Field, Popup, Picker, NumberKeyboard, PasswordInput } from 'vant';
-import { getAvailable, buyerRecharge, payOrder } from '@/api/pay';
+import { getAvailable, buyerRecharge, payOrder, getAllPayments } from '@/api/pay';
 const Encryption = require('@/assets/js/encryption');
 import { url } from '@/api/config'; // 导入配置域名
 
@@ -137,7 +143,8 @@ export default {
       isBackDialog: false,
       balanceShow: false,
       payPwd: '',
-      isWaittingPay: false
+      isWaittingPay: false,
+      // isTinggPay: false
     }
   },
   beforeRouteEnter(to, from, next) { // 从初始页面进入重置值为空
@@ -155,82 +162,82 @@ export default {
   head: {
     script: [
       { src: 'https://developer.tingg.africa/checkout/v2/tingg-checkout.js', type: 'text/javascript', charset: 'utf-8' },
-      { src: 'https://test.theteller.net/checkout/resource/api/inline/theteller_inline.js', type: 'text/javascript', charset: 'utf-8' }
+      // { src: 'https://test.theteller.net/checkout/resource/api/inline/theteller_inline.js', type: 'text/javascript', charset: 'utf-8' }
     ]
   },
   async fetch() {
   },
   activated() {
+    this.$toast.loading({
+      forbidClick: true,
+      loadingType: 'spinner',
+      duration: 0
+    });
+
+    // this.isTinggPay = false;
     if (this.$route.query.tingg && (this.$route.query.tingg == 'success' || this.$route.query.tingg == 'failed')) { // 只有成功和失败时才调取接口
       this.isWaittingPay = true;
-      this.$api.checkPayOrder(this.$route.query.refNo).then(checkData => {
-        if (this.$route.query.type == 'order') {
-          this.$router.push({ // 校验之后成功跳转到订单支付结果页面
-            name: 'cart-order-confirm',
-            query: {
-              orderId: this.$route.query.orderId,
-              isSuccess: checkData.code != 0 ? 2 : 4
-            }
-          })
-        } else {
-          this.$router.replace({
-            name: 'me-wallet'
-          })
-        }
-        this.isWaittingPay = false;
-      })
+      if (this.$route.query.tingg == 'failed') {
+        this.$dialog.confirm({
+          title: this.$t('payment_failed'),
+          message: this.$t('order_payment_failed_tips'),
+          confirmButtonText: this.$t('pay_again')
+        }).then(() => {
+          this.onPay();
+        })
+        return false;
+      }
+      this.checkPayOrder(0);
     }
-    // if (this.$route.query.phonePrefix && this.list.length > 0) { // 从选择电话的页面回跳回来的
-    //   this.list = this.list.map(item => {
-    //     return {
-    //       ...item,
-    //       prefixCode: this.$route.query.phonePrefix && item.label == this.$route.query.payment ? this.$route.query.phonePrefix : item.prefixCode
-    //     }
-    //   });
-    //   return false;
-    // }
-    // this.$toast.loading({
-    //   forbidClick: true,
-    //   loadingType: 'spinner',
-    //   duration: 0
-    // });
+    
     this.list = [];
     if (this.payRadio == 100) {
       this.balanceShow = false;
     }
-    // getAvailable().then(res => {
-    //   this.$toast.clear();
-    //   if (!res.data) return false;
-
-    //   this.list = res.data.map(item => {
-    //     return {
-    //       label: item,
-    //       phone: '',
-    //       prefixCode: this.$route.query.phonePrefix && item == this.$route.query.payment ? this.$route.query.phonePrefix : this.$t('prefix_tip')
-    //     }
-    //   });
-
+    getAllPayments().then(res => {
+      this.list = res.data.map(item => {
+        return {
+          ...item,
+          label: item.value,
+          desc: item.label,
+          phone: '',
+          prefixCode: this.$route.query.phonePrefix && item == this.$route.query.payment ? this.$route.query.phonePrefix : this.$t('prefix_tip')
+        }
+      });
       if (this.$route.query.type == 'order') { // 说明是从订单结算页面跳转过来的，支付方式就有余额
-        this.list = this.list.concat([{
+        this.list.push({
           label: 'Balances',
           phone: '',
           desc: this.$t('tospinomall_wallet')
-        }]);
+        });
       }
-      this.list = this.list.concat([{
-        label: 'Tingg',
-        phone: '',
-        prefixCode: this.$route.query.phonePrefix && 'Tingg' == this.$route.query.payment ? this.$route.query.phonePrefix : this.$t('prefix_tip'),
-        desc: this.$t('payment_way', { replace_tip: 'Tingg' })
-      }, {
-        label: 'Brij',
-        phone: '',
-        desc: this.$t('payment_way', { replace_tip: 'Brij' })
-      }, {
-        label: 'Payswitch',
-        phone: '',
-        desc: this.$t('payment_way', { replace_tip: 'Payswitch' })
-      }])
+      this.$toast.clear();
+    }).catch(error => {
+      console.log(error);
+      if (this.$route.query.type == 'order') { // 说明是从订单结算页面跳转过来的，支付方式就有余额
+        this.list.push({
+          label: 'Balances',
+          phone: '',
+          desc: this.$t('tospinomall_wallet')
+        });
+      }
+      this.$toast.clear();
+    })
+    
+      // this.list = this.list.concat([{
+      //   label: 'Tingg',
+      //   phone: '',
+      //   prefixCode: this.$route.query.phonePrefix && 'Tingg' == this.$route.query.payment ? this.$route.query.phonePrefix : this.$t('prefix_tip'),
+      //   desc: this.$t('payment_way', { replace_tip: 'Tingg' })
+      // }, {
+      //   label: 'Brij',
+      //   phone: '',
+      //   desc: this.$t('payment_way', { replace_tip: 'Brij' })
+      // }, {
+      //   label: 'Payswitch',
+      //   phone: '',
+      //   desc: this.$t('payment_way', { replace_tip: 'Payswitch' })
+      // }])
     // }).catch(() => { // 接口报错，又是订单结算页面跳过来的话，要先展示余额
     //   if (this.$route.query.type == 'order') { // 说明是从订单结算页面跳转过来的，支付方式就有余额
     //     this.list = [{
@@ -239,47 +246,6 @@ export default {
     //     }];
     //   }
     // })
-
-    
-
-    // // brij钱包支付
-    // let myHeaders = new Headers();
-    // myHeaders.append('Content-Type', 'application/json');
-    // myHeaders.append('Authorization', 'Bearer 773|zuhKE0MLWvfAnZHo5dJU9oRQOUILNHt6JWokxeer');
-    // // 获取所有的支付方式
-    // let brijData = [];
-    // fetch('/brij/api/v2/payviabrij/paymentmethods', {
-    //   method: 'POST',
-    //   body: JSON.stringify({
-    //     currency: 'GHS'
-    //   }),
-    //   headers: myHeaders,
-    //   // mode: 'no-cors',
-    // }).then(res => {
-    //   return res.json();
-    // }).then(response => {
-    //   brijData = response.data;
-    //   console.log(response);
-    // })
-
-    // document
-    //   .querySelector('.brij-checkout-button')
-    //   .addEventListener('click', function () {
-    //     // 进行支付
-    //     fetch('/brij/api/v2/payviabrij/pay', {
-    //       method: 'POST',
-    //       headers: myHeaders,
-    //       body: JSON.stringify({
-    //         "transaction_id" : "brij6233220",
-    //         "merchant_id" : "003542",
-    //         "currency" : "GHS",
-    //         "payment_details" : {"momo_number": "+233544203781"},
-    //         "payment_method_id" : brijData[0].id,
-    //         "amount" : "0.1"
-    //       }),
-    //       // mode: 'no-cors',
-    //     }).then(response => console.log(response.json()))
-    //   })
   },
   methods: {
     onPay() { // 提交支付,成功跳转到确认订单页面
@@ -504,20 +470,30 @@ export default {
       }
 
       let payloadString = JSON.stringify(payload).replace(/\//g, '\\/');
+      location.href = `https://developer.tingg.africa/checkout/v2/express/?accessKey=${params.accessKey}&params=${encryption.encrypt(payloadString)}&countryCode=${payload.countryCode}`;
       this.$toast.clear();
-      fetch(`https://developer.tingg.africa/checkout/v2/express/?accessKey=${params.accessKey}&params=${encryption.encrypt(payloadString)}&countryCode=${payload.countryCode}`, {
-        method: 'GET',
-        mode: 'no-cors'
-      })
-      .then(res => {
-        return res;
-      })
-      .then(response => {
-        this.$toast.clear();
-        console.log(response);
-      }).catch(() => {
-        this.$toast.clear();
-      })
+      // let tinggSrc = `https://developer.tingg.africa/checkout/v2/modal/?accessKey=${params.accessKey}&params=${encryption.encrypt(payloadString)}&countryCode=${payload.countryCode}`;
+
+      // this.isTinggPay = true;
+      // setTimeout(() => {
+      //   document.getElementById('tinggIframe').setAttribute('src', tinggSrc);
+      //   document.getElementById('tinggIframe').setAttribute('height', document.body.clientHeight + 'px');
+      // }, 300)
+      
+      
+      // fetch(`https://developer.tingg.africa/checkout/v2/express/?accessKey=${params.accessKey}&params=${encryption.encrypt(payloadString)}&countryCode=${payload.countryCode}`, {
+      //   method: 'GET',
+      //   mode: 'no-cors'
+      // })
+      // .then(res => {
+      //   return res;
+      // })
+      // .then(response => {
+      //   this.$toast.clear();
+      //   console.log(response);
+      // }).catch(() => {
+      //   this.$toast.clear();
+      // })
       // 发起结账请求
       // Tingg.renderCheckout({
       //     checkoutType: 'modal', // or 'modal'
@@ -607,7 +583,7 @@ export default {
         body: JSON.stringify({
             "amount" : "000000000200",
             "processing_code" : "000200",
-            "transaction_id" : "000000000007",
+            "transaction_id" : "000000000008",
             "desc" : "Mobile Money Payment Test",
             "merchant_id" : "TTM-00006229",
             "subscriber_number" : "233500124824",
@@ -684,6 +660,29 @@ export default {
         return false;
       }
       this.payRadio = item.label;
+    },
+    checkPayOrder(num) {
+      this.$api.checkPayOrder(this.$route.query.refNo).then(checkData => {
+        num += 1;
+        if (checkData.data != 1 && num <= 3) {
+          this.checkPayOrder();
+          return false;
+        }
+        if (this.$route.query.type == 'order') {
+          this.$router.push({ // 校验之后成功跳转到订单支付结果页面
+            name: 'cart-order-confirm',
+            query: {
+              orderId: this.$route.query.orderId,
+              isSuccess: checkData.data == 1 ? 0 : 2
+            }
+          })
+        } else {
+          this.$router.replace({
+            name: 'me-wallet'
+          })
+        }
+        this.isWaittingPay = false;
+      })
     }
   },
 }
@@ -718,6 +717,9 @@ export default {
 }
 .color-65{
   color: #656565;
+}
+.pl-6{
+  padding-left: 6px;
 }
 </style>
 

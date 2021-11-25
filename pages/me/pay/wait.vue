@@ -5,12 +5,12 @@
     <!-- 支付详情 -->
     <div class="mt-24 tc plr-20">
       <BmImage
-        :url="require('@/assets/images/icon/'+ logo +'.png')"
+        :url="logo"
         :width="'0.96rem'" 
         :height="'0.96rem'"
         :isLazy="false"
         :isShow="false"
-        :alt="'TospinoMall '+ logo +' icon'"
+        :alt="'TospinoMall'"
       />
       <h3 class="fs-16 black mt-24">{{ $t('awaiting_payment') }}</h3>
       <p class="mt-12 fs-14 black">{{ $t('if_you_have_paid') }}</p>
@@ -28,7 +28,7 @@
           6.Simply dial and try again if not success, or you can change payment method
       </p> -->
       <!-- 支付完成 -->
-      <BmButton class="fs-16 round-8 w-100 mt-24" @click="onPayCompleted">{{ $t('payment_completed') }}</BmButton>
+      <BmButton class="fs-16 round-8 w-100 mt-24" @click="onPayCompleted(0)">{{ $t('payment_completed') }}</BmButton>
       <!-- 修改支付方式 -->
       <BmButton :type="'info'" class="fs-16 round-8 w-100 mt-10 change-btn" @click="onChangePayMethod">{{ $t('change_payment_method') }}</BmButton>
       <!-- 取消支付 -->
@@ -44,34 +44,47 @@ export default {
   middleware: 'authenticated',
   computed: {
     logo() {
-      return this.$route.query.network ? this.$route.query.network : 'ARTLTIGO';
+      return this.$route.query.network && this.$route.query.network != 'payWay' ? require('@/assets/images/icon/'+ this.$route.query.network +'.png') : this.$route.query.iconUrl ? JSON.parse(this.$route.query.iconUrl).iconUrl : '';
     },
     paid_receive_prompt_tip() {
       return this.$t('paid_receive_prompt_tip', { replace_tip: `<span class="fs-18 red lh-20">${this.$route.query.phone}</span>`, replace_tip2: `<span class="fs-18 red lh-20">${this.$store.state.rate.currency}${ this.$route.query.amount }</span>` });
     }
   },
   methods: {
-    async onPayCompleted() { // 支付完成
+    async onPayCompleted(num) { // 支付完成
+      this.$toast.loading({
+        forbidClick: true,
+        loadingType: 'spinner',
+        duration: 0
+      });
       let data;
       if (this.$route.query.orderId) { // 确认订单是否支付
         data = await this.$api.checkPayOrder(this.$route.query.refNo);
       } else {
         data = await checkBuyerRecharge(this.$route.query.refNo); // 判断买家充值是否成功
       }
-
-      if (data.code != 0) {
-        this.$dialog.confirm({
-          title: this.$t('payment_failed'),
-          message: this.$t('order_payment_failed_tips'),
-          confirmButtonText: this.$t('ok')
-        })
+      // num +=1;
+      if (data.data != 1) {
+        // if (num < 3) { // 因为有延迟，所以每次延迟1秒再次请求接口，请求三次还失败就进行错误提示
+        //   setTimeout(() => {
+        //     this.onPayCompleted(num);
+        //   }, 2000)
+        // } else {
+          this.$toast.clear();
+          this.$dialog.alert({
+            title: this.$t('payment_failed'),
+            message: this.$t('order_payment_failed_tips'),
+            confirmButtonText: this.$t('i_know')
+          })
+        // }
         return false;
       }
       if (this.$route.query.orderId) {
         this.$router.push({ // 校验之后成功跳转到订单支付结果页面
           name: 'cart-order-confirm',
           query: {
-            orderId: this.$route.query.orderId
+            orderId: this.$route.query.orderId,
+            isSuccess: data.data == 1 ? 0 : 2
           }
         })
       } else {
@@ -81,6 +94,7 @@ export default {
           })
         // })
       }
+      this.$toast.clear();
     },
     onChangePayMethod() { // 修改支付方式时, 要先取消该订单再返回上一级
       if (this.$route.query.orderId) { // 取消订单支付
