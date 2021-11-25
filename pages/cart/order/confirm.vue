@@ -113,6 +113,8 @@ export default {
     }
   },
   activated() {
+    this.recommendList = [];
+    this.pageNum = 0;
     this.$fetch();
   },
   methods: {
