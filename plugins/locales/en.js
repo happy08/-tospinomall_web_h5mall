@@ -719,8 +719,9 @@ const en = {
   return_to_previous_page: 'Return to previous page',
   no_support_video: 'Your browser does not support the video tag',
   please_read_checked: 'Please read and tick the agreement',
-  backOldWeb: "Old Version",
-  payment_method: 'Payment Method'
+  backOldWeb: 'Old Version',
+  payment_method: 'Payment Method',
+  no_support_send: 'This address does not support delivery'
 }
 
 export default en;

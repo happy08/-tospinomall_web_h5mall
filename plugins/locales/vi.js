@@ -718,8 +718,9 @@ const vi = {
   concat_customer_service_email: 'Liên hệ qua email',
   return_to_previous_page: 'Trở lại trang trước',
   no_support_video: 'Trình duyệt của bạn không hỗ trợ thẻ video',
-  backOldWeb: "Phiên bản cũ",
-  payment_method: 'Phương thức thanh toán'
+  backOldWeb: 'Phiên bản cũ',
+  payment_method: 'Phương thức thanh toán',
+  no_support_send: 'Địa chỉ này tạm thời không giao hàng được'
 }
 
 export default vi;

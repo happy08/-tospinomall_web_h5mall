@@ -83,14 +83,25 @@ export default {
       w_url: this.url
     }
   },
+  watch: {
+    url: {
+      handler() {
+        this.onClipPic();
+      },
+      deep: true
+    }
+  },
   mounted() {
     setTimeout(() => {
-      this.w_url = this.url.startsWith('https://') ? (this.url + '?x-oss-process=image/resize,w_' + (parseFloat(this.$refs.vanImage.$el.offsetWidth) * 2)) : this.url;
+      this.onClipPic();
     }, 50)
   },
   methods: {
     onClick() {
       this.$emit('onClick');
+    },
+    onClipPic() {
+      this.w_url = this.url.startsWith('https://') ? (this.url + '?x-oss-process=image/resize,w_' + (parseFloat(this.$refs.vanImage.$el.offsetWidth) * 2)) : this.url;
     }
   },
 }
