@@ -2,16 +2,23 @@
   <!-- 商品列表，上面部分展示图片，下面部分展示信息 -->
   <div class="pb-14 bg-white hidden round-8" :style="'width: ' + img.width + ';'">
     <!-- 商品的图片 -->
-    <BmImage 
-      :url="img.url"
-      :width="img.width" 
-      :height="img.height"
-      :isLazy="true"
-      :loadUrl="img.loadImage"
-      :errorUrl="img.loadImage"
-      :isShow="true"
-      :alt="detail.desc"
-    />
+    <div class="soldout-container">
+      <!-- 无货 -->
+      <div class="white fs-12 lh-1 flex center soldout-container__tip" v-if="detail.stock == 0">{{ $t('out_of_stock') }}</div>
+      <BmImage 
+        :url="img.url"
+        :width="img.width" 
+        :height="img.height"
+        :isLazy="true"
+        :loadUrl="img.loadImage"
+        :errorUrl="img.loadImage"
+        :isShow="true"
+        :alt="detail.desc"
+      />
+    </div>
+    <!-- <SoldOut :isShow="true" :width="img.width" :height="img.height" :tip="$t('out_of_stock')">
+      
+    </SoldOut> -->
     <!-- 商品的信息 -->
     <div class="pt-12 plr-12" v-if="detail">
       <div class="flex vcenter pb-12" v-if="detail.country">
@@ -47,8 +54,12 @@
 
 <script>
 import { Rate } from 'vant';
+import SoldOut from '@/components/SoldOut';
 
 export default {
+  components: {
+    SoldOut
+  },
   props: {
     img: { // 图片信息
       type: Object,
@@ -73,7 +84,8 @@ export default {
           volumn: 0, // 累加
           ellipsis: 2, // 展示几行
           country: '', // 国家
-          country_url: '' // 国家logo
+          country_url: '', // 国家logo
+          stock: 1
         }
       }
     },
@@ -100,5 +112,21 @@ export default {
 .round-top-lr-8{
   border-top-right-radius: 8px;
   border-top-left-radius: 8px;
+}
+.soldout-container{
+  position: relative;
+  // width: 100%;
+  // height: 100%;
+  .soldout-container__tip{
+    position: absolute;
+    width: 70px;
+    height: 70px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.65);
+    z-index: 1;
+  }
 }
 </style>

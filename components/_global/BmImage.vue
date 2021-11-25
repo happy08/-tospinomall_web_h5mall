@@ -86,7 +86,7 @@ export default {
   mounted() {
     setTimeout(() => {
       this.w_url = this.url.startsWith('https://') ? (this.url + '?x-oss-process=image/resize,w_' + (parseFloat(this.$refs.vanImage.$el.offsetWidth) * 2)) : this.url;
-    }, 100)
+    }, 50)
   },
   methods: {
     onClick() {

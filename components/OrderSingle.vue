@@ -3,7 +3,7 @@
   <div class="flex w-100" @click="onClick">
     <!-- 商品图片 -->
     <!-- 商品数量大于1，展示商品的缩略图 -->
-    <SoldOut :isShow="stock ? false: true" :width="img_width" :height="img_height">
+    <SoldOut :isShow="stock ? false: true" :width="img_width" :height="img_height" :tip="$t('sold_out')">
       <BmImage 
         :url="image"
         :width="img_width" 
