@@ -221,6 +221,7 @@ import { getRateDetail, addGive, getGoodAttr, replyEvaluate } from '@/api/produc
 import ProductSku from '@/components/ProductSku';
 import EmptyStatus from '@/components/EmptyStatus';
 import BmPreview from '@/components/_global/BmPreview';
+import errorImage from '@/assets/images/product-bgd-90.png';
 
 export default {
   components: {
@@ -263,7 +264,7 @@ export default {
         // 商品规格初始化
         this.goodSpuVo = { // 商品基本信息
           ...res.data.goodSpuVo,
-          picture: res.data.goodSpuVo.mainPictureUrl
+          picture: res.data.goodSpuVo.mainPictureUrl || errorImage
         };
         this.sku = {
           tree: [],
@@ -292,7 +293,7 @@ export default {
                 [this.sku.tree[itemInxdex].k_s]: attrItem.attrValueId,
                 price: skuItem.skuPrice * 100, // list中的价格单位是分，所以需要乘以100
                 stock_num: skuItem.stockNum,
-                picture: skuItem.skuPicture,
+                picture: skuItem.skuPicture || errorImage,
                 name: attrItem.name
               })
             })

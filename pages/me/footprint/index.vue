@@ -115,6 +115,7 @@ import OrderSingle from '@/components/OrderSingle';
 import { deleteFootprintRecord, getGoodAttr } from '@/api/product';
 import PullRefresh from '@/components/PullRefresh';
 import ProductSku from '@/components/ProductSku';
+import errorImage from '@/assets/images/product-bgd-90.png';
 
 export default {
   middleware: 'authenticated',
@@ -280,7 +281,7 @@ export default {
         // 商品规格初始化
         this.goodSpuVo = { // 商品基本信息
           ...res.data.goodSpuVo,
-          picture: res.data.goodSpuVo.mainPictureUrl
+          picture: res.data.goodSpuVo.mainPictureUrl || errorImage
         };
         this.sku = {
           tree: [],
@@ -309,7 +310,7 @@ export default {
                 [this.sku.tree[itemInxdex].k_s]: attrItem.attrValueId,
                 price: skuItem.skuPrice * 100, // list中的价格单位是分，所以需要乘以100
                 stock_num: skuItem.stockNum,
-                picture: skuItem.skuPicture,
+                picture: skuItem.skuPicture || errorImage,
                 name: attrItem.name
               })
             })

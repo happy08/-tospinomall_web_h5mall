@@ -633,6 +633,7 @@ import shareInfo from '@/assets/images/icon/share-info.png';
 import shareLink from '@/assets/images/icon/share-link.png';
 import EmptyStatus from '@/components/EmptyStatus';
 import BmPreview from '@/components/_global/BmPreview';
+import errorImage from '@/assets/images/product-bgd-90.png';
 
 export default {
   components: {
@@ -790,7 +791,7 @@ export default {
       this.detailsPics = detailData.data.detailsPics; // 商品详情中的图片集合
       this.goodSpuVo = { // 商品基本信息
         ...detailData.data.goodSpuVo,
-        picture: detailData.data.goodSpuVo.mainPictureUrl
+        picture: detailData.data.goodSpuVo.mainPictureUrl || errorImage
       };
       
       this.storeInfo = detailData.data.storeInfo; // 店铺信息
@@ -834,7 +835,7 @@ export default {
                   [this.sku.tree[itemInxdex].k_s]: attrItem.attrValueId,
                   price: skuItem.skuPrice * 100, // list中的价格单位是分，所以需要乘以100
                   stock_num: skuItem.stockNum,
-                  picture: skuItem.skuPicture,
+                  picture: skuItem.skuPicture || errorImage,
                   name: attrItem.attrValue
                 });
               }
@@ -844,7 +845,7 @@ export default {
               [this.sku.tree[itemInxdex].k_s]: attrItem.attrValueId,
               price: skuItem.skuPrice * 100, // list中的价格单位是分，所以需要乘以100
               stock_num: skuItem.stockNum,
-              picture: skuItem.skuPicture,
+              picture: skuItem.skuPicture || errorImage,
               name: attrItem.name
             })
           })
