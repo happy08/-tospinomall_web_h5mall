@@ -526,6 +526,7 @@ export default {
   position: fixed;
   bottom: 0;
   height: 56px;
+  z-index: 100;
   .v-100{
     height: 100%;
   }
