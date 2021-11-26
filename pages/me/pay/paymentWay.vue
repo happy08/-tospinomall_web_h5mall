@@ -3,7 +3,7 @@
   <div class="bg-grey vh-100">
     <BmHeaderNav :left="{ isShow: true }" :title="$t('payment')" />
     <!-- brij钱包支付 -->
-    <van-radio-group v-model="payRadio" v-if="brijData.length > 0">
+    <van-radio-group v-model="payRadio" v-if="brijData.length > 0" class="mlr-12">
       <van-cell-group v-for="(item, index) in brijData" :key="index" class="bg-white">
         <van-cell class="ptb-10 mt-12 vcenter pl-6 pr-12" clickable @click="onChangePayment(item)" :border="false">
           <!-- 左侧图标 -->
@@ -168,7 +168,15 @@ export default {
       this.payRadio = item.id;
     },
     payOrder(params) { // 订单支付 payType: 1余额支付 2UniwalletPay 0系统支付 3tingg支付 4brij支付, sourceType订单来源4->h5
-      payOrder(params).then(res => {
+      payOrder({
+        name: params.name,
+        network: params.network,
+        orderIds: params.orderIds,
+        payType: params.payType,
+        phone: params.phone,
+        phonePrefix: params.phonePrefix,
+        sourceType: params.sourceType
+      }).then(res => {
         if (res.code != 0) return false;
 
         let refNo = res.data.refNo;
