@@ -642,7 +642,7 @@ const en = {
   search_filter_price: [{text: 'Comprehensive', value: 0}, {text: 'Price ascending', value: 1}, {text: 'Price descending', value: 2}],
   gander: ['Male', 'Female', 'Bisexuality', 'Secrecy'],
   marital_status_list: ['Unmarried', 'Married', 'Secrecy'],
-  fail_copied_to_clipboard: 'copy failed',
+  fail_copied_to_clipboard: 'Copy failed',
   address_tag: ['Home', 'Company', 'School'],
   category_list: ['whole', 'Price reduction', 'Often buy'],
   store_product_tab: ['Recommend', 'Sale', 'Price', 'In stock'],

@@ -438,7 +438,7 @@
   bind_mobile_phone_number: 'Vincular número de telefone celular',
   bind_phone_tips: 'Pontas:\n1. Para garantir a segurança de sua conta, a alteração de informações importantes requer verificação de identidade.\n2. Se você tiver alguma dúvida durante o processo de verificação, entre em contato com o atendimento ao cliente.\n3. Altere o celular vinculado. Se o celular original estiver desabilitado e o código de verificação não puder ser obtido, entre em contato com o atendimento ao cliente.',
   phone_bind_success: 'Vinculação do número do celular com sucesso',
-  i_know: 'eu vejo',
+  i_know: 'Eu vejo',
   email_bind_success: 'Ligação da caixa de correio com sucesso',
   binding_mobile_phone: 'Vincular número de telefone celular',
   associated_mailbox: 'Vincular caixa de correio',
