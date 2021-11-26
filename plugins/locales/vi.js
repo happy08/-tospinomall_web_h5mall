@@ -268,7 +268,7 @@ const vi = {
   buy_now: 'Mua ngay',
   please_select: 'xin vui lòng chọn ',
   in_stock: 'trong kho:',
-  out_of_stock: 'Bán hết',
+  out_of_stock: 'Hết hàng',
   just_for_you: 'Cùng một cửa hàng hàng hóa',
   specification: 'Sự chỉ rõ:',
   no_address_tip: 'Không có địa chỉ giao hàng, hãy đặt nó ngay bây giờ',

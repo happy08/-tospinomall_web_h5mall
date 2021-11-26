@@ -268,7 +268,7 @@ const en = {
   buy_now: 'Buy Now',
   please_select: 'Please select ',
   in_stock: 'In Stock:',
-  out_of_stock: 'Out of stock',
+  out_of_stock: 'Sold Out',
   just_for_you: 'Just For You',
   specification: 'Specification:',
   no_address_tip: 'There is no shipping address. Set it now',

@@ -268,7 +268,7 @@
   buy_now: 'Compre Agora',
   please_select: 'por favor escolha ',
   in_stock: 'em estoque:',
-  out_of_stock: 'Esgotado',
+  out_of_stock: 'Fora de estoque',
   just_for_you: 'Produtos da mesma loja',
   specification: 'Especificação:',
   no_address_tip: 'Sem endereço de entrega, defina-o agora',
