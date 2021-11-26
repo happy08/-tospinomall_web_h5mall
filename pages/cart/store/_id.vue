@@ -235,14 +235,18 @@
             :key="'product-item-' + productIndex"
             :to="'/product/' + productItem.productId + '.html'">
             <!-- 商品图片 -->
-            <BmImage 
-              :url="productItem.mainPictureUrl"
-              :width="'1.8rem'" 
-              :height="'1.8rem'"
-              :fit="'cover'"
-              class="border round-4 hidden"
-              :alt="productItem.productTitle"
-            />
+            <div class="soldout-container">
+              <!-- 无货 -->
+              <div class="white fs-12 lh-1 flex center soldout-container__tip" v-if="productItem.stock == 0">{{ $t('out_of_stock') }}</div>
+              <BmImage 
+                :url="productItem.mainPictureUrl"
+                :width="'1.8rem'" 
+                :height="'1.8rem'"
+                :fit="'cover'"
+                class="border round-4 hidden"
+                :alt="productItem.productTitle"
+              />
+            </div>
             <!-- 商品详情 -->
             <div class="ml-14 w-230">
               <h4 class="hidden-2 black fs-14 lh-20 fm-helvetica">{{ productItem.productTitle }}</h4>
@@ -803,6 +807,22 @@ export default {
 }
 .h-50{
   height: 50px;
+}
+.soldout-container{
+  position: relative;
+  // width: 100%;
+  // height: 100%;
+  .soldout-container__tip{
+    position: absolute;
+    width: 70px;
+    height: 70px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.65);
+    z-index: 1;
+  }
 }
 </style>
 

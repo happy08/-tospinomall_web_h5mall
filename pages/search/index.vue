@@ -118,15 +118,19 @@
                 :to="'/product/' + searchItem.productId + '.html'"
               >
                 <div :class="{'flex vcenter pt-20 pb-30 hidden bg-white': true, 'border-229 border-b': searchIndex !== list.length - 1} ">
-                  <BmImage 
-                    :url="searchItem.mainPictureUrl"
-                    :width="'1.8rem'" 
-                    :height="'1.8rem'"
-                    :fit="'cover'"
-                    :isShow="true"
-                    class="border round-4 flex-shrink"
-                    :alt="searchItem.productTitle"
-                  />
+                  <div class="soldout-container">
+                    <!-- 无货 -->
+                    <div class="white fs-12 lh-1 flex center soldout-container__tip" v-if="searchItem.stock == 0">{{ $t('out_of_stock') }}</div>
+                    <BmImage 
+                      :url="searchItem.mainPictureUrl"
+                      :width="'1.8rem'" 
+                      :height="'1.8rem'"
+                      :fit="'cover'"
+                      :isShow="true"
+                      class="border round-4 flex-shrink"
+                      :alt="searchItem.productTitle"
+                    />
+                  </div>
                   <div class="ml-14 w-230 hidden-1">
                     <p class="fs-14 black hidden-1" v-html="searchItem.productTitle"></p>
                     <p class="mt-8 fs-14 light-grey">{{ $t('ship_from_', { replace_tip: searchItem.supplyCountry && $store.state.supplyCountry && $store.state.supplyCountry[searchItem.supplyCountry] ? $store.state.supplyCountry[searchItem.supplyCountry].label : '' }) }}</p>
@@ -1098,6 +1102,22 @@ export default {
   color: #383838;
   &::after{
     border-color: transparent transparent #383838 #383838;
+  }
+}
+.soldout-container{
+  position: relative;
+  // width: 100%;
+  // height: 100%;
+  .soldout-container__tip{
+    position: absolute;
+    width: 70px;
+    height: 70px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.65);
+    z-index: 1;
   }
 }
 </style>
