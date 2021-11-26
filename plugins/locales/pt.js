@@ -417,7 +417,7 @@
   verify_password_tip: 'A senha deve ter pelo menos 6 caracteres e deve conter letras e números ou símbolos especiais.',
   enter_the_login_password: 'Por favor, insira sua senha',
   enter_the_current_login_password: 'Por favor, digite a senha de login atual',
-  _6_20_new_password: '6-20 dígitos nova senha',
+  _6_20_new_password: 'Nova senha',
   enter_phone_verify_code_tip: 'Digite o código de verificação SMS recebido por {replace_tip}',
   t_please_input_the_amount: 'Por favor, insira o valor',
   t_please_choose_the_payment_method: 'Selecione o método de pagamento',

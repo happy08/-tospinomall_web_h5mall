@@ -417,7 +417,7 @@ const en = {
   verify_password_tip: 'The password must be at least 6 characters and must contain both letters and numbers, or special symbols.',
   enter_the_login_password: 'Please enter the login password',
   enter_the_current_login_password: 'Please enter the current login password',
-  _6_20_new_password: '6-20 digit new password',
+  _6_20_new_password: 'New password',
   enter_phone_verify_code_tip: 'Please enter {replace_tip} received SMS verification code',
   t_please_input_the_amount: 'Please enter amount',
   t_please_choose_the_payment_method: 'Please select payment method',

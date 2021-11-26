@@ -418,7 +418,7 @@ const cn = {
   verify_password_tip: '密码必须至少为 6 个字符，并且必须同时包含字母和数字或特殊符号。',
   enter_the_login_password: '请输入登录密码',
   enter_the_current_login_password: '请输入当前登录密码',
-  _6_20_new_password: '6–20位新密码',
+  _6_20_new_password: '新密码',
   enter_phone_verify_code_tip: '请输入{replace_tip}收到的短信验证码',
   t_please_input_the_amount: '请输入金额',
   t_please_choose_the_payment_method: '请选择支付方式',

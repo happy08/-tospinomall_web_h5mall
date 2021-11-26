@@ -417,7 +417,7 @@ const vi = {
   verify_password_tip: 'Mật khẩu phải có ít nhất 6 ký tự, phải chứa cả chữ và số hoặc các ký hiệu đặc biệt',
   enter_the_login_password: 'Vui lòng nhập mật khẩu của bạn',
   enter_the_current_login_password: 'Vui lòng nhập mật khẩu đăng nhập hiện tại',
-  _6_20_new_password: 'Mật khẩu mới 6-20 chữ số',
+  _6_20_new_password: 'Mật khẩu mới',
   enter_phone_verify_code_tip: 'Vui lòng nhập mã xác minh SMS nhận được bởi {replace_tip}',
   t_please_input_the_amount: 'Vui lòng nhập số tiền',
   t_please_choose_the_payment_method: 'Vui lòng chọn phương thức thanh toán',
