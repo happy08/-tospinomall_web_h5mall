@@ -13,8 +13,9 @@
               :width="'0.8rem'" 
               :height="'0.8rem'"
               :isLazy="false"
-              :isShow="false"
+              :isShow="true"
               :alt="'TospinoMall'"
+              :isClip="0"
             />
           </template>
           <template #title>
