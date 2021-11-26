@@ -696,7 +696,7 @@ const en = {
   share_content: 'Share Content',
   inventory_shortage: 'Inventory shortage',
   free_freight: 'Free shipping',
-  not_sale: 'The region does not support sales',
+  not_sale: 'Delivery is not supported in this area temporarily',
   refund_return_state_tip_52: 'You have successfully initiated a return and refund request, please wait patiently for the {replace_tip} to process',
   refund_return_state_tip_53: 'After the platform agrees, please return the goods according to the return address given, and record the return shipping order number',
   with_and: 'and',
