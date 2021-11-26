@@ -20,17 +20,17 @@
       
     </SoldOut> -->
     <!-- 商品的信息 -->
-    <div class="pt-12 plr-12" v-if="detail">
+    <div class="pt-4 plr-12" v-if="detail">
       <div class="flex vcenter pb-12" v-if="detail.country">
         <BmImage 
           :url="detail.country_url"
-          :width="'0.36rem'" 
+          :width="'0.54rem'" 
           :height="'0.36rem'"
           :isLazy="false"
           :loadUrl="img.loadImage"
           :errorUrl="img.loadImage"
           :isShow="true"
-          :round="true"
+          :round="false"
           :alt="detail.desc"
         />
         <span class="fs-10 color_666 ml-10">{{ detail.country }}</span>
