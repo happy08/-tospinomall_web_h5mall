@@ -25,8 +25,8 @@ if (process.env.APP_MODE == 'test') { // 测试环境
 if (process.env.APP_MODE == 'ghana') { // 加纳站点
   production = {
     ...production,
-    DOMAIN_API: 'https://tospinomallapi1.tospinomall.com.gh',
-    DOMAIN_LOGIN: 'https://oauthapi1.tospinomall.com.gh'
+    DOMAIN_API: 'https://tospinomallapi1.tospinomall.com',
+    DOMAIN_LOGIN: 'https://oauthapi1.tospinomall.com'
   }
 }
 
