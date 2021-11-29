@@ -724,7 +724,9 @@
   tospinomall_wallet: 'Carteira TospinoMall',
   pay_again: 'Pagar de novo',
   no_support_send: 'Este endereço não suporta entrega',
-  pwd_letter_number: 'A senha deve conter letras e números'
+  pwd_letter_number: 'A senha deve conter letras e números',
+  pay_wait_confirm: 'Confirmação de pagamento, por favor aguarde pacientemente ...',
+  pay_wait: 'Esperando o pagamento'
 }
 
 export default por;

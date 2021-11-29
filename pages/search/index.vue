@@ -505,6 +505,7 @@ export default {
       });
       this.historyNum = this.$store.state.searchProductList.length > 6 ? true: false;
     } catch (error) {
+      this.$toast.clear();
       console.log(error);
     }
   },

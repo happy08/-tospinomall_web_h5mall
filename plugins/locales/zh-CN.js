@@ -725,7 +725,9 @@ const cn = {
   tospinomall_wallet: 'TospinoMall 钱包',
   pay_again: '重新支付',
   no_support_send: '该地址不支持配送',
-  pwd_letter_number: '密码必须同时包含字母和数字'
+  pwd_letter_number: '密码必须同时包含字母和数字',
+  pay_wait_confirm: '支付确认中，请耐心等待...',
+  pay_wait: '支付等待'
 }
 
 export default cn;

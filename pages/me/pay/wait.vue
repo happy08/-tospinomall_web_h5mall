@@ -1,7 +1,7 @@
 <template>
   <!-- 订单-支付-等待支付页面 -->
   <div class="vh-100">
-    <BmHeaderNav :left="{ isShow: true, isEmit: true }" :title="$t('payment')" @leftClick="leftClick" />
+    <BmHeaderNav :left="{ isShow: countdown == -1 ? true : false, isEmit: true }" :title="countdown == -1 ? $t('payment') : $t('pay_wait')" @leftClick="leftClick" />
     <!-- 支付详情 -->
     <div class="mt-24 tc plr-20">
       <BmImage
@@ -12,12 +12,14 @@
         :isShow="false"
         :alt="'TospinoMall'"
       />
-      <h3 class="fs-16 black mt-24">{{ $t('awaiting_payment') }}</h3>
-      <p class="mt-12 fs-14 black">{{ $t('if_you_have_paid') }}</p>
+      <h3 class="fs-16 black mt-24" v-if="countdown == -1">{{ $t('awaiting_payment') }}</h3>
+      <p class="mt-12 fs-14 black" v-if="countdown == -1">{{ $t('if_you_have_paid') }}</p>
+      <p class="mt-20 grey" v-if="countdown != -1">{{ $t('pay_wait_confirm') }}</p>
+      <van-count-down class="mt-24 black fs-24" v-if="countdown != -1" :time="countdown" @finish="onPayCompleted(1)" />
     </div>
 
     <!-- 详情描述 -->
-    <div class="bg-white mt-30 mlr-12 pt-14 pb-20 plr-14">
+    <div class="bg-white mt-30 mlr-12 pt-14 pb-20 plr-14" v-if="countdown == -1">
       <p class="color-666 fs-14" v-html="paid_receive_prompt_tip"></p>
       <!-- <p class="fs-14 black mt-10 lh-20">If you do not receive the prompt within 10s follow the Instructions below:
           1.Dia l*170# to see the main MTN USSD menu
@@ -39,9 +41,18 @@
 
 <script>
 import { cancelPayOrder, buyerCancelRecharge, checkBuyerRecharge, callBackRecharge } from '@/api/pay';
+import { CountDown } from 'vant';
 
 export default {
   middleware: 'authenticated',
+  components: {
+    vanCountDown: CountDown
+  },
+  data() {
+    return {
+      countdown: -1
+    }
+  },
   computed: {
     logo() {
       return this.$route.query.network && this.$route.query.network != 'payWay' ? require('@/assets/images/icon/'+ this.$route.query.network +'.png') : this.$route.query.iconUrl ? JSON.parse(this.$route.query.iconUrl).iconUrl : '';
@@ -71,11 +82,31 @@ export default {
         //   }, 2000)
         // } else {
           this.$toast.clear();
-          this.$dialog.alert({
-            title: this.$t('payment_failed'),
-            message: this.$t('order_payment_failed_tips'),
-            confirmButtonText: this.$t('i_know')
-          })
+          this.countdown = num == 1 ? 0 : this.countdown;
+          if (this.countdown == 0) { // 倒计时结束
+            if (this.$route.query.orderId) { // 订单
+              this.$router.push({ // 校验之后成功跳转到订单支付结果页面
+                name: 'cart-order-confirm',
+                query: {
+                  orderId: this.$route.query.orderId,
+                  isSuccess: data.data == 1 ? 0 : 2
+                }
+              })
+              return false;
+            }
+            this.$dialog.alert({
+              title: this.$t('payment_failed'),
+              message: this.$t('order_payment_failed_tips'),
+              confirmButtonText: this.$t('i_know')
+            }).then(() => {
+              this.$router.replace({
+                name: 'me-wallet'
+              })
+            })
+          } else{
+            this.countdown = 1 * 2 * 60 * 1000;
+          }
+          
         // }
         return false;
       }
@@ -106,7 +137,6 @@ export default {
     onCancel() { // 取消支付
       this.$dialog({
         title: this.$t('are_you_sure_you_want_to_cancel_the_payment'),
-        // message: 'This order will automatically be can-celed if not paid within 30 mins.',
         confirmButtonText: this.$t('continue_pay'),
         confirmButtonColor: '#42B7AE',
         showCancelButton: true,

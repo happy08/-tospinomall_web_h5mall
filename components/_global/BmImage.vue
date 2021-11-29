@@ -105,7 +105,7 @@ export default {
       this.$emit('onClick');
     },
     onClipPic() {
-      this.w_url = this.url.startsWith('https://') && this.isClip == 1 ? (this.url + '?x-oss-process=image/resize,w_' + (parseFloat(this.$refs.vanImage.$el.offsetWidth) * 2)) : this.url;
+      this.w_url = this.url.startsWith('https://') && this.isClip == 1 ? (this.url + '?x-oss-process=image/resize,w_' + parseInt(parseFloat(this.$refs.vanImage.$el.offsetWidth) * 1.5)) : this.url;
     }
   },
 }

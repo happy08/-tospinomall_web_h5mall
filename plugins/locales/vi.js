@@ -724,7 +724,9 @@ const vi = {
   tospinomall_wallet: 'Ví TospinoMall',
   pay_again: 'Thử lại',
   no_support_send: 'Địa chỉ này tạm thời không giao hàng được',
-  pwd_letter_number: 'Mật khẩu phải bao gồm chữ cái và số'
+  pwd_letter_number: 'Mật khẩu phải bao gồm chữ cái và số',
+  pay_wait_confirm: 'Xác nhận thanh toán, vui lòng kiên nhẫn chờ đợi ...',
+  pay_wait: 'Chờ thanh toán'
 }
 
 export default vi;
