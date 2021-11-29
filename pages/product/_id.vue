@@ -1185,19 +1185,28 @@ export default {
         })
         return false;
       }
+      this.$toast.loading({
+        forbidClick: true,
+        loadingType: 'spinner',
+        duration: 0
+      });
       if (this.goodSpuVo.isAttention == 1) { // 取消关注
         cancelAttentionProduct([this.goodSpuVo.id]).then(() => {
           this.goodSpuVo.isAttention = 0;
+          this.$toast.clear();
         }).catch(error => {
           console.log(error);
+          this.$toast.clear();
         })
         return false;
       }
       
       attentionProduct(this.goodSpuVo.id).then(() => {
         this.goodSpuVo.isAttention = 1;
+        this.$toast.clear();
       }).catch(error => {
         console.log(error);
+        this.$toast.clear();
       })
     },
     onBuySku() {

@@ -105,7 +105,7 @@ export default {
     this.getBillList();
   },
   methods: {
-    getBillList(flag) {
+    getBillList(flag) { // 获取支付列表
       getBillList({ pageNum: this.pageNum, pageSize: this.pageSize, type: 0, title: this.searchVal }).then(res => {
         this.refreshing.isFresh = false;
         // 加载状态结束
