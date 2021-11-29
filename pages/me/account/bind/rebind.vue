@@ -125,7 +125,7 @@ export default {
         }
         _axios = getEmailCode({ email: this.account, userType: 'buyer' });
       } else { // 默认是获取手机验证码
-        _axios = getPhoneCode({ phone: this.account, phonePrefix: this.$route.query.phonePrefix, userType: 'buyer' });
+        _axios = getPhoneCode({ phone: this.account, phonePrefix: this.prefixCode, userType: 'buyer' });
       }
       // 接口返回操作
       _axios.then(res => {
@@ -167,13 +167,13 @@ export default {
         }
         _axios = checkEmailCode({ code: this.code, email: this.account, userType: 'buyer', isDelCode: 0 });
       } else { // 校验手机验证码
-        _axios = checkPhoneCode({ code: this.code, phone: this.account, phonePrefix: this.$route.query.phonePrefix, userType: 'buyer', isDelCode: 0 });
+        _axios = checkPhoneCode({ code: this.code, phone: this.account, phonePrefix: this.prefixCode, userType: 'buyer', isDelCode: 0 });
       }
 
       _axios.then(() => {
         this.isNextFlag = false;
         // 校验成功之后提交修改
-        let _userinfoAjax = this.$route.query.changeWay == 'email' ? updateUserInfo({ email: this.account, code: this.code }) : updateUserInfo({ phone: this.account, phonePrefix: this.$route.query.phonePrefix, code: this.code });
+        let _userinfoAjax = this.$route.query.changeWay == 'email' ? updateUserInfo({ email: this.account, code: this.code }) : updateUserInfo({ phone: this.account, phonePrefix: this.prefixCode, code: this.code });
         _userinfoAjax.then(res => {
           this.$store.commit('user/SET_USERINFO', res.data); // 修改本地用户信息
           this.$router.push({
