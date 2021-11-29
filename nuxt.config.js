@@ -154,7 +154,9 @@ export default {
   // PWA module configuration: https://go.nuxtjs.dev/pwa
   pwa: {
     manifest: {
-      lang: 'en'
+      lang: 'en',
+      name: 'TospinoMall',
+      short_name: 'TospinoMall'
     }
   },
 
