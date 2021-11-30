@@ -169,12 +169,12 @@ export default {
     },
     payOrder(params) { // 订单支付 payType: 1余额支付 2UniwalletPay 0系统支付 3tingg支付 4brij支付, sourceType订单来源4->h5
       payOrder({
-        name: params.name,
-        network: params.network,
+        platformPayTypeName: params.name,
+        platformPayType: params.network,
         orderIds: params.orderIds,
         payType: params.payType,
-        phone: params.phone,
-        phonePrefix: params.phonePrefix,
+        // phone: params.phone,
+        // phonePrefix: params.phonePrefix,
         sourceType: params.sourceType
       }).then(res => {
         if (res.code != 0) return false;

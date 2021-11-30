@@ -24,6 +24,9 @@
               <p class="fs-12 lh-1 mt-8 color-65">{{ item.desc }}</p>
             </div>
           </template>
+          <template #default v-if="item.label == 'Balances'">
+            <span class="fs-16 fw tr black pr-10">{{ $store.state.rate.currency }}{{ balance }}</span>
+          </template>
           <!-- 右侧图标-单选图标 -->
           <template #right-icon v-if="item.label != 'Brij'">
             <van-radio :name="item.label" icon-size="0.48rem">
@@ -119,7 +122,7 @@
 
 <script>
 import { RadioGroup, Radio, Cell, CellGroup, Field, Popup, Picker, NumberKeyboard, PasswordInput } from 'vant';
-import { getAvailable, buyerRecharge, payOrder, getAllPayments } from '@/api/pay';
+import { getAvailable, buyerRecharge, payOrder, getAllPayments, getRechargeCard } from '@/api/pay';
 const Encryption = require('@/assets/js/encryption');
 import { url } from '@/api/config'; // 导入配置域名
 
@@ -144,6 +147,7 @@ export default {
       balanceShow: false,
       payPwd: '',
       isWaittingPay: false,
+      balance: 0
       // isTinggPay: false
     }
   },
@@ -191,11 +195,24 @@ export default {
     }
     
     this.list = [];
+    if (this.$route.query.type == 'order') { // 说明是从订单结算页面跳转过来的，支付方式就有余额
+      this.list.push({
+        label: 'Balances',
+        phone: '',
+        desc: this.$t('tospinomall_wallet')
+      });
+    }
     if (this.payRadio == 100) {
       this.balanceShow = false;
     }
+
+    getRechargeCard().then(res => {
+      this.balance = res.data.balance
+    }).catch(error => {
+      console.log(error);
+    })
     getAllPayments().then(res => {
-      this.list = res.data.map(item => {
+      let list = res.data.map(item => {
         return {
           ...item,
           label: item.value,
@@ -204,48 +221,12 @@ export default {
           prefixCode: this.$route.query.phonePrefix && item == this.$route.query.payment ? this.$route.query.phonePrefix : this.$t('prefix_tip')
         }
       });
-      if (this.$route.query.type == 'order') { // 说明是从订单结算页面跳转过来的，支付方式就有余额
-        this.list.push({
-          label: 'Balances',
-          phone: '',
-          desc: this.$t('tospinomall_wallet')
-        });
-      }
+      this.list = this.list.concat(list);
       this.$toast.clear();
     }).catch(error => {
       console.log(error);
-      if (this.$route.query.type == 'order') { // 说明是从订单结算页面跳转过来的，支付方式就有余额
-        this.list.push({
-          label: 'Balances',
-          phone: '',
-          desc: this.$t('tospinomall_wallet')
-        });
-      }
       this.$toast.clear();
     })
-    
-      // this.list = this.list.concat([{
-      //   label: 'Tingg',
-      //   phone: '',
-      //   prefixCode: this.$route.query.phonePrefix && 'Tingg' == this.$route.query.payment ? this.$route.query.phonePrefix : this.$t('prefix_tip'),
-      //   desc: this.$t('payment_way', { replace_tip: 'Tingg' })
-      // }, {
-      //   label: 'Brij',
-      //   phone: '',
-      //   desc: this.$t('payment_way', { replace_tip: 'Brij' })
-      // }, {
-      //   label: 'Payswitch',
-      //   phone: '',
-      //   desc: this.$t('payment_way', { replace_tip: 'Payswitch' })
-      // }])
-    // }).catch(() => { // 接口报错，又是订单结算页面跳过来的话，要先展示余额
-    //   if (this.$route.query.type == 'order') { // 说明是从订单结算页面跳转过来的，支付方式就有余额
-    //     this.list = [{
-    //       label: 'Balances',
-    //       phone: ''
-    //     }];
-    //   }
-    // })
   },
   methods: {
     onPay() { // 提交支付,成功跳转到确认订单页面
@@ -284,16 +265,16 @@ export default {
           this.onPayswitch();
           return false;
         }
-        if (this.payRadio == 'Tingg') { // tingg支付
-          this.payOrder({ payType: 3, network: this.payRadio, sourceType: 4, orderIds: JSON.parse(this.$route.query.orderIds).orderIds, phone: phone, phonePrefix: phonePrefix });
-          return false;
-        }
-        this.payOrder({ payType: 2, network: this.payRadio, phone: phone, phonePrefix: phonePrefix, sourceType: 4, orderIds: JSON.parse(this.$route.query.orderIds).orderIds });
+        // if (this.payRadio == 'Tingg') { // tingg支付
+        //   this.payOrder({ payType: 3, platformPayType: this.payRadio, sourceType: 4, orderIds: JSON.parse(this.$route.query.orderIds).orderIds, phone: phone, phonePrefix: phonePrefix });
+        //   return false;
+        // }
+        this.payOrder({ payType: 2, platformPayType: this.payRadio, phone: phone, phonePrefix: phonePrefix, sourceType: 4, orderIds: JSON.parse(this.$route.query.orderIds).orderIds });
         return false;
       }
 
       // 买家充值
-      buyerRecharge({ amount: parseFloat(this.$route.query.amount), msisdn: phone, network: this.payRadio, type: this.$route.query.type }).then(res => {
+      buyerRecharge({ amount: parseFloat(this.$route.query.amount), msisdn: phone, platformPayType: this.payRadio, type: this.$route.query.type }).then(res => {
         if (res.code != 0) return false;
         this.$router.push({
           name: 'me-pay-wait',
@@ -397,6 +378,7 @@ export default {
               isSuccess: 1
             }
           })
+          this.payPwd = '';
           return false;
         }
         // 不是余额支付的话，需要先跳转到收银台

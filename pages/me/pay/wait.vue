@@ -14,8 +14,8 @@
       />
       <h3 class="fs-16 black mt-24" v-if="countdown == -1">{{ $t('awaiting_payment') }}</h3>
       <p class="mt-12 fs-14 black" v-if="countdown == -1">{{ $t('if_you_have_paid') }}</p>
-      <p class="mt-20 grey" v-if="countdown != -1">{{ $t('pay_wait_confirm') }}</p>
-      <van-count-down class="mt-24 black fs-24" v-if="countdown != -1" :time="countdown" @finish="onPayCompleted(1)" />
+      <p class="mt-30 grey" v-if="countdown != -1">{{ $t('pay_wait_confirm') }}</p>
+      <van-count-down class="mt-30 black fs-24" v-if="countdown != -1" :time="countdown" @finish="onPayCompleted(1)" />
     </div>
 
     <!-- 详情描述 -->
