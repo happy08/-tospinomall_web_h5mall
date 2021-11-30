@@ -326,6 +326,7 @@ export default {
         vm.deliveryType = false;
         vm.typeActive = 0;
         vm.dropdownVal = 0;
+        vm.pageIndex = 0;
       }
     })
   },
