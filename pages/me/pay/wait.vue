@@ -153,20 +153,34 @@ export default {
       })
     },
     cancelPayOrder() { // 取消订单支付
+      this.$toast.loading({
+        forbidClick: true,
+        loadingType: 'spinner',
+        duration: 0
+      });
       cancelPayOrder(this.$route.query.refNo).then(() => {
         this.$router.go(-1);
+        this.$toast.clear();
       }).catch(error => {
         console.log(error);
+        this.$toast.clear();
       })
     },
     leftClick() { // 页面回退
       this.onCancel();
     },
     cancelBuyerRecharge() { // 买家取消充值
+      this.$toast.loading({
+        forbidClick: true,
+        loadingType: 'spinner',
+        duration: 0
+      });
       buyerCancelRecharge(this.$route.query.refNo).then(() => {
         this.$router.go(-1);
+        this.$toast.clear();
       }).catch(error => {
         console.log(error);
+        this.$toast.clear();
       })
     }
   },
