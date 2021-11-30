@@ -28,9 +28,9 @@
         <van-sticky offset-top="0" @scroll="onScroll">
           <div :class="{'store-container-headr': scrollTop > 40 && storeBgdUrl != '', 'h-68': scrollTop > 40, 'bg-black': scrollTop > 40 && storeBgdUrl == ''}" :style="scrollTop > 40 && storeBgdUrl != '' ? 'background-image: url(' + storeBgdUrl + ')' : ''">
             <div :class="{'w-100 flex between plr-12 ptb-10 vcenter': true, 'bg-black-65': scrollTop > 40 && storeBgdUrl != ''}">
-              <div class="flex vcenter w-100">
+              <div class="flex vcenter mr-12 w-100 hidden-1">
                 <!-- 店铺详情 -->
-                <nuxt-link replace :to="{ name: 'cart-store-detail-id', params: { id: $route.params.id }, query: $route.query }" v-slot="{ navigate }" class="flex vcenter w-100">
+                <nuxt-link replace :to="{ name: 'cart-store-detail-id', params: { id: $route.params.id }, query: $route.query }" v-slot="{ navigate }" class="flex vcenter w-100 hidden-1">
                   <div @click="navigate" role="link">
                     <!-- 店铺logo -->
                     <BmImage
@@ -39,15 +39,15 @@
                       :height="'0.96rem'"
                       :isLazy="false"
                       :isShow="true"
-                      class="round-8 hidden"
+                      class="round-8 hidden flex-shrink"
                       :errorUrl="require('@/assets/images/store-bgd.png')"
                       :loadUrl="require('@/assets/images/store-bgd.png')"
                       :alt="detailData.storeName"
                       :isClip="0"
                     />
                     <!-- 店铺名、关注数 -->
-                    <dl class="ml-12 fm-helvetica white">
-                      <dt class="fs-14 fw">{{ detailData.storeName }}</dt>
+                    <dl class="ml-12 fm-helvetica white hidden-1">
+                      <dt class="fs-14 fw hidden-1">{{ detailData.storeName }}</dt>
                       <dd class="fs-12 mt-4">{{ $t('shop_follower', { replace_tip: detailData.collectNum }) }}</dd>
                     </dl>
                   </div>

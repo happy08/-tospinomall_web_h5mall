@@ -24,7 +24,7 @@
       <template v-else>
         <div class="pt-14 pb-12 bg-white" v-for="item in list" :key="item.id">
           <van-checkbox-group v-model="item.result" :ref="'checkboxGroup-' + item.id" @change="storeChangeCheck($event, item)">
-            <div class="flex vcenter pl-12">
+            <div class="flex vcenter pl-12 w-100 hidden-1">
               <BmImage
                 :url="item.isEmpty.length == item.products.length ? require('@/assets/images/icon/unchoose-icon.png') : item.isAll ? require('@/assets/images/icon/choose-icon.png') : require('@/assets/images/icon/choose-default-icon.png')"
                 :width="'0.32rem'" 
@@ -36,7 +36,7 @@
                 :alt="'choose icon'"
               />
               <!-- 店铺 -->
-              <OrderStoreSingle class="pl-16 pr-16" :logo="item.storeLogo" :name="item.storeName" :isCoupon="item.isHaveCoupon" @goStoreDetail="goStoreDetail(item)" />
+              <OrderStoreSingle class="pl-16 pr-16" :logo="item.storeLogo" :name="item.storeName" :isCoupon="item.isHaveCoupon == 1 ? true : false" @goStoreDetail="goStoreDetail(item)" />
             </div>
             <van-swipe-cell class="pl-12" v-for="singleItem in item.products" :key="'single-' + singleItem.id">
               <div class="flex vcenter">
