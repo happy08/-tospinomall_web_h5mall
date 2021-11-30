@@ -254,7 +254,7 @@ export default {
       isScrollShow: true,
       recommendList: [],
       pageNum: 0,
-      pageSize: 10,
+      pageSize: 20,
       finished: false,
       loading: false,
       total: 0,
@@ -286,6 +286,11 @@ export default {
   },
   methods: {
     cancelConfirm() { // 提交取消订单
+      this.$toast.loading({
+        forbidClick: true,
+        loadingType: 'spinner',
+        duration: 0
+      });
       const reason = this.cancelReasonList.filter(item => {
         return item.id === this.cancelRadio;
       })[0].applyReason;
@@ -296,6 +301,7 @@ export default {
         this.isCancelShow = false;
       }).catch(error => {
         console.log(error);
+        this.$toast.clear();
       })
     },
     goPay() { // 跳转去待付款-支付页面
@@ -373,12 +379,18 @@ export default {
     //   })
     // },
     addCart(item) {
+      this.$toast.loading({
+        forbidClick: true,
+        loadingType: 'spinner',
+        duration: 0
+      });
       addCart({ quantity: item.goodQuantity, skuId: item.skuId }).then(res => {
         if (res.code != 0) return false;
 
         this.$toast(this.$t('t_add_shopping_cart_successfully'));
       }).catch(error => {
         console.log(error);
+        this.$toast.clear();
       })
     },
     onCancel() { // 获取取消订单原因
@@ -418,6 +430,7 @@ export default {
         this.$toast.clear();
       }).catch(error => {
         console.log(error);
+        this.$toast.clear();
       })
     },
     stickyScroll(scrollObj) { // 吸顶滚动事件
