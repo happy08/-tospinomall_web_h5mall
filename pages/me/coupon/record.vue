@@ -21,6 +21,7 @@ import CouponSingle from '@/components/CouponSingle';
 import { Tab, Tabs, Sticky } from 'vant';
 
 export default {
+  middleware: 'authenticated',
   components: {
     vanTab: Tab,
     vanTabs: Tabs,

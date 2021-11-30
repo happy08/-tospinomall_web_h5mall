@@ -7,16 +7,34 @@
         <nuxt-link slot="header-right" class="fs-16 green" :to="{ name: 'service-type', params: { type: 'coupon' }, query: { isH5: 1 } }">{{ $t('coupon_use_instruction') }}</nuxt-link>
       </BmHeaderNav>
 
-      <van-tabs v-model="tabActive" color="#42B7AE" class="customs-van-tabs">
-        <van-tab title="全部"></van-tab>
-        <van-tab title="平台券"></van-tab>
-        <van-tab title="店铺券"></van-tab>
+      <van-tabs v-model="tabActive" color="#42B7AE" class="customs-van-tabs" @click="onChangeTab">
+        <van-tab title="全部" name="100"></van-tab>
+        <van-tab title="平台券" name="1"></van-tab>
+        <van-tab title="店铺券" name="0"></van-tab>
       </van-tabs>
     </van-sticky>
 
-    <div class="mlr-10">
+    <PullRefresh :refreshing="refreshing" @refresh="onRefresh" class="custom-min-height-94">
+      <div class="pb-20 bg-grey mlr-10">
+        <!-- 空列表 -->
+        <empty-status v-if="lists.length === 0" :image="require('@/assets/images/empty/order.png')" :description="$t('empty')" />
+        <van-list
+          v-else
+          v-model="loading"
+          :finished="finished"
+          finished-text=""
+          @load="onLoad"
+          class="bg-grey"
+        >
+          <coupon-single v-for="item in lists" :key="item" class="mt-12"></coupon-single>
+        </van-list>
+      </div>
+    </PullRefresh>
+
+    <!-- <div class="mlr-10">
+      
       <coupon-single v-for="item in 10" :key="item" class="mt-12"></coupon-single>
-    </div>
+    </div> -->
     <button @click="isCouponShow = !isCouponShow">isCouponShow</button>
 
     <div class="flex tc coupon-tabbar">
@@ -25,7 +43,7 @@
     </div>
 
     <!-- 确认订单弹窗 -->
-    <van-popup v-model="isCouponShow" style="height: 80%" position="bottom" class="border-tlr-radius-12 coupon-popup">
+    <!-- <van-popup v-model="isCouponShow" style="height: 80%" position="bottom" class="border-tlr-radius-12 coupon-popup">
       <div class="coupon-popup__top">
         <h1 class="fs-16 tc pt-12">优惠</h1>
         <van-tabs v-model="couponActive" class="customs-van-tabs border-b">
@@ -37,33 +55,88 @@
       <div class="coupon-popup__bottom">
         <coupon-order-single class="mt-10 mlr-10" v-for="item in 10" :key="item"></coupon-order-single>
       </div>
-    </van-popup>
+    </van-popup> -->
 
-    <dialog-gift-coupon></dialog-gift-coupon>
+    <!-- <dialog-gift-coupon></dialog-gift-coupon> -->
   </div>
 </template>
 
 <script>
 import CouponSingle from '@/components/CouponSingle';
-import CouponOrderSingle from '@/components/CouponOrderSingle';
-import DialogGiftCoupon from '@/components/DialogGiftCoupon';
-import { Tab, Tabs, Sticky, Popup } from 'vant';
+// import CouponOrderSingle from '@/components/CouponOrderSingle';
+// import DialogGiftCoupon from '@/components/DialogGiftCoupon';
+import PullRefresh from '@/components/PullRefresh';
+import { Tab, Tabs, Sticky, Popup, List } from 'vant';
+import { getCouponList } from '@/api/coupon';
 
 export default {
+  middleware: 'authenticated',
   components: {
     vanTab: Tab,
     vanTabs: Tabs,
     vanSticky: Sticky,
     vanPopup: Popup,
+    vanList: List,
     CouponSingle,
-    CouponOrderSingle,
-    DialogGiftCoupon
+    PullRefresh,
+    // CouponOrderSingle,
+    // DialogGiftCoupon
   },
   data() {
     return {
       tabActive: 0,
       isCouponShow: true,
-      couponActive: 0
+      couponActive: 0,
+      pageNum: 0,
+      pageSize: 20,
+      lists: [],
+      total: 0,
+      loading: false,
+      finished: false,
+      refreshing: {
+        isFresh: false
+      },
+    }
+  },
+  activated() {
+    this.getCouponList();
+  },
+  methods: {
+    getCouponList() { // 获取我的优惠券列表
+      // couponType 优惠券类型:(0:店铺券 1:平台券),不传默认全部
+      // pageNum: 0 , pageSize: 10
+      let params = {
+        pageNum: this.pageNum,
+        pageSize: this.pageSize
+      }
+      if (parseFloat(this.tabActive) != 100) {
+        params.couponType = this.tabActive;
+      }
+      getCouponList(params).then(res => {
+        this.lists = res.data.records;
+        this.total = parseFloat(res.data.total);
+      }).catch(error => {
+        console.log(error);
+      })
+    },
+    onChangeTab(name, title) { // tab切换 name 100全部 1平台券 0店铺券
+      console.log(name, title)
+      this.pageNum = 0;
+      this.getCouponList();
+    },
+    onLoad() { // 滚动加载
+      if (this.total == this.lists.length) {
+        this.loading = false;
+        this.finished = true;
+        return false;
+      }
+      this.pageNum += 1;
+      this.getCouponList();
+    },
+    onRefresh() { // 刷新
+      this.pageNum = 0;
+      this.finished = false;
+      this.getCouponList();
     }
   }
 }

@@ -36,14 +36,14 @@ const tip = msg => {
     // case 401:
     //   // redirect('/login');
     //   break;
-    case 403:
-      store.commit('user/SET_TOKEN', null);
+    // case 403:
+    //   store.commit('user/SET_TOKEN', null);
       // tip('登录过期，请重新登录');
       // store.commit('setToken', ''); // 清除token并跳转登录页
       // setTimeout(() => {
       //   redirect('/login');
       // }, 1000);
-      break;
+      // break;
     case 404:
       tip($nuxt._i18n.t('axios_tip_404'));
       break;
@@ -133,13 +133,6 @@ service.interceptors.response.use(response => { // 成功
   }
 }, error => { // 失败
   if (error.code > 0) {
-    if (error.code == 10401) {
-      Toast.clear();
-      $nuxt.$store.commit('user/SET_TOKEN', null); // 用户凭证已过期，先刷新token
-      $nuxt.$router.push({
-        path: '/login.html'
-      })
-    }
     console.log('error:');
     console.log(error);
     return;

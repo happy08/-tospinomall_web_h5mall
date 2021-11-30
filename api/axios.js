@@ -69,9 +69,6 @@ export default function({ $axios, app, redirect, store }) {
         })
       } else {
         if (res.data.msg) {
-          console.log('axios 提示：')
-          console.log(res.data)
-          console.log(res.data.msg)
           tip(res.data.msg);
         }
       }
@@ -84,18 +81,8 @@ export default function({ $axios, app, redirect, store }) {
 
   $axios.onError(error => {
     console.log('3333333')
-    console.log(error)
     if (error.code > 0) {
-      // if (error.code === 10401) { // 用户凭证过期跳转到登录页面
-      //   console.log('响应失败')
-      //   console.log(error)
-      //   store.commit('user/SET_TOKEN', null);
-      //   redirect({
-      //     path: '/login.html'
-      //   })
-      // }
-      // tip(error.msg);
-      
+      console.log(error)
       return;
     }
     const { response } = error;
