@@ -159,7 +159,7 @@ export default {
       recordCount: 0,
       untreatedCount: 0,
       pageNum: 1,
-      pageSize: 10,
+      pageSize: 20,
       refreshing: {
         isFresh: false
       },
@@ -225,6 +225,7 @@ export default {
       this.total = listData.data.total;
       this.finished = parseFloat(this.total) == this.lists.length ? true: false;
     } catch (error) {
+      this.$toast.clear();
       console.log(error);
     }
   },
