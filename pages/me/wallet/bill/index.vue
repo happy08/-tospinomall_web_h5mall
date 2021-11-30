@@ -35,8 +35,8 @@
               <div class="flex">
                 <BmImage 
                   :url="require('@/assets/images/icon/' + itemInfo.payTypeLabel)"
-                  :width="'0.48rem'" 
-                  :height="'0.48rem'"
+                  :width="'0.8rem'" 
+                  :height="'0.8rem'"
                   :isLazy="false"
                   :isShow="false"
                   :round="true"
@@ -113,13 +113,14 @@ export default {
         if (res.code != 0) return false;
         this.total = parseFloat(res.data.total);
         let list = [];
+        // 0:系统支付， 1:余额支付，2:UniwalletPay支付 3 TINGG支付 4:brij 支付 5, 货到付款签收支付 6, paySwitch 支付
         list = res.data.records.map(item => {
           return {
             ...item,
             infos: item.infos.map(infoItem => {
               return {
                 ...infoItem,
-                payTypeLabel: infoItem.payType == 2 ? 'MTN.png' : infoItem.payType == 3 ? 'VODAFONE.png' : infoItem.payType == 4 ? 'ARTLTIGO.png' : infoItem.payType == 1 ? 'balance.png' : 'system-pay.png',
+                payTypeLabel: infoItem.payType == 2 ? 'MTN.png' : infoItem.payType == 3 ? 'Tingg.png' : infoItem.payType == 4 ? 'Brij.png' : infoItem.payType == 1 ? 'Balances.png' : 'system-pay.png',
                 statusLabel: infoItem.status == 1 ? this.$t('bill_success') : infoItem.status == 2 ? this.$t('bill_to_pay') : infoItem.status == 3 ? this.$t('cancelled') : this.$t('bill_fail'),
               }
             })

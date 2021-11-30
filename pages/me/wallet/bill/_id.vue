@@ -71,9 +71,10 @@ export default {
     getBillDetail(this.$route.params.id).then(res => {
       if (res.code != 0) return false;
       
+      // 0:系统支付， 1:余额支付，2:UniwalletPay支付 3 TINGG支付 4:brij 支付 5, 货到付款签收支付 6, paySwitch 支付
       this.detail = {
         ...res.data,
-        payTypeLabel: res.data.payType == 0 ? this.$t('system_payment') : res.data.payType == 1 ? this.$t('balance_payment') : res.data.payType == 2 ? 'MTN' : res.data.payType == 3 ? 'VODAFONE' : res.data.payType == 4 ? 'ARTLTIGO' : '',
+        payTypeLabel: res.data.payType == 0 ? this.$t('system_payment') : res.data.payType == 1 ? this.$t('balance_payment') : res.data.payType == 2 ? 'Uniwallet' : res.data.payType == 3 ? 'TINGG' : res.data.payType == 4 ? 'BRIJ' : res.data.payType == 6 ? 'Payswitch' : '',
       }
     }).catch(error => {
       console.log(error);
