@@ -5,7 +5,7 @@
 
     <!-- 关注店铺 -->
     <div class="bg-white pr-12 pl-20 ptb-14 flex between vcenter">
-      <div class="flex vcenter">
+      <div class="flex vcenter hidden-1">
         <!-- 店铺logo -->
         <BmImage
           :url="detailData.storeLogoUrl"
@@ -19,7 +19,7 @@
         />
         <!-- 店铺名、关注数 -->
         <dl class="ml-12">
-          <dt class="fs-14 fw color-23 max-w-160">{{ detailData.storeName }}</dt>
+          <dt class="fs-14 fw color-23 max-w-160 hidden-1">{{ detailData.storeName }}</dt>
           <dd class="fs-12 light-grey mt-4">{{ $t('shop_follower', { replace_tip: detailData.collectNum }) }}</dd>
         </dl>
       </div>
