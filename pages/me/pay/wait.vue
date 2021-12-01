@@ -61,6 +61,9 @@ export default {
       return this.$t('paid_receive_prompt_tip', { replace_tip: `<span class="fs-18 red lh-20">${this.$route.query.phone}</span>`, replace_tip2: `<span class="fs-18 red lh-20">${this.$store.state.rate.currency}${ this.$route.query.amount }</span>` });
     }
   },
+  activated() {
+    this.countdown = -1;
+  },
   methods: {
     async onPayCompleted(num) { // 支付完成
       this.$toast.loading({
