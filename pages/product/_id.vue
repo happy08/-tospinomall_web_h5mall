@@ -1428,7 +1428,7 @@ export default {
     .van-step{
       .van-step__title{
         margin-top: 25px;
-        width: 60px;
+        width: 70px;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;

@@ -302,7 +302,7 @@
                 <client-only placeholder="">
                   <ProductTopBtmSingle
                     :img="{ url: searchItem.mainPictureUrl, width: '3.4rem', height: '3.4rem', loadImage: require('@/assets/images/product-bgd-170.png') }" 
-                    :detail="{ desc: searchItem.productTitle, price: searchItem.minPrice, rate: searchItem.starLevel, volumn: searchItem.saleCount, ellipsis: 2, stock: searchItem.stock }"
+                    :detail="{ desc: searchItem.productTitle, price: searchItem.minPrice, rate: searchItem.starLevel, volumn: searchItem.saleCount, ellipsis: 2, stock: searchItem.stock, supplyCountryName: searchItem.supplyCountryName, transportMode: searchItem.transportMode, deliveryType: searchItem.deliveryType }"
                   />
                 </client-only>
               </nuxt-link>

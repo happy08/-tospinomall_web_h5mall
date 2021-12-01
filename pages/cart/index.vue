@@ -87,9 +87,9 @@
                   </template>
                   <!-- 标签 -->
                   <template #tags>
-                    <nuxt-link :to="'/product/' + singleItem.productId + '.html'" class="flex mt-8 vcenter hidden round-8 product-tag" v-if="singleItem.status == 1">
+                    <nuxt-link :to="'/product/' + singleItem.productId + '.html'" class="flex mt-8 vcenter hidden round-4 product-tag" v-if="singleItem.status == 1">
                       <BmImage
-                        :url="require('@/assets/images/icon/plane-icon.png')"
+                        :url="require('@/assets/images/icon/' + onModeLabel(singleItem.transportMode))"
                         :width="'0.36rem'" 
                         :height="'0.36rem'"
                         :isLazy="false"
@@ -668,6 +668,9 @@ export default {
       }).catch(error => {
         console.log(error);
       })
+    },
+    onModeLabel(transportMode) {
+      return transportMode == 1 ? 'plane-icon.png' : transportMode == 2 ? 'ship-icon.png' : 'truck-icon.png';
     }
   },
 }

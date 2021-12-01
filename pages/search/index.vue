@@ -105,7 +105,7 @@
                 >
                   <ProductTopBtmSingle
                     :img="{ url: searchItem.mainPictureUrl, width: '3.4rem', height: '3.4rem', loadImage: require('@/assets/images/product-bgd-170.png') }" 
-                    :detail="{ desc: searchItem.productTitle, price: searchItem.minPrice, rate: searchItem.starLevel, volumn: searchItem.saleCount, ellipsis: 2, country: searchItem.supplyCountry && $store.state.supplyCountry && $store.state.supplyCountry[searchItem.supplyCountry] ? $store.state.supplyCountry[searchItem.supplyCountry].label : '', country_url: searchItem.supplyCountry && $store.state.supplyCountry && $store.state.supplyCountry[searchItem.supplyCountry] ? $store.state.supplyCountry[searchItem.supplyCountry].description : '', stock: searchItem.stock }"
+                    :detail="{ desc: searchItem.productTitle, price: searchItem.minPrice, rate: searchItem.starLevel, volumn: searchItem.saleCount, ellipsis: 2, country: searchItem.supplyCountry && $store.state.supplyCountry && $store.state.supplyCountry[searchItem.supplyCountry] ? $store.state.supplyCountry[searchItem.supplyCountry].label : '', country_url: searchItem.supplyCountry && $store.state.supplyCountry && $store.state.supplyCountry[searchItem.supplyCountry] ? $store.state.supplyCountry[searchItem.supplyCountry].description : '', stock: searchItem.stock, supplyCountryName: searchItem.supplyCountryName, transportMode: searchItem.transportMode, deliveryType: searchItem.deliveryType }"
                     class="round-4 bg-white hidden v-100"
                   ></ProductTopBtmSingle>
                 </nuxt-link>
