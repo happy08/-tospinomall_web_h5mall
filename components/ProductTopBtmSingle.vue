@@ -40,6 +40,20 @@
       <div :class="{ 'h-40': isHeight && detail.ellipsis === 2 ? true: false }">
         <p class="fs-14 black fm-pf-r lh-20" v-if="detail.desc" v-html="detail.desc" :class="{ 'hidden-1': detail.ellipsis === 1, 'hidden-2': detail.ellipsis === 2 }"></p>
       </div>
+      <div class="m-100 flex mt-8 vcenter hidden-1 round-4 product-tag" v-if="detail.transportMode && detail.supplyCountryName">
+        <!-- 运输方式 1空运 2海运 3 陆运 -->
+        <BmImage
+          :url="require('@/assets/images/icon/'+ modeLabel)" 
+          :width="'0.36rem'" 
+          :height="'0.36rem'"
+          :isLazy="false"
+          :isShow="false"
+          :fit="'cover'"
+          :alt="'TospinoMall ship from tag'"
+          class="flex-shrink"
+        />
+        <span class="fs-10 plr-8 lh-12 hidden-1 iblock w-100">{{ $t('ship_from') }}{{  detail.deliveryType == 2 ? 'TospinoMall' : detail.supplyCountryName }}</span>
+      </div>
       <!-- 评分 -->
       <van-rate class="mt-10" v-if="detail.rate > 0" v-model="detail.rate" size="0.24rem" color="#F7B500" void-color="#DDDDDD" void-icon="star" />
       <div class="mt-12 flex between hidden-1 vcenter" v-if="detail.price >= 0 && String(detail.price) != ''">
@@ -85,7 +99,10 @@ export default {
           ellipsis: 2, // 展示几行
           country: '', // 国家
           country_url: '', // 国家logo
-          stock: 1
+          stock: 1,
+          transportMode: '', // 运输方式 1空运 2海运 3 陆运 
+          supplyCountryName: '',
+          deliveryType: '' // 2FBT 1FBM
         }
       }
     },
@@ -96,6 +113,11 @@ export default {
   },
   components: {
     vanRate: Rate
+  },
+  computed: {
+    modeLabel() {
+      return this.detail.transportMode == 1 ? 'plane-icon.png' : this.detail.transportMode == 2 ? 'ship-icon.png' : 'truck-icon.png'
+    }
   },
   mounted() {
   }
@@ -128,5 +150,14 @@ export default {
     background-color: rgba(0, 0, 0, 0.65);
     z-index: 1;
   }
+}
+.product-tag{
+  height: 18px;
+  position: relative;
+  border: 1px solid #42b7ae;
+  width: fit-content;
+}
+.m-100{
+  max-width: 100%;
 }
 </style>

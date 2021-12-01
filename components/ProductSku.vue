@@ -122,6 +122,12 @@ export default {
         this.$toast(this.$t('choose_product_sku'));
         return false;
       }
+
+      this.$toast.loading({
+        forbidClick: true,
+        loadingType: 'spinner',
+        duration: 0
+      });
       
       const num = await this.getSkuStock();
       if (num >= this.selectSku.selectedNum) {
@@ -141,6 +147,7 @@ export default {
           this.quantity = 1;
         }).catch(error => {
           console.log(error);
+          this.$toast.clear();
         })
       } else {
         this.$toast(this.$t('inventory_shortage')); // 库存不足
@@ -184,12 +191,19 @@ export default {
       })
     },
     async onModifyConfirm() { // 修改商品属性
+      this.$toast.loading({
+        forbidClick: true,
+        loadingType: 'spinner',
+        duration: 0
+      });
       modifySku({ newSkuId: this.selectSku.selectedSkuComb.id, oldSkuId: this.initialSku.id }).then(res => {
         if (res.code != 0) return false;
         this.productShow.show = false;
         this.$emit('onRefresh');
+        this.$toast.clear();
       }).catch(error => {
         console.log(error);
+        this.$toast.clear();
       })
     },
     onChange() {
