@@ -116,6 +116,9 @@ service.interceptors.response.use(response => { // 成功
     } else if (response.data.code === 10401) { // 用户凭证已过期,跳转到登录页面
       tip(response.data.msg);
       $nuxt.$store.commit('user/SET_TOKEN', null); // 用户凭证已过期，先刷新token
+      if ($nuxt.$route.name == 'login-code' || $nuxt.$route.name == 'login' || $nuxt.$route.name == 'login-old') { // 登录页面不跳转
+        return false;
+      }
       $nuxt.$router.push({
         path: '/login.html'
       })

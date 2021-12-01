@@ -10,7 +10,7 @@ const tip = msg => {
   });
 };
 
-export default function({ $axios, app, redirect, store }) {
+export default function({ $axios, app, redirect, store, route }) {
   $axios.defaults.timeout = 60000; // 超时
 
   $axios.onRequest(config => {
@@ -62,8 +62,10 @@ export default function({ $axios, app, redirect, store }) {
       if (res.data.code === 0) {
         return res.data; //Promise.resolve(res.data);
       } else if (res.data.code == 10401) { // 用户凭证过期跳转到登录页面
-        console.log('响应成功')
         store.commit('user/SET_TOKEN', null);
+        if (route.name == 'login-code' || route.name == 'login' || route.name == 'login-old') { // 登录页面不跳转
+          return false;
+        }
         redirect({
           path: '/login.html'
         })
