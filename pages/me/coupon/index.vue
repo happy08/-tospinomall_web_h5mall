@@ -8,9 +8,9 @@
       </BmHeaderNav>
 
       <van-tabs v-model="tabActive" color="#42B7AE" class="customs-van-tabs" @click="onChangeTab">
-        <van-tab title="全部" name="100"></van-tab>
-        <van-tab title="平台券" name="1"></van-tab>
-        <van-tab title="店铺券" name="0"></van-tab>
+        <van-tab :title="'全部(' + allCount + ')'" name="100"></van-tab>
+        <van-tab :title="'平台券(' + platformCount + ')'" name="1"></van-tab>
+        <van-tab :title="'店铺券(' + shopCount + ')'" name="0"></van-tab>
       </van-tabs>
     </van-sticky>
 
@@ -67,7 +67,7 @@ import CouponSingle from '@/components/CouponSingle';
 // import DialogGiftCoupon from '@/components/DialogGiftCoupon';
 import PullRefresh from '@/components/PullRefresh';
 import { Tab, Tabs, Sticky, Popup, List } from 'vant';
-import { getCouponList } from '@/api/coupon';
+import { getCouponList, getCouponCount } from '@/api/coupon';
 
 export default {
   middleware: 'authenticated',
@@ -96,9 +96,13 @@ export default {
       refreshing: {
         isFresh: false
       },
+      allCount: 0, // 所有券
+      platformCount: 0, // 平台券
+      shopCount: 0, // 店铺券
     }
   },
   activated() {
+    this.getCouponCount();
     this.getCouponList();
   },
   methods: {
@@ -137,6 +141,13 @@ export default {
       this.pageNum = 0;
       this.finished = false;
       this.getCouponList();
+    },
+    getCouponCount() { // 获取优惠券数量
+      getCouponCount().then(res => {
+        this.allCount = res.data.allCount;
+        this.platformCount = res.data.platformCount;
+        this.shopCount = res.data.shopCount;
+      })
     }
   }
 }

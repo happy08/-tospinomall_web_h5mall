@@ -8,9 +8,9 @@
       </BmHeaderNav>
 
       <van-tabs v-model="centerTabActive" color="#42B7AE" class="customs-van-tabs"  @click="onChangeTab">
-        <van-tab title="全部" name="100"></van-tab>
-        <van-tab title="平台券" name="1"></van-tab>
-        <van-tab title="店铺券" name="0"></van-tab>
+        <van-tab :title="'全部(' + allCount + ')'" name="100"></van-tab>
+        <van-tab :title="'平台券(' + platformCount + ')'" name="1"></van-tab>
+        <van-tab :title="'店铺券(' + shopCount + ')'" name="2"></van-tab>
       </van-tabs>
     </van-sticky>
 
@@ -40,7 +40,7 @@
 <script>
 import CouponSingle from '@/components/CouponSingle';
 import { Tab, Tabs, Sticky, List } from 'vant';
-import { getCouponCenterList } from '@/api/coupon';
+import { getCouponCenterList, getCouponCenterCount } from '@/api/coupon';
 import PullRefresh from '@/components/PullRefresh';
 
 export default {
@@ -65,16 +65,23 @@ export default {
       },
       centerPageNum: 0,
       centerPageSize: 20,
+      allCount: 0, // 所有券
+      platformCount: 0, // 平台券
+      shopCount: 0, // 店铺券
     }
   },
   activated() {
+    this.getCouponCenterCount();
     this.getCouponCenterList();
   },
   methods: {
-    getCouponCenterList() {
+    getCouponCenterList() { // 领券中心列表
       let params = {
         pageNum: this.centerPageNum,
         pageSize: this.centerPageSize
+      }
+      if (this.centerTabActive != 100) {
+        params.couponActivityType = this.centerTabActive;
       }
       getCouponCenterList(params).then(res => {
         this.centerLists = res.data.records;
@@ -101,6 +108,13 @@ export default {
       this.pageNum = 0;
       this.finished = false;
       this.getCouponCenterList();
+    },
+    getCouponCenterCount() { // 优惠券数量统计
+      getCouponCenterCount().then(res => {
+        this.allCount = res.data.allCount;
+        this.platformCount = res.data.platformCount;
+        this.shopCount = res.data.shopCount;
+      })
     }
   }
 }

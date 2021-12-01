@@ -28,8 +28,28 @@ export function getUseCouponList(params) {
  */
 export function getCouponCenterList(params) {
   return request({
-    url: `/discount/match/coupon/center/page`,
+    url: `/discount/match/coupon/my/coupon/center/page`,
     method: 'get',
     params
+  })
+}
+
+/**
+ * 我的优惠券优惠券数量查询
+ */
+export function getCouponCount() {
+  return request({
+    url: `/discount/coupon/myCouponBarCount`,
+    method: 'get'
+  })
+}
+
+/**
+ * 领券中心优惠券数量统计
+ */
+export function getCouponCenterCount() {
+  return request({
+    url: `/discount/match/coupon/count`,
+    method: 'get'
   })
 }
