@@ -1,6 +1,6 @@
 <template>
   <!-- 订单店铺入口展示 -->
-  <div class="flex between vcenter w-100">
+  <div class="flex between vcenter w-100 hidden-1">
     <div class="flex vcenter hidden-1" @click="goStoreDetail">
       <BmImage
         :url="logo"

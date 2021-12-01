@@ -265,10 +265,10 @@ export default {
           this.onPayswitch();
           return false;
         }
-        // if (this.payRadio == 'Tingg') { // tingg支付
-        //   this.payOrder({ payType: 3, platformPayType: this.payRadio, sourceType: 4, orderIds: JSON.parse(this.$route.query.orderIds).orderIds, phone: phone, phonePrefix: phonePrefix });
-        //   return false;
-        // }
+        if (this.payRadio == 'Tingg') { // tingg支付
+          this.payOrder({ payType: 3, platformPayType: this.payRadio, sourceType: 4, orderIds: JSON.parse(this.$route.query.orderIds).orderIds, phone: phone, phonePrefix: phonePrefix });
+          return false;
+        }
         this.payOrder({ payType: 2, platformPayType: this.payRadio, phone: phone, phonePrefix: phonePrefix, sourceType: 4, orderIds: JSON.parse(this.$route.query.orderIds).orderIds });
         return false;
       }
@@ -361,10 +361,10 @@ export default {
         // }
         // tingg支付
         if (params.payType == 3) {
-          // Tingg.renderPayButton({ // 按钮初始化
-          //   className: 'pay-content__btn--pay', 
-          //   checkoutType: 'modal' // or 'modal'
-          // });
+          Tingg.renderPayButton({ // 按钮初始化
+            className: 'pay-content__btn--pay', 
+            checkoutType: 'redirect' // or 'modal'
+          });
           
           this.onTinggPay({ ...res.data.tinggPayInfo, phone: params.phone, phonePrefix: params.phonePrefix, orderId: JSON.stringify({orderId: res.data.orderIds})});
           return false;
@@ -424,7 +424,7 @@ export default {
 
       const encryption = new Encryption(params.ivKey, params.secretKey, algorithm);
       const paymentWebhookUrl = url == '/api' ? 'https://tospinomallapi.fyynet.com' : url;
-      
+      console.log(params.merchantTransactionID)
       const payload = {
         merchantTransactionID: params.merchantTransactionID, // 最长是15位，无规则限制
         requestAmount: params.requestAmount,
@@ -452,8 +452,8 @@ export default {
       }
 
       let payloadString = JSON.stringify(payload).replace(/\//g, '\\/');
-      location.href = `https://developer.tingg.africa/checkout/v2/express/?accessKey=${params.accessKey}&params=${encryption.encrypt(payloadString)}&countryCode=${payload.countryCode}`;
-      this.$toast.clear();
+      // location.href = `https://developer.tingg.africa/checkout/v2/express/?accessKey=${params.accessKey}&params=${encryption.encrypt(payloadString)}&countryCode=${payload.countryCode}`;
+      // this.$toast.clear();
       // let tinggSrc = `https://developer.tingg.africa/checkout/v2/modal/?accessKey=${params.accessKey}&params=${encryption.encrypt(payloadString)}&countryCode=${payload.countryCode}`;
 
       // this.isTinggPay = true;
@@ -477,14 +477,14 @@ export default {
       //   this.$toast.clear();
       // })
       // 发起结账请求
-      // Tingg.renderCheckout({
-      //     checkoutType: 'modal', // or 'modal'
-      //     merchantProperties: {
-      //       params: encryption.encrypt(payloadString),
-      //       accessKey: params.accessKey,
-      //       countryCode: payload.countryCode
-      //     }
-      // })
+      Tingg.renderCheckout({
+          checkoutType: 'redirect', // or 'modal'
+          merchantProperties: {
+            params: encryption.encrypt(payloadString),
+            accessKey: params.accessKey,
+            countryCode: payload.countryCode
+          }
+      })
     },
     onPayswitch() { // Payswitch支付
       // let paySwitch = document.createElement('form');
