@@ -15,7 +15,7 @@ export function getCouponList(params) {
 /**
  * 优惠券使用历史列表
  */
-export function getUseCouponList(params) {
+export function getRecordList(params) {
   return request({
     url: `/discount/coupon/queryCouponUseList`,
     method: 'get',

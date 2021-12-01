@@ -116,11 +116,19 @@ export default {
       if (parseFloat(this.tabActive) != 100) {
         params.couponType = this.tabActive;
       }
+      this.$toast.loading({
+        forbidClick: true,
+        loadingType: 'spinner',
+        duration: 0
+      });
       getCouponList(params).then(res => {
-        this.lists = res.data.records;
+        this.lists = this.pageNum == 0 ? res.data.records : this.lists.concat(res.data.records);
         this.total = parseFloat(res.data.total);
+        this.finished = this.total == this.lists.length ? true : false;
+        this.$toast.clear();
       }).catch(error => {
         console.log(error);
+        this.$toast.clear();
       })
     },
     onChangeTab(name, title) { // tab切换 name 100全部 1平台券 0店铺券

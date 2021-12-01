@@ -30,10 +30,6 @@
         </van-list>
       </div>
     </PullRefresh>
-
-    <!-- <div class="mlr-10">
-      <coupon-single v-for="item in 10" :key="item" class="mt-12"></coupon-single>
-    </div> -->
   </div>
 </template>
 
@@ -83,29 +79,37 @@ export default {
       if (this.centerTabActive != 100) {
         params.couponActivityType = this.centerTabActive;
       }
+      this.$toast.loading({
+        forbidClick: true,
+        loadingType: 'spinner',
+        duration: 0
+      });
       getCouponCenterList(params).then(res => {
-        this.centerLists = res.data.records;
+        this.centerLists = this.centerPageNum == 0 ? res.data.records : this.centerLists.concat(res.data.records);;
         this.centerTotal = parseFloat(res.data.total);
+        this.finished = this.centerTotal == this.centerLists.length ? true : false;
+        this.$toast.clear();
       }).catch(error => {
         console.log(error);
+        this.$toast.clear();
       })
     },
     onChangeTab(name, title) { // tab切换 name 100全部 1平台券 0店铺券
       console.log(name, title)
-      this.pageNum = 0;
+      this.centerPageNum = 0;
       this.getCouponCenterList();
     },
     onLoad() { // 滚动加载
-      if (this.total == this.lists.length) {
+      if (this.centerTotal == this.centerLists.length) {
         this.loading = false;
         this.finished = true;
         return false;
       }
-      this.pageNum += 1;
+      this.centerPageNum += 1;
       this.getCouponCenterList();
     },
     onRefresh() { // 刷新
-      this.pageNum = 0;
+      this.centerPageNum = 0;
       this.finished = false;
       this.getCouponCenterList();
     },
