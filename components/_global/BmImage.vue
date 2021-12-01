@@ -95,10 +95,10 @@ export default {
       deep: true
     }
   },
-  mounted() {
+  activated() {
     setTimeout(() => {
       this.onClipPic();
-    }, 50)
+    }, 0)
   },
   methods: {
     onClick() {

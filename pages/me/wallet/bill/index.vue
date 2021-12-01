@@ -120,7 +120,7 @@ export default {
             infos: item.infos.map(infoItem => {
               return {
                 ...infoItem,
-                payTypeLabel: infoItem.payType == 2 ? 'MTN.png' : infoItem.payType == 3 ? 'Tingg.png' : infoItem.payType == 4 ? 'Brij.png' : infoItem.payType == 1 ? 'Balances.png' : 'system-pay.png',
+                payTypeLabel: infoItem.payType == 2 ? 'MTN.png' : infoItem.payType == 3 ? 'Tingg.png' : infoItem.payType == 4 ? 'Brij.png' : infoItem.payType == 1 ? 'Balances.png' : 'SystemPay.png',
                 statusLabel: infoItem.status == 1 ? this.$t('bill_success') : infoItem.status == 2 ? this.$t('bill_to_pay') : infoItem.status == 3 ? this.$t('cancelled') : this.$t('bill_fail'),
               }
             })
