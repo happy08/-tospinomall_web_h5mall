@@ -83,6 +83,7 @@
             :finished="finished"
             finished-text=""
             @load="onLoad"
+            :immediate-check="false"
           >
             <!-- 商品展示两列 -->
             <template v-if="arrangeType == 2">
@@ -315,7 +316,7 @@ export default {
   },
   beforeRouteEnter (to, from, next) {
     next(vm => {
-      if (from.name == 'home' || from.name == 'categories') {
+      if (from.name == 'home' || from.name == 'home-old' || from.name == 'categories' || from.name == 'categories-old') {
         vm.params = {};
         vm.shopId = vm.backNameId = vm.backName = '';
         vm.brandResult = [];
@@ -468,6 +469,7 @@ export default {
               shopId: this.shopId
             }
           }
+          this.params.pageIndex = this.pageIndex;
           const listData = await this.$api.getProductSearch({ ...this.params });
           this.isRouteBack = 1;
           
@@ -556,7 +558,7 @@ export default {
         }
         this.getSearchPull();
       }, 300);
-      
+
       // 首次进来不需要重新调用fetch
       if (!this.isFirst) {
         this.$fetch();
