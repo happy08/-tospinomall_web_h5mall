@@ -84,21 +84,21 @@ export default {
           this.$toast.clear();
           this.countdown = num == 1 ? 0 : this.countdown;
           if (this.countdown == 0) { // 倒计时结束
-            if (this.$route.query.orderId) { // 订单
-              this.$router.push({ // 校验之后成功跳转到订单支付结果页面
-                name: 'cart-order-confirm',
-                query: {
-                  orderId: this.$route.query.orderId,
-                  isSuccess: data.data == 1 ? 0 : 2
-                }
-              })
-              return false;
-            }
             this.$dialog.alert({
               title: this.$t('payment_failed'),
               message: this.$t('order_payment_failed_tips'),
               confirmButtonText: this.$t('i_know')
             }).then(() => {
+              if (this.$route.query.orderId) { // 订单
+                this.$router.push({ // 校验之后成功跳转到订单支付结果页面
+                  name: 'cart-order-confirm',
+                  query: {
+                    orderId: this.$route.query.orderId,
+                    isSuccess: data.data == 1 ? 0 : 2
+                  }
+                })
+                return false;
+              }
               this.$router.replace({
                 name: 'me-wallet'
               })
