@@ -722,7 +722,18 @@ const en = {
   backOldWeb: "Old Version",
   payment_method: 'Payment Method',
   my_coupon: 'My coupons',
-  coupon_use_instruction: 'Instructions'
+  coupon_use_instruction: 'Instructions',
+  store_coupons: 'Store Coupons',
+  platform_coupons: 'Platform Coupons',
+  product_coupons: 'Product Coupons',
+  coupon_usage_history: 'Coupon Usage History',
+  go_to_coupon_center: 'Go to Coupon Center',
+  coupon_center: 'Coupon Center',
+  used: 'Used',
+  expired: 'Expired',
+  newcomer_gift_coupon: 'Newcomer Gift Coupon',
+  added_to_my_coupon: 'Added to My-Coupon',
+  newcomer_foupon: 'Newcomer Coupon'
 }
 
 export default en;

@@ -2,15 +2,15 @@
   <!-- 我的-优惠券领券中心 -->
   <div class="bg-grey v-percent-100 pb-64">
     <van-sticky>
-      <BmHeaderNav :left="{ isShow: true }" :title="$t('my_coupon')">
+      <BmHeaderNav :left="{ isShow: true }" :title="$t('coupon_center')">
         <!-- 使用说明 -->
         <nuxt-link slot="header-right" class="fs-16 green" :to="{ name: 'service-type', params: { type: 'coupon' }, query: { isH5: 1 } }">{{ $t('coupon_use_instruction') }}</nuxt-link>
       </BmHeaderNav>
 
       <van-tabs v-model="centerTabActive" color="#42B7AE" class="customs-van-tabs"  @click="onChangeTab">
-        <van-tab :title="'全部(' + allCount + ')'" name="100"></van-tab>
-        <van-tab :title="'平台券(' + platformCount + ')'" name="1"></van-tab>
-        <van-tab :title="'店铺券(' + shopCount + ')'" name="2"></van-tab>
+        <van-tab :title="$t('all') + '(' + allCount + ')'" name="100"></van-tab>
+        <van-tab :title="$t('store_coupons') + '(' + platformCount + ')'" name="1"></van-tab>
+        <van-tab :title="$t('platform_coupons') + '(' + shopCount + ')'" name="2"></van-tab>
       </van-tabs>
     </van-sticky>
 

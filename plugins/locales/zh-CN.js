@@ -722,7 +722,18 @@ const cn = {
   backOldWeb: "返回<br/>旧版",
   payment_method: '支付方式',
   my_coupon: '我的优惠券',
-  coupon_use_instruction: '使用说明'
+  coupon_use_instruction: '使用说明',
+  store_coupons: '店铺优惠券',
+  platform_coupons: '平台优惠券',
+  product_coupons: '商品优惠券',
+  coupon_usage_history: '优惠券使用记录',
+  go_to_coupon_center: '去领券中心',
+  coupon_center: '领券中心',
+  used: '已使用',
+  expired: '已过期',
+  newcomer_gift_coupon: '新人礼券',
+  added_to_my_coupon: '已放入我的-优惠券中',
+  newcomer_foupon: '新人券'
 }
 
 export default cn;

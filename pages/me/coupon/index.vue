@@ -8,9 +8,9 @@
       </BmHeaderNav>
 
       <van-tabs v-model="tabActive" color="#42B7AE" class="customs-van-tabs" @click="onChangeTab">
-        <van-tab :title="'全部(' + allCount + ')'" name="100"></van-tab>
-        <van-tab :title="'平台券(' + platformCount + ')'" name="1"></van-tab>
-        <van-tab :title="'店铺券(' + shopCount + ')'" name="0"></van-tab>
+        <van-tab :title="$t('all') + '(' + allCount + ')'" name="100"></van-tab>
+        <van-tab :title="$t('store_coupons') + '(' + platformCount + ')'" name="1"></van-tab>
+        <van-tab :title="$t('platform_coupons') + '(' + shopCount + ')'" name="0"></van-tab>
       </van-tabs>
     </van-sticky>
 
@@ -31,15 +31,11 @@
       </div>
     </PullRefresh>
 
-    <!-- <div class="mlr-10">
-      
-      <coupon-single v-for="item in 10" :key="item" class="mt-12"></coupon-single>
-    </div> -->
-    <button @click="isCouponShow = !isCouponShow">isCouponShow</button>
+    <!-- <button @click="isCouponShow = !isCouponShow">isCouponShow</button> -->
 
     <div class="flex tc coupon-tabbar">
-      <nuxt-link :to="{ name: 'me-coupon-record' }" class="fw black flex-1 pb-14 pt-20 border-r">优惠券使用记录</nuxt-link>
-      <nuxt-link :to="{ name: 'me-coupon-center' }" class="fw black flex-1 pb-14 pt-20">去领券中心</nuxt-link>
+      <nuxt-link :to="{ name: 'me-coupon-record' }" class="fw black flex-1 pb-14 pt-20 border-r">{{ $t('coupon_usage_history') }}</nuxt-link>
+      <nuxt-link :to="{ name: 'me-coupon-center' }" class="fw black flex-1 pb-14 pt-20">{{ $t('go_to_coupon_center') }}</nuxt-link>
     </div>
 
     <!-- 确认订单弹窗 -->

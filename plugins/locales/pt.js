@@ -721,7 +721,18 @@
   backOldWeb: "Versão Antiga",
   payment_method: 'Forma de pagamento',
   my_coupon: 'Meu cupom de desconto',
-  coupon_use_instruction: 'Instruções'
+  coupon_use_instruction: 'Instruções',
+  store_coupons: 'Cupão de loja',
+  platform_coupons: 'Cupão de Plataforma',
+  product_coupons: 'Cupão de produto',
+  coupon_usage_history: 'História do Uso do cupão',
+  go_to_coupon_center: 'Ir ao Centro de Cupão',
+  coupon_center: 'Centro de Cupão',
+  used: 'Usado',
+  expired: 'Expirado',
+  newcomer_gift_coupon: 'Cupão de oferta de recém-vindo',
+  added_to_my_coupon: 'Adicionado ao Meu-Coupão',
+  newcomer_foupon: 'Cupão de recém-vindo'
 }
 
 export default por;

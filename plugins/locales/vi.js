@@ -721,7 +721,18 @@ const vi = {
   backOldWeb: "Phiên bản cũ",
   payment_method: 'Phương thức thanh toán',
   my_coupon: 'Phiếu giảm giá của tôi',
-  coupon_use_instruction: 'Hướng dẫn'
+  coupon_use_instruction: 'Hướng dẫn',
+  store_coupons: 'Phiếu mua hàng',
+  platform_coupons: 'Phiếu giảm giá nền tảng',
+  product_coupons: 'Phiếu mua hàng',
+  coupon_usage_history: 'Hồ sơ sử dụng phiếu giảm giá',
+  go_to_coupon_center: 'Đến trung tâm chứng từ',
+  coupon_center: 'Trung tâm phiếu thưởng',
+  used: 'Đã sử dụng',
+  expired: 'Hết hạn',
+  newcomer_gift_coupon: 'Phiếu quà tặng dành cho người mới',
+  added_to_my_coupon: '-Phiếu mua hàng',
+  newcomer_foupon: 'Phiếu thưởng cho người mới'
 }
 
 export default vi;
