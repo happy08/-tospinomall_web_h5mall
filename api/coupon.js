@@ -53,3 +53,14 @@ export function getCouponCenterCount() {
     method: 'get'
   })
 }
+
+/**
+ * 商品详情领券中心列表
+ */
+export function getGoodsCouponList(params) {
+  return request({
+    url: `/discount/match/coupon/goods/details/center/page`,
+    method: 'get',
+    params
+  })
+}

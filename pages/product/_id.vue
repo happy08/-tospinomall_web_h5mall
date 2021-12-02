@@ -594,6 +594,7 @@ import shareInfo from '@/assets/images/icon/share-info.png';
 import shareLink from '@/assets/images/icon/share-link.png';
 import EmptyStatus from '@/components/EmptyStatus';
 import BmPreview from '@/components/_global/BmPreview';
+import { getGoodsCouponList } from '@/api/coupon';
 
 export default {
   components: {
@@ -701,7 +702,8 @@ export default {
       isPreviewIndex: 'false',
       previewIndex: 0,
       goodId: '',
-      haveAddress: {}
+      haveAddress: {},
+      couponList: []
     }
   },
   async fetch() {
@@ -930,6 +932,8 @@ export default {
       }).catch(error => {
         console.log(error);
       })
+      // 获取优惠券列表
+      this.getGoodsCouponList();
     }
     this.$fetch();
     if (this.goodSpuVo.goodTitle) {
@@ -1152,6 +1156,13 @@ export default {
     },
     onPreviewChange(index) { // 预览切换时
       this.previewIndex = index;
+    },
+    getGoodsCouponList() { // 获取优惠券列表
+      getGoodsCouponList().then(res => {
+        this.couponList = res.data.records;
+      }).catch(error => {
+        console.log(error);
+      })
     }
   },
 }
