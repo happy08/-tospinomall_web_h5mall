@@ -73,49 +73,53 @@ export default {
           duration: 0
         });
       }
-      let data;
-      if (this.$route.query.orderId) { // 确认订单是否支付
-        data = await this.$api.checkPayOrder(this.$route.query.refNo);
-      } else {
-        data = await checkBuyerRecharge(this.$route.query.refNo); // 判断买家充值是否成功
-      }
-      
-      this.countdown = num == -2 ? 0 : this.countdown;
-      num += 1;
-      if (data.data != 1) { 
-        // 订单支付：0->未支付 1->已经支付 2->支付失败
-        // 钱包支付：0->失败 1->已经支付 2->待支付 3->已取消
-          this.$toast.clear();
-          if (this.countdown == 0) { // 倒计时结束
-            this.goLeave(data);
-          } else if (num == 1) { // 倒计时开始
-            this.countdown = 1 * 2 * 60 * 1000;
-            setTimeout(() => {
-              this.onPayCompleted(num);
-            }, 2000);
-          } else { // 倒计时过程中每次返回都再次请求接口
-            if (this.$route.query.orderId) { // 订单
-              if (data.data == 0) { // 待支付
-                setTimeout(() => {
-                  this.onPayCompleted(num);
-                }, 2000);
-              } else {
-                this.goLeave(data); // 其他失败状态直接跳转结果页面
-              }
-            } else { // 钱包充值
-              if (data.data == 2) { // 待支付
-                setTimeout(() => {
-                  this.onPayCompleted(num);
-                }, 2000);
-              } else {
-                this.goLeave(data); // 其他失败状态直接跳转结果页面
+      try {
+        let data;
+        if (this.$route.query.orderId) { // 确认订单是否支付
+          data = await this.$api.checkPayOrder(this.$route.query.refNo);
+        } else {
+          data = await checkBuyerRecharge(this.$route.query.refNo); // 判断买家充值是否成功
+        }
+        
+        this.countdown = num == -2 ? 0 : this.countdown;
+        num += 1;
+        if (data.data != 1) { 
+          // 订单支付：0->未支付 1->已经支付 2->支付失败
+          // 钱包支付：0->失败 1->已经支付 2->待支付 3->已取消
+            this.$toast.clear();
+            if (this.countdown == 0) { // 倒计时结束
+              this.goLeave(data);
+            } else if (num == 1) { // 倒计时开始
+              this.countdown = 1 * 2 * 60 * 1000;
+              setTimeout(() => {
+                this.onPayCompleted(num);
+              }, 2000);
+            } else { // 倒计时过程中每次返回都再次请求接口
+              if (this.$route.query.orderId) { // 订单
+                if (data.data == 0) { // 待支付
+                  setTimeout(() => {
+                    this.onPayCompleted(num);
+                  }, 2000);
+                } else {
+                  this.goLeave(data); // 其他失败状态直接跳转结果页面
+                }
+              } else { // 钱包充值
+                if (data.data == 2) { // 待支付
+                  setTimeout(() => {
+                    this.onPayCompleted(num);
+                  }, 2000);
+                } else {
+                  this.goLeave(data); // 其他失败状态直接跳转结果页面
+                }
               }
             }
-          }
-        return false;
+          return false;
+        }
+        this.goLeave(data, true);
+        this.$toast.clear();
+      } catch (error) {
+        this.$toast.clear();
       }
-      this.goLeave(data, true);
-      this.$toast.clear();
     },
     onChangePayMethod() { // 修改支付方式时, 要先取消该订单再返回上一级
       if (this.$route.query.orderId) { // 取消订单支付
