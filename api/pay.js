@@ -169,7 +169,8 @@ export function payOrder(data) {
  */
 export function cancelPayOrder(refNo) {
   return request({
-    url: '/order/pay/cancelPay',
+    // url: '/order/pay/cancelPay',
+    url: '/finance/buyerExpensesDetail/order/cancel/pay',
     method: 'get',
     params: {
       refNo: refNo

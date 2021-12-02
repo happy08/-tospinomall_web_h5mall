@@ -15,7 +15,7 @@
       <h3 class="fs-16 black mt-24" v-if="countdown == -1">{{ $t('awaiting_payment') }}</h3>
       <p class="mt-12 fs-14 black" v-if="countdown == -1">{{ $t('if_you_have_paid') }}</p>
       <p class="mt-30 grey" v-if="countdown != -1">{{ $t('pay_wait_confirm') }}</p>
-      <van-count-down class="mt-30 black fs-24" v-if="countdown != -1" :time="countdown" @finish="onPayCompleted(1)" />
+      <van-count-down class="mt-30 black fs-24" v-if="countdown != -1" :time="countdown" @finish="onPayCompleted(-2)" />
     </div>
 
     <!-- 详情描述 -->
@@ -66,68 +66,55 @@ export default {
   },
   methods: {
     async onPayCompleted(num) { // 支付完成
-      this.$toast.loading({
-        forbidClick: true,
-        loadingType: 'spinner',
-        duration: 0
-      });
+      if (num == 0) {
+        this.$toast.loading({
+          forbidClick: true,
+          loadingType: 'spinner',
+          duration: 0
+        });
+      }
       let data;
       if (this.$route.query.orderId) { // 确认订单是否支付
         data = await this.$api.checkPayOrder(this.$route.query.refNo);
       } else {
         data = await checkBuyerRecharge(this.$route.query.refNo); // 判断买家充值是否成功
       }
-      // num +=1;
-      if (data.data != 1) {
-        // if (num < 3) { // 因为有延迟，所以每次延迟1秒再次请求接口，请求三次还失败就进行错误提示
-        //   setTimeout(() => {
-        //     this.onPayCompleted(num);
-        //   }, 2000)
-        // } else {
+      
+      this.countdown = num == -2 ? 0 : this.countdown;
+      num += 1;
+      if (data.data != 1) { 
+        // 订单支付：0->未支付 1->已经支付 2->支付失败
+        // 钱包支付：0->失败 1->已经支付 2->待支付 3->已取消
           this.$toast.clear();
-          this.countdown = num == 1 ? 0 : this.countdown;
           if (this.countdown == 0) { // 倒计时结束
-            this.$dialog.alert({
-              title: this.$t('payment_failed'),
-              message: this.$t('order_payment_failed_tips'),
-              confirmButtonText: this.$t('i_know')
-            }).then(() => {
-              if (this.$route.query.orderId) { // 订单
-                this.$router.push({ // 校验之后成功跳转到订单支付结果页面
-                  name: 'cart-order-confirm',
-                  query: {
-                    orderId: this.$route.query.orderId,
-                    isSuccess: data.data == 1 ? 0 : 2
-                  }
-                })
-                return false;
-              }
-              this.$router.replace({
-                name: 'me-wallet'
-              })
-            })
-          } else{
+            this.goLeave(data);
+          } else if (num == 1) { // 倒计时开始
             this.countdown = 1 * 2 * 60 * 1000;
+            setTimeout(() => {
+              this.onPayCompleted(num);
+            }, 2000);
+          } else { // 倒计时过程中每次返回都再次请求接口
+            if (this.$route.query.orderId) { // 订单
+              if (data.data == 0) { // 待支付
+                setTimeout(() => {
+                  this.onPayCompleted(num);
+                }, 2000);
+              } else {
+                this.goLeave(data); // 其他失败状态直接跳转结果页面
+              }
+            } else { // 钱包充值
+              if (data.data == 2) { // 待支付
+                setTimeout(() => {
+                  this.onPayCompleted(num);
+                }, 2000);
+              } else {
+                this.goLeave(data); // 其他失败状态直接跳转结果页面
+              }
+            }
           }
-          
-        // }
         return false;
       }
-      if (this.$route.query.orderId) {
-        this.$router.push({ // 校验之后成功跳转到订单支付结果页面
-          name: 'cart-order-confirm',
-          query: {
-            orderId: this.$route.query.orderId,
-            isSuccess: data.data == 1 ? 0 : 2
-          }
-        })
-      } else {
-        // callBackRecharge(this.$route.query.refNo).then(res => {
-          this.$router.replace({
-            name: 'me-wallet'
-          })
-        // })
-      }
+      this.goLeave(data, true);
       this.$toast.clear();
     },
     onChangePayMethod() { // 修改支付方式时, 要先取消该订单再返回上一级
@@ -184,6 +171,44 @@ export default {
       }).catch(error => {
         console.log(error);
         this.$toast.clear();
+      })
+    },
+    goLeave(data, flag) { // 跳转到结果页面
+      if (flag) { // 成功
+        if (this.$route.query.orderId) {
+          this.$router.push({ // 校验之后成功跳转到订单支付结果页面
+            name: 'cart-order-confirm',
+            query: {
+              orderId: this.$route.query.orderId,
+              isSuccess: data.data == 1 ? 0 : 2
+            }
+          })
+        } else {
+          this.$router.replace({
+            name: 'me-wallet'
+          })
+        }
+        return false;
+      }
+      // 失败
+      this.$dialog.alert({
+        title: this.$t('payment_failed'),
+        message: this.$t('order_payment_failed_tips'),
+        confirmButtonText: this.$t('i_know')
+      }).then(() => {
+        if (this.$route.query.orderId) { // 订单
+          this.$router.push({ // 校验之后成功跳转到订单支付结果页面
+            name: 'cart-order-confirm',
+            query: {
+              orderId: this.$route.query.orderId,
+              isSuccess: data.data == 1 ? 0 : 2
+            }
+          })
+          return false;
+        }
+        this.$router.replace({
+          name: 'me-wallet'
+        })
       })
     }
   },
