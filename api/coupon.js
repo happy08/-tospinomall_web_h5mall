@@ -75,3 +75,17 @@ export function getCartCouponList(params) {
     params
   })
 }
+
+/**
+ * 领取优惠券
+ */
+export function receiveCoupon(data) {
+  return request({
+    url: `/discount/coupon/getCoupon`,
+    method: 'post',
+    data: data,
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+}

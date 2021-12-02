@@ -8,28 +8,29 @@
       </BmHeaderNav>
 
       <van-tabs v-model="centerTabActive" color="#42B7AE" class="customs-van-tabs"  @click="onChangeTab">
-        <van-tab :title="$t('all') + '(' + allCount + ')'" name="100"></van-tab>
-        <van-tab :title="$t('store_coupons') + '(' + platformCount + ')'" name="1"></van-tab>
-        <van-tab :title="$t('platform_coupons') + '(' + shopCount + ')'" name="2"></van-tab>
+        <van-tab :title="item.tab + '(' + item.count + ')'" :name="item.tabName" v-for="(item, index) in centerLists" :key="index">
+          <PullRefresh :refreshing="refreshing" @refresh="onRefresh" class="custom-min-height-94">
+            <div class="pb-20 bg-grey mlr-10">
+              <!-- 空列表 -->
+              <empty-status v-if="item.records.length === 0" :image="require('@/assets/images/empty/order.png')" :description="$t('empty')" />
+              <van-list
+                v-else
+                v-model="loading"
+                :finished="finished"
+                finished-text=""
+                @load="onLoad"
+                class="bg-grey"
+                :immediate-check="false"
+              >
+                <coupon-single v-for="(item, itemIndex) in item.records" :key="itemIndex" :item="item" class="mt-12" @onReceive="onReceive"></coupon-single>
+              </van-list>
+            </div>
+          </PullRefresh>
+        </van-tab>
       </van-tabs>
     </van-sticky>
 
-    <PullRefresh :refreshing="refreshing" @refresh="onRefresh" class="custom-min-height-94">
-      <div class="pb-20 bg-grey mlr-10">
-        <!-- 空列表 -->
-        <empty-status v-if="centerLists.length === 0" :image="require('@/assets/images/empty/order.png')" :description="$t('empty')" />
-        <van-list
-          v-else
-          v-model="loading"
-          :finished="finished"
-          finished-text=""
-          @load="onLoad"
-          class="bg-grey"
-        >
-          <coupon-single v-for="item in centerLists" :key="item" class="mt-12"></coupon-single>
-        </van-list>
-      </div>
-    </PullRefresh>
+    
   </div>
 </template>
 
@@ -40,7 +41,7 @@ import { getCouponCenterList, getCouponCenterCount } from '@/api/coupon';
 import PullRefresh from '@/components/PullRefresh';
 
 export default {
-  middleware: 'authenticated',
+  // middleware: 'authenticated',
   components: {
     vanTab: Tab,
     vanTabs: Tabs,
@@ -51,43 +52,65 @@ export default {
   },
   data() {
     return {
-      centerTabActive: 0,
-      centerLists: [],
-      centerTotal: 0,
+      centerTabActive: '100',
+      centerLists: [
+        {
+          tab: this.$t('all'),
+          count: 0,
+          tabName: '100',
+          records: [],
+          total: 0,
+          pageNum: 0
+        },
+        {
+          tab: this.$t('store_coupons'),
+          count: 0,
+          tabName: '2',
+          records: [],
+          total: 0,
+          pageNum: 0
+        },
+        {
+          tab: this.$t('platform_coupons'),
+          count: 0,
+          tabName: '1',
+          records: [],
+          total: 0,
+          pageNum: 0
+        }
+      ],
       loading: false,
       finished: false,
       refreshing: {
         isFresh: false
       },
-      centerPageNum: 0,
-      centerPageSize: 20,
-      allCount: 0, // 所有券
-      platformCount: 0, // 平台券
-      shopCount: 0, // 店铺券
+      centerPageSize: 20
     }
   },
   activated() {
+    this.$toast.loading({
+      forbidClick: true,
+      loadingType: 'spinner',
+      duration: 0
+    });
     this.getCouponCenterCount();
-    this.getCouponCenterList();
+    this.getCouponCenterList([ this.centerLists[0] ]);
   },
   methods: {
-    getCouponCenterList() { // 领券中心列表
+    getCouponCenterList(couponList) { // 领券中心列表
       let params = {
-        pageNum: this.centerPageNum,
+        pageNum: couponList[0].pageNum,
         pageSize: this.centerPageSize
       }
-      if (this.centerTabActive != 100) {
+      if (this.centerTabActive != '100') {
         params.couponActivityType = this.centerTabActive;
       }
-      this.$toast.loading({
-        forbidClick: true,
-        loadingType: 'spinner',
-        duration: 0
-      });
       getCouponCenterList(params).then(res => {
-        this.centerLists = this.centerPageNum == 0 ? res.data.records : this.centerLists.concat(res.data.records);;
-        this.centerTotal = parseFloat(res.data.total);
-        this.finished = this.centerTotal == this.centerLists.length ? true : false;
+        couponList[0].records = couponList[0].pageNum == 0 ? res.data.records : couponList[0].records.concat(res.data.records);;
+        couponList[0].total = parseFloat(res.data.total);
+        this.loading = false;
+        this.finished = couponList[0].total == couponList[0].records.length ? true : false;
+        this.refreshing.isFresh = false;
         this.$toast.clear();
       }).catch(error => {
         console.log(error);
@@ -96,29 +119,62 @@ export default {
     },
     onChangeTab(name, title) { // tab切换 name 100全部 1平台券 0店铺券
       console.log(name, title)
-      this.centerPageNum = 0;
-      this.getCouponCenterList();
+      let currentList = this.centerLists.filter(item => {
+        return item.tabName == this.centerTabActive;
+      })
+      if (currentList[0].records.length == 0) {
+        this.$toast.loading({
+          forbidClick: true,
+          loadingType: 'spinner',
+          duration: 0
+        });
+        this.getCouponCenterList(currentList);
+      } else {
+        this.finished = currentList[0].total == currentList[0].records.length ? true : false;
+      }
     },
     onLoad() { // 滚动加载
-      if (this.centerTotal == this.centerLists.length) {
+      let currentList = this.centerLists.filter(item => {
+        return item.tabName == this.centerTabActive;
+      })
+
+      if (currentList.length == 0) {
+        return false;
+      }
+
+      if (currentList[0].total == currentList.length) {
         this.loading = false;
         this.finished = true;
         return false;
       }
-      this.centerPageNum += 1;
-      this.getCouponCenterList();
+      currentList[0].pageNum += 1;
+      this.getCouponCenterList(currentList);
     },
     onRefresh() { // 刷新
-      this.centerPageNum = 0;
       this.finished = false;
-      this.getCouponCenterList();
+      let currentList = this.centerLists.filter(item => {
+        return item.tabName == this.centerTabActive;
+      })
+
+      if (currentList.length == 0) {
+        return false;
+      }
+      currentList[0].pageNum = 0;
+      this.getCouponCenterList(currentList);
     },
     getCouponCenterCount() { // 优惠券数量统计
       getCouponCenterCount().then(res => {
-        this.allCount = res.data.allCount;
-        this.platformCount = res.data.platformCount;
-        this.shopCount = res.data.shopCount;
+        this.centerLists[0].count = res.data.allCount;
+        this.centerLists[2].count = res.data.platformCount;
+        this.centerLists[1].count = res.data.shopCount;
+        this.$toast.clear();
+      }).catch(error => {
+        this.$toast.clear();
+        console.log(error);
       })
+    },
+    onReceive() { // 优惠券领取成功
+      this.onRefresh();
     }
   }
 }

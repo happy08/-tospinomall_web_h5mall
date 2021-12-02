@@ -3,7 +3,7 @@
   <div class="round-8 hidden">
     <div :class="{'coupon-content-title': true, 'light-green': type == 0, 'bg-grey-e3': type != 0}">
       <div class="flex between vcenter">
-        <span :class="{'ptb-2 plr-8 round-8 white fs-10': true, 'bg-dark-green': type == 0, 'bg-dark-grey': type != 0}">商品优惠券</span>
+        <span :class="{'ptb-2 plr-8 round-8 white fs-10': true, 'bg-dark-green': type == 0, 'bg-dark-grey': type != 0}">{{ discountType }}</span>
         <BmIcon :name="type != 0 ? 'collapsed' : 'collapse'" :width="'0.28rem'" :height="'0.28rem'" @iconClick="isOpenCollapse = !isOpenCollapse"></BmIcon>
       </div>
       <div class="mt-10 flex">
@@ -13,16 +13,18 @@
           :height="'0.96rem'"
           :isLazy="false"
           :isShow="false"
-          :alt="'商品优惠券'"
+          :alt="'coupon'"
           class="round-4 flex-shrink"
         />
         <div class="ml-4 w-100">
           <div class="mt-2 flex between">
-            <p :class="{'dark-green': type == 0, 'light-grey': type != 0}">
+            <!-- <p :class="{'dark-green': type == 0, 'light-grey': type != 0}"> -->
+            <p :class="{'dark-green': true}">
               <span class="fw fs-14">Rp</span>
-              <span class="fw fm-din fs-22 lh-1">40.000</span>
+              <span class="fw fm-din fs-22 lh-1">{{ item.subtractAmount }}</span>
             </p>
-            <BmButton class="fs-12 fw white round-100 plr-12 h-24 bg-green-linear mr-8" @btnClick="onHandle" v-if="type == 0">COLLECT</BmButton>
+            <!-- 未领取 -->
+            <BmButton class="fs-12 fw white round-100 plr-12 h-24 bg-green-linear mr-8" @btnClick="onHandle" v-if="item.isReceive == 0" @click="onReceive">COLLECT</BmButton>
             <BmImage
               :url="require('@/assets/images/coupon/used.png')"
               :width="'1.08rem'" 
@@ -42,24 +44,39 @@
       <div :class="{'sawtooth': true, 'sawtooth-active': type == 0}"></div>
       <div class="bg-round-l"></div>
       <div class="bg-round-r"></div>
-      <p class="light-grey fs-10 lh-12 pt-2 pl-20 pb-4 bg-white">XXXX XXXX Validity: 5 thg 11,2021 - 3 thg 2.2022 </p>
+      <p class="light-grey fs-10 lh-12 pt-2 pl-20 pb-4 bg-white">XXXX XXXX Validity:{{ item.discountValidStartDate }} - {{ item.discountValidEndDate }}</p>
     </div>
 
     <div class="pl-16 pr-10 bg-white pt-2" v-show="isOpenCollapse">
       <div class="w-230 border-b"></div>
-      <div class="fs-10 light-grey mt-8 pb-12">1.该商品券仅可使用于店铺的某某视频<br/>2.虚拟商品及部分商品流程不可使用，特殊流程如秒杀等不适用，请合理的使用优惠券，如发现不合规使用商家有权收回<br/>3.所有解释权归商家所有</div>
+      <div class="fs-10 light-grey mt-8 pb-12" v-html="item.discountDescription"></div>
     </div>
   </div>
 </template>
 
 <script>
 import { CollapseItem } from 'vant';
+import { receiveCoupon } from '@/api/coupon';
 
 export default {
   props: {
-    type: { // 优惠券状态 0未使用 1已使用 2 已过期 3用完
-      type: Number,
+    type: { // 是否过期
       default: 0
+    },
+    item: {
+      type: Object,
+      default: {
+        discountType: null, // 活动类型
+        discountId: null, // 优惠券id
+        discountDescription: null, // 优惠券说明
+        discountName: null, //优惠券名称
+        discountValidDate: null, // 领券后有效时间(天)
+        discountValidEndDate: null, // 优惠券有效结束时间
+        discountValidStartDate: null, // 优惠券有效开始时间
+        isReceive: null, // 是否已领取:0 未领取;1 已领取
+        satisfyAmount: null, // 满多少面额(门槛)
+        subtractAmount: null // 减多少面额
+      }
     }
   },
   components: {
@@ -70,9 +87,37 @@ export default {
       isOpenCollapse: false
     }
   },
+  computed: {
+    // 活动类型：1.平台新人满减券，2.平台新人立减券，3.客服满减券，4.客服立减券，5.店铺新人满减券，6.店铺新人立减券，7.店铺满减券，8.商品满减券，9.商品立减券
+    discountType() {
+      return this.item.discountType == 1 || this.item.discountType == 2 ? this.$t('platform_coupons') : this.$t('store_coupons');
+    }
+  },
   methods: {
     onHandle() {
       console.log('success')
+    },
+    onReceive() { // 领取优惠券, 需要先判断是否登录
+      if (!this.$store.state.user.authToken) {
+        this.$router.push({
+          name: 'login'
+        })
+        return false;
+      }
+      this.$toast.loading({
+        forbidClick: true,
+        loadingType: 'spinner',
+        duration: 0
+      });
+      receiveCoupon({
+        discountId: this.item.discountId
+      }).then(res => {
+        this.$toast.clear();
+        this.$emit('onReceive');
+      }).catch(error => {
+        console.log(error);
+        this.$toast.clear();
+      })
     }
   }
 }
