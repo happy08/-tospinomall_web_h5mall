@@ -60,7 +60,7 @@ export default {
           tabName: '100',
           records: [],
           total: 0,
-          pageNum: 0
+          pageNum: 1
         },
         {
           tab: this.$t('store_coupons'),
@@ -68,7 +68,7 @@ export default {
           tabName: '2',
           records: [],
           total: 0,
-          pageNum: 0
+          pageNum: 1
         },
         {
           tab: this.$t('platform_coupons'),
@@ -76,7 +76,7 @@ export default {
           tabName: '1',
           records: [],
           total: 0,
-          pageNum: 0
+          pageNum: 1
         }
       ],
       loading: false,
@@ -106,7 +106,7 @@ export default {
         params.couponActivityType = this.centerTabActive;
       }
       getCouponCenterList(params).then(res => {
-        couponList[0].records = couponList[0].pageNum == 0 ? res.data.records : couponList[0].records.concat(res.data.records);;
+        couponList[0].records = couponList[0].pageNum == 1 ? res.data.records : couponList[0].records.concat(res.data.records);;
         couponList[0].total = parseFloat(res.data.total);
         this.loading = false;
         this.finished = couponList[0].total == couponList[0].records.length ? true : false;
