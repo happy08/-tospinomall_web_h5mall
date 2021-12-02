@@ -213,6 +213,7 @@ import { removeCart, setOftenBuy, getCartCount, moveToFavorite, getCalculatePric
 import { getGoodAttr } from '@/api/product';
 import PullRefresh from '@/components/PullRefresh';
 import ProductSku from '@/components/ProductSku';
+import { getCartCouponList } from '@/api/coupon';
 
 export default {
   middleware: 'authenticated',
@@ -666,6 +667,11 @@ export default {
         this.loading = false;
       }).catch(error => {
         console.log(error);
+      })
+    },
+    getCartCouponList() { // 获取优惠券列表
+      getCartCouponList().then(res => {
+        
       })
     }
   },

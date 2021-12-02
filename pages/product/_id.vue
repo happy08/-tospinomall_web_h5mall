@@ -703,7 +703,10 @@ export default {
       previewIndex: 0,
       goodId: '',
       haveAddress: {},
-      couponList: []
+      couponList: [],
+      couponPageNum: 0,
+      couponPageSize: 50,
+      couponTotal: 0
     }
   },
   async fetch() {
@@ -913,6 +916,10 @@ export default {
     this.haveAddress = {};
     this.completeAddress = '';
     this.assgnStepList = [];
+    // 获取优惠券列表
+    this.getGoodsCouponList();
+
+    // 已登录
     if (this.$store.state.user.authToken) {
       getCurrentDefaultAddress().then(res => { // 查看是否有默认地址
         if (!res.data || res.data.length === 0) { // 没有默认地址的情况下获取国家列表
@@ -932,8 +939,6 @@ export default {
       }).catch(error => {
         console.log(error);
       })
-      // 获取优惠券列表
-      this.getGoodsCouponList();
     }
     this.$fetch();
     if (this.goodSpuVo.goodTitle) {
@@ -1158,8 +1163,12 @@ export default {
       this.previewIndex = index;
     },
     getGoodsCouponList() { // 获取优惠券列表
-      getGoodsCouponList().then(res => {
+      getGoodsCouponList({
+        pageNum: this.couponPageNum,
+        pageSize: this.couponPageSize
+      }).then(res => {
         this.couponList = res.data.records;
+        this.couponTotal = parseFloat(res.data.total);
       }).catch(error => {
         console.log(error);
       })
