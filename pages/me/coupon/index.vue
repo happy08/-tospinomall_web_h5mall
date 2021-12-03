@@ -8,28 +8,34 @@
       </BmHeaderNav>
 
       <van-tabs v-model="tabActive" color="#42B7AE" class="customs-van-tabs" @click="onChangeTab">
-        <van-tab :title="$t('all') + '(' + allCount + ')'" name="100"></van-tab>
-        <van-tab :title="$t('store_coupons') + '(' + platformCount + ')'" name="1"></van-tab>
-        <van-tab :title="$t('platform_coupons') + '(' + shopCount + ')'" name="0"></van-tab>
+        <van-tab :title="item.tab + '(' + item.count + ')'" :name="item.tabName" v-for="(item, index) in lists" :key="index">
+          <PullRefresh :refreshing="refreshing" @refresh="onRefresh" class="custom-min-height-94">
+            <div class="pb-20 bg-grey mlr-10">
+              <!-- 空列表 -->
+              <empty-status v-if="item.records.length === 0" :image="require('@/assets/images/empty/order.png')" :description="$t('empty')" />
+              <van-list
+                v-else
+                v-model="loading"
+                :finished="finished"
+                finished-text=""
+                @load="onLoad"
+                class="bg-grey"
+                :immediate-check="false"
+              >
+                <van-swipe-cell  v-for="(item, itemIndex) in item.records" :key="itemIndex">
+                  <coupon-single :item="item" class="mt-12" @onReceive="onReceive"></coupon-single>
+                  <template #right>
+                    <div class="flex hend h-100">
+                      <BmButton class="round-0 bg-yellow h-100 w-70" @click="onDelete(item)">{{ $t('goods_remove_follow') }}</BmButton>
+                    </div>
+                  </template>
+                </van-swipe-cell>
+              </van-list>
+            </div>
+          </PullRefresh>
+        </van-tab>
       </van-tabs>
     </van-sticky>
-
-    <PullRefresh :refreshing="refreshing" @refresh="onRefresh" class="custom-min-height-94">
-      <div class="pb-20 bg-grey mlr-10">
-        <!-- 空列表 -->
-        <empty-status v-if="lists.length === 0" :image="require('@/assets/images/empty/order.png')" :description="$t('empty')" />
-        <van-list
-          v-else
-          v-model="loading"
-          :finished="finished"
-          finished-text=""
-          @load="onLoad"
-          class="bg-grey"
-        >
-          <coupon-single v-for="item in lists" :key="item" class="mt-12"></coupon-single>
-        </van-list>
-      </div>
-    </PullRefresh>
 
     <!-- <button @click="isCouponShow = !isCouponShow">isCouponShow</button> -->
 
@@ -62,7 +68,7 @@ import CouponSingle from '@/components/CouponSingle';
 // import CouponOrderSingle from '@/components/CouponOrderSingle';
 // import DialogGiftCoupon from '@/components/DialogGiftCoupon';
 import PullRefresh from '@/components/PullRefresh';
-import { Tab, Tabs, Sticky, Popup, List } from 'vant';
+import { Tab, Tabs, Sticky, Popup, List, SwipeCell } from 'vant';
 import { getCouponList, getCouponCount } from '@/api/coupon';
 
 export default {
@@ -73,6 +79,7 @@ export default {
     vanSticky: Sticky,
     vanPopup: Popup,
     vanList: List,
+    vanSwipeCell: SwipeCell,
     CouponSingle,
     PullRefresh,
     // CouponOrderSingle,
@@ -80,77 +87,161 @@ export default {
   },
   data() {
     return {
-      tabActive: 0,
+      tabActive: '100',
       isCouponShow: true,
       couponActive: 0,
-      pageNum: 0,
       pageSize: 20,
-      lists: [],
-      total: 0,
+      lists: [
+        {
+          tab: this.$t('all'),
+          count: 0,
+          tabName: '100',
+          records: [],
+          total: 0,
+          pageNum: 1
+        },
+        {
+          tab: this.$t('store_coupons'),
+          count: 0,
+          tabName: '1',
+          records: [],
+          total: 0,
+          pageNum: 1
+        },
+        {
+          tab: this.$t('platform_coupons'),
+          count: 0,
+          tabName: '0',
+          records: [],
+          total: 0,
+          pageNum: 1
+        }
+      ],
       loading: false,
       finished: false,
       refreshing: {
         isFresh: false
-      },
-      allCount: 0, // 所有券
-      platformCount: 0, // 平台券
-      shopCount: 0, // 店铺券
+      }
     }
   },
   activated() {
+    this.$toast.loading({
+      forbidClick: true,
+      loadingType: 'spinner',
+      duration: 0
+    });
+    // 数据初始化
+    this.tabActive = '100';
+    this.lists = [
+      {
+        tab: this.$t('all'),
+        count: 0,
+        tabName: '100',
+        records: [],
+        total: 0,
+        pageNum: 1
+      },
+      {
+        tab: this.$t('store_coupons'),
+        count: 0,
+        tabName: '2',
+        records: [],
+        total: 0,
+        pageNum: 1
+      },
+      {
+        tab: this.$t('platform_coupons'),
+        count: 0,
+        tabName: '1',
+        records: [],
+        total: 0,
+        pageNum: 1
+      }
+    ];
     this.getCouponCount();
-    this.getCouponList();
+    this.getCouponList([this.lists[0]]);
   },
   methods: {
-    getCouponList() { // 获取我的优惠券列表
+    getCouponList(couponList) { // 获取我的优惠券列表
       // couponType 优惠券类型:(0:店铺券 1:平台券),不传默认全部
       // pageNum: 0 , pageSize: 10
       let params = {
-        pageNum: this.pageNum,
+        pageNum: couponList[0].pageNum,
         pageSize: this.pageSize
       }
-      if (parseFloat(this.tabActive) != 100) {
+      if (this.tabActive != '100') {
         params.couponType = this.tabActive;
       }
-      this.$toast.loading({
-        forbidClick: true,
-        loadingType: 'spinner',
-        duration: 0
-      });
+
+      if (this.loading) {
+        return false;
+      }
+      this.loading = true;
+
       getCouponList(params).then(res => {
-        this.lists = this.pageNum == 0 ? res.data.records : this.lists.concat(res.data.records);
-        this.total = parseFloat(res.data.total);
-        this.finished = this.total == this.lists.length ? true : false;
+        couponList[0].records = couponList[0].pageNum == 1 ? res.data.records : couponList[0].records.concat(res.data.records);;
+        couponList[0].total = parseFloat(res.data.total);
+        this.finished = couponList[0].total == couponList[0].records.length ? true : false;
+        this.refreshing.isFresh = false;
+        this.loading = false;
         this.$toast.clear();
       }).catch(error => {
         console.log(error);
+        this.loading = false;
+        this.refreshing.isFresh = false;
         this.$toast.clear();
       })
     },
     onChangeTab(name, title) { // tab切换 name 100全部 1平台券 0店铺券
       console.log(name, title)
-      this.pageNum = 0;
-      this.getCouponList();
+      let currentList = this.lists.filter(item => {
+        return item.tabName == this.tabActive;
+      })
+      if (currentList[0].records.length == 0) {
+        this.$toast.loading({
+          forbidClick: true,
+          loadingType: 'spinner',
+          duration: 0
+        });
+        this.getCouponList(currentList);
+      } else {
+        this.finished = currentList[0].total == currentList[0].records.length ? true : false;
+      }
     },
     onLoad() { // 滚动加载
-      if (this.total == this.lists.length) {
+      let currentList = this.centerLists.filter(item => {
+        return item.tabName == this.tabActive;
+      })
+
+      if (currentList.length == 0) {
+        return false;
+      }
+
+      if (currentList[0].total == currentList.length) {
         this.loading = false;
         this.finished = true;
         return false;
       }
-      this.pageNum += 1;
-      this.getCouponList();
+      currentList[0].pageNum += 1;
+      this.getCouponList(currentList);
     },
     onRefresh() { // 刷新
-      this.pageNum = 0;
       this.finished = false;
-      this.getCouponList();
+      let currentList = this.centerLists.filter(item => {
+        return item.tabName == this.centerTabActive;
+      })
+
+      if (currentList.length == 0) {
+        return false;
+      }
+      currentList[0].pageNum = 1;
+      this.getCouponList(currentList);
     },
     getCouponCount() { // 获取优惠券数量
       getCouponCount().then(res => {
-        this.allCount = res.data.allCount;
-        this.platformCount = res.data.platformCount;
-        this.shopCount = res.data.shopCount;
+        this.centerLists[0].count = res.data.allCount;
+        this.centerLists[2].count = res.data.platformCount;
+        this.centerLists[1].count = res.data.shopCount;
       })
     }
   }

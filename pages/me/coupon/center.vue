@@ -29,8 +29,6 @@
         </van-tab>
       </van-tabs>
     </van-sticky>
-
-    
   </div>
 </template>
 
@@ -93,6 +91,34 @@ export default {
       loadingType: 'spinner',
       duration: 0
     });
+    // 数据初始化
+    this.centerTabActive = '100';
+    this.centerLists = [
+      {
+        tab: this.$t('all'),
+        count: 0,
+        tabName: '100',
+        records: [],
+        total: 0,
+        pageNum: 1
+      },
+      {
+        tab: this.$t('store_coupons'),
+        count: 0,
+        tabName: '2',
+        records: [],
+        total: 0,
+        pageNum: 1
+      },
+      {
+        tab: this.$t('platform_coupons'),
+        count: 0,
+        tabName: '1',
+        records: [],
+        total: 0,
+        pageNum: 1
+      }
+    ];
     this.getCouponCenterCount();
     this.getCouponCenterList([ this.centerLists[0] ]);
   },
@@ -105,15 +131,21 @@ export default {
       if (this.centerTabActive != '100') {
         params.couponActivityType = this.centerTabActive;
       }
+      if (this.loading) {
+        return false;
+      }
+      this.loading = true;
       getCouponCenterList(params).then(res => {
         couponList[0].records = couponList[0].pageNum == 1 ? res.data.records : couponList[0].records.concat(res.data.records);;
         couponList[0].total = parseFloat(res.data.total);
-        this.loading = false;
         this.finished = couponList[0].total == couponList[0].records.length ? true : false;
         this.refreshing.isFresh = false;
+        this.loading = false;
         this.$toast.clear();
       }).catch(error => {
         console.log(error);
+        this.loading = false;
+        this.refreshing.isFresh = false;
         this.$toast.clear();
       })
     },
@@ -159,7 +191,7 @@ export default {
       if (currentList.length == 0) {
         return false;
       }
-      currentList[0].pageNum = 0;
+      currentList[0].pageNum = 1;
       this.getCouponCenterList(currentList);
     },
     getCouponCenterCount() { // 优惠券数量统计
