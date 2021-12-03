@@ -576,6 +576,13 @@
 
     <!-- 预览 -->
     <bm-preview v-if="isPreviewIndex != 'false'" :isPreviewIndex="isPreviewIndex" :carouselMapUrls="carouselMapUrls" :initialSlide="isPreviewIndex" @onClose="isPreviewIndex = 'false'" @onPreviewChange="onPreviewPic($event)"></bm-preview>
+
+    <!-- 商品优惠券 -->
+    <van-popup v-model="isCouponShow" style="height: 80%" position="bottom" class="round-tlr-12 coupon-popup">
+      <div>
+        <coupon-order-single class="mt-10 mlr-10" v-for="item in 10" :key="item"></coupon-order-single>
+      </div>
+    </van-popup>
   </div>
   <empty-status v-else-if="isDetail == false" :image="require('@/assets/images/empty/order.png')" class="mh-60" :btn="{ btn: $t('return_to_previous_page'), isEmit: true }" @emptyClick="$router.go(-1)" />
 </template>
@@ -595,6 +602,7 @@ import shareLink from '@/assets/images/icon/share-link.png';
 import EmptyStatus from '@/components/EmptyStatus';
 import BmPreview from '@/components/_global/BmPreview';
 import { getGoodsCouponList } from '@/api/coupon';
+import CouponOrderSingle from '@/components/CouponOrderSingle';
 
 export default {
   components: {
@@ -613,7 +621,8 @@ export default {
     vanShareSheet: ShareSheet,
     ProductSku,
     EmptyStatus,
-    BmPreview
+    BmPreview,
+    CouponOrderSingle
   },
   data() {
     return {
@@ -704,9 +713,10 @@ export default {
       goodId: '',
       haveAddress: {},
       couponList: [],
-      couponPageNum: 0,
+      couponPageNum: 1,
       couponPageSize: 50,
-      couponTotal: 0
+      couponTotal: 0,
+      isCouponShow: true
     }
   },
   async fetch() {
