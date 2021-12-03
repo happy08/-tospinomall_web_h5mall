@@ -73,6 +73,8 @@ export default {
           duration: 0
         });
       }
+      this.countdown = num == -2 ? 0 : this.countdown;
+      num += 1;
       try {
         let data;
         if (this.$route.query.orderId) { // 确认订单是否支付
@@ -80,9 +82,6 @@ export default {
         } else {
           data = await checkBuyerRecharge(this.$route.query.refNo); // 判断买家充值是否成功
         }
-        
-        this.countdown = num == -2 ? 0 : this.countdown;
-        num += 1;
         if (data.data != 1) { 
           // 订单支付：0->未支付 1->已经支付 2->支付失败
           // 钱包支付：0->失败 1->已经支付 2->待支付 3->已取消
@@ -118,6 +117,9 @@ export default {
         this.goLeave(data, true);
         this.$toast.clear();
       } catch (error) {
+        setTimeout(() => {
+          this.onPayCompleted(num);
+        }, 2000);
         this.$toast.clear();
       }
     },
