@@ -319,7 +319,7 @@ const en = {
   accra: 'Accra',
   air_freight: 'Air transport',
   sea_transportation: 'Ocean shipping',
-  land_transportation: 'Land transportation',
+  land_transportation: 'Road transport',
   search_found: 'Search Found',
   pay: 'Pay',
   payment: 'Payment',
