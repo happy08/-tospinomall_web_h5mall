@@ -59,7 +59,7 @@
                   <!-- 自定义图片 -->
                   <template #thumb>
                     <nuxt-link :to="'/product/' + singleItem.productId + '.html'">
-                      <SoldOut :isShow="singleItem.status == 1 ? false: true">
+                      <SoldOut :isShow="singleItem.status == 1 ? false: true" :tip="$t('sold_out')">
                         <BmImage
                           :url="singleItem.mainPictureUrl"
                           :width="'1.8rem'" 
@@ -87,9 +87,9 @@
                   </template>
                   <!-- 标签 -->
                   <template #tags>
-                    <nuxt-link :to="'/product/' + singleItem.productId + '.html'" class="flex mt-8 vcenter hidden round-8 product-tag" v-if="singleItem.status == 1">
+                    <nuxt-link :to="'/product/' + singleItem.productId + '.html'" class="flex mt-8 vcenter hidden round-4 product-tag" v-if="singleItem.status == 1">
                       <BmImage
-                        :url="require('@/assets/images/icon/plane-icon.png')"
+                        :url="require('@/assets/images/icon/' + onModeLabel(singleItem.transportMode))"
                         :width="'0.36rem'" 
                         :height="'0.36rem'"
                         :isLazy="false"
@@ -154,7 +154,7 @@
             <nuxt-link :to="'/product/' + searchItem.productId + '.html'" v-for="(searchItem, searchIndex) in recommendList" :key="'search-list-' + searchIndex" class="mb-12 custom-grid-item" v-masonry-tile>
               <ProductTopBtmSingle
                 :img="{ url: searchItem.mainPictureUrl, width: '3.4rem', height: '3.4rem', loadImage: require('@/assets/images/product-bgd-170.png') }" 
-                :detail="{ desc: searchItem.productTitle, price: searchItem.minPrice, rate: parseFloat(searchItem.starLevel), volumn: searchItem.saleCount, ellipsis: 2, country: searchItem.supplyCountryName, country_url: searchItem.supplyCountryIcon }"
+                :detail="{ desc: searchItem.productTitle, price: searchItem.minPrice, rate: parseFloat(searchItem.starLevel), volumn: searchItem.saleCount, ellipsis: 2, country: searchItem.supplyCountryName, country_url: searchItem.supplyCountryIcon, stock: searchItem.stock }"
               />
             </nuxt-link>
             
@@ -669,6 +669,9 @@ export default {
         console.log(error);
       })
     },
+    onModeLabel(transportMode) {
+      return transportMode == 1 ? 'plane-icon.png' : transportMode == 2 ? 'ship-icon.png' : 'truck-icon.png';
+    },
     getCartCouponList() { // 获取优惠券列表
       getCartCouponList().then(res => {
         
@@ -728,6 +731,7 @@ export default {
   right: 0;
   height: 56px;
   position: fixed;
+  z-index: 100;
   &.isBar {
     bottom: 0;
   }

@@ -76,7 +76,7 @@ export default {
       this.$emit('onClose');
     },
     onSlideChange() { // 切换slide
-      if (this.carouselMapUrls[this.$refs.previewSwiper.$swiper.activeIndex].fileType != 2) {
+      if (this.carouselMapUrls[this.$refs.previewSwiper.$swiper.activeIndex].fileType != 2 && this.video) {
         this.video.pause();
       }
       

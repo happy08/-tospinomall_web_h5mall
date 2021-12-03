@@ -112,7 +112,6 @@
 import { Tab, Tabs, SwipeCell, Cell, Checkbox, CheckboxGroup, CellGroup, Divider, List } from 'vant';
 import EmptyStatus from '@/components/EmptyStatus';
 import OrderSingle from '@/components/OrderSingle';
-import ProductTopBtmSingle from '@/components/ProductTopBtmSingle';
 import { deleteFootprintRecord, getGoodAttr } from '@/api/product';
 import PullRefresh from '@/components/PullRefresh';
 import ProductSku from '@/components/ProductSku';
@@ -131,7 +130,6 @@ export default {
     vanList: List,
     EmptyStatus,
     OrderSingle,
-    ProductTopBtmSingle,
     PullRefresh,
     ProductSku
   },
@@ -159,12 +157,19 @@ export default {
   },
   async fetch() {
     try {
+      // 加载图标
+      this.$toast.loading({
+        forbidClick: true,
+        loadingType: 'spinner',
+        duration: 0
+      });
       // 数据初始化
       this.edit = false;
       this.refreshing.isFresh = false;
       
       // 获取列表数据
       const listData = await this.$api.getFootprintList({ pageSize: this.pageSize, pageNum: this.pageNum });
+      this.$toast.clear();
       if (listData.code != 0) return false;
 
       this.total = listData.data.total;
@@ -176,10 +181,8 @@ export default {
   },
   beforeRouteEnter (to, from, next) {
     next(vm => {
-      if (from.name === 'me') {
-        vm.pageNum = 1;
-        vm.$fetch();
-      }
+      vm.pageNum = 1;
+      vm.list = [];
     });
   },
   activated() {

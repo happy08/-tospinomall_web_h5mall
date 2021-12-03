@@ -20,6 +20,7 @@
                 :height="'0.4rem'"
                 :isShow="false"
                 :alt="'TospinoMall search logo'"
+                :isClip="0"
               />
             </template>   
           </van-search>
@@ -42,6 +43,7 @@
                       :errorUrl="require('@/assets/images/store-bgd.png')"
                       :loadUrl="require('@/assets/images/store-bgd.png')"
                       :alt="detailData.storeName"
+                      :isClip="0"
                     />
                     <!-- 店铺名、关注数 -->
                     <dl class="ml-12 fm-helvetica white">
@@ -151,6 +153,7 @@
                   :height="'3.72rem'"
                   class="round-8 hidden"
                   :alt="slideItem.goodTitle"
+                  :isClip="0"
                 />
               </swiper-slide>
               <div class="swiper-pagination swiper-full-pagination" slot="pagination"></div>
@@ -165,6 +168,7 @@
                 :loadUrl="require('@/assets/images/product-bgd-375.png')"
                 :errorUrl="require('@/assets/images/product-bgd-375.png')"
                 :alt="moduleItem.moduleTitle"
+                :isClip="0"
               />
               <!-- 图片坐标 -->
               <div v-for="hotItem, hotIndex in moduleItem.componentDetails" :key="'hot-picture-' + hotIndex" class="hot-container__position" :ref="'hotPosition' + moduleIndex + hotIndex" :style="hotStyle(hotItem, 'hotPosition' + moduleIndex + hotIndex, 'hotContainer' + moduleIndex)" @click="onHotDetail(hotItem)"></div>
@@ -208,7 +212,7 @@
               >
                 <ProductTopBtmSingle
                   :img="{ url: productType4Item.mainPictureUrl, width: '3.4rem', height: '3.4rem', loadImage: require('@/assets/images/product-bgd-170.png') }" 
-                  :detail="{ desc: productType4Item.goodTitle, price: parseFloat(productType4Item.price), rate: parseFloat(productType4Item.starLevel), volumn: parseFloat(productType4Item.salesVolume), ellipsis: 2 }"
+                  :detail="{ desc: productType4Item.goodTitle, price: parseFloat(productType4Item.price), rate: 0, volumn: parseFloat(productType4Item.salesVolume), ellipsis: 2 }"
                 />
               </nuxt-link>
             </div>
@@ -235,14 +239,18 @@
             :key="'product-item-' + productIndex"
             :to="'/product/' + productItem.productId + '.html'">
             <!-- 商品图片 -->
-            <BmImage 
-              :url="productItem.mainPictureUrl"
-              :width="'1.8rem'" 
-              :height="'1.8rem'"
-              :fit="'cover'"
-              class="border round-4 hidden"
-              :alt="productItem.productTitle"
-            />
+            <div class="soldout-container">
+              <!-- 无货 -->
+              <div class="white fs-12 lh-1 flex center soldout-container__tip" v-if="productItem.stock == 0">{{ $t('out_of_stock') }}</div>
+              <BmImage 
+                :url="productItem.mainPictureUrl"
+                :width="'1.8rem'" 
+                :height="'1.8rem'"
+                :fit="'cover'"
+                class="border round-4 hidden"
+                :alt="productItem.productTitle"
+              />
+            </div>
             <!-- 商品详情 -->
             <div class="ml-14 w-230">
               <h4 class="hidden-2 black fs-14 lh-20 fm-helvetica">{{ productItem.productTitle }}</h4>
@@ -513,10 +521,10 @@ export default {
             _h = this.$refs[container][0].clientHeight;
             if (_w > 0 && _h > 0) {
               clearInterval(timer);
-              this.$refs[ele][0].style.width = (hotItem.areaWidth / 100 * _w / 50) + 'rem';
-              this.$refs[ele][0].style.left = (hotItem.positionX / 100 * _w / 50) + 'rem';
-              this.$refs[ele][0].style.height =  (hotItem.areaHeight / 100 * _h / 50) + 'rem';
-              this.$refs[ele][0].style.top = (hotItem.positionY / 100 * _h / 50) + 'rem';
+              this.$refs[ele][0].style.width = hotItem.areaWidth + '%';
+              this.$refs[ele][0].style.left = hotItem.positionX + '%';
+              this.$refs[ele][0].style.height = hotItem.areaHeight + '%';
+              this.$refs[ele][0].style.top = hotItem.positionY + '%';
             }
           }, 300);
         })
@@ -803,6 +811,22 @@ export default {
 }
 .h-50{
   height: 50px;
+}
+.soldout-container{
+  position: relative;
+  // width: 100%;
+  // height: 100%;
+  .soldout-container__tip{
+    position: absolute;
+    width: 70px;
+    height: 70px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.65);
+    z-index: 1;
+  }
 }
 </style>
 

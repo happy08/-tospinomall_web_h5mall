@@ -3,7 +3,7 @@
   <div class="flex w-100" @click="onClick">
     <!-- 商品图片 -->
     <!-- 商品数量大于1，展示商品的缩略图 -->
-    <SoldOut :isShow="stock ? false: true" :width="img_width" :height="img_height">
+    <SoldOut :isShow="stock ? false: true" :width="img_width" :height="img_height" :tip="$t('sold_out')">
       <BmImage 
         :url="image"
         :width="img_width" 
@@ -21,7 +21,7 @@
     <div class="tl product-detail">
       <p class="fs-14 black lh-20 hidden-2 fm-helvetica">{{ product_desc }}</p>
       <p class="fs-14 lh-20 grey mt-8 word-break" v-if="product_size">{{ product_size }}</p>
-      <div :class="{'fs-16 fw lh-20 mt-12': true, 'red': stock > 0, 'grey': stock == 0}" v-if="price >= 0 && isShowRight == false"><span class="fm-menlo">{{ $store.state.rate.currency }}</span><span class="fm-din">{{ price }}</span></div>
+      <div :class="{'fs-16 fw lh-20 mt-12': true, 'red': stock > 0, 'grey': stock == 0}" v-if="price > 0 && isShowRight == false"><span class="fm-menlo">{{ $store.state.rate.currency }}</span><span class="fm-din">{{ price }}</span></div>
     </div>
     
     <!-- 商品价格和数量 -->
