@@ -736,7 +736,8 @@ const vi = {
   newcomer_foupon: 'Phiếu thưởng cho người mới',
   coupon_received: 'Phiếu thưởng đã nhận thành công',
   coupon_get_it: '立即领取',
-  coupon_use_it: '立即使用'
+  coupon_use_it: '立即使用',
+  go_shopping: 'Dạo'
 }
 
 export default vi;

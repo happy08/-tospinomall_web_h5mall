@@ -278,6 +278,18 @@ export default ({ app }, inject) => {
         method: 'get',
         params
       })
+    },
+    getPlatformCouponList() { // 查询平台新人活动券列表
+      return app.$axios({
+        url: `${url}/discount/activity/find/platform/new/human/gift`,
+        method: 'get'
+      })
+    },
+    autoGetPlatformCoupon() { // 自动领取平台新人券
+      return qpp.$axios({
+        url: `${url}/discount/coupon/autoGetPlatformCoupon`,
+        method: 'get'
+      })
     }
   };
 

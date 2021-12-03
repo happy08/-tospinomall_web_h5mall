@@ -318,7 +318,9 @@
 
     </PullRefresh>
 
-    
+    <!-- 平台新人红包 -->
+    <dialog-gift-coupon :lists="platformCoupons" :isGiftShow="platformCoupons.length > 0" @goAround="platformCoupons = $event"></dialog-gift-coupon>
+
     <!-- 底部 -->
     <BmTabbar />
   </div>
@@ -331,6 +333,7 @@ import EmptyStatus from '@/components/EmptyStatus';
 import PullRefresh from '@/components/PullRefresh';
 import 'swiper/css/swiper.css';
 import { Swiper, SwiperSlide } from 'vue-awesome-swiper';
+import dialogGiftCoupon from '@/components/DialogGiftCoupon';
 
 let searchClient;
 let currencyType;
@@ -350,7 +353,8 @@ export default {
     EmptyStatus,
     PullRefresh,
     swiper: Swiper,
-    swiperSlide: SwiperSlide
+    swiperSlide: SwiperSlide,
+    dialogGiftCoupon
   },
   data() {
     return {
@@ -409,7 +413,8 @@ export default {
       // pageSize: 10,
       tabTotal: 0,
       homeMasonryContainer: 'homeMasonryContainer',
-      filterCategoryIds: []
+      filterCategoryIds: [],
+      platformCoupons: []
     }
   },
   async fetch() {
@@ -423,6 +428,17 @@ export default {
 
       const homeData = await this.$api.getHomeData(); // 组件数据
       this.moduleData = homeData.data.components; // 需要展示的模块数据
+
+      // 已登录自动领取平台新人红包
+      // if (this.$store.state.user.authToken) {
+      //   await this.$api.autoGetPlatformCoupon();
+      // }
+
+      // 获取新人优惠券
+      const platformCoupons = await this.$api.getPlatformCouponList();
+      console.log('----')
+      console.log(platformCoupons)
+      this.platformCoupons = platformCoupons.data;
 
       // 分类列表
       this.tabCategoryActive = '0';

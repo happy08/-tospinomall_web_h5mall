@@ -736,7 +736,8 @@
   newcomer_foupon: 'Cupão de recém-vindo',
   coupon_received: 'Cupões recebidos com sucesso',
   coupon_get_it: '立即领取',
-  coupon_use_it: '立即使用'
+  coupon_use_it: '立即使用',
+  go_shopping: 'Ir às compras'
 }
 
 export default por;

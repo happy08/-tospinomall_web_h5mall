@@ -1,5 +1,5 @@
 <template>
-  <van-dialog v-model="isGiftShow" :showConfirmButton="false" class="top-50">
+  <van-dialog v-model="isGiftShow" :showConfirmButton="false" class="top-50 w-334 bg-transparent">
     <!-- 第一版样式 -->
     <!-- <template #title>
       <h1 class="dark-red flex center ">
@@ -28,23 +28,23 @@
         <div class="gift-container__top">
           <h1 class="dark-red flex center pt-14">
             <span class="title-line"></span>
-            <span class="fs-24 mlr-6 lh-12">新人礼券</span>
+            <span class="fs-24 mlr-6 lh-12">{{ $t('newcomer_gift_coupon') }}</span>
             <span class="title-line"></span>
           </h1>
-          <p class="dark-red fs-12 mt-4 tc pb-4 w-230 border-b-E2D7C6 m-auto">已放入我的-优惠券中</p>
+          <p class="dark-red fs-12 mt-4 tc pb-4 w-230 border-b-E2D7C6 m-auto">{{ $t('added_to_my_coupon') }}</p>
 
           <div class="gift-container__top--single">
-            <div class="m-auto mt-6 center coupon-gift-single2" v-for="item in 4" :key="item">
+            <div class="m-auto mt-6 center coupon-gift-single2" v-for="item, index in lists" :key="'gift-' + index">
               <div class="tc pt-18 white">
-                <span class="fs-24">-₵</span>
-                <span class="fs-28">1000.00</span>
+                <span class="fs-24">{{ $store.state.rate.currency }}</span>
+                <span class="fs-28">{{ item.subtractAmount }}</span>
               </div>
               <p class="fs-14 white mt-10 tc hidden-1 plr-10">Your order of GH ₵ 138.00 or more</p>
             </div>
           </div>
         </div>
         <div class="tc gift-container__bottom">
-          <button class="tc dark-red fs-12 gift-container__bottom--btn">去逛逛</button>
+          <button class="tc dark-red fs-12 gift-container__bottom--btn" @click="$emit('goAround', [])">{{ $t('go_shopping') }}</button>
         </div>
       </div>
     </template>
@@ -53,9 +53,16 @@
 
 <script>
 export default {
-  data() {
-    return {
-      isGiftShow: true
+  props: {
+    lists: {
+      type: Array,
+      default: []
+    },
+    isGiftShow: {
+      type: Boolean,
+      default: () => {
+        return this.lists.length > 0 ? true : false;
+      }
     }
   }
 }
@@ -120,9 +127,13 @@ export default {
 .w-230{
   width: 230px;
 }
+.w-334{
+  width: 334px!important;
+}
 .gift-container{
   height: 458px;
-  // width: 334px;
+  width: 100%;
+  margin: 0 auto;
   position: relative;
   .gift-container__top{
     width: 303px;
@@ -141,12 +152,12 @@ export default {
   .gift-container__bottom{
     position: absolute;
     bottom: -9px;
-    left: -6px;
-    right: -6px;
+    left: 0;
+    right: 0;
     height: 89px;
     background-image: url('../assets/images/coupon/gift-btn-bgd.png');
     background-size: 100% 100%;
-    background-position: center center;
+    background-position: bottom;
     background-repeat: no-repeat;
     .gift-container__bottom--btn{
       width: 159px;

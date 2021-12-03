@@ -737,7 +737,8 @@ const cn = {
   newcomer_foupon: '新人券',
   coupon_received: '优惠券领取成功',
   coupon_get_it: '立即领取',
-  coupon_use_it: '立即使用'
+  coupon_use_it: '立即使用',
+  go_shopping: '去逛逛'
 }
 
 export default cn;
