@@ -79,13 +79,10 @@ export function getCartCouponList(params) {
 /**
  * 领取优惠券
  */
-export function receiveCoupon(data) {
+export function receiveCoupon(params) {
   return request({
     url: `/discount/coupon/getCoupon`,
-    method: 'post',
-    data: data,
-    headers: {
-      'Content-Type': 'application/json'
-    }
+    method: 'get',
+    params
   })
 }
