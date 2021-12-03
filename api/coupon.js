@@ -28,7 +28,7 @@ export function getRecordList(params) {
  */
 export function getCouponCenterList(params) {
   return request({
-    url: `/discount/match/coupon/my/coupon/center/page`,
+    url: `/discount/match/coupon/center/page`,
     method: 'get',
     params
   })

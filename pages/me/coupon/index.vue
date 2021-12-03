@@ -9,8 +9,8 @@
 
       <van-tabs v-model="tabActive" color="#42B7AE" class="customs-van-tabs" @click="onChangeTab" :ellipsis="false">
         <van-tab :title="item.tab + '(' + item.count + ')'" :name="item.tabName" v-for="(item, index) in lists" :key="index">
-          <PullRefresh :refreshing="refreshing" @refresh="onRefresh" class="custom-min-height-94">
-            <div class="pb-20 bg-grey mlr-10">
+          <PullRefresh :refreshing="refreshing" @refresh="onRefresh" class="custom-min-height-158">
+            <div class="bg-grey mlr-10">
               <!-- 空列表 -->
               <empty-status v-if="item.records.length === 0" :image="require('@/assets/images/empty/order.png')" :description="$t('empty')" />
               <van-list
@@ -59,14 +59,12 @@
       </div>
     </van-popup> -->
 
-    <!-- <dialog-gift-coupon></dialog-gift-coupon> -->
+    
   </div>
 </template>
 
 <script>
 import CouponSingle from '@/components/CouponSingle';
-// import CouponOrderSingle from '@/components/CouponOrderSingle';
-// import DialogGiftCoupon from '@/components/DialogGiftCoupon';
 import PullRefresh from '@/components/PullRefresh';
 import { Tab, Tabs, Sticky, Popup, List, SwipeCell } from 'vant';
 import { getCouponList, getCouponCount } from '@/api/coupon';
@@ -81,9 +79,7 @@ export default {
     vanList: List,
     vanSwipeCell: SwipeCell,
     CouponSingle,
-    PullRefresh,
-    // CouponOrderSingle,
-    // DialogGiftCoupon
+    PullRefresh
   },
   data() {
     return {
@@ -278,15 +274,7 @@ export default {
 .pb-64{
   padding-bottom: 64px;
 }
-.border-tlr-radius-12{
-  border-top-left-radius: 12px;
-  border-top-right-radius: 12px;
-}
-.coupon-popup{
-  // position: relative;
-  .coupon-popup__bottom{
-    height: calc(100% - 113px);
-    overflow-y: auto;
-  }
+.custom-min-height-158{
+  min-height: calc(100vh - 158px);
 }
 </style>

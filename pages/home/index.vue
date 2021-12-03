@@ -333,7 +333,7 @@ import EmptyStatus from '@/components/EmptyStatus';
 import PullRefresh from '@/components/PullRefresh';
 import 'swiper/css/swiper.css';
 import { Swiper, SwiperSlide } from 'vue-awesome-swiper';
-import dialogGiftCoupon from '@/components/DialogGiftCoupon';
+import DialogGiftCoupon from '@/components/DialogGiftCoupon';
 
 let searchClient;
 let currencyType;
@@ -354,7 +354,7 @@ export default {
     PullRefresh,
     swiper: Swiper,
     swiperSlide: SwiperSlide,
-    dialogGiftCoupon
+    DialogGiftCoupon
   },
   data() {
     return {

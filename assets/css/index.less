@@ -400,6 +400,10 @@ svg {
 .round-50 {
   border-radius: 50%;
 }
+.round-tlr-12{
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}
 
 /* 字号大小*/
 .fs-0 {
@@ -886,4 +890,13 @@ html, body, #__nuxt, #__layout{
   // .custom-min-height-128{
   //   min-height: calc(100vh - 128px - 30px - 44px);
   // }
+}
+
+// 优惠券弹窗样式
+.coupon-popup{
+  // position: relative;
+  .coupon-popup__bottom{
+    height: calc(100% - 113px);
+    overflow-y: auto;
+  }
 }

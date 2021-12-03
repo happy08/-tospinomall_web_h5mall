@@ -67,17 +67,19 @@ export default {
     },
     item: {
       type: Object,
-      default: {
-        discountType: null, // 活动类型
-        discountId: null, // 优惠券id
-        discountDescription: null, // 优惠券说明
-        discountName: null, //优惠券名称
-        discountValidDate: null, // 领券后有效时间(天)
-        discountValidEndDate: null, // 优惠券有效结束时间
-        discountValidStartDate: null, // 优惠券有效开始时间
-        isReceive: null, // 是否已领取:0 未领取;1 已领取
-        satisfyAmount: null, // 满多少面额(门槛)
-        subtractAmount: null // 减多少面额
+      default: () => {
+        return {
+          discountType: null, // 活动类型
+          discountId: null, // 优惠券id
+          discountDescription: null, // 优惠券说明
+          discountName: null, //优惠券名称
+          discountValidDate: null, // 领券后有效时间(天)
+          discountValidEndDate: null, // 优惠券有效结束时间
+          discountValidStartDate: null, // 优惠券有效开始时间
+          isReceive: null, // 是否已领取:0 未领取;1 已领取
+          satisfyAmount: null, // 满多少面额(门槛)
+          subtractAmount: null // 减多少面额
+        }
       }
     }
   },
@@ -135,6 +137,10 @@ export default {
         discountId: this.item.discountId
       }).then(res => {
         this.$toast.clear();
+        this.$toast({
+          message: this.$t('coupon_received'),
+          duration: 3000
+        });
         this.$emit('onReceive', 1);
       }).catch(error => {
         console.log(error);
@@ -209,5 +215,9 @@ export default {
 .coupon-status{
   position: absolute;
   right: 18px;
+}
+.ptb-2{
+  padding-top: 2px;
+  padding-bottom: 2px;
 }
 </style>
