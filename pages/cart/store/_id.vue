@@ -20,6 +20,7 @@
                 :height="'0.4rem'"
                 :isShow="false"
                 :alt="'TospinoMall search logo'"
+                :isClip="0"
               />
             </template>   
           </van-search>
@@ -42,6 +43,7 @@
                       :errorUrl="require('@/assets/images/store-bgd.png')"
                       :loadUrl="require('@/assets/images/store-bgd.png')"
                       :alt="detailData.storeName"
+                      :isClip="0"
                     />
                     <!-- 店铺名、关注数 -->
                     <dl class="ml-12 fm-helvetica white">
@@ -151,6 +153,7 @@
                   :height="'3.72rem'"
                   class="round-8 hidden"
                   :alt="slideItem.goodTitle"
+                  :isClip="0"
                 />
               </swiper-slide>
               <div class="swiper-pagination swiper-full-pagination" slot="pagination"></div>
@@ -165,6 +168,7 @@
                 :loadUrl="require('@/assets/images/product-bgd-375.png')"
                 :errorUrl="require('@/assets/images/product-bgd-375.png')"
                 :alt="moduleItem.moduleTitle"
+                :isClip="0"
               />
               <!-- 图片坐标 -->
               <div v-for="hotItem, hotIndex in moduleItem.componentDetails" :key="'hot-picture-' + hotIndex" class="hot-container__position" :ref="'hotPosition' + moduleIndex + hotIndex" :style="hotStyle(hotItem, 'hotPosition' + moduleIndex + hotIndex, 'hotContainer' + moduleIndex)" @click="onHotDetail(hotItem)"></div>
@@ -517,10 +521,10 @@ export default {
             _h = this.$refs[container][0].clientHeight;
             if (_w > 0 && _h > 0) {
               clearInterval(timer);
-              this.$refs[ele][0].style.width = (hotItem.areaWidth / 100 * _w / 50) + 'rem';
-              this.$refs[ele][0].style.left = (hotItem.positionX / 100 * _w / 50) + 'rem';
-              this.$refs[ele][0].style.height =  (hotItem.areaHeight / 100 * _h / 50) + 'rem';
-              this.$refs[ele][0].style.top = (hotItem.positionY / 100 * _h / 50) + 'rem';
+              this.$refs[ele][0].style.width = hotItem.areaWidth + '%';
+              this.$refs[ele][0].style.left = hotItem.positionX + '%';
+              this.$refs[ele][0].style.height = hotItem.areaHeight + '%';
+              this.$refs[ele][0].style.top = hotItem.positionY + '%';
             }
           }, 300);
         })
