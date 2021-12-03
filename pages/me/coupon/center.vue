@@ -7,7 +7,7 @@
         <nuxt-link slot="header-right" class="fs-16 green" :to="{ name: 'service-type', params: { type: 'coupon' }, query: { isH5: 1 } }">{{ $t('coupon_use_instruction') }}</nuxt-link>
       </BmHeaderNav>
 
-      <van-tabs v-model="centerTabActive" color="#42B7AE" class="customs-van-tabs"  @click="onChangeTab">
+      <van-tabs v-model="centerTabActive" color="#42B7AE" class="customs-van-tabs"  @click="onChangeTab" :ellipsis="false">
         <van-tab :title="item.tab + '(' + item.count + ')'" :name="item.tabName" v-for="(item, index) in centerLists" :key="index">
           <PullRefresh :refreshing="refreshing" @refresh="onRefresh" class="custom-min-height-94">
             <div class="pb-20 bg-grey mlr-10">
@@ -22,7 +22,7 @@
                 class="bg-grey"
                 :immediate-check="false"
               >
-                <coupon-single v-for="(item, itemIndex) in item.records" :key="itemIndex" :item="item" class="mt-12" @onReceive="onReceive"></coupon-single>
+                <coupon-single v-for="(item, itemIndex) in item.records" :key="itemIndex" :item="item" class="mt-12" @onReceive="item.isReceive = $event"></coupon-single>
               </van-list>
             </div>
           </PullRefresh>
@@ -204,9 +204,6 @@ export default {
         this.$toast.clear();
         console.log(error);
       })
-    },
-    onReceive() { // 优惠券领取成功
-      this.onRefresh();
     }
   }
 }

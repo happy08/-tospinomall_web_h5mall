@@ -733,7 +733,10 @@ const cn = {
   expired: '已过期',
   newcomer_gift_coupon: '新人礼券',
   added_to_my_coupon: '已放入我的-优惠券中',
-  newcomer_foupon: '新人券'
+  newcomer_foupon: '新人券',
+  coupon_received: '优惠券领取成功',
+  coupon_get_it: '立即领取',
+  coupon_use_it: '立即使用'
 }
 
 export default cn;

@@ -4,10 +4,10 @@
     <div :class="{'coupon-content-title': true, 'light-green': type == 0, 'bg-grey-e3': type != 0}">
       <div class="flex between vcenter">
         <span :class="{'ptb-2 plr-8 round-8 white fs-10': true, 'bg-dark-green': type == 0, 'bg-dark-grey': type != 0}">{{ discountType }}</span>
-        <BmIcon :name="type != 0 ? 'collapsed' : 'collapse'" :width="'0.28rem'" :height="'0.28rem'" @iconClick="isOpenCollapse = !isOpenCollapse"></BmIcon>
+        <BmIcon :name="type != 0 ? 'collapsed' : 'collapse'" :width="'0.28rem'" :height="'0.28rem'" @iconClick="isOpenCollapse = !isOpenCollapse" v-if="item.discountDescription"></BmIcon>
       </div>
       <div class="mt-10 flex">
-        <BmImage
+        <!-- <BmImage
           :url="require('@/assets/images/product-bgd-90.png')"
           :width="'0.96rem'" 
           :height="'0.96rem'"
@@ -15,28 +15,30 @@
           :isShow="false"
           :alt="'coupon'"
           class="round-4 flex-shrink"
-        />
+        /> -->
         <div class="ml-4 w-100">
           <div class="mt-2 flex between">
-            <!-- <p :class="{'dark-green': type == 0, 'light-grey': type != 0}"> -->
-            <p :class="{'dark-green': true}">
-              <span class="fw fs-14">Rp</span>
+            <p :class="{'dark-green': type == 0, 'light-grey': type != 0}">
+              <span class="fw fs-14">{{ this.$store.state.rate.currency }}</span>
               <span class="fw fm-din fs-22 lh-1">{{ item.subtractAmount }}</span>
             </p>
             <!-- 未领取 -->
-            <BmButton class="fs-12 fw white round-100 plr-12 h-24 bg-green-linear mr-8" @btnClick="onHandle" v-if="item.isReceive == 0" @click="onReceive">COLLECT</BmButton>
+            <BmButton class="fs-12 fw white round-100 plr-12 h-24 bg-green-linear mr-8" @btnClick="onHandle" v-if="item.isReceive == 0" @click="onReceive">{{ $t('coupon_get_it') }}</BmButton>
+            <!-- 已领取 -->
+            <BmButton class="fs-12 fw white round-100 plr-12 h-24 bg-green-linear mr-8" @btnClick="onHandle" v-if="item.isReceive == 1" @click="onReceive">{{ $t('coupon_use_it') }}</BmButton>
+            <!-- type已使用1/已过期2 -->
             <BmImage
               :url="require('@/assets/images/coupon/used.png')"
               :width="'1.08rem'" 
               :height="'0.72rem'"
               :isLazy="false"
               :isShow="false"
-              :alt="'商品优惠券'"
+              :alt="'coupon'"
               class="flex-shrink mr-18 coupon-status"
-              v-else
+              v-if="type == 1"
             />
           </div>
-          <p :class="{'fs-10 lh-12 mt-8': true, 'dark-green': type == 0, 'light-grey': type != 0}">Min spend Rp 20.000. Capped at Rp 10.000.</p>
+          <p :class="{'fs-10 lh-12 mt-6': true, 'dark-green': type == 0, 'light-grey': type != 0}">Min spend {{ this.$store.state.rate.currency }} 20.000. Capped at {{ this.$store.state.rate.currency }} 10.000.</p>
         </div>
       </div>
     </div>
@@ -60,7 +62,7 @@ import { receiveCoupon } from '@/api/coupon';
 
 export default {
   props: {
-    type: { // 是否过期
+    type: { // 优惠券状态 0未使用 1已使用 2 已过期 3用完
       default: 0
     },
     item: {
@@ -104,6 +106,26 @@ export default {
         })
         return false;
       }
+      // 已领取-立即使用
+      // 活动类型：1.平台新人满减券，2.平台新人立减券，3.客服满减券，4.客服立减券，5.店铺新人满减券，6.店铺新人立减券，7.店铺满减券，8.商品满减券，9.商品立减券
+      if (this.item.isReceive == 1) {
+        // 若是平台新人礼/平台客服券，点击跳转到商城首页
+        if (this.item.discountType == 1 || this.item.discountType == 2 || this.item.discountType == 3 || this.item.discountType == 4) {
+          this.$router.push({ name: 'home' });
+        }
+
+        // 若是店铺新人礼/店铺满减/立减券，点击跳转到对应店铺首页
+        if (this.item.discountType == 5 || this.item.discountType == 6 || this.item.discountType == 7) {
+          this.$router.push({ name: 'cart-store-id' });
+        }
+
+        // 若是商品满减券/立减券，点击跳转到对应商品详情页
+        if (this.item.discountType == 8 || this.item.discountType == 9) {
+          this.$router.push({ name: 'product-id' });
+        }
+        
+        return false;
+      }
       this.$toast.loading({
         forbidClick: true,
         loadingType: 'spinner',
@@ -113,7 +135,7 @@ export default {
         discountId: this.item.discountId
       }).then(res => {
         this.$toast.clear();
-        this.$emit('onReceive');
+        this.$emit('onReceive', 1);
       }).catch(error => {
         console.log(error);
         this.$toast.clear();

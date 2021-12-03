@@ -721,8 +721,8 @@ const en = {
   please_read_checked: 'Please read and tick the agreement',
   backOldWeb: "Old Version",
   payment_method: 'Payment Method',
-  my_coupon: 'My coupons',
-  coupon_use_instruction: 'Instructions',
+  my_coupon: 'My Coupons',
+  coupon_use_instruction: 'Instruction for use',
   store_coupons: 'Store Coupons',
   platform_coupons: 'Platform Coupons',
   product_coupons: 'Product Coupons',
@@ -733,7 +733,10 @@ const en = {
   expired: 'Expired',
   newcomer_gift_coupon: 'Newcomer Gift Coupon',
   added_to_my_coupon: 'Added to My-Coupon',
-  newcomer_foupon: 'Newcomer Coupon'
+  newcomer_foupon: 'Newcomer Coupon',
+  coupon_received: 'Coupons received successfully',
+  coupon_get_it: '立即领取',
+  coupon_use_it: '立即使用'
 }
 
 export default en;

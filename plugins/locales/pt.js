@@ -720,8 +720,8 @@
   no_support_video: 'Seu navegador não suporta a tag de vídeo',
   backOldWeb: "Versão Antiga",
   payment_method: 'Forma de pagamento',
-  my_coupon: 'Meu cupom de desconto',
-  coupon_use_instruction: 'Instruções',
+  my_coupon: 'Meu cupão',
+  coupon_use_instruction: 'Instrução de utilização',
   store_coupons: 'Cupão de loja',
   platform_coupons: 'Cupão de Plataforma',
   product_coupons: 'Cupão de produto',
@@ -732,7 +732,10 @@
   expired: 'Expirado',
   newcomer_gift_coupon: 'Cupão de oferta de recém-vindo',
   added_to_my_coupon: 'Adicionado ao Meu-Coupão',
-  newcomer_foupon: 'Cupão de recém-vindo'
+  newcomer_foupon: 'Cupão de recém-vindo',
+  coupon_received: 'Cupões recebidos com sucesso',
+  coupon_get_it: '立即领取',
+  coupon_use_it: '立即使用'
 }
 
 export default por;

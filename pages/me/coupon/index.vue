@@ -7,7 +7,7 @@
         <nuxt-link slot="header-right" class="fs-16 green" :to="{ name: 'service-type', params: { type: 'coupon' }, query: { isH5: 1 } }">{{ $t('coupon_use_instruction') }}</nuxt-link>
       </BmHeaderNav>
 
-      <van-tabs v-model="tabActive" color="#42B7AE" class="customs-van-tabs" @click="onChangeTab">
+      <van-tabs v-model="tabActive" color="#42B7AE" class="customs-van-tabs" @click="onChangeTab" :ellipsis="false">
         <van-tab :title="item.tab + '(' + item.count + ')'" :name="item.tabName" v-for="(item, index) in lists" :key="index">
           <PullRefresh :refreshing="refreshing" @refresh="onRefresh" class="custom-min-height-94">
             <div class="pb-20 bg-grey mlr-10">
@@ -23,7 +23,7 @@
                 :immediate-check="false"
               >
                 <van-swipe-cell  v-for="(item, itemIndex) in item.records" :key="itemIndex">
-                  <coupon-single :item="item" class="mt-12" @onReceive="onReceive"></coupon-single>
+                  <coupon-single :item="item" class="mt-12"></coupon-single>
                   <template #right>
                     <div class="flex hend h-100">
                       <BmButton class="round-0 bg-yellow h-100 w-70" @click="onDelete(item)">{{ $t('goods_remove_follow') }}</BmButton>
@@ -40,8 +40,8 @@
     <!-- <button @click="isCouponShow = !isCouponShow">isCouponShow</button> -->
 
     <div class="flex tc coupon-tabbar">
-      <nuxt-link :to="{ name: 'me-coupon-record' }" class="fw black flex-1 pb-14 pt-20 border-r">{{ $t('coupon_usage_history') }}</nuxt-link>
-      <nuxt-link :to="{ name: 'me-coupon-center' }" class="fw black flex-1 pb-14 pt-20">{{ $t('go_to_coupon_center') }}</nuxt-link>
+      <nuxt-link :to="{ name: 'me-coupon-record' }" class="fw black fs-14 flex-1 pb-14 pt-20 border-r">{{ $t('coupon_usage_history') }}</nuxt-link>
+      <nuxt-link :to="{ name: 'me-coupon-center' }" class="fw black fs-14 flex-1 pb-14 pt-20">{{ $t('go_to_coupon_center') }}</nuxt-link>
     </div>
 
     <!-- 确认订单弹窗 -->
@@ -239,9 +239,9 @@ export default {
     },
     getCouponCount() { // 获取优惠券数量
       getCouponCount().then(res => {
-        this.centerLists[0].count = res.data.allCount;
-        this.centerLists[2].count = res.data.platformCount;
-        this.centerLists[1].count = res.data.shopCount;
+        this.lists[0].count = res.data.allCount;
+        this.lists[2].count = res.data.platformCount;
+        this.lists[1].count = res.data.shopCount;
       })
     }
   }
@@ -255,7 +255,7 @@ export default {
   left: 0;
   right: 0;
   background-color: #fff;
-  z-index: 10;
+  z-index: 1000;
   min-height: 54px;
 }
 .flex-1{
