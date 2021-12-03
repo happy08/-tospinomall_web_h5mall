@@ -11,6 +11,7 @@
         :isShow="false"
         :alt="'TospinoMall logo'"
         class="home-page-nav-logo"
+        :isClip="0"
       />
       <!-- 搜索框 -->
       <div class="home-page-nav__search" ref="homeSearch" @click="$router.push({ name: 'search', query: { back: 'home' } })">
@@ -28,6 +29,7 @@
               :height="'0.4rem'"
               :isShow="false"
               :alt="'TospinoMall search logo'"
+              :isClip="0"
             />
           </template>
           <template #right-icon>
@@ -53,6 +55,7 @@
             :isLazy="false"
             :isShow="false"
             :alt="'TospinoMall message icon'"
+            :isClip="0"
           />
         </van-badge>
       </nuxt-link>
@@ -98,6 +101,7 @@
                 :height="'3.72rem'"
                 class="round-8 hidden"
                 :alt="slideItem.goodTitle"
+                :isClip="0"
               />
               <!-- 图片坐标 -->
               <div class="bg-white hot-container__position" :style="hotStyle(slideItem, 'swiperFullScreenRef' + moduleIndex + slideIndex, 'swiperFullScreenRef' + moduleIndex)" @click="onHotDetail(slideItem)"></div>
@@ -114,6 +118,7 @@
               :loadUrl="require('@/assets/images/product-bgd-375.png')"
               :errorUrl="require('@/assets/images/product-bgd-375.png')"
               :alt="'TospinoMall hot moduleItem'"
+              :isClip="0"
             />
             <!-- 图片坐标 -->
             <div v-for="hotItem, hotIndex in moduleItem.componentDetails" :key="'hot-picture-' + hotIndex" class="hot-container__position" :ref="'hotPosition' + moduleIndex + hotIndex" :style="hotStyle(hotItem, 'hotPosition' + moduleIndex + hotIndex, 'hotContainer' + moduleIndex)" @click="onHotDetail(hotItem)"></div>
