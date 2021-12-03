@@ -83,13 +83,13 @@ export default {
           data = await checkBuyerRecharge(this.$route.query.refNo); // 判断买家充值是否成功
         }
         if (data.data != 1) { 
-          // 订单支付：0->未支付 1->已经支付 2->支付失败
+          // 订单支付：0->未支付 1->已经支付
           // 钱包支付：0->失败 1->已经支付 2->待支付 3->已取消
             this.$toast.clear();
             if (this.countdown == 0) { // 倒计时结束
               this.goLeave(data);
             } else if (num == 1) { // 倒计时开始
-              this.countdown = 1 * 2 * 60 * 1000;
+              this.countdown = 1 * 0.1 * 60 * 1000;
               setTimeout(() => {
                 this.onPayCompleted(num);
               }, 2000);
@@ -117,6 +117,9 @@ export default {
         this.goLeave(data, true);
         this.$toast.clear();
       } catch (error) {
+        if (this.countdown == 0) { // 倒计时结束
+          this.goLeave();
+        }
         setTimeout(() => {
           this.onPayCompleted(num);
         }, 2000);
@@ -186,20 +189,20 @@ export default {
             name: 'cart-order-confirm',
             query: {
               orderId: this.$route.query.orderId,
-              isSuccess: data.data == 1 ? 0 : 2
+              isSuccess: data && data.data == 1 ? 0 : 2
             }
           })
         } else {
           this.$router.replace({
-            name: 'me-wallet'
+            name: 'me-wallet-bill'
           })
         }
         return false;
       }
       // 失败
       this.$dialog.alert({
-        title: this.$t('payment_failed'),
-        message: this.$t('order_payment_failed_tips'),
+        title: this.$route.query.orderId ? this.$t('payment_failed') : this.$t('wallet_timeout'),
+        message: this.$route.query.orderId ? this.$t('order_payment_failed_tips') : this.$t('wallet_no_pay'),
         confirmButtonText: this.$t('i_know')
       }).then(() => {
         if (this.$route.query.orderId) { // 订单
@@ -207,13 +210,13 @@ export default {
             name: 'cart-order-confirm',
             query: {
               orderId: this.$route.query.orderId,
-              isSuccess: data.data == 1 ? 0 : 2
+              isSuccess: data && data.data == 1 ? 0 : 2
             }
           })
           return false;
         }
         this.$router.replace({
-          name: 'me-wallet'
+          name: 'me-wallet-bill'
         })
       })
     }

@@ -726,7 +726,9 @@
   no_support_send: 'Este endereço não suporta entrega',
   pwd_letter_number: 'A senha deve conter letras e números',
   pay_wait_confirm: 'Confirmação do pagamento em curso, por favor seja paciente...',
-  pay_wait: 'Esperando o pagamento'
+  pay_wait: 'Esperando o pagamento',
+  wallet_no_pay: "verifique o estado da conta nos detalhes da recarga ou contacte o serviço ao cliente online",
+  wallet_timeout: 'Tempo limite de pagamento'
 }
 
 export default por;

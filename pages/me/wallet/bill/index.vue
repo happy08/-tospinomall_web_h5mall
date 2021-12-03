@@ -2,7 +2,7 @@
   <!-- 账单 -->
   <div class="bg-grey vh-100">
     <van-sticky :class="{'is-animate': isHeader, 'wallet-search-sticky': true}">
-      <BmHeaderNav :left="{ isShow: true }" :border="false" :title="$t('bill')" :class="{'is-show': isHeader}" />
+      <BmHeaderNav :left="{ isShow: true, url: '/me/wallet' }" :border="false" :title="$t('bill')" :class="{'is-show': isHeader}" />
 
       <!-- 搜索框 -->
       <!-- <div class="bg-white plr-12 ptb-10 border-b">

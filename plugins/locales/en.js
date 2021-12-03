@@ -727,7 +727,9 @@ const en = {
   no_support_send: 'This address does not support delivery',
   pwd_letter_number: 'The password must contain both letters and numbers',
   pay_wait_confirm: 'Payment confirmation in progress, please wait patiently...',
-  pay_wait: 'Pay wait'
+  pay_wait: 'Pay wait',
+  wallet_no_pay: "please check the bill status in the recharge details or contact online customer service",
+  wallet_timeout: 'Payment timeout'
 }
 
 export default en;

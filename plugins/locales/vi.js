@@ -726,7 +726,9 @@ const vi = {
   no_support_send: 'Địa chỉ này tạm thời không giao hàng được',
   pwd_letter_number: 'Mật khẩu phải bao gồm chữ cái và số',
   pay_wait_confirm: 'Đang xác nhận thanh toán, vui lòng kiên nhẫn chờ...',
-  pay_wait: 'Chờ thanh toán'
+  pay_wait: 'Chờ thanh toán',
+  wallet_no_pay: "vui lòng kiểm tra trạng thái hóa đơn trong chi tiết nạp tiền hoặc liên hệ chăm sóc khách hàng trực tuyến",
+  wallet_timeout: 'Thanh toán ngoài giờ'
 }
 
 export default vi;
