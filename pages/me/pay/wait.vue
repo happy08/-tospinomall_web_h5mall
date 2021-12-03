@@ -89,27 +89,17 @@ export default {
             if (this.countdown == 0) { // 倒计时结束
               this.goLeave(data);
             } else if (num == 1) { // 倒计时开始
-              this.countdown = 1 * 0.1 * 60 * 1000;
+              this.countdown = 1 * 2 * 60 * 1000;
               setTimeout(() => {
                 this.onPayCompleted(num);
               }, 2000);
             } else { // 倒计时过程中每次返回都再次请求接口
-              if (this.$route.query.orderId) { // 订单
-                if (data.data == 0) { // 待支付
-                  setTimeout(() => {
-                    this.onPayCompleted(num);
-                  }, 2000);
-                } else {
-                  this.goLeave(data); // 其他失败状态直接跳转结果页面
-                }
-              } else { // 钱包充值
-                if (data.data == 2) { // 待支付
-                  setTimeout(() => {
-                    this.onPayCompleted(num);
-                  }, 2000);
-                } else {
-                  this.goLeave(data); // 其他失败状态直接跳转结果页面
-                }
+              if ((this.$route.query.orderId && data.data == 0) || (!this.$route.query.orderId && data.data == 2)) { // 订单 || 钱包充值
+                setTimeout(() => {
+                  this.onPayCompleted(num);
+                }, 2000);
+              } else {
+                this.goLeave(data); // 其他失败状态直接跳转结果页面
               }
             }
           return false;
