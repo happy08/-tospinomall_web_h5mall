@@ -15,7 +15,7 @@
       <h3 class="fs-16 black mt-24" v-if="countdown == -1">{{ $t('awaiting_payment') }}</h3>
       <p class="mt-12 fs-14 black" v-if="countdown == -1">{{ $t('if_you_have_paid') }}</p>
       <p class="mt-30 grey" v-if="countdown != -1">{{ $t('pay_wait_confirm') }}</p>
-      <van-count-down class="mt-30 black fs-24" v-if="countdown != -1" :time="countdown" @finish="onPayCompleted(-2)" />
+      <van-count-down class="mt-30 black fs-24" v-if="countdown != -1" :time="countdown" @finish="onPayCompleted(-2)" @change="onCountChange"/>
     </div>
 
     <!-- 详情描述 -->
@@ -30,7 +30,7 @@
           6.Simply dial and try again if not success, or you can change payment method
       </p> -->
       <!-- 支付完成 -->
-      <BmButton class="fs-16 round-8 w-100 mt-24" @click="onPayCompleted(0)">{{ $t('payment_completed') }}</BmButton>
+      <BmButton class="fs-16 round-8 w-100 mt-24" @click="onPayCompleted(-1)">{{ $t('payment_completed') }}</BmButton>
       <!-- 修改支付方式 -->
       <BmButton :type="'info'" class="fs-16 round-8 w-100 mt-10 change-btn" @click="onChangePayMethod">{{ $t('change_payment_method') }}</BmButton>
       <!-- 取消支付 -->
@@ -61,17 +61,48 @@ export default {
       return this.$t('paid_receive_prompt_tip', { replace_tip: `<span class="fs-18 red lh-20">${this.$route.query.phone}</span>`, replace_tip2: `<span class="fs-18 red lh-20">${this.$store.state.rate.currency}${ this.$route.query.amount }</span>` });
     }
   },
+  beforeRouteUpdate(to, from, next) {
+      if (to.name == 'me-pay-wait' && to.query.paywait) {
+          this.onPayCompleted(0);
+      }
+      next();
+  },
   activated() {
-    this.countdown = -1;
+    // 倒计时存储到sessionStorage中
+    this.countdown = sessionStorage.getItem('payCountDown') || this.countdown;
+    console.log(this.countdown && this.countdown != 'NaN' && this.$route.query.paywait)
+    if (this.countdown && this.countdown != 'NaN' && this.$route.query.paywait) {
+        if (this.countdown == '00:00:00') { // 倒计时结束
+          this.onPayCompleted(-2);
+        } else if (this.countdown != -1) {
+          this.onPayCompleted(3, this.countdown);
+        }
+    } else {
+      this.countdown = -1;
+    }
   },
   methods: {
-    async onPayCompleted(num) { // 支付完成
+    async onPayCompleted(num, sessionTime) { // 支付完成
+      if (num == -1 && !this.$route.query.paywait) { // 点击完成
+          this.countdown = 1 * 2 * 60 * 1000;
+          this.$router.push({
+              name: 'me-pay-wait',
+              query: {
+                  ...this.$route.query,
+                  paywait: '1'
+              }
+          })
+          return false;
+      }
       if (num == 0) {
         this.$toast.loading({
           forbidClick: true,
           loadingType: 'spinner',
           duration: 0
         });
+      }
+      if (sessionTime) { // 倒计时等待中,赋值时间
+        this.countdown = sessionTime;
       }
       this.countdown = num == -2 ? 0 : this.countdown;
       num += 1;
@@ -87,6 +118,7 @@ export default {
           // 钱包支付：0->失败 1->已经支付 2->待支付 3->已取消
             this.$toast.clear();
             if (this.countdown == 0) { // 倒计时结束
+              sessionStorage.setItem('payCountDown', '00:00:00');
               this.goLeave(data);
             } else if (num == 1) { // 倒计时开始
               this.countdown = 1 * 2 * 60 * 1000;
@@ -209,6 +241,12 @@ export default {
           name: 'me-wallet-bill'
         })
       })
+    },
+    onCountChange(timeData) { // 倒计时变化
+      console.log(timeData)
+      let minutes = timeData.minutes > 0 ? timeData.minutes * 60 : 0;
+      console.log((minutes + timeData.seconds) * 1000)
+      sessionStorage.setItem('payCountDown', (minutes + timeData.seconds) * 1000);
     }
   },
 }
