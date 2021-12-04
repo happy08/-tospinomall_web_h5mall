@@ -39,7 +39,7 @@
                 <span class="fs-24">{{ $store.state.rate.currency }}</span>
                 <span class="fs-28">{{ item.subtractAmount }}</span>
               </div>
-              <p class="fs-14 white mt-10 tc hidden-1 plr-10">Your order of GH ₵ 138.00 or more</p>
+              <p class="fs-14 white mt-10 tc hidden-1 plr-10">Your order of GH {{ $store.state.rate.currency }}{{ item.satisfyAmount }} or more</p>
             </div>
           </div>
         </div>

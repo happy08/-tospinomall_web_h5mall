@@ -414,7 +414,8 @@ export default {
       tabTotal: 0,
       homeMasonryContainer: 'homeMasonryContainer',
       filterCategoryIds: [],
-      platformCoupons: []
+      platformCoupons: [],
+      isFromLogin: false
     }
   },
   async fetch() {
@@ -430,15 +431,17 @@ export default {
       this.moduleData = homeData.data.components; // 需要展示的模块数据
 
       // 已登录自动领取平台新人红包
-      // if (this.$store.state.user.authToken) {
-      //   await this.$api.autoGetPlatformCoupon();
-      // }
+      let isAutoReceive = 0; // 0没
+      if (this.$store.state.user.authToken) {
+        await this.$api.autoGetPlatformCoupon();
+        isAutoReceive = 1;
+      }
 
-      // 获取新人优惠券
-      const platformCoupons = await this.$api.getPlatformCouponList();
-      console.log('----')
-      console.log(platformCoupons)
-      this.platformCoupons = platformCoupons.data;
+      if (isAutoReceive == 0) {
+        // 获取新人优惠券
+        const platformCoupons = await this.$api.getPlatformCouponList();
+        this.platformCoupons = platformCoupons.data;
+      }
 
       // 分类列表
       this.tabCategoryActive = '0';
@@ -525,7 +528,17 @@ export default {
       ]
     }
   },
+  beforeRouteEnter (to, from, next) {
+    next(vm => {
+      if (from.name == 'login' || from.name == 'login-old') { // 从登录页返回要更新数据
+        vm.isFromLogin = true;
+      }
+    });
+  },
   activated() {
+    if (this.isFromLogin) {
+      this.$fetch();
+    }
     // if (this.searchList.length == 0) {
     //   this.$fetch();
     // } else {

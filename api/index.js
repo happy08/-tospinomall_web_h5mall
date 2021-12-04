@@ -286,7 +286,7 @@ export default ({ app }, inject) => {
       })
     },
     autoGetPlatformCoupon() { // 自动领取平台新人券
-      return qpp.$axios({
+      return app.$axios({
         url: `${url}/discount/coupon/autoGetPlatformCoupon`,
         method: 'get'
       })
