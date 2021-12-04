@@ -46,7 +46,7 @@
       <div :class="{'sawtooth': true, 'sawtooth-active': type == 0}"></div>
       <div class="bg-round-l"></div>
       <div class="bg-round-r"></div>
-      <p class="light-grey fs-10 lh-12 pt-2 pl-20 pb-4 bg-white">XXXX XXXX Validity:{{ item.discountValidStartDate }} - {{ item.discountValidEndDate }}</p>
+      <p class="light-grey fs-10 lh-12 pt-2 pl-20 pb-4 bg-white">有限期:{{ item.discountValidStartDate }} - {{ item.discountValidEndDate }}</p>
     </div>
 
     <div class="pl-16 pr-10 bg-white pt-2" v-show="isOpenCollapse">
@@ -118,12 +118,12 @@ export default {
 
         // 若是店铺新人礼/店铺满减/立减券，点击跳转到对应店铺首页
         if (this.item.discountType == 5 || this.item.discountType == 6 || this.item.discountType == 7) {
-          this.$router.push({ name: 'cart-store-id' });
+          this.$router.push({ name: 'cart-store-id', params: { id: this.item.storeId } });
         }
 
         // 若是商品满减券/立减券，点击跳转到对应商品详情页
         if (this.item.discountType == 8 || this.item.discountType == 9) {
-          this.$router.push({ name: 'product-id' });
+          this.$router.push({ name: 'product-id', params: { id: this.item.goodId } });
         }
         
         return false;

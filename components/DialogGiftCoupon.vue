@@ -27,9 +27,9 @@
       <div class="gift-container">
         <div class="gift-container__top">
           <h1 class="dark-red flex center pt-14">
-            <span class="title-line"></span>
+            <!-- <span class="title-line"></span> -->
             <span class="fs-24 mlr-6 lh-12">{{ $t('newcomer_gift_coupon') }}</span>
-            <span class="title-line"></span>
+            <!-- <span class="title-line"></span> -->
           </h1>
           <p class="dark-red fs-12 mt-4 tc pb-4 w-230 border-b-E2D7C6 m-auto">{{ $t('added_to_my_coupon') }}</p>
 

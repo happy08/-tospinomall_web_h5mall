@@ -55,17 +55,6 @@ export function getCouponCenterCount() {
 }
 
 /**
- * 商品详情领券列表
- */
-export function getGoodsCouponList(params) {
-  return request({
-    url: `/discount/match/coupon/goods/details/center/page`,
-    method: 'get',
-    params
-  })
-}
-
-/**
  * 购物车领券列表
  */
 export function getCartCouponList(params) {

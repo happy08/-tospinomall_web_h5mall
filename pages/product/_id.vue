@@ -84,7 +84,11 @@
         </div>
 
         <!-- 商品介绍 -->
-        <div class="mt-12 bg-white plr-20 ptb-14">
+        <div class="pt-20 mt-12 bg-white pl-20 flex between vcenter" v-if="couponList.length > 0">
+          <div class="border-red pl-4 pr-8 ptb-2 red fs-12 round-2">{{ couponList[0].satisfyAmount }}-{{ couponList[0].subtractAmount }}</div>
+          <div class="bg-green-3eb pl-18 pr-6 ptb-2 fs-14 white round-tbl-12" @click="isCouponShow = true">领券 ></div>
+        </div>
+        <div class="bg-white plr-20 ptb-14">
           <div>
             <span class="fs-16 red fw">
               <span class="fm-menlo">{{ $store.state.rate.currency }}</span><span class="fm-din">{{ goodSpuVo.minPrice }}</span>
@@ -579,8 +583,9 @@
 
     <!-- 商品优惠券 -->
     <van-popup v-model="isCouponShow" style="height: 80%" position="bottom" class="round-tlr-12 coupon-popup">
+      <h3 class="black fs-18 ptb-20 tc">{{ '优惠券' }}</h3>
       <div>
-        <coupon-order-single class="mt-10 mlr-10" v-for="item in 10" :key="item"></coupon-order-single>
+        <coupon-order-single class="mt-10 mlr-10" v-for="(item, index) in couponList" :key="'good-coupon-' + index" :item="item" @onSelect="isCouponShow = $event"></coupon-order-single>
       </div>
     </van-popup>
   </div>
@@ -601,7 +606,7 @@ import shareInfo from '@/assets/images/icon/share-info.png';
 import shareLink from '@/assets/images/icon/share-link.png';
 import EmptyStatus from '@/components/EmptyStatus';
 import BmPreview from '@/components/_global/BmPreview';
-import { getGoodsCouponList } from '@/api/coupon';
+import { getCouponCenterList } from '@/api/coupon';
 import CouponOrderSingle from '@/components/CouponOrderSingle';
 
 export default {
@@ -714,9 +719,9 @@ export default {
       haveAddress: {},
       couponList: [],
       couponPageNum: 1,
-      couponPageSize: 50,
+      couponPageSize: 10,
       couponTotal: 0,
-      isCouponShow: true
+      isCouponShow: false
     }
   },
   async fetch() {
@@ -926,8 +931,6 @@ export default {
     this.haveAddress = {};
     this.completeAddress = '';
     this.assgnStepList = [];
-    // 获取优惠券列表
-    this.getGoodsCouponList();
 
     // 已登录
     if (this.$store.state.user.authToken) {
@@ -958,6 +961,8 @@ export default {
         urlContent: `${location.href}?isShare=1${this.$t('share_product_link')}, ${this.$t('share_product_title')}: ${this.goodSpuVo.goodTitle}, ${this.$t('share_product_min_price')}: ${this.goodSpuVo.minPrice}`
       }
     }
+    // 获取优惠券列表
+    this.getGoodsCouponList();
     // 获取分享内容
     getShareDetail(this.goodId).then(res => {
       if (!res.data) return false;
@@ -1173,9 +1178,11 @@ export default {
       this.previewIndex = index;
     },
     getGoodsCouponList() { // 获取优惠券列表
-      getGoodsCouponList({
+      getCouponCenterList({
         pageNum: this.couponPageNum,
-        pageSize: this.couponPageSize
+        pageSize: this.couponPageSize,
+        listType: 'cart',
+        goodId: this.goodId
       }).then(res => {
         this.couponList = res.data.records;
         this.couponTotal = parseFloat(res.data.total);
@@ -1291,6 +1298,19 @@ export default {
     transform: translate(-50%, -50%);
     z-index: 1;
   }
+}
+.bg-green-3eb{
+  background-color: #3EB5AE;
+}
+.round-tbl-12{
+  border-top-left-radius: 100px;
+  border-bottom-left-radius: 100px;
+}
+.pl-18{
+  padding-left: 18px;
+}
+.pr-6{
+  padding-right: 6px;
 }
 </style>
 
