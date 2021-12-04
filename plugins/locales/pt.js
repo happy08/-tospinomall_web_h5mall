@@ -737,7 +737,8 @@
   coupon_received: 'Cupões recebidos com sucesso',
   coupon_get_it: '立即领取',
   coupon_use_it: '立即使用',
-  go_shopping: 'Ir às compras'
+  go_shopping: 'Ir às compras',
+  coupon_validity_day: 'Expira {replace_tip} dias após a recepção do voucher'
 }
 
 export default por;

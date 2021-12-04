@@ -738,7 +738,8 @@ const en = {
   coupon_received: 'Coupons received successfully',
   coupon_get_it: '立即领取',
   coupon_use_it: '立即使用',
-  go_shopping: 'Go shopping'
+  go_shopping: 'Go shopping',
+  coupon_validity_day: 'Expires {replace_tip} days after receipt of coupon'
 }
 
 export default en;

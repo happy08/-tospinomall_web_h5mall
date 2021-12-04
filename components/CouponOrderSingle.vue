@@ -12,12 +12,26 @@
       <div class="round-8 coupon-orde-single__right">
         <!-- 规则的展开与隐藏 -->
         <BmIcon :name="type != 0 ? 'collapsed' : 'collapse'" :width="'0.28rem'" :height="'0.28rem'" @iconClick="isOpenCollapse = !isOpenCollapse" class="coupon-collapse" v-if="item.discountDescription"></BmIcon>
-        <h2 class="fs-14">Free Shipping</h2>
-        <p class="fs-12 mt-2">Tospino specific product</p>
+        <h2 class="fs-14 hidden-1">{{ discountType }}</h2>
+        <p class="fs-12 mt-2 hidden-1">{{ item.discountName }}</p>
         <div class="flex between mt-18">
-          <span class="fs-10 mt-4">5-5 Nov.2021</span>
-          <!-- 未领取 -->
-          <BmButton class="fs-12 fw white round-100 plr-12 h-24 bg-green-linear" v-if="item.isReceive == 0" @click="onReceive">COLLECT</BmButton>
+          <!-- 开始时间-结束时间 -->
+          <span class="fs-10 mt-4" v-if="item.validTimeType == 1">{{ item.discountValidStartDate }}-{{ item.discountValidEndDate }}</span>
+          <!-- 领取后x天有效 -->
+          <span class="fs-10 mt-4" v-if="item.validTimeType == 0">{{ $t('coupon_validity_day', { replace_tip: item.discountValidDate }) }}</span>
+          <!-- 未领取,可领取 -->
+          <BmButton class="fs-12 fw white round-100 plr-12 h-24 bg-green-linear" v-if="item.isReceive == 0 || (item.isReceive == 3 && item.isH5CouponType)" @click="onReceive">COLLECT</BmButton>
+          <!-- 已领取 -->
+          <BmImage
+            :url="require('@/assets/images/coupon/platform-collected.png')"
+            :width="'1.5rem'" 
+            :height="'0.9rem'"
+            :isLazy="false"
+            :isShow="false"
+            :alt="'coupon'"
+            class="flex-shrink mr-18 coupon-status"
+            v-if="item.isReceive == 1"
+          />
         </div>
       </div>
     </div>
@@ -28,7 +42,7 @@
 </template>
 
 <script>
-import { receiveCoupon } from '@/api/coupon';
+import { receiveCoupon, getLinkCoupon } from '@/api/coupon';
 
 export default {
   props: {
@@ -47,9 +61,11 @@ export default {
         discountValidDate: null, // 领券后有效时间(天)
         discountValidEndDate: null, // 优惠券有效结束时间
         discountValidStartDate: null, // 优惠券有效开始时间
-        isReceive: null, // 是否已领取:0 未领取;1 已领取
+        isReceive: null, // 是否已领取:0 未领取;1 已领取(如果是h5链接客服券：1->已领取 2->不可领取 3->可领取)
         satisfyAmount: null, // 满多少面额(门槛)
-        subtractAmount: null // 减多少面额
+        subtractAmount: null, // 减多少面额
+        validTimeType: null, // 有效时间类型 0->领取后x天有效 1->固定的有效期
+        isH5CouponType: null, // h5链接客服券
       }
     }
   },
@@ -65,7 +81,7 @@ export default {
     }
   },
   methods: {
-    onReceive() { // 立即领取
+    async onReceive() { // 立即领取
       if (!this.$store.state.user.authToken) {
         this.$router.push({
           name: 'login'
@@ -73,7 +89,8 @@ export default {
         return false;
       }
 
-      if (this.item.isReceive == 1) { // 已领取
+       // 已领取 || h5链接客服券且不可领取
+      if (this.item.isReceive == 1 || (this.item.isReceive == 2 && this.item.isH5CouponType)) {
         return false;
       }
       this.$toast.loading({
@@ -81,21 +98,35 @@ export default {
         loadingType: 'spinner',
         duration: 0
       });
-      receiveCoupon({
-        discountId: this.item.discountId
-      }).then(res => {
+      try {
+        let receiveData = this.isH5CouponType ? await getLinkCoupon({ linkCouponId: this.$route.query.linkCouponId }) : await receiveCoupon({ discountId: this.item.discountId });
+
         this.$toast.clear();
         this.$toast({
           message: this.$t('coupon_received'),
           duration: 3000
         });
         this.$emit('onSelect', false); // 已领取弹窗隐藏
-        this.$emit('onReceive', 1);
-      }).catch(error => {
-        console.log(error);
+        this.$emit('onReceive', 1); // 已领取
+      } catch (error) {
         this.$emit('onSelect', false); // 失败弹窗隐藏
         this.$toast.clear();
-      })
+      }
+      // receiveCoupon({
+      //   discountId: this.item.discountId
+      // }).then(res => {
+      //   this.$toast.clear();
+      //   this.$toast({
+      //     message: this.$t('coupon_received'),
+      //     duration: 3000
+      //   });
+      //   this.$emit('onSelect', false); // 已领取弹窗隐藏
+      //   this.$emit('onReceive', 1);
+      // }).catch(error => {
+      //   console.log(error);
+      //   this.$emit('onSelect', false); // 失败弹窗隐藏
+      //   this.$toast.clear();
+      // })
     }
   }
 }
@@ -143,5 +174,10 @@ export default {
   position: absolute;
   right: 18px;
   top: 47px;
+}
+.coupon-status{
+  position: absolute;
+  right: 12px;
+  bottom: 16px;
 }
 </style>

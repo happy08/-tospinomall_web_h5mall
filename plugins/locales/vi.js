@@ -737,7 +737,8 @@ const vi = {
   coupon_received: 'Phiếu thưởng đã nhận thành công',
   coupon_get_it: '立即领取',
   coupon_use_it: '立即使用',
-  go_shopping: 'Dạo'
+  go_shopping: 'Dạo',
+  coupon_validity_day: 'Phiếu giảm giá sau {replace_tip} ngày sẽ hết hiệu lực'
 }
 
 export default vi;
