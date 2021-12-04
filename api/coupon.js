@@ -75,3 +75,25 @@ export function receiveCoupon(params) {
     params
   })
 }
+
+/**
+ * 展示客服优惠券-链接
+ */
+export function getCouponDetail(params) {
+  return request({
+    url: `/discount/coupon/queryLinkDetail`,
+    method: 'get',
+    params
+  })
+}
+
+/**
+ * 领取客服优惠券-链接
+ */
+export function getLinkCoupon(params) {
+  return request({
+    url: `/discount/coupon/getLinkCoupon`,
+    method: 'get',
+    params
+  })
+}
