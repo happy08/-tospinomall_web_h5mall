@@ -97,3 +97,14 @@ export function getLinkCoupon(params) {
     params
   })
 }
+
+/**
+ * 删除优惠券
+ */
+export function deleteCoupon(params) {
+  return request({
+    url: `/discount/coupon/deleteCoupon`,
+    method: 'get',
+    params
+  })
+}

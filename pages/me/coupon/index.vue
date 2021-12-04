@@ -68,7 +68,7 @@
 import CouponSingle from '@/components/CouponSingle';
 import PullRefresh from '@/components/PullRefresh';
 import { Tab, Tabs, Sticky, Popup, List, SwipeCell } from 'vant';
-import { getCouponList, getCouponCount } from '@/api/coupon';
+import { getCouponList, getCouponCount, deleteCoupon } from '@/api/coupon';
 
 export default {
   middleware: 'authenticated',
@@ -239,6 +239,21 @@ export default {
         this.lists[0].count = res.data.allCount;
         this.lists[2].count = res.data.platformCount;
         this.lists[1].count = res.data.shopCount;
+      })
+    },
+    onDelete(item) { //删除优惠券
+      this.$toast.loading({
+        forbidClick: true,
+        loadingType: 'spinner',
+        duration: 0
+      });
+      deleteCoupon({ couponsId: item.couponId }).then(res => {
+        item.pageNum = 1;
+        this.$toast.clear();
+        this.getCouponList(item);
+      }).catch(error => {
+        console.log(error);
+        this.$toast.clear();
       })
     }
   }

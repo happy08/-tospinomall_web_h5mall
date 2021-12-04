@@ -92,17 +92,7 @@ export default {
   },
   data() {
     return {
-      isOpenCollapse: false,
-      // discountType: null, // 活动类型
-      // discountId: null, // 优惠券id
-      // discountDescription: null, // 优惠券说明
-      // discountName: this.pageType ? this.item.couponName : this.item.discountName , //优惠券名称
-      // discountValidDate: null, // 领券后有效时间(天)
-      // discountValidEndDate: this.pageType ? this.item.validEndTime : this.item.discountValidEndDate, // 优惠券有效结束时间
-      // discountValidStartDate: null, // 优惠券有效开始时间
-      // isReceive: null, // 是否已领取:0 未领取;1 已领取
-      // satisfyAmount: null, // 满多少面额(门槛)
-      // subtractAmount: null // 减多少面额
+      isOpenCollapse: false
     }
   },
   computed: {

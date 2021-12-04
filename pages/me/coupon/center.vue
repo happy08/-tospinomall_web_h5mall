@@ -136,6 +136,7 @@ export default {
       }
       this.loading = true;
       getCouponCenterList(params).then(res => {
+        if (!res.data) return false;
         couponList[0].records = couponList[0].pageNum == 1 ? res.data.records : couponList[0].records.concat(res.data.records);;
         couponList[0].total = parseFloat(res.data.total);
         this.finished = couponList[0].total == couponList[0].records.length ? true : false;
@@ -196,13 +197,14 @@ export default {
     },
     getCouponCenterCount() { // 优惠券数量统计
       getCouponCenterCount().then(res => {
+        if (res.code != 0 || !res.data) return false;
         this.centerLists[0].count = res.data.allCount;
         this.centerLists[2].count = res.data.platformCount;
         this.centerLists[1].count = res.data.shopCount;
         this.$toast.clear();
       }).catch(error => {
-        this.$toast.clear();
         console.log(error);
+        this.$toast.clear();
       })
     }
   }
