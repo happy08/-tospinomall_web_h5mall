@@ -1,16 +1,16 @@
 <template>
   <!-- 我的-我的优惠券 -->
-  <div class="bg-grey v-percent-100 pb-64">
-    <van-sticky>
-      <BmHeaderNav :left="{ isShow: true }" :title="$t('my_coupon')">
+  <div class="bg-grey v-percent-100 pb-64 pt-46">
+    <!-- <van-sticky> -->
+      <BmHeaderNav :left="{ isShow: true }" :title="$t('my_coupon')" fixed>
         <!-- 使用说明 -->
         <nuxt-link slot="header-right" class="fs-16 green" :to="{ name: 'service-type', params: { type: 'coupon' }, query: { isH5: 1 } }">{{ $t('coupon_use_instruction') }}</nuxt-link>
       </BmHeaderNav>
 
-      <van-tabs v-model="tabActive" color="#42B7AE" class="customs-van-tabs" @click="onChangeTab" :ellipsis="false">
+      <van-tabs sticky :offset-top="'0.92rem'" v-model="tabActive" color="#42B7AE" class="customs-van-tabs" @click="onChangeTab" :ellipsis="false">
         <van-tab :title="item.tab + '(' + item.count + ')'" :name="item.tabName" v-for="(item, index) in lists" :key="index">
           <PullRefresh :refreshing="refreshing" @refresh="onRefresh" class="custom-min-height-158">
-            <div class="bg-grey mlr-10">
+            <div class="bg-grey mlr-10 v-100">
               <!-- 空列表 -->
               <empty-status v-if="item.records.length === 0" :image="require('@/assets/images/empty/order.png')" :description="$t('empty')" />
               <van-list
@@ -20,10 +20,11 @@
                 finished-text=""
                 @load="onLoad"
                 class="bg-grey"
+                style="overflow-y: auto;"
                 :immediate-check="false"
               >
                 <van-swipe-cell  v-for="(item, itemIndex) in item.records" :key="itemIndex">
-                  <coupon-single :item="item" class="mt-12"></coupon-single>
+                  <coupon-single :item="item" class="mt-12" :pageType="1"></coupon-single>
                   <template #right>
                     <div class="flex hend h-100">
                       <BmButton class="round-0 bg-yellow h-100 w-70" @click="onDelete(item)">{{ $t('goods_remove_follow') }}</BmButton>
@@ -35,7 +36,7 @@
           </PullRefresh>
         </van-tab>
       </van-tabs>
-    </van-sticky>
+    <!-- </van-sticky> -->
 
     <!-- <button @click="isCouponShow = !isCouponShow">isCouponShow</button> -->
 
@@ -99,7 +100,7 @@ export default {
         {
           tab: this.$t('store_coupons'),
           count: 0,
-          tabName: '1',
+          tabName: '2',
           records: [],
           total: 0,
           pageNum: 1
@@ -107,7 +108,7 @@ export default {
         {
           tab: this.$t('platform_coupons'),
           count: 0,
-          tabName: '0',
+          tabName: '1',
           records: [],
           total: 0,
           pageNum: 1
@@ -205,7 +206,7 @@ export default {
       }
     },
     onLoad() { // 滚动加载
-      let currentList = this.centerLists.filter(item => {
+      let currentList = this.lists.filter(item => {
         return item.tabName == this.tabActive;
       })
 
@@ -223,8 +224,8 @@ export default {
     },
     onRefresh() { // 刷新
       this.finished = false;
-      let currentList = this.centerLists.filter(item => {
-        return item.tabName == this.centerTabActive;
+      let currentList = this.lists.filter(item => {
+        return item.tabName == this.tabActive;
       })
 
       if (currentList.length == 0) {

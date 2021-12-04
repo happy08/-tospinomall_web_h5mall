@@ -4,7 +4,7 @@
     <div :class="{'coupon-content-title': true, 'light-green': type == 0, 'bg-grey-e3': type != 0}">
       <div class="flex between vcenter">
         <span :class="{'ptb-2 plr-8 round-8 white fs-10': true, 'bg-dark-green': type == 0, 'bg-dark-grey': type != 0}">{{ discountType }}</span>
-        <BmIcon :name="type != 0 ? 'collapsed' : 'collapse'" :width="'0.28rem'" :height="'0.28rem'" @iconClick="isOpenCollapse = !isOpenCollapse" v-if="item.discountDescription"></BmIcon>
+        <BmIcon :name="type != 0 ? 'collapsed' : 'collapse'" :width="'0.28rem'" :height="'0.28rem'" @iconClick="isOpenCollapse = !isOpenCollapse" v-if="discountDescription"></BmIcon>
       </div>
       <div class="mt-10 flex">
         <!-- <BmImage
@@ -38,7 +38,7 @@
               v-if="type == 1"
             />
           </div>
-          <p :class="{'fs-10 lh-12 mt-6': true, 'dark-green': type == 0, 'light-grey': type != 0}">Min spend {{ this.$store.state.rate.currency }} 20.000. Capped at {{ this.$store.state.rate.currency }} 10.000.</p>
+          <p :class="{'fs-10 lh-12 mt-6': true, 'dark-green': type == 0, 'light-grey': type != 0}">Min spend {{ this.$store.state.rate.currency }}{{ item.satisfyAmount }} Capped at {{ this.$store.state.rate.currency }}{{ item.subtractAmount }}</p>
         </div>
       </div>
     </div>
@@ -46,12 +46,12 @@
       <div :class="{'sawtooth': true, 'sawtooth-active': type == 0}"></div>
       <div class="bg-round-l"></div>
       <div class="bg-round-r"></div>
-      <p class="light-grey fs-10 lh-12 pt-2 pl-20 pb-4 bg-white">有限期:{{ item.discountValidStartDate }} - {{ item.discountValidEndDate }}</p>
+      <p class="light-grey fs-10 lh-12 pt-2 pl-20 pb-4 bg-white">有限期:{{ discountValidStartDate }} - {{ discountValidEndDate }}</p>
     </div>
 
     <div class="pl-16 pr-10 bg-white pt-2" v-show="isOpenCollapse">
       <div class="w-230 border-b"></div>
-      <div class="fs-10 light-grey mt-8 pb-12" v-html="item.discountDescription"></div>
+      <div class="fs-10 light-grey mt-8 pb-12" v-html="discountDescription"></div>
     </div>
   </div>
 </template>
@@ -62,6 +62,10 @@ import { receiveCoupon } from '@/api/coupon';
 
 export default {
   props: {
+    pageType: {
+      type: Number,
+      default: 0 // 1我的优惠券 2领券中心
+    },
     type: { // 优惠券状态 0未使用 1已使用 2 已过期 3用完
       default: 0
     },
@@ -79,7 +83,7 @@ export default {
           isReceive: null, // 是否已领取:0 未领取;1 已领取
           satisfyAmount: null, // 满多少面额(门槛)
           subtractAmount: null // 减多少面额
-        }
+        };
       }
     }
   },
@@ -88,13 +92,38 @@ export default {
   },
   data() {
     return {
-      isOpenCollapse: false
+      isOpenCollapse: false,
+      // discountType: null, // 活动类型
+      // discountId: null, // 优惠券id
+      // discountDescription: null, // 优惠券说明
+      // discountName: this.pageType ? this.item.couponName : this.item.discountName , //优惠券名称
+      // discountValidDate: null, // 领券后有效时间(天)
+      // discountValidEndDate: this.pageType ? this.item.validEndTime : this.item.discountValidEndDate, // 优惠券有效结束时间
+      // discountValidStartDate: null, // 优惠券有效开始时间
+      // isReceive: null, // 是否已领取:0 未领取;1 已领取
+      // satisfyAmount: null, // 满多少面额(门槛)
+      // subtractAmount: null // 减多少面额
     }
   },
   computed: {
     // 活动类型：1.平台新人满减券，2.平台新人立减券，3.客服满减券，4.客服立减券，5.店铺新人满减券，6.店铺新人立减券，7.店铺满减券，8.商品满减券，9.商品立减券
     discountType() {
       return this.item.discountType == 1 || this.item.discountType == 2 ? this.$t('platform_coupons') : this.$t('store_coupons');
+    },
+    discountValidEndDate() { // 优惠券有效结束时间
+      return this.pageType ? this.item.validEndTime : this.item.discountValidEndDate;
+    },
+    discountValidStartDate() { // 优惠券有效开始时间
+      return this.pageType ? this.item.validStartTime : this.item.discountValidEndDate;
+    },
+    discountName() { // 优惠券名称
+      return this.pageType ? this.item.couponName : this.item.discountName;
+    },
+    discountDescription() { // 优惠券说明
+      return this.pageType ? this.couponDescription : this.discountDescription;
+    },
+    discountId() { // 优惠券id
+      return this.pageType ? this.couponId : this.discountId;
     }
   },
   methods: {
