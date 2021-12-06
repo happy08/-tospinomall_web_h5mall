@@ -1,6 +1,6 @@
 <template>
   <!-- 优惠券 -->
-  <div class="round-8 bg-white">
+  <div class="round-8">
     <div class="dark-green flex coupon-orde-single">
       <div class="round-8 coupon-orde-single__left">
         <div class="fw">
