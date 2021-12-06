@@ -36,7 +36,7 @@
                 :alt="'choose icon'"
               />
               <!-- 店铺 -->
-              <OrderStoreSingle class="pl-16 pr-30" :logo="item.storeLogo" :name="item.storeName" @goStoreDetail="goStoreDetail(item)" />
+              <OrderStoreSingle class="pl-16 pr-30" :logo="item.storeLogo" :name="item.storeName" :isCoupon="true" @goStoreDetail="goStoreDetail(item)" />
             </div>
             <van-swipe-cell class="pl-12" v-for="singleItem in item.products" :key="'single-' + singleItem.id">
               <div class="flex vcenter">

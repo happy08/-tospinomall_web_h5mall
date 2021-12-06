@@ -1,13 +1,10 @@
 <template>
   <!-- 我的-优惠券领券中心 -->
-  <div class="bg-grey v-percent-100 pb-64">
-    <van-sticky>
-      <BmHeaderNav :left="{ isShow: true }" :title="$t('coupon_center')">
-        <!-- 使用说明 -->
-        <nuxt-link slot="header-right" class="fs-16 green" :to="{ name: 'service-type', params: { type: 'coupon' }, query: { isH5: 1 } }">{{ $t('coupon_use_instruction') }}</nuxt-link>
-      </BmHeaderNav>
+  <div class="bg-grey v-percent-100 pb-64 pt-46">
+    <!-- <van-sticky> -->
+      <BmHeaderNav :left="{ isShow: true }" :title="$t('coupon_center')" fixed></BmHeaderNav>
 
-      <van-tabs v-model="centerTabActive" color="#42B7AE" class="customs-van-tabs"  @click="onChangeTab" :ellipsis="false">
+      <van-tabs sticky :offset-top="'0.92rem'" v-model="centerTabActive" color="#42B7AE" class="customs-van-tabs"  @click="onChangeTab" :ellipsis="false">
         <van-tab :title="item.tab + '(' + item.count + ')'" :name="item.tabName" v-for="(item, index) in centerLists" :key="index">
           <PullRefresh :refreshing="refreshing" @refresh="onRefresh" class="custom-min-height-94">
             <div class="pb-20 bg-grey mlr-10">
@@ -28,7 +25,7 @@
           </PullRefresh>
         </van-tab>
       </van-tabs>
-    </van-sticky>
+    <!-- </van-sticky> -->
   </div>
 </template>
 
@@ -82,8 +79,16 @@ export default {
       refreshing: {
         isFresh: false
       },
-      centerPageSize: 20
+      centerPageSize: 20,
+      fromPageName: ''
     }
+  },
+  beforeRouteEnter (to, from, next) {
+    next(vm => {
+      if (from.name == 'me-coupon') {
+        vm.fromPageName = 'myCoupon';
+      }
+    })
   },
   activated() {
     this.$toast.loading({
@@ -129,12 +134,18 @@ export default {
         pageSize: this.centerPageSize
       }
       if (this.centerTabActive != '100') {
-        params.couponActivityType = this.centerTabActive;
+        params.couponActivityType = this.centerTabActive; // 券类型
       }
-      if (this.loading) {
-        return false;
+      if (this.$store.state.user.authToken) {
+        params.buyerId = this.$store.state.user.userInfo.id; // 买家id
       }
-      this.loading = true;
+      // if (this.fromPageName) {
+      //   params.listType = this.fromPageName; // 列表类型
+      // }
+      // if (this.loading) {
+      //   return false;
+      // }
+      // this.loading = true;
       getCouponCenterList(params).then(res => {
         if (!res.data) return false;
         couponList[0].records = couponList[0].pageNum == 1 ? res.data.records : couponList[0].records.concat(res.data.records);;
@@ -170,12 +181,12 @@ export default {
       let currentList = this.centerLists.filter(item => {
         return item.tabName == this.centerTabActive;
       })
-
-      if (currentList.length == 0) {
+      
+      if (currentList[0].records.length == 0) {
         return false;
       }
 
-      if (currentList[0].total == currentList.length) {
+      if (currentList[0].total == currentList[0].records.length) {
         this.loading = false;
         this.finished = true;
         return false;
@@ -196,7 +207,11 @@ export default {
       this.getCouponCenterList(currentList);
     },
     getCouponCenterCount() { // 优惠券数量统计
-      getCouponCenterCount().then(res => {
+      let buyerId = '';
+      if (this.$store.state.user.authToken) {
+        buyerId = this.$store.state.user.userInfo.id;
+      }
+      getCouponCenterCount(buyerId).then(res => {
         if (res.code != 0 || !res.data) return false;
         this.centerLists[0].count = res.data.allCount;
         this.centerLists[2].count = res.data.platformCount;

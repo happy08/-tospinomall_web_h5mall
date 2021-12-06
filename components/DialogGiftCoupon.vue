@@ -44,7 +44,7 @@
           </div>
         </div>
         <div class="tc gift-container__bottom">
-          <button class="tc dark-red fs-12 gift-container__bottom--btn" @click="$emit('goAround', [])">{{ $t('go_shopping') }}</button>
+          <button class="tc dark-red fs-12 gift-container__bottom--btn" @click="onGoShopping">{{ $t('go_shopping') }}</button>
         </div>
       </div>
     </template>
@@ -63,6 +63,18 @@ export default {
       default: () => {
         return this.lists.length > 0 ? true : false;
       }
+    }
+  },
+  methods: {
+    onGoShopping() { // 去逛逛
+      if (!this.$store.state.user.authToken) {
+        this.$emit('goAround', [])
+        this.$router.push({
+          name: 'login'
+        })
+        return false;
+      }
+      this.$emit('goAround', [])
     }
   }
 }

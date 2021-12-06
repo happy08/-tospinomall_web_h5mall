@@ -290,6 +290,12 @@ export default ({ app }, inject) => {
         url: `${url}/discount/coupon/autoGetPlatformCoupon`,
         method: 'get'
       })
+    },
+    getCouponDescription() { // 优惠券使用说明
+      return app.$axios({
+        url: `${url}/discount/description/find/system/description`,
+        method: 'get'
+      })
     }
   };
 

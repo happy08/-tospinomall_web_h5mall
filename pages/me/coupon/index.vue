@@ -4,7 +4,7 @@
     <!-- <van-sticky> -->
       <BmHeaderNav :left="{ isShow: true }" :title="$t('my_coupon')" fixed>
         <!-- 使用说明 -->
-        <nuxt-link slot="header-right" class="fs-16 green" :to="{ name: 'service-type', params: { type: 'coupon' }, query: { isH5: 1 } }">{{ $t('coupon_use_instruction') }}</nuxt-link>
+        <nuxt-link slot="header-right" class="fs-16 green" :to="{ name: 'service-type', params: { type: 'coupon' }, query: { isH5: 1 } }">{{ $t('use_instruction') }}</nuxt-link>
       </BmHeaderNav>
 
       <van-tabs sticky :offset-top="'0.92rem'" v-model="tabActive" color="#42B7AE" class="customs-van-tabs" @click="onChangeTab" :ellipsis="false">
@@ -23,11 +23,11 @@
                 style="overflow-y: auto;"
                 :immediate-check="false"
               >
-                <van-swipe-cell  v-for="(item, itemIndex) in item.records" :key="itemIndex">
-                  <coupon-single :item="item" class="mt-12" :pageType="1"></coupon-single>
+                <van-swipe-cell  v-for="(itemSingle, itemIndex) in item.records" :key="itemIndex">
+                  <coupon-single :item="itemSingle" class="mt-12" :pageType="1"></coupon-single>
                   <template #right>
                     <div class="flex hend h-100">
-                      <BmButton class="round-0 bg-yellow h-100 w-70" @click="onDelete(item)">{{ $t('goods_remove_follow') }}</BmButton>
+                      <BmButton class="round-0 bg-yellow h-100 w-70" @click="onDelete(itemSingle, item)">{{ $t('delete') }}</BmButton>
                     </div>
                   </template>
                 </van-swipe-cell>
@@ -214,7 +214,7 @@ export default {
         return false;
       }
 
-      if (currentList[0].total == currentList.length) {
+      if (currentList[0].total == currentList[0].records.length) {
         this.loading = false;
         this.finished = true;
         return false;
@@ -241,13 +241,13 @@ export default {
         this.lists[1].count = res.data.shopCount;
       })
     },
-    onDelete(item) { //删除优惠券
+    onDelete(itemSingle, item) { //删除优惠券
       this.$toast.loading({
         forbidClick: true,
         loadingType: 'spinner',
         duration: 0
       });
-      deleteCoupon({ couponsId: item.couponId }).then(res => {
+      deleteCoupon({ couponsId: itemSingle.couponId }).then(res => {
         item.pageNum = 1;
         this.$toast.clear();
         this.getCouponList(item);

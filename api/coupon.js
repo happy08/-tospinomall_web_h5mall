@@ -47,10 +47,13 @@ export function getCouponCount() {
 /**
  * 领券中心优惠券数量统计
  */
-export function getCouponCenterCount() {
+export function getCouponCenterCount(buyerId) {
   return request({
     url: `/discount/match/coupon/count`,
-    method: 'get'
+    method: 'get',
+    params: {
+      buyerId
+    }
   })
 }
 
