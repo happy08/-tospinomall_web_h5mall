@@ -23,9 +23,9 @@
               <span class="fw fm-din fs-22 lh-1">{{ item.subtractAmount }}</span>
             </p>
             <!-- 未领取 -->
-            <BmButton class="fs-12 fw white round-100 plr-12 h-24 bg-green-linear mr-8" @btnClick="onHandle" v-if="item.isReceive == 0" @click="onReceive">{{ $t('coupon_get_it') }}</BmButton>
+            <BmButton class="fs-12 fw white round-100 plr-12 h-24 bg-green-linear mr-8" @btnClick="onHandle" v-if="item.isReceive == 0">{{ $t('coupon_get_it') }}</BmButton>
             <!-- 已领取 -->
-            <BmButton class="fs-12 fw white round-100 plr-12 h-24 bg-green-linear mr-8" @btnClick="onHandle" v-if="item.isReceive == 1" @click="onReceive">{{ $t('coupon_use_it') }}</BmButton>
+            <BmButton class="fs-12 fw white round-100 plr-12 h-24 bg-green-linear mr-8" @btnClick="onHandle" v-if="item.isReceive == 1 || (pageType == 1 && item.useStatus)">{{ $t('coupon_use_it') }}</BmButton>
             <!-- type已使用1/已过期2 -->
             <BmImage
               :url="require('@/assets/images/coupon/used.png')"
@@ -38,7 +38,10 @@
               v-if="type == 1"
             />
           </div>
-          <p :class="{'fs-10 lh-12 mt-6': true, 'dark-green': type == 0, 'light-grey': type != 0}">Min spend {{ this.$store.state.rate.currency }}{{ item.satisfyAmount }} Capped at {{ this.$store.state.rate.currency }}{{ item.subtractAmount }}</p>
+          <!-- 满减券 -->
+          <p :class="{'fs-10 lh-12 mt-6': true, 'dark-green': type == 0, 'light-grey': type != 0}" v-if="isFullDiscount">Min spend {{ this.$store.state.rate.currency }}{{ item.satisfyAmount }} Capped at {{ this.$store.state.rate.currency }}{{ item.subtractAmount }}</p>
+          <!-- 无门槛 -->
+          <p :class="{'fs-10 lh-12 mt-6': true, 'dark-green': type == 0, 'light-grey': type != 0}" v-else>{{ $t('coupon_no_threshold') }}</p>
         </div>
       </div>
     </div>
@@ -82,7 +85,9 @@ export default {
           discountValidStartDate: null, // 优惠券有效开始时间
           isReceive: null, // 是否已领取:0 未领取;1 已领取
           satisfyAmount: null, // 满多少面额(门槛)
-          subtractAmount: null // 减多少面额
+          subtractAmount: null, // 减多少面额
+          useStatus: null, // 使用状态:true->可用 false:不可用
+          goodsId: null, // 商品id
         };
       }
     }
@@ -110,17 +115,17 @@ export default {
       return this.pageType ? this.item.couponName : this.item.discountName;
     },
     discountDescription() { // 优惠券说明
-      return this.pageType ? this.couponDescription : this.discountDescription;
+      return this.pageType ? this.item.couponDescription : this.item.discountDescription;
     },
     discountId() { // 优惠券id
-      return this.pageType ? this.couponId : this.discountId;
+      return this.pageType ? this.item.couponId : this.item.discountId;
+    },
+    isFullDiscount() { // 满减还是立减
+      return this.item.discountType == 1 || this.item.discountType == 3 || this.item.discountType == 5 || this.item.discountType == 7 || this.item.discountType == 8 ? true : false;
     }
   },
   methods: {
-    onHandle() {
-      console.log('success')
-    },
-    onReceive() { // 领取优惠券, 需要先判断是否登录
+    onHandle() { // 领取优惠券, 需要先判断是否登录
       if (!this.$store.state.user.authToken) {
         this.$router.push({
           name: 'login'
@@ -129,7 +134,8 @@ export default {
       }
       // 已领取-立即使用
       // 活动类型：1.平台新人满减券，2.平台新人立减券，3.客服满减券，4.客服立减券，5.店铺新人满减券，6.店铺新人立减券，7.店铺满减券，8.商品满减券，9.商品立减券
-      if (this.item.isReceive == 1) {
+      // 我的优惠券列表立即使用
+      if (this.item.isReceive == 1 || (this.pageType == 1 && this.item.useStatus)) {
         // 若是平台新人礼/平台客服券，点击跳转到商城首页
         if (this.item.discountType == 1 || this.item.discountType == 2 || this.item.discountType == 3 || this.item.discountType == 4) {
           this.$router.push({ name: 'home' });
@@ -137,12 +143,20 @@ export default {
 
         // 若是店铺新人礼/店铺满减/立减券，点击跳转到对应店铺首页
         if (this.item.discountType == 5 || this.item.discountType == 6 || this.item.discountType == 7) {
-          this.$router.push({ name: 'cart-store-id', params: { id: this.item.storeId } });
+          this.$router.push({ 
+            name: 'cart-store-id', 
+            params: { 
+              id: this.item.storeId
+            }, 
+            query: {
+              sellerId: this.item.sellerId
+            } 
+          });
         }
 
         // 若是商品满减券/立减券，点击跳转到对应商品详情页
         if (this.item.discountType == 8 || this.item.discountType == 9) {
-          this.$router.push({ name: 'product-id', params: { id: this.item.goodId } });
+          this.$router.push({ name: 'product-id', params: { id: this.item.goodsId } });
         }
         
         return false;
@@ -238,5 +252,8 @@ export default {
 .ptb-2{
   padding-top: 2px;
   padding-bottom: 2px;
+}
+.mt-6{
+  margin-top: 6px;
 }
 </style>

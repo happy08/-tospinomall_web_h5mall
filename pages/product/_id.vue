@@ -85,7 +85,8 @@
 
         <!-- 商品介绍 -->
         <div class="pt-20 mt-12 bg-white pl-20 flex between vcenter" v-if="couponList.length > 0">
-          <div class="border-red pl-4 pr-8 ptb-2 red fs-12 round-2">{{ couponList[0].satisfyAmount }}-{{ couponList[0].subtractAmount }}</div>
+          <div class="border-red pl-4 pr-8 ptb-2 red fs-12 round-2" v-if="couponList[0].satisfyAmount != ''">{{ couponList[0].satisfyAmount }}-{{ couponList[0].subtractAmount }}</div>
+          <div class="border-red pl-4 pr-8 ptb-2 red fs-12 round-2" v-else>{{ $t('coupon_no_threshold') }}</div>
           <div class="bg-green-3eb pl-18 pr-6 ptb-2 fs-14 white round-tbl-12" @click="isCouponShow = true">领券 ></div>
         </div>
         <div class="bg-white plr-20 ptb-14">
@@ -582,12 +583,13 @@
     <bm-preview v-if="isPreviewIndex != 'false'" :isPreviewIndex="isPreviewIndex" :carouselMapUrls="carouselMapUrls" :initialSlide="isPreviewIndex" @onClose="isPreviewIndex = 'false'" @onPreviewChange="onPreviewPic($event)"></bm-preview>
 
     <!-- 商品优惠券 -->
-    <van-popup v-model="isCouponShow" style="height: 80%" position="bottom" class="round-tlr-12 coupon-popup">
-      <h3 class="black fs-18 ptb-20 tc">{{ '优惠券' }}</h3>
-      <div>
-        <coupon-order-single class="mt-10 mlr-10" v-for="(item, index) in couponList" :key="'good-coupon-' + index" :item="item" @onSelect="isCouponShow = $event"></coupon-order-single>
+    <CouponScroll :isCouponShow="isCouponShow" :goodId="goodId" :type="'goodsDetails'" @onGoodsCoupons="couponList = $event" v-if="isCouponInit"></CouponScroll>
+    <!-- <van-popup v-model="isCouponShow" style="height: 80%" position="bottom" class="round-tlr-12 coupon-popup pt-20">
+      <h3 class="black fs-18 pb-10 tc lh-20">{{ '优惠券' }}</h3>
+      <div class="container-absolute-height">
+        <coupon-order-single class="mb-10 mlr-10" v-for="(item, index) in couponList" :key="'good-coupon-' + index" :item="item" @onSelect="isCouponShow = $event"></coupon-order-single>
       </div>
-    </van-popup>
+    </van-popup> -->
   </div>
   <empty-status v-else-if="isDetail == false" :image="require('@/assets/images/empty/order.png')" class="mh-60" :btn="{ btn: $t('return_to_previous_page'), isEmit: true }" @emptyClick="$router.go(-1)" />
 </template>
@@ -607,7 +609,7 @@ import shareLink from '@/assets/images/icon/share-link.png';
 import EmptyStatus from '@/components/EmptyStatus';
 import BmPreview from '@/components/_global/BmPreview';
 import { getCouponCenterList } from '@/api/coupon';
-import CouponOrderSingle from '@/components/CouponOrderSingle';
+import CouponScroll from '@/components/CouponScroll';
 
 export default {
   components: {
@@ -627,7 +629,7 @@ export default {
     ProductSku,
     EmptyStatus,
     BmPreview,
-    CouponOrderSingle
+    CouponScroll
   },
   data() {
     return {
@@ -718,9 +720,7 @@ export default {
       goodId: '',
       haveAddress: {},
       couponList: [],
-      couponPageNum: 1,
-      couponPageSize: 10,
-      couponTotal: 0,
+      isCouponInit: false,
       isCouponShow: false
     }
   },
@@ -739,6 +739,8 @@ export default {
           duration: 0
         });
       }
+
+      this.isCouponInit = true;
       
       let _detailParams = {};
       if (this.$store.state.user.userInfo) {
@@ -962,7 +964,7 @@ export default {
       }
     }
     // 获取优惠券列表
-    this.getGoodsCouponList();
+    // this.getGoodsCouponList();
     // 获取分享内容
     getShareDetail(this.goodId).then(res => {
       if (!res.data) return false;
@@ -970,6 +972,9 @@ export default {
     }).catch(error => {
       console.log(error);
     })
+  },
+  deactivated() {
+    this.isCouponInit = false;
   },
   head() {
     return {
@@ -1177,19 +1182,20 @@ export default {
     onPreviewChange(index) { // 预览切换时
       this.previewIndex = index;
     },
-    getGoodsCouponList() { // 获取优惠券列表
-      getCouponCenterList({
-        pageNum: this.couponPageNum,
-        pageSize: this.couponPageSize,
-        listType: 'cart',
-        goodId: this.goodId
-      }).then(res => {
-        this.couponList = res.data.records;
-        this.couponTotal = parseFloat(res.data.total);
-      }).catch(error => {
-        console.log(error);
-      })
-    }
+    // getGoodsCouponList() { // 获取优惠券列表
+    //   getCouponCenterList({
+    //     pageNum: this.couponPageNum,
+    //     pageSize: this.couponPageSize,
+    //     listType: 'goodsDetails',
+    //     goodId: this.goodId,
+    //     buyerId: this.$store.state.user.userInfo.id || ''
+    //   }).then(res => {
+    //     this.couponList = res.data.records;
+    //     this.couponTotal = parseFloat(res.data.total);
+    //   }).catch(error => {
+    //     console.log(error);
+    //   })
+    // }
   },
 }
 </script>
