@@ -723,7 +723,7 @@ const cn = {
   no_support_send: '该地址不支持配送',
   pwd_letter_number: '密码必须同时包含字母和数字',
   my_coupon: '我的优惠券',
-  coupon_use_instruction: '使用说明',
+  use_instruction: '使用说明',
   store_coupons: '店铺优惠券',
   platform_coupons: '平台优惠券',
   product_coupons: '商品优惠券',
@@ -739,7 +739,10 @@ const cn = {
   coupon_get_it: '立即领取',
   coupon_use_it: '立即使用',
   go_shopping: '去逛逛',
-  coupon_validity_day: '领券后{replace_tip}天失效'
+  coupon_validity_day: '领券后{replace_tip}天失效',
+  coupon: '优惠券',
+  coupon_no_threshold: '无门槛',
+  coupon_use_instruction: '优惠券使用说明'
 }
 
 export default cn;

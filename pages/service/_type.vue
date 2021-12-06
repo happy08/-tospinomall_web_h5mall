@@ -50,7 +50,10 @@ export default {
         _type = 8;
       }
       if (router_type == 'coupon') { // 优惠券说明
-        _type = 9;
+        const serverData = await this.$api.getCouponDescription();
+        this.title = this.$t('coupon_use_instruction');
+        this.intro = serverData.data.discountDescription;
+        return false;
       }
 
       const serverData = await this.$api.getService({ platform: 1, type: _type });

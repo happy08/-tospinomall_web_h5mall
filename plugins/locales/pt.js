@@ -722,7 +722,7 @@
   no_support_send: 'Este endereço não suporta entrega',
   pwd_letter_number: 'A senha deve conter letras e números',
   my_coupon: 'Meu cupão',
-  coupon_use_instruction: 'Instrução de utilização',
+  use_instruction: 'Instrução de utilização',
   store_coupons: 'Cupão de loja',
   platform_coupons: 'Cupão de Plataforma',
   product_coupons: 'Cupão de produto',
@@ -738,7 +738,10 @@
   coupon_get_it: '立即领取',
   coupon_use_it: '立即使用',
   go_shopping: 'Ir às compras',
-  coupon_validity_day: 'Expira {replace_tip} dias após a recepção do voucher'
+  coupon_validity_day: 'Expira {replace_tip} dias após a recepção do voucher',
+  coupon: '优惠券',
+  coupon_no_threshold: '无门槛',
+  coupon_use_instruction: '优惠券使用说明'
 }
 
 export default por;

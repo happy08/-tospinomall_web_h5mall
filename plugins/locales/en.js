@@ -644,7 +644,7 @@ const en = {
   marital_status_list: ['Unmarried', 'Married', 'Secrecy'],
   fail_copied_to_clipboard: 'copy failed',
   address_tag: ['Home', 'Company', 'School'],
-  category_list: ['whole', 'Price reduction', 'Often buy'],
+  category_list: ['Whole', 'Price reduction', 'Often buy'],
   store_product_tab: ['Recommend', 'Sale', 'Price', 'In stock'],
   cart_empty_tip: 'The shopping cart is empty',
   rate_tab: ['To be evaluated', 'Evaluated/followed up'],
@@ -723,7 +723,7 @@ const en = {
   no_support_send: 'This address does not support delivery',
   pwd_letter_number: 'The password must contain both letters and numbers',
   my_coupon: 'My Coupons',
-  coupon_use_instruction: 'Instruction for use',
+  use_instruction: 'Instruction for use',
   store_coupons: 'Store Coupons',
   platform_coupons: 'Platform Coupons',
   product_coupons: 'Product Coupons',
@@ -739,7 +739,10 @@ const en = {
   coupon_get_it: '立即领取',
   coupon_use_it: '立即使用',
   go_shopping: 'Go shopping',
-  coupon_validity_day: 'Expires {replace_tip} days after receipt of coupon'
+  coupon_validity_day: 'Expires {replace_tip} days after receipt of coupon',
+  coupon: '优惠券',
+  coupon_no_threshold: '无门槛',
+  coupon_use_instruction: '优惠券使用说明'
 }
 
 export default en;

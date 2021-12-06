@@ -722,7 +722,7 @@ const vi = {
   no_support_send: 'Địa chỉ này tạm thời không giao hàng được',
   pwd_letter_number: 'Mật khẩu phải bao gồm chữ cái và số',
   my_coupon: 'Phiếu giảm giá của tôi',
-  coupon_use_instruction: 'Hướng dẫn sử dụng',
+  use_instruction: 'Hướng dẫn sử dụng',
   store_coupons: 'Phiếu mua hàng',
   platform_coupons: 'Phiếu giảm giá nền tảng',
   product_coupons: 'Phiếu mua hàng',
@@ -738,7 +738,10 @@ const vi = {
   coupon_get_it: '立即领取',
   coupon_use_it: '立即使用',
   go_shopping: 'Dạo',
-  coupon_validity_day: 'Phiếu giảm giá sau {replace_tip} ngày sẽ hết hiệu lực'
+  coupon_validity_day: 'Phiếu giảm giá sau {replace_tip} ngày sẽ hết hiệu lực',
+  coupon: '优惠券',
+  coupon_no_threshold: '无门槛',
+  coupon_use_instruction: '优惠券使用说明'
 }
 
 export default vi;
