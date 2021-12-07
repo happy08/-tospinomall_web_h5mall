@@ -52,7 +52,7 @@
           :alt="'TospinoMall ship from tag'"
           class="flex-shrink"
         />
-        <span class="fs-10 plr-8 lh-12 hidden-1 iblock w-100">{{ $t('ship_from') }}{{  detail.deliveryType == 2 ? 'TospinoMall' : detail.supplyCountryName }}</span>
+        <span class="fs-10 plr-4 lh-12 hidden-1 iblock w-100">{{ $t('ship_from') }}{{  detail.deliveryType == 2 ? 'TospinoMall' : detail.supplyCountryName }}</span>
       </div>
       <!-- 评分 -->
       <van-rate class="mt-10" v-if="detail.rate > 0" allow-half v-model="detail.rate" size="0.24rem" color="#F7B500" void-color="#DDDDDD" void-icon="star" />
