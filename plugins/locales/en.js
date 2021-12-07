@@ -735,7 +735,7 @@ const en = {
   newcomer_gift_coupon: 'Newcomer Gift Coupon',
   added_to_my_coupon: 'Added to My-Coupon',
   newcomer_foupon: 'Newcomer Coupon',
-  coupon_received: 'Coupons received successfully',
+  receive_success: 'Coupons received successfully',
   coupon_get_it: '立即领取',
   coupon_use_it: '立即使用',
   go_shopping: 'Go shopping',
@@ -744,7 +744,8 @@ const en = {
   coupon_no_threshold: '无门槛',
   coupon_use_instruction: '优惠券使用说明',
   get_coupon: '领券',
-  coupon_full_reduction: '满{replace_tip}减{replace_tip1}'
+  coupon_full_reduction: '满{replace_tip}减{replace_tip1}',
+  coupon_received: '已领取'
 }
 
 export default en;

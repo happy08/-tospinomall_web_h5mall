@@ -171,7 +171,7 @@ export default {
       }).then(res => {
         this.$toast.clear();
         this.$toast({
-          message: this.$t('coupon_received'),
+          message: this.$t('receive_success'),
           duration: 3000
         });
         this.$emit('onReceive', 1);

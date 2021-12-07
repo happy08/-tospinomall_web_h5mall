@@ -734,7 +734,7 @@ const vi = {
   newcomer_gift_coupon: 'Phiếu quà tặng dành cho người mới',
   added_to_my_coupon: '-Phiếu mua hàng',
   newcomer_foupon: 'Phiếu thưởng cho người mới',
-  coupon_received: 'Phiếu thưởng đã nhận thành công',
+  receive_success: 'Phiếu thưởng đã nhận thành công',
   coupon_get_it: '立即领取',
   coupon_use_it: '立即使用',
   go_shopping: 'Dạo',
@@ -743,7 +743,8 @@ const vi = {
   coupon_no_threshold: '无门槛',
   coupon_use_instruction: '优惠券使用说明',
   get_coupon: '领券',
-  coupon_full_reduction: '满{replace_tip}减{replace_tip1}'
+  coupon_full_reduction: '满{replace_tip}减{replace_tip1}',
+  coupon_received: '已领取'
 }
 
 export default vi;

@@ -20,22 +20,15 @@
         <p class="fs-12 mt-6 hidden-1">{{ item.discountName }}</p>
         <div class="flex between mt-12">
           <!-- 开始时间-结束时间 -->
-          <span class="fs-10 mt-4 w-139" v-if="item.validTimeType == 1 || !item.discountValidDate">{{ item.discountValidStartDate }}-{{ item.discountValidEndDate }}</span>
+          <span class="fs-10 mt-4 w-130" v-if="item.validTimeType == 1 || !item.discountValidDate">{{ item.discountValidStartDate }}-{{ item.discountValidEndDate }}</span>
           <!-- 领取后x天有效 -->
-          <span class="fs-10 mt-4 w-139" v-if="item.validTimeType == 0 || item.discountValidDate">{{ $t('coupon_validity_day', { replace_tip: item.discountValidDate }) }}</span>
+          <span class="fs-10 mt-4 w-130" v-if="item.validTimeType == 0 || item.discountValidDate">{{ $t('coupon_validity_day', { replace_tip: item.discountValidDate }) }}</span>
           <!-- 未领取,可领取 -->
-          <BmButton :class="{'fs-12 fw white round-100 plr-12 h-24': true, 'bg-dark-red-linear': isStoreCount, 'bg-green-linear': !isStoreCount}" v-if="item.isReceive == 0 || (item.isReceive == 3 && item.isH5CouponType)" @click="onReceive">COLLECT</BmButton>
+          <BmButton :class="{'fs-12 fw white round-100 plr-10 h-24': true, 'bg-dark-red-linear': isStoreCount, 'bg-green-linear': !isStoreCount}" v-if="item.isReceive == 0 || (item.isReceive == 3 && item.isH5CouponType)" @click="onReceive">{{ $t('coupon_get_it') }}</BmButton>
           <!-- 已领取 -->
-          <BmImage
-            :url="require('@/assets/images/coupon/platform-collected.png')"
-            :width="'1.5rem'" 
-            :height="'0.9rem'"
-            :isLazy="false"
-            :isShow="false"
-            :alt="'coupon'"
-            class="flex-shrink mr-18 coupon-status"
-            v-if="item.isReceive == 1"
-          />
+          <div class="tc fs-12 hidden-1 lh-20 coupon-status" v-if="item.isReceive == 1">
+            <p class="pt-14">{{ $t('coupon_received') }}</p>
+          </div>
         </div>
       </div>
     </div>
@@ -113,7 +106,7 @@ export default {
 
         this.$toast.clear();
         this.$toast({
-          message: this.$t('coupon_received'),
+          message: this.$t('receive_success'),
           duration: 3000
         });
         this.$emit('onSelect', false); // 已领取弹窗隐藏
@@ -169,13 +162,18 @@ export default {
 }
 .coupon-status{
   position: absolute;
+  width: 75px;
+  height: 45px;
   right: 12px;
   bottom: 20px;
+  background-image: url('../assets/images/coupon/store-collected.png');
+  background-size: 100% 100%;
+  transform: rotate(-21deg);
 }
 .fs-22{
   font-size: 22px;
 }
-.w-139{
-  width: 139px;
+.w-130{
+  width: 130px;
 }
 </style>

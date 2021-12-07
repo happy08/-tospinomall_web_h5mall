@@ -734,7 +734,7 @@
   newcomer_gift_coupon: 'Cupão de oferta de recém-vindo',
   added_to_my_coupon: 'Adicionado ao Meu-Coupão',
   newcomer_foupon: 'Cupão de recém-vindo',
-  coupon_received: 'Cupões recebidos com sucesso',
+  receive_success: 'Cupões recebidos com sucesso',
   coupon_get_it: '立即领取',
   coupon_use_it: '立即使用',
   go_shopping: 'Ir às compras',
@@ -743,7 +743,8 @@
   coupon_no_threshold: '无门槛',
   coupon_use_instruction: '优惠券使用说明',
   get_coupon: '领券',
-  coupon_full_reduction: '满{replace_tip}减{replace_tip1}'
+  coupon_full_reduction: '满{replace_tip}减{replace_tip1}',
+  coupon_received: '已领取'
 }
 
 export default por;

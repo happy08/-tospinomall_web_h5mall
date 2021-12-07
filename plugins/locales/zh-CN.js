@@ -735,7 +735,7 @@ const cn = {
   newcomer_gift_coupon: '新人礼券',
   added_to_my_coupon: '已放入我的-优惠券中',
   newcomer_foupon: '新人券',
-  coupon_received: '优惠券领取成功',
+  receive_success: '优惠券领取成功',
   coupon_get_it: '立即领取',
   coupon_use_it: '立即使用',
   go_shopping: '去逛逛',
@@ -744,7 +744,8 @@ const cn = {
   coupon_no_threshold: '无门槛',
   coupon_use_instruction: '优惠券使用说明',
   get_coupon: '领券',
-  coupon_full_reduction: '满{replace_tip}减{replace_tip1}'
+  coupon_full_reduction: '满{replace_tip}减{replace_tip1}',
+  coupon_received: '已领取'
 }
 
 export default cn;
