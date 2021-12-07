@@ -87,7 +87,18 @@
         <div class="pt-20 mt-12 bg-white pl-20 flex between vcenter" v-if="couponList.length > 0">
           <div class="border-red pl-4 pr-8 ptb-2 red fs-12 round-2" v-if="couponList[0].satisfyAmount != ''">{{ couponList[0].satisfyAmount }}-{{ couponList[0].subtractAmount }}</div>
           <div class="border-red pl-4 pr-8 ptb-2 red fs-12 round-2" v-else>{{ $t('coupon_no_threshold') }}</div>
-          <div class="bg-F90 pl-18 pr-6 ptb-2 fs-14 white round-tbl-12" @click="isCouponShow = true">领券 ></div>
+          <div class="bg-F90 pl-18 pr-6 ptb-2 fs-14 white round-tbl-12 flex vcenter" @click="isCouponShow = true">
+            <span class="pr-4">{{ $t('get_coupon') }}</span>
+            <BmImage
+              :url="require('@/assets/images/icon/arrow-right.png')"
+              :width="'0.1rem'" 
+              :height="'0.12rem'"
+              :isLazy="false"
+              :isShow="true"
+              :alt="'TospinoMall'"
+              class="flex-shrink"
+            />
+          </div>
         </div>
         <div class="bg-white plr-20 ptb-14">
           <div>

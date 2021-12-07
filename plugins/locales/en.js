@@ -742,7 +742,8 @@ const en = {
   coupon_validity_day: 'Expires {replace_tip} days after receipt of coupon',
   coupon: '优惠券',
   coupon_no_threshold: '无门槛',
-  coupon_use_instruction: '优惠券使用说明'
+  coupon_use_instruction: '优惠券使用说明',
+  get_coupon: '领券'
 }
 
 export default en;
