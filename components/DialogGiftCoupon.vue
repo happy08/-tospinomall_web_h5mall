@@ -1,5 +1,5 @@
 <template>
-  <van-dialog v-model="isGiftShow" :showConfirmButton="false" class="top-50 w-334 bg-transparent">
+  <van-dialog v-model="isGiftShow" :showConfirmButton="false" close-on-click-overlay @beforeClose="$emit('goAround', [])" class="top-50 w-334 bg-transparent">
     <!-- 第一版样式 -->
     <!-- <template #title>
       <h1 class="dark-red flex center ">
@@ -57,24 +57,23 @@ export default {
     lists: {
       type: Array,
       default: []
-    },
-    isGiftShow: {
-      type: Boolean,
-      default: () => {
-        return this.lists.length > 0 ? true : false;
-      }
+    }
+  },
+  data() {
+    return {
+      isGiftShow: this.lists.length > 0 ? true : false
     }
   },
   methods: {
     onGoShopping() { // 去逛逛
       if (!this.$store.state.user.authToken) {
-        this.$emit('goAround', [])
+        this.$emit('goAround', []);
         this.$router.push({
           name: 'login'
         })
         return false;
       }
-      this.$emit('goAround', [])
+      this.$emit('goAround', []);
     }
   }
 }
