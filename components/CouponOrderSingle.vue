@@ -26,8 +26,15 @@
           <!-- 未领取,可领取 -->
           <BmButton :class="{'fs-12 fw white round-100 plr-10 h-24': true, 'bg-dark-red-linear': isStoreCount, 'bg-green-linear': !isStoreCount}" v-if="item.isReceive == 0 || (item.isReceive == 3 && item.isH5CouponType)" @click="onReceive">{{ $t('coupon_get_it') }}</BmButton>
           <!-- 已领取 -->
-          <div class="tc fs-12 hidden-1 lh-20 coupon-status" v-if="item.isReceive == 1">
-            <p class="pt-14">{{ $t('coupon_received') }}</p>
+          <div class="tc fs-12 lh-20 coupon-status" v-if="item.isReceive == 1">
+            <p class="coupon-status__tip">{{ $t('coupon_received') }}</p>
+            <BmImage
+              :url="require('@/assets/images/coupon/store-collected.png')"
+              :height="'0.9rem'"
+              :isLazy="false"
+              :isShow="true"
+              :fit="'cover'"
+            />
           </div>
         </div>
       </div>
@@ -162,14 +169,18 @@ export default {
 }
 .coupon-status{
   position: absolute;
-  width: 75px;
   height: 45px;
   right: 12px;
   bottom: 20px;
-  background-image: url('../assets/images/coupon/store-collected.png');
-  background-size: 100% 100%;
   transform: rotate(-21deg);
-}
+  .coupon-status__tip{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    word-break: keep-all;
+  }
+}  
 .fs-22{
   font-size: 22px;
 }
