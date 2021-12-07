@@ -311,7 +311,7 @@
   mul: 'x',
   delete_order_tips: 'Você realmente deseja excluir o pedido?',
   reason_for_cancel_order: 'Razão para cancelamento',
-  cancel_order_tip_header: '1. Todas as cotações do pedido podem ser canceladas\n2. Uma vez que o pedido é cancelado, ele não pode ser restaurado',
+  cancel_order_tip_header: '1. Os descontos do pedido podem ser cancelados ao mesmo tempo\n2. Uma vez que o pedido é cancelado, ele não pode ser restaurado',
   cancel_order_tip_footer: 'Após o envio, coloque o produto de volta no carrinho de compras',
   delete_all_search_history_tips: 'Limpar todo o histórico de pesquisa?',
   freight: 'Frete',

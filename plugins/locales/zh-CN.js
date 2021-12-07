@@ -312,7 +312,7 @@ const cn = {
   mul: 'x',
   delete_order_tips: '是否确实要删除订单?',
   reason_for_cancel_order: '取消订单原因',
-  cancel_order_tip_header: '1. 订单报价可能会全部取消 \n2. 订单一旦被取消，就无法恢复',
+  cancel_order_tip_header: '1. 订单优惠可能一并取消 \n2. 订单一旦取消，无法恢复',
   cancel_order_tip_footer: '提交后，将该商品放回购物车',
   delete_all_search_history_tips: '清除所有搜索记录?',
   freight: '运费',

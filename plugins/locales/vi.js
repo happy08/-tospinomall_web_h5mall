@@ -311,7 +311,7 @@ const vi = {
   mul: 'x',
   delete_order_tips: 'Bạn có thực sự muốn xóa đơn đặt hàng không?',
   reason_for_cancel_order: 'Lý do hủy bỏ',
-  cancel_order_tip_header: '1. Tất cả các báo giá đơn hàng có thể bị hủy bỏ \n2. Sau khi đơn đặt hàng bị hủy, nó không thể được tiếp tục',
+  cancel_order_tip_header: '1. Giảm giá đơn hàng có thể bị hủy cùng lúc \n2. Một khi đơn đặt hàng bị hủy, nó không thể được khôi phục',
   cancel_order_tip_footer: 'Sau khi gửi, đưa sản phẩm trở lại giỏ hàng',
   delete_all_search_history_tips: 'Xóa tất cả lịch sử tìm kiếm?',
   freight: 'Cước',

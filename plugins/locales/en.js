@@ -311,7 +311,7 @@ const en = {
   mul: 'x',
   delete_order_tips: 'Are you sure you want to delete the order?',
   reason_for_cancel_order: 'Reason for order cancellation',
-  cancel_order_tip_header: '1. All order quotations may be cancelled \n2. Once the order is cancelled, it cannot be restored',
+  cancel_order_tip_header: '1. Order discounts may be cancelled at the same time \n2. Once the order is cancelled, it cannot be restored',
   cancel_order_tip_footer: 'After submission, return the item to the shopping cart',
   delete_all_search_history_tips: 'Clear all search records?',
   freight: 'Freight',
