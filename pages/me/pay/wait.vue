@@ -15,7 +15,7 @@
       <h3 class="fs-16 black mt-24" v-if="countdown == -1">{{ $t('awaiting_payment') }}</h3>
       <p class="mt-12 fs-14 black" v-if="countdown == -1">{{ $t('if_you_have_paid') }}</p>
       <p class="mt-30 grey" v-if="countdown != -1">{{ $t('pay_wait_confirm') }}</p>
-      <van-count-down class="mt-30 black fs-24" v-if="countdown != -1" :time="countdown" @finish="onPayCompleted(-2)" @change="onCountChange"/>
+      <van-count-down class="mt-30 black fs-24" v-if="countdown != -1" ref="countDown" :time="countdown" @finish="onPayCompleted(-2)" @change="onCountChange"/>
     </div>
 
     <!-- 详情描述 -->
@@ -131,6 +131,7 @@ export default {
                   this.onPayCompleted(num);
                 }, 2000);
               } else {
+                this.$refs.countDown.pause();
                 this.goLeave(data); // 其他失败状态直接跳转结果页面
               }
             }
@@ -223,7 +224,7 @@ export default {
       }
       // 失败
       this.$dialog.alert({
-        title: this.$route.query.orderId ? this.$t('payment_failed') : this.$t('wallet_timeout'),
+        title: this.$route.query.orderId || (!this.$route.query.orderId && data.data == 0) ? this.$t('payment_failed') : this.$t('wallet_timeout'),
         message: this.$route.query.orderId ? this.$t('order_payment_failed_tips') : this.$t('wallet_no_pay'),
         confirmButtonText: this.$t('i_know')
       }).then(() => {
