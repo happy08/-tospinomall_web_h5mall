@@ -743,7 +743,8 @@ const cn = {
   coupon: '优惠券',
   coupon_no_threshold: '无门槛',
   coupon_use_instruction: '优惠券使用说明',
-  get_coupon: '领券'
+  get_coupon: '领券',
+  coupon_full_reduction: '满{replace_tip}减{replace_tip1}'
 }
 
 export default cn;

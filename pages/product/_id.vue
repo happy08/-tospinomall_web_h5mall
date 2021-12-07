@@ -87,7 +87,7 @@
         <div class="pt-20 mt-12 bg-white pl-20 flex between vcenter" v-if="couponList.length > 0">
           <div class="border-red pl-4 pr-8 ptb-2 red fs-12 round-2" v-if="couponList[0].satisfyAmount != ''">{{ couponList[0].satisfyAmount }}-{{ couponList[0].subtractAmount }}</div>
           <div class="border-red pl-4 pr-8 ptb-2 red fs-12 round-2" v-else>{{ $t('coupon_no_threshold') }}</div>
-          <div class="bg-F90 pl-18 pr-6 ptb-2 fs-14 white round-tbl-12 flex vcenter" @click="isCouponShow = true">
+          <div class="bg-dark-red-linear pl-16 pr-6 ptb-2 fs-14 white round-tbl-12 flex vcenter" @click="isCouponShow = true">
             <span class="pr-4">{{ $t('get_coupon') }}</span>
             <BmImage
               :url="require('@/assets/images/icon/arrow-right.png')"
@@ -594,7 +594,7 @@
     <bm-preview v-if="isPreviewIndex != 'false'" :isPreviewIndex="isPreviewIndex" :carouselMapUrls="carouselMapUrls" :initialSlide="isPreviewIndex" @onClose="isPreviewIndex = 'false'" @onPreviewChange="onPreviewPic($event)"></bm-preview>
 
     <!-- 商品优惠券 -->
-    <CouponScroll :isCouponShow="isCouponShow" :goodId="goodId" :type="'goodsDetails'" @onGoodsCoupons="couponList = $event" v-if="isCouponInit"></CouponScroll>
+    <CouponScroll :isShow="isCouponShow" :goodId="goodId" :type="'goodsDetails'" @onGoodsCoupons="couponList = $event" v-if="isCouponInit" @onBeforeClose="isCouponShow = $event"></CouponScroll>
     <!-- <van-popup v-model="isCouponShow" style="height: 80%" position="bottom" class="round-tlr-12 coupon-popup pt-20">
       <h3 class="black fs-18 pb-10 tc lh-20">{{ '优惠券' }}</h3>
       <div class="container-absolute-height">

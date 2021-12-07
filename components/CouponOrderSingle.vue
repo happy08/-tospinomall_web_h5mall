@@ -1,29 +1,30 @@
 <template>
   <!-- 优惠券 -->
   <div class="round-8">
-    <div class="dark-green flex coupon-orde-single">
+    <div :class="{'flex coupon-orde-single': true, 'dark-green': !isStoreCount, 'store-bgd dark-red': isStoreCount}">
       <div class="round-8 coupon-orde-single__left">
         <div class="fw">
           <span class="fs-16">{{ $store.state.rate.currency }}</span>
           <span class="fs-22">{{ item.subtractAmount }}</span>
         </div>
         <!-- 满减券 -->
-        <div class="fs-10 mt-6 hidden-2" v-if="isFullDiscount">Buy {{ $store.state.rate.currency }}{{ item.satisfyAmount }} cap at {{ this.$store.state.rate.currency }}{{ item.subtractAmount }} off</div>
+        <div class="fs-10 mt-6 hidden-2" v-if="isFullDiscount">{{ $t('coupon_full_reduction', { replace_tip: $store.state.rate.currency + item.satisfyAmount , replace_tip1: this.$store.state.rate.currency + item.subtractAmount }) }}</div>
         <!-- 无门槛 -->
-        <p :class="{'fs-10 lh-12 mt-6': true, 'dark-green': type == 0, 'light-grey': type != 0}" v-else>{{ $t('coupon_no_threshold') }}</p>
+        <!-- <p :class="{'fs-10 lh-12 mt-6': true, 'dark-green': type == 0, 'light-grey': type != 0}" v-else>{{ $t('coupon_no_threshold') }}</p> -->
+        <p :class="{'fs-10 lh-12 mt-6': true}" v-else>{{ $t('coupon_no_threshold') }}</p>
       </div>
       <div class="round-8 coupon-orde-single__right">
         <!-- 规则的展开与隐藏 -->
-        <BmIcon :name="type != 0 ? 'collapsed' : 'collapse'" :width="'0.28rem'" :height="'0.28rem'" @iconClick="isOpenCollapse = !isOpenCollapse" class="coupon-collapse" v-if="item.discountDescription"></BmIcon>
+        <BmIcon :name="isStoreCount ? 'collapse-red' : 'collapse'" :width="'0.28rem'" :height="'0.28rem'" @iconClick="isOpenCollapse = !isOpenCollapse" class="coupon-collapse"></BmIcon>
         <h2 class="fs-14 hidden-1">{{ discountType }}</h2>
         <p class="fs-12 mt-6 hidden-1">{{ item.discountName }}</p>
         <div class="flex between mt-12">
           <!-- 开始时间-结束时间 -->
-          <span class="fs-10 mt-4" v-if="item.validTimeType == 1 || !item.discountValidDate">{{ item.discountValidStartDate }}-{{ item.discountValidEndDate }}</span>
+          <span class="fs-10 mt-4 w-139" v-if="item.validTimeType == 1 || !item.discountValidDate">{{ item.discountValidStartDate }}-{{ item.discountValidEndDate }}</span>
           <!-- 领取后x天有效 -->
-          <span class="fs-10 mt-4" v-if="item.validTimeType == 0 || item.discountValidDate">{{ $t('coupon_validity_day', { replace_tip: item.discountValidDate }) }}</span>
+          <span class="fs-10 mt-4 w-139" v-if="item.validTimeType == 0 || item.discountValidDate">{{ $t('coupon_validity_day', { replace_tip: item.discountValidDate }) }}</span>
           <!-- 未领取,可领取 -->
-          <BmButton class="fs-12 fw white round-100 plr-12 h-24 bg-green-linear" v-if="item.isReceive == 0 || (item.isReceive == 3 && item.isH5CouponType)" @click="onReceive">COLLECT</BmButton>
+          <BmButton :class="{'fs-12 fw white round-100 plr-12 h-24': true, 'bg-dark-red-linear': isStoreCount, 'bg-green-linear': !isStoreCount}" v-if="item.isReceive == 0 || (item.isReceive == 3 && item.isH5CouponType)" @click="onReceive">COLLECT</BmButton>
           <!-- 已领取 -->
           <BmImage
             :url="require('@/assets/images/coupon/platform-collected.png')"
@@ -39,7 +40,7 @@
       </div>
     </div>
     <div class="pl-16 pr-10 bg-white pt-2" v-show="isOpenCollapse">
-      <div class="fs-10 light-grey mt-8 pb-12" v-html="item.discountDescription"></div>
+      <div class="fs-10 light-grey pt-8 pb-12" v-html="item.discountDescription"></div>
     </div>
   </div>
 </template>
@@ -75,7 +76,10 @@ export default {
   computed: {
     // 活动类型：1.平台新人满减券，2.平台新人立减券，3.客服满减券，4.客服立减券，5.店铺新人满减券，6.店铺新人立减券，7.店铺满减券，8.商品满减券，9.商品立减券
     discountType() {
-      return this.item.discountType == 1 || this.item.discountType == 2 ? this.$t('platform_coupons') : this.$t('store_coupons');
+      return this.item.discountType == 1 || this.item.discountType == 2 || this.item.discountType == 3 || this.item.discountType == 4 ? this.$t('platform_coupons') : this.$t('store_coupons');
+    },
+    isStoreCount() { // 是否是店铺券
+      return this.item.discountType == 1 || this.item.discountType == 2 || this.item.discountType == 3 || this.item.discountType == 4 ? false : true;
     },
     isFullDiscount() { // 满减还是立减
       return this.item.discountType == 1 || this.item.discountType == 3 || this.item.discountType == 5 || this.item.discountType == 7 || this.item.discountType == 8 ? true : false;
@@ -166,9 +170,12 @@ export default {
 .coupon-status{
   position: absolute;
   right: 12px;
-  bottom: 16px;
+  bottom: 20px;
 }
 .fs-22{
   font-size: 22px;
+}
+.w-139{
+  width: 139px;
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
   <!-- 商品优惠券弹窗 -->
-  <van-popup v-model="isCouponShow" style="height: 80%" position="bottom" class="round-tlr-12 coupon-popup pt-20">
-    <h3 class="black fs-18 pb-10 tc lh-20">{{ '优惠券' }}</h3>
+  <van-popup v-model="isCouponShow" style="height: 80%" position="bottom" class="round-tlr-12 bg-white coupon-popup pt-20" @click-overlay="$emit('onBeforeClose', false)">
+    <h3 class="black fs-18 pb-10 tc lh-20">{{ $t('coupon') }}</h3>
     <div class="container-absolute-height">
       <empty-status v-if="couponList.length === 0" :image="require('@/assets/images/empty/order.png')" :description="$t('empty')" />
       <van-list
@@ -29,7 +29,7 @@ export default {
     type: { // 页面类型 商品详情页goodsDetails
       type: String
     },
-    isCouponShow: {
+    isShow: {
       type: Boolean,
       default: false
     },
@@ -51,7 +51,13 @@ export default {
       couponPageSize: 20,
       couponTotal: 0,
       couponList: [],
-      id: this.goodId
+      id: this.goodId,
+      isCouponShow: this.isShow || false
+    }
+  },
+  watch: {
+    isShow() {
+      this.isCouponShow = this.isShow;
     }
   },
   mounted() {
@@ -74,7 +80,7 @@ export default {
         pageNum: this.couponPageNum,
         pageSize: this.couponPageSize,
         listType: this.type,
-        goodId: this.goodId,
+        goodsId: this.goodId,
         buyerId: this.$store.state.user.authToken ? this.$store.state.user.userInfo.id : ''
       }).then(res => {
         this.couponList = this.couponPageNum == 1 ? res.data.records : this.couponList.concat(res.data.records);
