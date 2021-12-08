@@ -127,7 +127,7 @@
     </div> -->
     
     <!-- 店铺首页热图 -->
-    <PullRefresh :refreshing="refreshing" @refresh="onRefresh" class="pb-20">
+    <PullRefresh :refreshing="refreshing" @refresh="onRefresh" class="pb-30">
       <div v-if="tabbarActive == 1 && scrollTop < 40" class="h-50"></div>
       <template v-if="tabbarActive == 0">
         <div v-for="(moduleItem, moduleIndex) in moduleData" :key="'module-data-' + moduleIndex">
