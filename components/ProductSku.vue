@@ -8,7 +8,7 @@
     @sku-selected="getSkuInfo"
     :initial-sku="initialSku"
     hide-selected-text
-    :disable-soldout-sku="false"
+    :disable-soldout-sku="true"
     hide-stock
     ref="productSku"
     class="custom-sku-container"
