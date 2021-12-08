@@ -70,6 +70,7 @@ export default {
       next();
   },
   activated() {
+    this.goNum = 0;
     // 倒计时存储到sessionStorage中
     this.countdown = sessionStorage.getItem('payCountDown') || this.countdown;
     if (this.countdown && this.countdown != 'NaN' && this.$route.query.paywait) {
@@ -81,7 +82,6 @@ export default {
     } else {
       this.countdown = -1;
     }
-    this.goNum = 0;
   },
   deactivated() {
     if (this.timer) {
@@ -91,7 +91,10 @@ export default {
   },
   methods: {
     async onPayCompleted(num, sessionTime) { // 支付完成
-      if (this.timer) {clearTimeout(this.timer);this.timer=null}
+      if (this.timer) {
+        clearTimeout(this.timer);
+        this.timer = null;
+      }
       
       if (num == -1 && !this.$route.query.paywait) { // 点击完成
           this.countdown = 1 * 2 * 60 * 1000;
@@ -159,8 +162,8 @@ export default {
         this.goLeave(data, true);
         this.$toast.clear();
       } catch (error) {
+        clearTimeout(this.timer);
         if (num == -1) { // 倒计时结束
-          clearTimeout(this.timer);
           sessionStorage.setItem('payCountDown', '00:00:00');
           this.goLeave();
         } else {
