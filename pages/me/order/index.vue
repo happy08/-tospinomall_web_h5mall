@@ -626,7 +626,7 @@ export default {
       if (val == 5) title = 'cancelled'; // 5  已取消
       if (val == 6) title = 'trading_close'; // 6  交易关闭,超时取消
       if (val == 7) title = 'trading_close'; // 7 无效订单
-      if (val == 8) title = 'un_rejected'; // 8 已拒收
+      if (val == 8) title = 'trading_close'; // 8 已拒收
       return this.$t(title);
     },
     goStoreDetail(storeItem) { // 跳转到店铺首页

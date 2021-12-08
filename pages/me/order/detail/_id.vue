@@ -48,9 +48,9 @@
           {{ $t('time_out_cancel') }}
         </div>
         <!-- 已拒收 -->
-        <!-- <div class="fs-14 white mt-14 pb-40 plr-30 tc lh-20" v-else-if="detail.status == 8">
+        <div class="fs-14 white mt-14 pb-40 plr-30 tc lh-20" v-else-if="detail.status == 8">
           {{ $t('un_rejected') }}
-        </div> -->
+        </div>
       </div>
     </div>
     
@@ -431,7 +431,7 @@ export default {
         if (res.data.status == 5) title = 'cancelled'; // 5  已取消
         if (res.data.status == 6) title = 'trading_close'; // 6  交易关闭,超时取消
         if (res.data.status == 7) title = 'trading_close'; // 7 无效订单
-        if (res.data.status == 8) title = 'un_rejected'; // 8 已拒收
+        if (res.data.status == 8) title = 'trading_close'; // 8 已拒收
         this.title = title;
         this.detail = {
           ...res.data,
