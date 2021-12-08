@@ -50,7 +50,9 @@ export default {
   },
   data() {
     return {
-      countdown: -1
+      countdown: -1,
+      timer: null,
+      goNum: 0
     }
   },
   computed: {
@@ -70,7 +72,6 @@ export default {
   activated() {
     // 倒计时存储到sessionStorage中
     this.countdown = sessionStorage.getItem('payCountDown') || this.countdown;
-    console.log(this.countdown && this.countdown != 'NaN' && this.$route.query.paywait)
     if (this.countdown && this.countdown != 'NaN' && this.$route.query.paywait) {
         if (this.countdown == '00:00:00') { // 倒计时结束
           this.onPayCompleted(-2);
@@ -80,9 +81,18 @@ export default {
     } else {
       this.countdown = -1;
     }
+    this.goNum = 0;
+  },
+  deactivated() {
+    if (this.timer) {
+      clearTimeout(this.timer);
+      this.timer = null;
+    }
   },
   methods: {
     async onPayCompleted(num, sessionTime) { // 支付完成
+      if (this.timer) {clearTimeout(this.timer);this.timer=null}
+      
       if (num == -1 && !this.$route.query.paywait) { // 点击完成
           this.countdown = 1 * 2 * 60 * 1000;
           this.$router.push({
@@ -104,8 +114,8 @@ export default {
       if (sessionTime) { // 倒计时等待中,赋值时间
         this.countdown = sessionTime;
       }
-      this.countdown = num == -2 ? 0 : this.countdown;
       num += 1;
+
       try {
         let data;
         if (this.$route.query.orderId) { // 确认订单是否支付
@@ -113,39 +123,58 @@ export default {
         } else {
           data = await checkBuyerRecharge(this.$route.query.refNo); // 判断买家充值是否成功
         }
+
+        if (num == -1) { // 倒计时结束
+          clearTimeout(this.timer);
+          sessionStorage.setItem('payCountDown', '00:00:00');
+          this.goLeave(data, data.data == 1);
+          return false;
+        }
         if (data.data != 1) { 
           // 订单支付：0->未支付 1->已经支付
           // 钱包支付：0->失败 1->已经支付 2->待支付 3->已取消
             this.$toast.clear();
-            if (this.countdown == 0) { // 倒计时结束
-              sessionStorage.setItem('payCountDown', '00:00:00');
-              this.goLeave(data);
-            } else if (num == 1) { // 倒计时开始
+            if (num == 1) { // 倒计时开始
               this.countdown = 1 * 2 * 60 * 1000;
-              setTimeout(() => {
-                this.onPayCompleted(num);
-              }, 2000);
-            } else { // 倒计时过程中每次返回都再次请求接口
+              this.onPayCompleted(num);
+              return false;
+            }
+            this.timer = setTimeout(() => {
+              if (num == -1) {
+                clearTimeout(this.timer);
+                return false;
+              }
               if ((this.$route.query.orderId && data.data == 0) || (!this.$route.query.orderId && data.data == 2)) { // 订单 || 钱包充值
-                setTimeout(() => {
-                  this.onPayCompleted(num);
-                }, 2000);
+                this.onPayCompleted(num);
               } else {
+                clearTimeout(this.timer);
                 this.$refs.countDown.pause();
                 this.goLeave(data); // 其他失败状态直接跳转结果页面
               }
-            }
+              clearTimeout(this.timer)
+            }, 2000);
+            
           return false;
         }
         this.goLeave(data, true);
         this.$toast.clear();
       } catch (error) {
-        if (this.countdown == 0) { // 倒计时结束
+        if (num == -1) { // 倒计时结束
+          clearTimeout(this.timer);
+          sessionStorage.setItem('payCountDown', '00:00:00');
           this.goLeave();
+        } else {
+          this.timer = setTimeout(() => {
+            if (num == -1) {
+              clearTimeout(this.timer);
+              sessionStorage.setItem('payCountDown', '00:00:00');
+              this.goLeave();
+              return false;
+            }
+            this.onPayCompleted(num);
+            clearTimeout(this.timer)
+          }, 2000);
         }
-        setTimeout(() => {
-          this.onPayCompleted(num);
-        }, 2000);
         this.$toast.clear();
       }
     },
@@ -206,6 +235,10 @@ export default {
       })
     },
     goLeave(data, flag) { // 跳转到结果页面
+      if (this.goNum == 1) {
+        return false;
+      }
+      this.goNum == 1;
       if (flag) { // 成功
         if (this.$route.query.orderId) {
           this.$router.push({ // 校验之后成功跳转到订单支付结果页面
@@ -244,9 +277,7 @@ export default {
       })
     },
     onCountChange(timeData) { // 倒计时变化
-      console.log(timeData)
       let minutes = timeData.minutes > 0 ? timeData.minutes * 60 : 0;
-      console.log((minutes + timeData.seconds) * 1000)
       sessionStorage.setItem('payCountDown', (minutes + timeData.seconds) * 1000);
     }
   },
