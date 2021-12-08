@@ -43,7 +43,8 @@
 <script>
 import OrderStoreSingle from '@/components/OrderStoreSingle';
 import { getNegotiationHistory } from '@/api/order';
-import userIcon from '@/assets/images/icon/user-icon.png';
+import storeIcon from '@/assets/images/store-bgd.png';
+import platformIcon from '@/assets/images/icon/platform-grey.png';
 
 export default {
   middleware: 'authenticated',
@@ -62,7 +63,8 @@ export default {
       this.lists = res.data.map(item => {
         return {
           ...item,
-          headPortrait: item.headPortrait == '' ? userIcon : item.headPortrait
+          // userType; // 用户类型（1 买家 2卖家 3运营用户-平台）
+          headPortrait: item.headPortrait == '' ? item.userType == 2 ? storeIcon : platformIcon : item.headPortrait
         }
       });
     }).catch(error => {
