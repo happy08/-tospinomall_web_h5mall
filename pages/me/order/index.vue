@@ -608,7 +608,26 @@ export default {
       })
     },
     statusFormat(val, item) {
-      return val == 0 ? this.$t('unpaid') : val == 1 ? this.$t('to_be_delivered') : val == 2 ? this.$t('unreceived') : val == 3 || val == 4 ? this.$t('completed') : val == 5 ? this.$t('cancelled') : val == 6 ? this.$t('trading_close') : val == 7 ? this.$t('trading_close') : this.$t('trading_close');
+      let title = 'trading_close';
+      // 0->待付款；1->待发货；2->待收货；3->待评价；4->已完成 5->已取消；6->超时取消；7->无效订单；8->已拒收
+      if (val == 0) title = 'unpaid'; // 0  待付款
+      if (val == 1 || val == 2) {
+        if (item.deliveryType == 2) {
+          if (item.fbtDeliveryStatus == 1 || item.fbtDeliveryStatus == 2) title = 'waiting_for_warehouse_processing';
+          else if (item.fbtDeliveryStatus == 3) title = 'warehouse_processing';
+          else if (item.fbtDeliveryStatus == 4) title = 'issued_warehouse';
+          else title = '';
+        } else {
+          if (val == 2) title = 'unreceived';
+          else title = 'to_be_delivered';
+        }
+      }
+      if (val == 3 || val == 4) title = 'completed'; // 4  已完成
+      if (val == 5) title = 'cancelled'; // 5  已取消
+      if (val == 6) title = 'trading_close'; // 6  交易关闭,超时取消
+      if (val == 7) title = 'trading_close'; // 7 无效订单
+      if (val == 8) title = 'un_rejected'; // 8 已拒收
+      return this.$t(title);
     },
     goStoreDetail(storeItem) { // 跳转到店铺首页
       this.$router.push({

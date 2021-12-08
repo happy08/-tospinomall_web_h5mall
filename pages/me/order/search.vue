@@ -55,7 +55,7 @@
           <!-- 订单列表 -->
           <div v-for="(item,index) in lists" :key="'order-' + index" class="w-100 plr-12 mb-12 bg-white pb-20 pt-24">
             <!-- 订单店铺 -->
-            <OrderStoreSingle :name="item.storeName" :status="statusFormat(item.status)" @goStoreDetail="goOrderDetail(item.items[0].orderId)">
+            <OrderStoreSingle :name="item.storeName" :status="statusFormat(item.status, item)" @goStoreDetail="goOrderDetail(item.items[0].orderId)">
               <!-- 如果是取消状态，则该订单可删除，添加操作展示  -->
               <div slot="other-deal" class="flex vcenter" v-if="item.status == 5 || item.status == 6">
                 <span class="block line-style"></span>
@@ -475,8 +475,27 @@ export default {
         console.log(error);
       })
     },
-    statusFormat(val) {
-      return val == 0 ? this.$t('to_pay') : val == 1 ? this.$t('to_be_delivered') : val == 2 ? this.$t('unreceived') : val == 3 ? this.$t('to_be_evaluated') : val == 4 ? this.$t('completed') : val == 5 ? this.$t('cancelled') : val == 6 ? this.$t('trading_close') : val == 7 ? this.$t('un_rejected') : '';
+    statusFormat(val, item) {
+      let title = 'trading_close';
+      // 0->待付款；1->待发货；2->待收货；3->待评价；4->已完成 5->已取消；6->超时取消；7->无效订单；8->已拒收
+      if (val == 0) title = 'unpaid'; // 0  待付款
+      if (val == 1 || val == 2) {
+        if (item.deliveryType == 2) {
+          if (item.fbtDeliveryStatus == 1 || item.fbtDeliveryStatus == 2) title = 'waiting_for_warehouse_processing';
+          else if (item.fbtDeliveryStatus == 3) title = 'warehouse_processing';
+          else if (item.fbtDeliveryStatus == 4) title = 'issued_warehouse';
+          else title = '';
+        } else {
+          if (val == 2) title = 'unreceived';
+          else title = 'to_be_delivered';
+        }
+      }
+      if (val == 3 || val == 4) title = 'completed'; // 4  已完成
+      if (val == 5) title = 'cancelled'; // 5  已取消
+      if (val == 6) title = 'trading_close'; // 6  交易关闭,超时取消
+      if (val == 7) title = 'trading_close'; // 7 无效订单
+      if (val == 8) title = 'un_rejected'; // 8 已拒收
+      return this.$t(title);
     },
     onEvaluate(orderItem) { // 去评价
       this.$router.push({

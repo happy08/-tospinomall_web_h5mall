@@ -1,5 +1,7 @@
 <template>
   <!-- 我的-订单-订单详情  -->
+  <!-- status: 0->待付款；1->待发货；2->待收货；3->待评价；4->已完成 5->已取消；6->超时取消；7->无效订单；8->已拒收 -->
+  <!-- fbt模式发货状态：1->待推送至WMS；2->等待仓库处理；3->仓库处理中；4->已出库 -->
   <div class="v-percent-100 bg-grey pb-56">
     <!-- 头部 -->
     <div class="bg-green-linear">
@@ -22,6 +24,13 @@
         <!-- <div class="fs-14 white mt-14 pb-40 plr-30 tc lh-20" v-else-if="detail.status == 2">
           {{ $t('me.order.sending') }}
         </div> -->
+        <!-- FBT发货状态 1->待推送至WMS；2->等待仓库处理；3->仓库处理中；4->已出库 -->
+        <template v-if="(detail.status == 1 || detail.status == 2) && detail.deliveryType == 2">
+          <div class="fs-14 white mt-14 pb-40 plr-30 tc lh-20" v-if="detail.fbtDeliveryStatus == 1 || detail.fbtDeliveryStatus == 2">{{ $t('waiting_for_warehouse_processing') }}</div>
+          <div class="fs-14 white mt-14 pb-40 plr-30 tc lh-20" v-else-if="detail.fbtDeliveryStatus == 3">{{ $t('warehouse_processing') }}</div>
+          <div class="fs-14 white mt-14 pb-40 plr-30 tc lh-20" v-else-if="detail.fbtDeliveryStatus == 4">{{ $t('issued_warehouse') }}</div>
+        </template>
+        
         <!-- 待评价 -->
         <div class="fs-14 white mt-14 pb-40 plr-30 tc lh-20" v-else-if="detail.status == 3">
           {{ $t('to_be_evaluated') }}
@@ -39,14 +48,14 @@
           {{ $t('time_out_cancel') }}
         </div>
         <!-- 已拒收 -->
-        <!-- <div class="fs-14 white mt-14 pb-40 plr-30 tc lh-20" v-else-if="detail.status == 7">
+        <!-- <div class="fs-14 white mt-14 pb-40 plr-30 tc lh-20" v-else-if="detail.status == 8">
           {{ $t('un_rejected') }}
         </div> -->
       </div>
     </div>
     
     <!-- 运输方式，待收货时展示 -->
-    <van-cell class="p-20" :title="detail.latestLogistics" is-link title-class="fw black ml-12 hidden-1" :to="{ name: 'me-order-detail-logistics', query: { deliverySn: detail.deliverySn } }" v-if="detail.status == 2 && detail.latestLogistics != ''">
+    <van-cell class="p-20" :title="detail.latestLogistics" is-link title-class="fw black ml-12 hidden-1" :to="{ name: 'me-order-detail-logistics', query: { deliverySn: detail.deliverySn } }" v-if="detail.status == 2 && detail.latestLogistics  != ''">
       <!-- 左侧图标 -->
       <template #icon>
         <van-icon :name="require('@/assets/images/icon/car-icon.png')" size="0.48rem" />
@@ -154,7 +163,7 @@
     </template>
 
     <div class="w-100 bg-white btn-content flex hend vcenter">
-      <!-- 订单状态status：0->待付款；1->待发货；2->待收货；3->待评价（可能废弃）；4->已完成 5->已取消；6->超时未付款（订单关闭）；7->已拒收；8->其他 -->
+      <!-- 订单状态status: 0->待付款；1->待发货；2->待收货；3->待评价；4->已完成 5->已取消；6->超时取消；7->无效订单；8->已拒收 -->
       <!-- 支付状态payState：0->未支付 1已支付 -->
       <!-- 付款方式paymentType：1->在线支付；2->货到付款 -->
       <!-- 评论状态hasComment：0->未评论 1->已评论 -->
@@ -413,14 +422,16 @@ export default {
 
       getOrderDetail(this.$route.params.id).then(res => {
         let title = 'trading_close';
+        // 0->待付款；1->待发货；2->待收货；3->待评价；4->已完成 5->已取消；6->超时取消；7->无效订单；8->已拒收
         if (res.data.status == 0) title = 'unpaid'; // 0  待付款
-        if (res.data.status == 1) title = 'to_be_delivered'; // 2  待发货
+        if (res.data.status == 1) title = 'to_be_delivered'; // 1  待发货
         if (res.data.status == 2) title = 'unreceived'; // 2  待收货
-        if (res.data.status == 3) title = 'me.order.done'; // 3  已收货
+        if (res.data.status == 3) title = 'to_rate'; // 3  待评价
         if (res.data.status == 4) title = 'completed'; // 4  已完成
         if (res.data.status == 5) title = 'cancelled'; // 5  已取消
         if (res.data.status == 6) title = 'trading_close'; // 6  交易关闭,超时取消
-        if (res.data.status == 7) title = 'trading_close'; // 7 已拒收
+        if (res.data.status == 7) title = 'trading_close'; // 7 无效订单
+        if (res.data.status == 8) title = 'un_rejected'; // 8 已拒收
         this.title = title;
         this.detail = {
           ...res.data,
