@@ -1,8 +1,8 @@
 <template>
   <!-- 订单店铺入口展示 -->
   <div class="flex between vcenter w-100 hidden-1">
-    <div class="flex vcenter between hidden-1" @click="goStoreDetail">
-      <div class="flex vcenter hidden-1">
+    <div class="flex vcenter between hidden-1">
+      <div class="flex vcenter hidden-1" @click="goStoreDetail">
         <BmImage
           :url="logo"
           :width="'0.36rem'" 
@@ -17,7 +17,7 @@
         <span class="ml-10 fs-14 pr-4 fw black hidden-1 w-100 iblock">{{ name }}</span>
         <van-icon name="arrow" size="0.2rem" class="mr-10" v-if="showArrow" />
       </div>
-      <span class="plr-8 round-10 ptb-2 bg-linear-F9083B red-e02 fs-12 flex-shrink" v-if="isCoupon">{{ $t('coupon') }}</span>
+      <slot name="coupon"></slot>
     </div>
     <div class="flex vcenter flex-shrink">
       <!-- 订单状态 -->
@@ -51,10 +51,6 @@ export default {
     showArrow: {
       type: Boolean,
       default: true
-    },
-    isCoupon: {
-      type: Boolean,
-      default: false
     }
   },
   methods: {
@@ -72,11 +68,5 @@ export default {
   height: 10px;
   margin-left: 8px;
   margin-right: 8px;
-}
-.bg-linear-F9083B{
-  background: linear-gradient(to right, #FB6028 0%, #F9083B 100%);
-}
-.red-e02{
-  color: #E02020;
 }
 </style>

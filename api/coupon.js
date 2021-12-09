@@ -58,17 +58,6 @@ export function getCouponCenterCount(buyerId) {
 }
 
 /**
- * 购物车领券列表
- */
-export function getCartCouponList(params) {
-  return request({
-    url: `/discount/match/coupon/cart/center/page`,
-    method: 'get',
-    params
-  })
-}
-
-/**
  * 领取优惠券
  */
 export function receiveCoupon(params) {

@@ -13,7 +13,7 @@
         class="bg-grey"
         :immediate-check="false"
       >
-        <coupon-order-single class="mb-10 mlr-10" v-for="(item, index) in couponList" :key="'good-coupon-' + index" :item="item"></coupon-order-single>
+        <coupon-order-single class="mb-10 mlr-10" v-for="(item, index) in couponList" :key="'good-coupon-' + index" :item="item" @onReceive="item.isReceive = $event"></coupon-order-single>
       </van-list>
     </div>
   </van-popup>
@@ -34,6 +34,10 @@ export default {
       default: false
     },
     goodId: {
+      type: String,
+      default: ''
+    },
+    storeId: {
       type: String,
       default: ''
     }
@@ -76,13 +80,19 @@ export default {
       this.getGoodsCouponList();
     },
     getGoodsCouponList() { // 获取优惠券列表
-      getCouponCenterList({
+      let params = {
         pageNum: this.couponPageNum,
         pageSize: this.couponPageSize,
         listType: this.type,
-        goodsId: this.goodId,
         buyerId: this.$store.state.user.authToken ? this.$store.state.user.userInfo.id : ''
-      }).then(res => {
+      }
+      if (this.type == 'goodsDetails') { // 商品详情需要商品id
+        params.goodsId = this.goodId;
+      }
+      if (this.type == 'cart') { // 购物车是按照店铺查询优惠券，需要传店铺id
+        params.storeId = this.storeId;
+      }
+      getCouponCenterList(params).then(res => {
         this.couponList = this.couponPageNum == 1 ? res.data.records : this.couponList.concat(res.data.records);
         this.couponTotal = parseFloat(res.data.total);
         this.loading = false;

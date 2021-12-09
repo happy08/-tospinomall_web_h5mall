@@ -977,8 +977,6 @@ export default {
         urlContent: `${location.href}?isShare=1${this.$t('share_product_link')}, ${this.$t('share_product_title')}: ${this.goodSpuVo.goodTitle}, ${this.$t('share_product_min_price')}: ${this.goodSpuVo.minPrice}`
       }
     }
-    // 获取优惠券列表
-    // this.getGoodsCouponList();
     // 获取分享内容
     getShareDetail(this.goodId).then(res => {
       if (!res.data) return false;
@@ -1195,21 +1193,7 @@ export default {
     },
     onPreviewChange(index) { // 预览切换时
       this.previewIndex = index;
-    },
-    // getGoodsCouponList() { // 获取优惠券列表
-    //   getCouponCenterList({
-    //     pageNum: this.couponPageNum,
-    //     pageSize: this.couponPageSize,
-    //     listType: 'goodsDetails',
-    //     goodId: this.goodId,
-    //     buyerId: this.$store.state.user.userInfo.id || ''
-    //   }).then(res => {
-    //     this.couponList = res.data.records;
-    //     this.couponTotal = parseFloat(res.data.total);
-    //   }).catch(error => {
-    //     console.log(error);
-    //   })
-    // }
+    }
   },
 }
 </script>

@@ -36,7 +36,10 @@
                 :alt="'choose icon'"
               />
               <!-- 店铺 -->
-              <OrderStoreSingle class="pl-16 pr-16" :logo="item.storeLogo" :name="item.storeName" :isCoupon="item.isHaveCoupon == 1 ? true : false" @goStoreDetail="goStoreDetail(item)" />
+              <OrderStoreSingle class="pl-16 pr-16" :logo="item.storeLogo" :name="item.storeName" @goStoreDetail="goStoreDetail(item)">
+                <!-- 优惠券 -->
+                <span slot="coupon" class="plr-8 round-10 ptb-2 bg-dark-red-linear white fs-12 flex-shrink" v-if="item.isHaveCoupon == 1" @click="onCoupon(item)">{{ $t('coupon') }}</span>
+              </OrderStoreSingle>
             </div>
             <van-swipe-cell class="pl-12" v-for="singleItem in item.products" :key="'single-' + singleItem.id">
               <div class="flex vcenter">
@@ -198,6 +201,9 @@
     <!-- 产品规格 -->
     <ProductSku :productShow="productShow" :goodSpuVo="goodSpuVo" :initialSku="initialSku" :sku="sku" :type="'cart'" @onRefresh="$fetch()" />
 
+    <!-- 店铺优惠券 -->
+    <CouponScroll v-if="isCouponShow" :isShow="isCouponShow" :storeId="couponStoreId" :type="'cart'" @onBeforeClose="isCouponShow = $event"></CouponScroll>
+
     <!-- 底部 -->
     <BmTabbar v-if="!$route.query.isBar" />
   </div>
@@ -213,7 +219,6 @@ import { removeCart, setOftenBuy, getCartCount, moveToFavorite, getCalculatePric
 import { getGoodAttr } from '@/api/product';
 import PullRefresh from '@/components/PullRefresh';
 import ProductSku from '@/components/ProductSku';
-import { getCartCouponList } from '@/api/coupon';
 
 export default {
   middleware: 'authenticated',
@@ -266,7 +271,9 @@ export default {
       selectSku: {},
       recommendList: [],
       loading: false,
-      finished: false
+      finished: false,
+      couponStoreId: '',
+      isCouponShow: false
     }
   },
   async fetch() {
@@ -672,10 +679,10 @@ export default {
     onModeLabel(transportMode) {
       return transportMode == 1 ? 'plane-icon.png' : transportMode == 2 ? 'ship-icon.png' : 'truck-icon.png';
     },
-    getCartCouponList() { // 获取优惠券列表
-      getCartCouponList().then(res => {
-        
-      })
+    onCoupon(item) { // 领取优惠券
+      console.log('---------')
+      this.couponStoreId = item.storeId;
+      this.isCouponShow = true;
     }
   },
 }
