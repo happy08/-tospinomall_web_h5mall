@@ -19,7 +19,7 @@
                 class="bg-grey"
                 :immediate-check="false"
               >
-                <coupon-single v-for="(item, itemIndex) in item.records" :key="itemIndex" :item="item" :type="recordTabActive" class="mt-12" @onReceive="item.isReceive = $event"></coupon-single>
+                <coupon-order-single class="mt-12"  v-for="(item, itemIndex) in item.records" :key="'coupon-center' + itemIndex" :item="item" :pageType="1" :type="1"></coupon-order-single>
               </van-list>
             </div>
           </PullRefresh>
@@ -34,6 +34,7 @@ import CouponSingle from '@/components/CouponSingle';
 import { Tab, Tabs, Sticky, List } from 'vant';
 import { getRecordList } from '@/api/coupon';
 import PullRefresh from '@/components/PullRefresh';
+import CouponOrderSingle from '@/components/CouponOrderSingle';
 
 export default {
   // middleware: 'authenticated',
@@ -43,7 +44,8 @@ export default {
     vanSticky: Sticky,
     vanList: List,
     CouponSingle,
-    PullRefresh
+    PullRefresh,
+    CouponOrderSingle
   },
   data() {
     return {

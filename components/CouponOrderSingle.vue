@@ -1,30 +1,32 @@
 <template>
   <!-- 优惠券 -->
   <div class="round-8">
-    <div :class="{'flex coupon-orde-single': true, 'dark-green': !isStoreCount, 'store-bgd dark-red': isStoreCount}">
+    <div :class="{'flex coupon-orde-single': true, 'dark-green': !isStoreCount, 'store-bgd dark-red': isStoreCount, 'light-grey expired-bgd': type == 1}">
       <div class="round-8 coupon-orde-single__left">
         <div class="fw">
           <span class="fs-16">{{ $store.state.rate.currency }}</span>
-          <span class="fs-22">{{ item.subtractAmount }}</span>
+          <span class="fs-22 fm-din">{{ item.subtractAmount }}</span>
         </div>
         <!-- 满减券 -->
-        <div class="fs-10 mt-6 hidden-2" v-if="isFullDiscount">{{ $t('coupon_full_reduction', { replace_tip: $store.state.rate.currency + item.satisfyAmount , replace_tip1: this.$store.state.rate.currency + item.subtractAmount }) }}</div>
+        <div class="fs-10 mt-6 hidden-2 fm-pf-r" v-if="isFullDiscount">{{ $t('coupon_full_reduction', { replace_tip: item.satisfyAmount , replace_tip1: item.subtractAmount }) }}</div>
         <!-- 无门槛 -->
         <!-- <p :class="{'fs-10 lh-12 mt-6': true, 'dark-green': type == 0, 'light-grey': type != 0}" v-else>{{ $t('coupon_no_threshold') }}</p> -->
-        <p :class="{'fs-10 lh-12 mt-6': true}" v-else>{{ $t('coupon_no_threshold') }}</p>
+        <p :class="{'fs-10 fm-pf-r lh-12 mt-6': true}" v-else>{{ $t('coupon_no_threshold') }}</p>
       </div>
-      <div class="round-8 coupon-orde-single__right">
+      <div class="round-8 fm-noto-sans coupon-orde-single__right">
         <!-- 规则的展开与隐藏 -->
-        <BmIcon :name="isStoreCount ? 'collapse-red' : 'collapse'" :width="'0.28rem'" :height="'0.28rem'" @iconClick="isOpenCollapse = !isOpenCollapse" class="coupon-collapse"></BmIcon>
+        <BmIcon :name="type == 1 ? 'collapsed' : isStoreCount ? 'collapse-red' : 'collapse'" :width="'0.28rem'" :height="'0.28rem'" @iconClick="isOpenCollapse = !isOpenCollapse" class="coupon-collapse"></BmIcon>
         <h2 class="fs-14 hidden-1">{{ discountType }}</h2>
-        <p class="fs-12 mt-6 hidden-1">{{ item.discountName }}</p>
+        <p class="fs-12 mt-6 hidden-1">{{ discountName }}</p>
         <div class="flex between mt-12">
           <!-- 开始时间-结束时间 -->
-          <span class="fs-10 mt-4 w-130" v-if="item.validTimeType == 1 || !item.discountValidDate">{{ item.discountValidStartDate }}-{{ item.discountValidEndDate }}</span>
+          <span class="fs-10 mt-4 w-145" v-if="item.discountValidDate == '' || pageType == 1">{{ discountValidStartDate }} - {{ discountValidEndDate }}</span>
           <!-- 领取后x天有效 -->
-          <span class="fs-10 mt-4 w-130" v-if="item.validTimeType == 0 || item.discountValidDate">{{ $t('coupon_validity_day', { replace_tip: item.discountValidDate }) }}</span>
+          <span class="fs-10 mt-4 w-145" v-else-if="item.discountValidDate != ''">{{ $t('coupon_validity_day', { replace_tip: item.discountValidDate }) }}</span>
           <!-- 未领取,可领取 -->
           <BmButton :class="{'fs-12 fw white round-100 plr-10 h-24': true, 'bg-dark-red-linear': isStoreCount, 'bg-green-linear': !isStoreCount}" v-if="item.isReceive == 0 || (item.isReceive == 3 && item.isH5CouponType)" @click="onReceive">{{ $t('coupon_get_it') }}</BmButton>
+          <!-- 立即使用 -->
+          <BmButton :class="{'fs-12 fw white round-100 plr-10 h-24': true, 'bg-dark-red-linear': isStoreCount, 'bg-green-linear': !isStoreCount}" v-if="pageType == 1 && item.useStatus" @click="onReceive">{{ $t('coupon_use_it') }}</BmButton>
           <!-- 已领取 -->
           <div class="tc fs-12 lh-20 coupon-status" v-if="item.isReceive == 1">
             <p class="coupon-status__tip">{{ $t('coupon_received') }}</p>
@@ -39,8 +41,8 @@
         </div>
       </div>
     </div>
-    <div class="pl-16 pr-10 bg-white pt-2" v-show="isOpenCollapse">
-      <div class="fs-10 light-grey pt-8 pb-12" v-html="item.discountDescription"></div>
+    <div class="pl-16 pr-10 bg-white pt-2 descript-container" v-show="isOpenCollapse">
+      <div class="fs-10 light-grey pt-8 pb-12" v-html="item.discountDescription || $t('no_instructions_for_use')"></div>
     </div>
   </div>
 </template>
@@ -50,6 +52,10 @@ import { receiveCoupon, getLinkCoupon } from '@/api/coupon';
 
 export default {
   props: {
+    pageType: {
+      type: Number,
+      default: 0 // 1我的优惠券 2领券中心
+    },
     type: { // 优惠券状态 0未使用 1已使用 2 已过期 3用完 -1可领取
       type: Number,
       default: 0
@@ -83,7 +89,16 @@ export default {
     },
     isFullDiscount() { // 满减还是立减
       return this.item.discountType == 1 || this.item.discountType == 3 || this.item.discountType == 5 || this.item.discountType == 7 || this.item.discountType == 8 ? true : false;
-    }
+    },
+    discountName() { // 优惠券名称
+      return this.pageType == 1 ? this.item.couponName : this.item.discountName;
+    },
+    discountValidEndDate() { // 优惠券有效结束时间
+      return this.pageType == 1 ? this.item.validEndTime : this.item.discountValidEndDate;
+    },
+    discountValidStartDate() { // 优惠券有效开始时间
+      return this.pageType == 1 ? this.item.validStartTime : this.item.discountValidEndDate;
+    },
   },
   data() {
     return {
@@ -103,6 +118,35 @@ export default {
       if (this.item.isReceive == 1 || (this.item.isReceive == 2 && this.item.isH5CouponType)) {
         return false;
       }
+      // 已领取-立即使用
+      // 活动类型：1.平台新人满减券，2.平台新人立减券，3.客服满减券，4.客服立减券，5.店铺新人满减券，6.店铺新人立减券，7.店铺满减券，8.商品满减券，9.商品立减券
+      // 我的优惠券列表立即使用
+      if (this.item.isReceive == 1 || (this.pageType == 1 && this.item.useStatus)) {
+        // 若是平台新人礼/平台客服券，点击跳转到商城首页
+        if (this.item.discountType == 1 || this.item.discountType == 2 || this.item.discountType == 3 || this.item.discountType == 4) {
+          this.$router.push({ name: 'home' });
+        }
+
+        // 若是店铺新人礼/店铺满减/立减券，点击跳转到对应店铺首页
+        if (this.item.discountType == 5 || this.item.discountType == 6 || this.item.discountType == 7) {
+          this.$router.push({ 
+            name: 'cart-store-id', 
+            params: { 
+              id: this.item.storeId
+            }, 
+            query: {
+              sellerId: this.item.sellerId
+            } 
+          });
+        }
+
+        // 若是商品满减券/立减券，点击跳转到对应商品详情页
+        if (this.item.discountType == 8 || this.item.discountType == 9) {
+          this.$router.push({ name: 'product-id', params: { id: this.item.goodsId } });
+        }
+        
+        return false;
+      }
       this.$toast.loading({
         forbidClick: true,
         loadingType: 'spinner',
@@ -113,7 +157,7 @@ export default {
 
         this.$toast.clear();
         this.$toast({
-          message: this.$t('receive_success'),
+          message: this.isH5CouponType ? this.$t('congratulation_successful_collection') : this.$t('receive_success'),
           duration: 3000
         });
         this.$emit('onSelect', false); // 已领取弹窗隐藏
@@ -135,6 +179,9 @@ export default {
   position: relative;
   &.store-bgd{
     background-image: url('../assets/images/coupon/coupon-red-bgd.png');
+  }
+  &.expired-bgd{
+    background-image: url('../assets/images/coupon/coupon-grey-bgd.png');
   }
   .coupon-orde-single__left{
     width: 111px;
@@ -184,7 +231,11 @@ export default {
 .fs-22{
   font-size: 22px;
 }
-.w-130{
-  width: 130px;
+.w-145{
+  width: 145px;
+}
+.descript-container{
+  margin-top: -10px;
+  padding-top: 10px;
 }
 </style>

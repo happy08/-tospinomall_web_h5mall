@@ -1,71 +1,50 @@
 <template>
   <!-- 我的-我的优惠券 -->
   <div class="bg-grey v-percent-100 pb-64 pt-46">
-    <!-- <van-sticky> -->
-      <BmHeaderNav :left="{ isShow: true }" :title="$t('my_coupon')" fixed>
-        <!-- 使用说明 -->
-        <nuxt-link slot="header-right" class="fs-16 green" :to="{ name: 'service-type', params: { type: 'coupon' }, query: { isH5: 1 } }">{{ $t('use_instruction') }}</nuxt-link>
-      </BmHeaderNav>
+    <BmHeaderNav :left="{ isShow: true }" :title="$t('my_coupon')" fixed>
+      <!-- 使用说明 -->
+      <nuxt-link slot="header-right" class="fs-16 green" :to="{ name: 'service-type', params: { type: 'coupon' }, query: { isH5: 1 } }">{{ $t('use_instruction') }}</nuxt-link>
+    </BmHeaderNav>
 
-      <van-tabs sticky :offset-top="'0.92rem'" v-model="tabActive" color="#42B7AE" class="customs-van-tabs" @click="onChangeTab" :ellipsis="false">
-        <van-tab :title="item.tab + '(' + item.count + ')'" :name="item.tabName" v-for="(item, index) in lists" :key="index">
-          <PullRefresh :refreshing="refreshing" @refresh="onRefresh" class="custom-min-height-158">
-            <div class="bg-grey mlr-10 v-100">
-              <!-- 空列表 -->
-              <empty-status v-if="item.records.length === 0" :image="require('@/assets/images/empty/order.png')" :description="$t('empty')" />
-              <van-list
-                v-else
-                v-model="loading"
-                :finished="finished"
-                finished-text=""
-                @load="onLoad"
-                class="bg-grey"
-                style="overflow-y: auto;"
-                :immediate-check="false"
-              >
-                <van-swipe-cell  v-for="(itemSingle, itemIndex) in item.records" :key="itemIndex">
-                  <coupon-single :item="itemSingle" class="mt-12" :pageType="1"></coupon-single>
-                  <template #right>
-                    <div class="flex hend h-100">
-                      <BmButton class="round-0 bg-yellow h-100 w-70" @click="onDelete(itemSingle, item)">{{ $t('delete') }}</BmButton>
-                    </div>
-                  </template>
-                </van-swipe-cell>
-              </van-list>
-            </div>
-          </PullRefresh>
-        </van-tab>
-      </van-tabs>
-    <!-- </van-sticky> -->
-
-    <!-- <button @click="isCouponShow = !isCouponShow">isCouponShow</button> -->
+    <van-tabs sticky :offset-top="'0.92rem'" v-model="tabActive" color="#42B7AE" class="customs-van-tabs" @click="onChangeTab" :ellipsis="false">
+      <van-tab :title="item.tab + '(' + item.count + ')'" :name="item.tabName" v-for="(item, index) in lists" :key="index">
+        <PullRefresh :refreshing="refreshing" @refresh="onRefresh" class="custom-min-height-158">
+          <div class="bg-grey mlr-10 v-100">
+            <!-- 空列表 -->
+            <empty-status v-if="item.records.length === 0" :image="require('@/assets/images/empty/order.png')" :description="$t('empty')" />
+            <van-list
+              v-else
+              v-model="loading"
+              :finished="finished"
+              finished-text=""
+              @load="onLoad"
+              class="bg-grey"
+              style="overflow-y: auto;"
+              :immediate-check="false"
+            >
+              <van-swipe-cell  v-for="(itemSingle, itemIndex) in item.records" :key="itemIndex">
+                <coupon-order-single class="mt-12" :item="itemSingle" :pageType="1"></coupon-order-single>
+                <template #right>
+                  <div class="flex hend h-100">
+                    <BmButton class="round-0 bg-yellow h-100 w-70" @click="onDelete(itemSingle, item)">{{ $t('delete') }}</BmButton>
+                  </div>
+                </template>
+              </van-swipe-cell>
+            </van-list>
+          </div>
+        </PullRefresh>
+      </van-tab>
+    </van-tabs>
 
     <div class="flex tc coupon-tabbar">
       <nuxt-link :to="{ name: 'me-coupon-record' }" class="fw black fs-14 flex-1 pb-14 pt-20 border-r">{{ $t('coupon_usage_history') }}</nuxt-link>
       <nuxt-link :to="{ name: 'me-coupon-center' }" class="fw black fs-14 flex-1 pb-14 pt-20">{{ $t('go_to_coupon_center') }}</nuxt-link>
     </div>
-
-    <!-- 确认订单弹窗 -->
-    <!-- <van-popup v-model="isCouponShow" style="height: 80%" position="bottom" class="border-tlr-radius-12 coupon-popup">
-      <div class="coupon-popup__top">
-        <h1 class="fs-16 tc pt-12">优惠</h1>
-        <van-tabs v-model="couponActive" class="customs-van-tabs border-b">
-          <van-tab title="可用优惠券"></van-tab>
-          <van-tab title="不可用优惠券"></van-tab>
-        </van-tabs>
-        <p class="fs-12 p-10">您已选中优惠券1张，共抵用<span>¥120.0</span></p>
-      </div>
-      <div class="coupon-popup__bottom">
-        <coupon-order-single class="mt-10 mlr-10" v-for="item in 10" :key="item"></coupon-order-single>
-      </div>
-    </van-popup> -->
-
-    
   </div>
 </template>
 
 <script>
-import CouponSingle from '@/components/CouponSingle';
+import CouponOrderSingle from '@/components/CouponOrderSingle';
 import PullRefresh from '@/components/PullRefresh';
 import { Tab, Tabs, Sticky, Popup, List, SwipeCell } from 'vant';
 import { getCouponList, getCouponCount, deleteCoupon } from '@/api/coupon';
@@ -79,13 +58,12 @@ export default {
     vanPopup: Popup,
     vanList: List,
     vanSwipeCell: SwipeCell,
-    CouponSingle,
-    PullRefresh
+    PullRefresh,
+    CouponOrderSingle
   },
   data() {
     return {
       tabActive: '100',
-      isCouponShow: true,
       couponActive: 0,
       pageSize: 20,
       lists: [
