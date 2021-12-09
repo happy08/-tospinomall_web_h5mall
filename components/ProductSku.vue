@@ -191,6 +191,10 @@ export default {
       })
     },
     async onModifyConfirm() { // 修改商品属性
+      if (!this.selectSku.selectedSkuComb) {
+        this.$toast(this.$t('choose_product_sku'));
+        return false;
+      }
       this.$toast.loading({
         forbidClick: true,
         loadingType: 'spinner',
