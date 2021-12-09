@@ -28,7 +28,7 @@
       <!-- 评分 -->
       <van-cell class="plr-20 ptb-20" :title="$t('product_evaluation')" title-class="black fs-14">
         <template #label>
-          <van-rate class="mt-10" v-model="goodsScores" size="14" color="#F7B500" void-color="#DDDDDD" void-icon="star" />
+          <van-rate class="mt-10" v-model="goodsScores" size="18" color="#F7B500" void-color="#DDDDDD" void-icon="star" />
         </template>
       </van-cell>
       <van-field maxlength="255" class="p-20" v-model="content" :placeholder="$t('comment_upload_photo_tip')" :border="false" type="textarea" rows="1" :autosize="{maxHeight: 60}" />
@@ -64,19 +64,19 @@
       <!-- 包装 -->
       <van-cell class="plr-20 ptb-20" :title="$t('fedex_packing')" title-class="black fs-14">
         <template #label>
-          <van-rate class="mt-10" v-model="expressPackingScores" size="14" color="#F7B500" void-color="#DDDDDD" void-icon="star" />
+          <van-rate class="mt-10" v-model="expressPackingScores" size="18" color="#F7B500" void-color="#DDDDDD" void-icon="star" />
         </template>
       </van-cell>
       <!-- 送货速度 -->
       <van-cell class="plr-20 ptb-20" :title="$t('delivery_speed')" title-class="black fs-14">
         <template #label>
-          <van-rate class="mt-10" v-model="logisticsScores" size="14" color="#F7B500" void-color="#DDDDDD" void-icon="star" />
+          <van-rate class="mt-10" v-model="logisticsScores" size="18" color="#F7B500" void-color="#DDDDDD" void-icon="star" />
         </template>
       </van-cell>
       <!-- 快递人员服务 -->
       <van-cell class="plr-20 ptb-20" :title="$t('delivery_personnel_service')" title-class="black fs-14">
         <template #label>
-          <van-rate class="mt-10" v-model="distServiceScores" size="14" color="#F7B500" void-color="#DDDDDD" void-icon="star" />
+          <van-rate class="mt-10" v-model="distServiceScores" size="18" color="#F7B500" void-color="#DDDDDD" void-icon="star" />
         </template>
       </van-cell>
     </van-cell-group>
@@ -101,19 +101,19 @@ export default {
   },
   data() {
     return {
-      goodsScores: 5,
+      goodsScores: 0,
       fileList: [],
       isAnonymous: false,
-      expressPackingScores: 5,
-      distServiceScores: 5,
-      logisticsScores: 5,
+      expressPackingScores: 0,
+      distServiceScores: 0,
+      logisticsScores: 0,
       detail: {},
       content: '',
       imgList: []
     }
   },
   activated() {
-    this.goodsScores = this.$route.query.isAddId ? 0 : 5; // 追加评价商品评价为0
+    // this.goodsScores = this.$route.query.isAddId ? 0 : 5; // 追加评价商品评价为0
     getOrderItem(this.$route.params.id).then(res => {
       if (!res.data) return false;
 
@@ -124,6 +124,11 @@ export default {
   },
   methods: {
     onConfirm() { // 提交评价
+      // 评分不能为0
+      if (!this.goodsScores || !this.logisticsScores || !this.distServiceScores || !this.expressPackingScores) {
+        this.$toast(this.$t('please_evalution_rating'));
+        return false;
+      }
       let _data = {
         content: this.content, // 评价内容
         goodsScores: this.goodsScores, // 商品评分

@@ -728,7 +728,8 @@
   pay_wait_confirm: 'Confirmação do pagamento em curso, por favor seja paciente...',
   pay_wait: 'Esperando o pagamento',
   wallet_no_pay: "Verifique o estado da conta nos detalhes da recarga ou contacte o serviço ao cliente online",
-  wallet_timeout: 'Tempo limite de pagamento'
+  wallet_timeout: 'Tempo limite de pagamento',
+  please_evalution_rating: 'Avalie a avaliação com estrelas e envie um comentário'
 }
 
 export default por;

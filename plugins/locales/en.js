@@ -729,7 +729,8 @@ const en = {
   pay_wait_confirm: 'Payment confirmation in progress, please wait patiently...',
   pay_wait: 'Pay wait',
   wallet_no_pay: "Please check the bill status in the recharge details or contact online customer service",
-  wallet_timeout: 'Payment timeout'
+  wallet_timeout: 'Payment timeout',
+  please_evalution_rating: 'Rate the star and submit the review'
 }
 
 export default en;
