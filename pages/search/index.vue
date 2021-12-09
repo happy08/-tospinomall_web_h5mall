@@ -121,7 +121,7 @@
                 <div :class="{'flex vcenter pt-20 pb-30 hidden bg-white': true, 'border-229 border-b': searchIndex !== list.length - 1} ">
                   <div class="soldout-container">
                     <!-- 无货 -->
-                    <div class="white fs-12 lh-1 flex center soldout-container__tip" v-if="searchItem.stock == 0">{{ $t('out_of_stock') }}</div>
+                    <div class="white fs-12 lh-1 flex center soldout-container__tip" v-if="searchItem.stock == 0">{{ $t('sold_out') }}</div>
                     <BmImage 
                       :url="searchItem.mainPictureUrl"
                       :width="'1.8rem'" 

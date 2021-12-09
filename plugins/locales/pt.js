@@ -268,7 +268,7 @@
   buy_now: 'Compre Agora',
   please_select: 'por favor escolha ',
   in_stock: 'em estoque:',
-  out_of_stock: 'Fora de estoque',
+  sold_out: 'Fora de estoque',
   just_for_you: 'Produtos da mesma loja',
   specification: 'Especificação:',
   no_address_tip: 'Sem endereço de entrega, defina-o agora',
@@ -279,7 +279,7 @@
   total2: 'Total:',
   check_out: 'Povoado',
   ship_from: 'Ship to ',
-  sold_out: 'Invalidação',
+  invalidation: 'Invalidação',
   often_buy2: 'Compre frequentemente',
   t_operation_successful: 'Operação bem sucedida',
   delete_cart_tips: 'Tem certeza de que deseja excluir {replace_tip} produto?',
@@ -729,7 +729,8 @@
   pay_wait: 'Esperando o pagamento',
   wallet_no_pay: "Verifique o estado da conta nos detalhes da recarga ou contacte o serviço ao cliente online",
   wallet_timeout: 'Tempo limite de pagamento',
-  please_evalution_rating: 'Avalie a avaliação com estrelas e envie um comentário'
+  please_evalution_rating: 'Avalie a avaliação com estrelas e envie um comentário',
+  out_of_stock: 'Fora de estoque'
 }
 
 export default por;

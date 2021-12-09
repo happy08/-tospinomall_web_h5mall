@@ -269,7 +269,7 @@ const cn = {
   buy_now: '立即购买',
   please_select: '请选择 ',
   in_stock: '库存:',
-  out_of_stock: '无货',
+  sold_out: '无货',
   just_for_you: '同店商品',
   specification: '规格:',
   no_address_tip: '没有收货地址，现在设置它',
@@ -280,7 +280,7 @@ const cn = {
   total2: '合计:',
   check_out: '结算',
   ship_from: '发货至 ',
-  sold_out: '失效',
+  invalidation: '失效',
   often_buy2: '经常\n购买',
   t_operation_successful: '操作成功',
   delete_cart_tips: '确认要删除{replace_tip}种商品吗?',
@@ -730,7 +730,8 @@ const cn = {
   pay_wait: '支付等待',
   wallet_no_pay: "请到充值明细中查看账单情况或联系在线客服",
   wallet_timeout: '支付超时',
-  please_evalution_rating: '请评价星级并提交评论'
+  please_evalution_rating: '请评价星级并提交评论',
+  out_of_stock: '缺货'
 }
 
 export default cn;

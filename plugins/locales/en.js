@@ -268,7 +268,7 @@ const en = {
   buy_now: 'Buy Now',
   please_select: 'Please select ',
   in_stock: 'In Stock:',
-  out_of_stock: 'Sold Out',
+  sold_out: 'Sold Out',
   just_for_you: 'Just For You',
   specification: 'Specification:',
   no_address_tip: 'There is no shipping address. Set it now',
@@ -279,7 +279,7 @@ const en = {
   total2: 'Total:',
   check_out: 'Check out',
   ship_from: 'Ship from ',
-  sold_out: 'Sold Out',
+  invalidation: 'Invalidation',
   often_buy2: 'Often\nBuy',
   t_operation_successful: 'Operation succeeded',
   delete_cart_tips: 'Are you sure you want to delete {replace_tip} products?',
@@ -730,7 +730,8 @@ const en = {
   pay_wait: 'Pay wait',
   wallet_no_pay: "Please check the bill status in the recharge details or contact online customer service",
   wallet_timeout: 'Payment timeout',
-  please_evalution_rating: 'Rate the star and submit the review'
+  please_evalution_rating: 'Rate the star and submit the review',
+  out_of_stock: 'Out of stock'
 }
 
 export default en;

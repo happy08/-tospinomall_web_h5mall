@@ -59,7 +59,7 @@
                   <!-- 自定义图片 -->
                   <template #thumb>
                     <nuxt-link :to="'/product/' + singleItem.productId + '.html'">
-                      <SoldOut :isShow="singleItem.status == 1 ? false: true" :tip="$t('sold_out')">
+                      <SoldOut :isShow="singleItem.status == 1 ? false: true" :tip="$t('invalidation')">
                         <BmImage
                           :url="singleItem.mainPictureUrl"
                           :width="'1.8rem'" 
@@ -448,11 +448,18 @@ export default {
       })
     },
     onDelete(skuId) { // 删除商品
+      this.$toast.loading({
+        forbidClick: true,
+        loadingType: 'spinner',
+        duration: 0
+      });
       removeCart({skuIds: skuId}).then(() => {
         this.$fetch();
         this.getCartCount();
+        this.$toast.clear();
       }).catch(error => {
         console.log(error);
+        this.$toast.clear();
       })
     },
     goHome() { // 点击跳转到首页
@@ -461,6 +468,11 @@ export default {
       })
     },
     onOftenBy(product) { // 设置经常购买
+      this.$toast.loading({
+        forbidClick: true,
+        loadingType: 'spinner',
+        duration: 0
+      });
       setOftenBuy({ isOftenBuy: product.isOftenBuy == 1 ? 0 : 1, skuId: product.productSku }).then(res => {
         if (res.code != 0) return false;
 
@@ -469,6 +481,7 @@ export default {
         this.getCartCount();
       }).catch(error => {
         console.log(error);
+        this.$toast.clear();
       })
     },
     getCartCount() { // 总数查询
@@ -481,6 +494,11 @@ export default {
       })
     },
     moveToFavorite(skuIds) { // 添加到收藏夹
+      this.$toast.loading({
+        forbidClick: true,
+        loadingType: 'spinner',
+        duration: 0
+      });
       moveToFavorite({ skuIds: skuIds }).then(res => {
         if (res.code != 0) return false;
 
@@ -489,6 +507,7 @@ export default {
         this.getCartCount();
       }).catch(error => {
         console.log(error);
+        this.$toast.clear();
       })
     },
     getCalculatePrice(selectedData) { // 计算商品价格
@@ -538,12 +557,19 @@ export default {
       if (item.quantity == '' || parseFloat(item.quantity) < 1) {
         return false;
       }
+      this.$toast.loading({
+        forbidClick: true,
+        loadingType: 'spinner',
+        duration: 0
+      });
       updateCartNum({ quantity: item.quantity, skuId: item.productSku }).then(res => {
         if (res.code != 0) return false;
         
         this.onCountPrice(); // 修改数量之后如果选中的话要重新计算价格
+        this.$toast.clear();
       }).catch(error => {
         console.log(error);
+        this.$toast.clear();
       })
     },
     onMove() { // 移入收藏夹

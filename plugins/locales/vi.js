@@ -268,7 +268,7 @@ const vi = {
   buy_now: 'Mua ngay',
   please_select: 'xin vui lòng chọn ',
   in_stock: 'trong kho:',
-  out_of_stock: 'Hết hàng',
+  sold_out: 'Hết hàng',
   just_for_you: 'Cùng một cửa hàng hàng hóa',
   specification: 'Sự chỉ rõ:',
   no_address_tip: 'Không có địa chỉ giao hàng, hãy đặt nó ngay bây giờ',
@@ -279,7 +279,7 @@ const vi = {
   total2: 'Toàn bộ:',
   check_out: 'Quyết toán',
   ship_from: 'Tàu ',
-  sold_out: 'Sự vô hiệu',
+  invalidation: 'Sự vô hiệu',
   often_buy2: 'Mua thường xuyên',
   t_operation_successful: 'Hoạt động thành công',
   delete_cart_tips: 'Bạn có chắc chắn muốn xóa {replace_tip} sản phẩm không?',
@@ -729,7 +729,8 @@ const vi = {
   pay_wait: 'Chờ thanh toán',
   wallet_no_pay: "Vui lòng kiểm tra trạng thái hóa đơn trong chi tiết nạp tiền hoặc liên hệ chăm sóc khách hàng trực tuyến",
   wallet_timeout: 'Thanh toán ngoài giờ',
-  please_evalution_rating: 'Với lòng đánh giá và gửi bình luận'
+  please_evalution_rating: 'Với lòng đánh giá và gửi bình luận',
+  out_of_stock: 'Hết hàng'
 }
 
 export default vi;

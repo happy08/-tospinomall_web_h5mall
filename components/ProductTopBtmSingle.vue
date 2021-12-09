@@ -4,7 +4,7 @@
     <!-- 商品的图片 -->
     <div class="soldout-container">
       <!-- 无货 -->
-      <div class="white fs-12 lh-1 flex center soldout-container__tip" v-if="detail.stock == 0">{{ $t('out_of_stock') }}</div>
+      <div class="white fs-12 lh-1 flex center soldout-container__tip" v-if="detail.stock == 0">{{ $t('sold_out') }}</div>
       <BmImage 
         :url="img.url"
         :width="img.width" 
@@ -16,7 +16,7 @@
         :alt="detail.desc"
       />
     </div>
-    <!-- <SoldOut :isShow="true" :width="img.width" :height="img.height" :tip="$t('out_of_stock')">
+    <!-- <SoldOut :isShow="true" :width="img.width" :height="img.height" :tip="$t('sold_out')">
       
     </SoldOut> -->
     <!-- 商品的信息 -->

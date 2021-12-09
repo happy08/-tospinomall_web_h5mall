@@ -241,7 +241,7 @@
             <!-- 商品图片 -->
             <div class="soldout-container">
               <!-- 无货 -->
-              <div class="white fs-12 lh-1 flex center soldout-container__tip" v-if="productItem.stock == 0">{{ $t('out_of_stock') }}</div>
+              <div class="white fs-12 lh-1 flex center soldout-container__tip" v-if="productItem.stock == 0">{{ $t('sold_out') }}</div>
               <BmImage 
                 :url="productItem.mainPictureUrl"
                 :width="'1.8rem'" 
