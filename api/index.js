@@ -296,6 +296,12 @@ export default ({ app }, inject) => {
         url: `${url}/discount/description/find/system/description`,
         method: 'get'
       })
+    },
+    getStoreCouponList(storeId) { // 查询店铺新人活动券信息
+      return app.$axios({
+        url: `${url}/discount/activity/find/shop/new/human/gift/${storeId}`,
+        method: 'get'
+      })
     }
   };
 

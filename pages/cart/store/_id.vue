@@ -275,7 +275,7 @@
     </PullRefresh>
 
     <!-- 店铺新人券标识 -->
-    <div class="store-coupon-logo">
+    <div class="store-coupon-logo" v-if="storeCoupons.length > 0">
       <BmImage
         :url="require('@/assets/images/coupon/store-coupon-logo.png')"
         :loadUrl="require('@/assets/images/product-bgd-90.png')"
@@ -290,7 +290,7 @@
     </div>
 
     <!-- 店铺新人红包 -->
-    <dialog-gift-coupon :lists="storeCoupons" :isGiftShow="isNewCoupon" @goAround="storeCoupons = $event" @onBeforeClose="isNewCoupon = $event"></dialog-gift-coupon>
+    <dialog-gift-coupon :lists="storeCoupons" :isGiftShow="isNewCoupon" @onBeforeClose="isNewCoupon = $event" :type="1"></dialog-gift-coupon>
 
     <!-- 底部标签栏 -->
     <van-tabbar v-model="tabbarActive" active-color="#FA2A32" inactive-color="#DBDBDB" v-if="isTabbarShow">
@@ -478,18 +478,9 @@ export default {
       this.tabbarActive = this.$route.query.tabbarActive ? parseFloat(this.$route.query.tabbarActive) : store_components.length > 1 ? 0 : 1;
       this.refreshing.isFresh = false;
 
-      // 已登录自动领取平台新人红包
-      let isAutoReceive = 0; // 0没
-      if (this.$store.state.user.authToken) {
-        await this.$api.autoGetPlatformCoupon();
-        isAutoReceive = 1;
-      }
-
-      if (isAutoReceive == 0) {
-        // 获取新人优惠券
-        const storeCoupons = await this.$api.getPlatformCouponList();
-        this.storeCoupons = storeCoupons.data;
-      }
+      // 获取店铺新人优惠券
+      const storeCoupons = await this.$api.getStoreCouponList(this.$route.params.id);
+      this.storeCoupons = storeCoupons.data;
     } catch (error) {
       console.log(error);
     }

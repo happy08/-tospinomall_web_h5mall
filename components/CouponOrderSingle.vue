@@ -19,10 +19,10 @@
         <h2 class="fs-14 hidden-1">{{ discountType }}</h2>
         <p class="fs-12 mt-6 hidden-1">{{ discountName }}</p>
         <div class="flex between mt-12">
-          <!-- 开始时间-结束时间 -->
-          <span class="fs-10 mt-4 w-145" v-if="item.discountValidDate == '' || pageType == 1">{{ discountValidStartDate }} - {{ discountValidEndDate }}</span>
           <!-- 领取后x天有效 -->
-          <span class="fs-10 mt-4 w-145" v-else-if="item.discountValidDate != ''">{{ $t('coupon_validity_day', { replace_tip: item.discountValidDate }) }}</span>
+          <span class="fs-10 mt-4 w-145" v-if="item.discountValidDate && item.discountValidDate != ''">{{ $t('coupon_validity_day', { replace_tip: item.discountValidDate }) }}</span>
+          <!-- 开始时间-结束时间 -->
+          <span class="fs-10 mt-4 w-145" v-else>{{ discountValidStartDate }}~{{ discountValidEndDate }}</span>
           <!-- 未领取,可领取 -->
           <BmButton :class="{'fs-12 fw white round-100 plr-10 h-24': true, 'bg-dark-red-linear': isStoreCount, 'bg-green-linear': !isStoreCount}" v-if="item.isReceive == 0 || (item.isReceive == 3 && item.isH5CouponType)" @click="onReceive">{{ $t('coupon_get_it') }}</BmButton>
           <!-- 立即使用 -->

@@ -111,3 +111,14 @@ export function deleteCoupon(params) {
     params
   })
 }
+
+/**
+ * 领取店铺新人优惠券
+ */
+export function getStoreCoupon(params) {
+  return request({
+    url: `/discount/coupon/autoGetStoreCoupon`,
+    method: 'get',
+    params
+  })
+}

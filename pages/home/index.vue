@@ -319,7 +319,7 @@
     </PullRefresh>
 
     <!-- 平台新人红包 -->
-    <dialog-gift-coupon :lists="platformCoupons" :isGiftShow="platformCoupons.length > 0" @goAround="platformCoupons = $event"></dialog-gift-coupon>
+    <dialog-gift-coupon :lists="platformCoupons" :isGiftShow="isPlatformCouponShow" @onBeforeClose="isPlatformCouponShow = $event"></dialog-gift-coupon>
 
     <!-- 底部 -->
     <BmTabbar />
@@ -415,7 +415,8 @@ export default {
       homeMasonryContainer: 'homeMasonryContainer',
       filterCategoryIds: [],
       platformCoupons: [],
-      isFromLogin: false
+      isFromLogin: false,
+      isPlatformCouponShow: false
     }
   },
   async fetch() {
@@ -441,6 +442,7 @@ export default {
         // 获取新人优惠券
         const platformCoupons = await this.$api.getPlatformCouponList();
         this.platformCoupons = platformCoupons.data;
+        this.isPlatformCouponShow = this.platformCoupons.length > 0 ? true : false;
       }
 
       // 分类列表

@@ -1,5 +1,5 @@
 <template>
-  <van-dialog v-model="dialogShow" :showConfirmButton="false" close-on-click-overlay @beforeClose="onBeforeClose" class="top-50 w-334 bg-transparent">
+  <van-dialog v-model="dialogShow" :showConfirmButton="false" closeOnClickOverlay :beforeClose="onBeforeClose" class="top-50 w-334 bg-transparent">
     <!-- 第一版样式 -->
     <!-- <template #title>
       <h1 class="dark-red flex center ">
@@ -34,17 +34,21 @@
           <p class="dark-red fs-12 mt-4 tc pb-4 w-230 border-b-E2D7C6 m-auto">{{ $t('added_to_my_coupon') }}</p>
 
           <div class="gift-container__top--single">
-            <div class="m-auto mt-6 center coupon-gift-single2" v-for="item, index in lists" :key="'gift-' + index">
-              <div class="tc pt-18 white">
+            <div class="m-auto mt-10 center coupon-gift-single2" v-for="item, index in lists" :key="'gift-' + index">
+              <div class="tc pt-22 white">
                 <span class="fs-24">{{ $store.state.rate.currency }}</span>
-                <span class="fs-28">{{ item.subtractAmount }}</span>
+                <span class="fs-28 fm-din">{{ item.subtractAmount }}</span>
               </div>
-              <p class="fs-14 white mt-10 tc hidden-1 plr-10">Your order of GH {{ $store.state.rate.currency }}{{ item.satisfyAmount }} or more</p>
+              <p class="fs-14 white mt-10 tc hidden-1 plr-10 fm-pf-r" v-if="isFullDiscount(item)">{{ $t('coupon_full_reduction', { replace_tip: item.satisfyAmount , replace_tip1: item.subtractAmount }) }}</p>
+              <p class="fs-14 white mt-10 tc hidden-1 plr-10 fm-pf-r" v-else>{{ $t('coupon_no_threshold') }}</p>
             </div>
           </div>
         </div>
         <div class="tc gift-container__bottom">
-          <button class="tc dark-red fs-12 gift-container__bottom--btn" @click="onGoShopping">{{ $t('go_shopping') }}</button>
+          <!-- 店铺新人券-手动领取 -->
+          <button class="tc dark-red fs-12 gift-container__bottom--btn" @click="onGoShopping" v-if="type == 1">{{ $t('coupon_get_it') }}</button>
+          <!-- 平台新人券-自动领取 -->
+          <button class="tc dark-red fs-12 gift-container__bottom--btn" @click="onGoShopping" v-else>{{ $t('go_shopping') }}</button>
         </div>
       </div>
     </template>
@@ -52,6 +56,8 @@
 </template>
 
 <script>
+import { getStoreCoupon } from '@/api/coupon';
+
 export default {
   props: {
     lists: {
@@ -61,6 +67,10 @@ export default {
     isGiftShow: {
       type: Boolean,
       default: false
+    },
+    type: {
+      type: Number,
+      default: 0 // 1店铺 0平台
     }
   },
   data() {
@@ -79,21 +89,39 @@ export default {
     }
   },
   methods: {
-    onGoShopping() { // 去逛逛
+    onGoShopping() { // 去逛逛 | 立即领取
       if (!this.$store.state.user.authToken) {
-        this.$emit('goAround', []);
         this.$emit('onBeforeClose', false);
         this.$router.push({
           name: 'login'
         })
         return false;
       }
-      this.$emit('goAround', []);
+      // 店铺新人券领取
+      if (this.type == 1) {
+        this.$toast.loading({
+          forbidClick: true,
+          loadingType: 'spinner',
+          duration: 0
+        });
+        getStoreCoupon({ storeId: this.$route.params.id }).then(() => {
+          this.$toast(this.$t('receive_success'));
+          this.$emit('onBeforeClose', false);
+        }).catch(error => {
+          console.log(error);
+          this.$toast.clear();
+        })
+        return false;
+      }
+
       this.$emit('onBeforeClose', false);
     },
-    onBeforeClose() {
+    onBeforeClose() { // 弹窗关闭之前
       this.$emit('onBeforeClose', false);
-    }
+    },
+    isFullDiscount(item) { // 满减还是立减
+      return item.discountType == 1 || item.discountType == 3 || item.discountType == 5 || item.discountType == 7 || item.discountType == 8 ? true : false;
+    },
   }
 }
 </script>
@@ -176,7 +204,7 @@ export default {
     .gift-container__top--single{
       height: 382px;
       overflow-y: auto;
-      padding-bottom: 89px;
+      padding-bottom: 79px;
     }
   }
   .gift-container__bottom{
@@ -223,7 +251,7 @@ export default {
 .fs-28{
   font-size: 28px;
 }
-.pt-18{
-  padding-top: 18px;
+.pt-22{
+  padding-top: 22px;
 }
 </style>
