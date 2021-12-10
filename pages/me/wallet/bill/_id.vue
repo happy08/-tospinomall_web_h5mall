@@ -5,7 +5,7 @@
 
     <!-- 金额 -->
     <div class="ptb-24 tc">
-      <p class="fs-24 black fw">{{ detail.collectPaymentType == 1 ? '+' : '-' }}{{ $store.state.rate.currency }}{{ detail.realAmount }}</p>
+      <p class="fs-24 black fw">{{ detail.collectPaymentType == 1 ? '+' : '-' }}{{ $store.state.rate.currency }}{{ detail.realAmount || 0 }}</p>
       <!-- 状态status:（0失败 1成功 2待支付 3已取消） -->
       <p class="fs-14 black mt-12" v-if="detail.status == 0">{{ $t('transaction_failed') }}</p>
       <p class="fs-14 black mt-12" v-if="detail.status == 1">{{ detail.type == 3 ? $t('refund_successfully') : $t('transaction_success') }}</p>
