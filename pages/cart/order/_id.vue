@@ -456,8 +456,16 @@ export default {
           for (let i in sItem.deliveryTypeSkuItemMap) {
             sItem.deliveryTypeSkuItemMap[i].orderCouponsList.forEach((cItem) => {
               if (["1", "2", "3", "4"].includes(cItem.discountType)) {
-                // 非同一店铺&&同一张平台券
-                if (cItem.couponsId === item.couponsId) {
+                //相同券&当前店铺&非当前订单（取消当前店铺非当前订单的相同券）
+                if (cItem.couponsId === item.couponsId && sItem.storeId === item.storeId && this.deliverySkuMapIndex !== i) {
+                  cItem.isSelected = 0;
+                }
+                //相同券&非当前店铺（取消其他店铺的相同券）
+                if (cItem.couponsId === item.couponsId && sItem.storeId !== item.storeId) {
+                  cItem.isSelected = 0;
+                }
+                //当前店铺&非当前券&当前订单（一个订单只能用一张平台券）
+                if (sItem.storeId === item.storeId && cItem.couponsId !== item.couponsId && this.deliverySkuMapIndex === i) {
                   cItem.isSelected = 0;
                 }
               } else {
@@ -477,11 +485,11 @@ export default {
                 cItem.isSelected = 0;
               }
               // 取消当前店铺相同券
-              if (cItem.couponsId === item.couponsId && this.deliverySkuMapIndex !== i) {
+              if (cItem.couponsId === item.couponsId && this.deliverySkuMapIndex !== i && sItem.storeId === item.storeId) {
                 cItem.isSelected = 0;
               }
               // 同一个店铺只可选择一张店铺券
-              if (cItem.couponsId !== item.couponsId && this.deliverySkuMapIndex == i && ["5", "6", "7"].includes(cItem.discountType)) {
+              if (sItem.storeId === item.storeId && cItem.couponsId !== item.couponsId && this.deliverySkuMapIndex == i && ["5", "6", "7"].includes(cItem.discountType)) {
                 cItem.isSelected = 0;
               }
             });
@@ -497,11 +505,11 @@ export default {
                 cItem.isSelected = 0;
               }
               // 取消所有当前商品券
-              if (cItem.couponsId === item.couponsId && this.deliverySkuMapIndex !== i) {
+              if (sItem.storeId === item.storeId && cItem.couponsId === item.couponsId && this.deliverySkuMapIndex !== i) {
                 cItem.isSelected = 0;
               }
               // 同一个店铺只可选择一张商品券
-              if (cItem.couponsId !== item.couponsId && this.deliverySkuMapIndex === i && ["8", "9"].includes(cItem.discountType)) {
+              if (sItem.storeId === item.storeId && cItem.couponsId !== item.couponsId && this.deliverySkuMapIndex === i && ["8", "9"].includes(cItem.discountType)) {
                 cItem.isSelected = 0;
               }
             });

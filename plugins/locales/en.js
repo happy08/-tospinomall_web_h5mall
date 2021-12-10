@@ -757,6 +757,7 @@ const en = {
   store_full_coupon: '店铺满减券',
   goods_full_coupon: '商品满减券',
   goods_coupon: '商品立减券',
+  total_offers: '优惠合计'
 }
 
 export default en;

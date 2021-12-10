@@ -116,6 +116,10 @@
         <span>{{ $t('total_freight') }}:</span>
         <span class="fw">{{ $store.state.rate.currency }}{{ detail.buyerFreightAmount }}</span>
       </p>
+      <p class="flex between black fs-14 lh-36" v-if="detail.disAmount != '' && detail.disAmount > 0">
+        <span>{{ $t('total_offers') }}</span>
+        <span class="red fw">-{{ $store.state.rate.currency }}{{ detail.disAmount }}</span>
+      </p>
       <p class="flex between black fs-14 lh-36">
         <span>{{ $t('total') }}</span>
         <span class="red fw">{{ $store.state.rate.currency }}{{ detail.payAmount }}</span>
