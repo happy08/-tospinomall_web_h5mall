@@ -26,7 +26,7 @@
           <!-- 未领取,可领取 -->
           <BmButton :class="{'fs-12 fw white round-100 plr-10 h-24': true, 'bg-dark-red-linear': isStoreCount, 'bg-green-linear': !isStoreCount}" v-if="item.isReceive == 0 || (item.isReceive == 3 && item.isH5CouponType)" @click="onReceive">{{ $t('coupon_get_it') }}</BmButton>
           <!-- 立即使用 -->
-          <BmButton :class="{'fs-12 fw white round-100 plr-10 h-24': true, 'bg-dark-red-linear': isStoreCount, 'bg-green-linear': !isStoreCount}" v-if="pageType == 1 && item.useStatus" @click="onReceive">{{ $t('coupon_use_it') }}</BmButton>
+          <BmButton :class="{'fs-12 fw white round-100 plr-10 h-24 ws-nowrap': true, 'bg-dark-red-linear': isStoreCount, 'bg-green-linear': !isStoreCount}" v-if="pageType == 1 && item.useStatus" @click="onReceive">{{ $t('coupon_use_it') }}</BmButton>
           <!-- 已领取 -->
           <div class="tc fs-12 lh-20 coupon-status" v-if="item.isReceive == 1">
             <p class="coupon-status__tip">{{ $t('coupon_received') }}</p>
@@ -38,6 +38,18 @@
               :fit="'cover'"
             />
           </div>
+          <!-- 选择优惠券 -->
+          <BmImage
+            :url="isSelectedIcon"
+            :width="'0.36rem'" 
+            :height="'0.36rem'"
+            :isLazy="false"
+            :isShow="false"
+            @onClick="onChoose"
+            class="flex-shrink coupon-choose"
+            :alt="'choose icon'"
+            v-if="pageType == 3"
+          />
         </div>
       </div>
     </div>
@@ -54,7 +66,7 @@ export default {
   props: {
     pageType: {
       type: Number,
-      default: 0 // 1我的优惠券 2领券中心
+      default: 0 // 1我的优惠券 2领券中心 3确认订单
     },
     type: { // 优惠券状态 0未使用 1已使用 2 已过期 3用完 -1可领取
       type: Number,
@@ -76,13 +88,23 @@ export default {
         subtractAmount: null, // 减多少面额
         validTimeType: null, // 有效时间类型 0->领取后x天有效 1->固定的有效期
         isH5CouponType: null, // h5链接客服券
+        isSelected: null, // 是否选中 0:未选中;1:已选中
       }
     }
   },
   computed: {
     // 活动类型：1.平台新人满减券，2.平台新人立减券，3.客服满减券，4.客服立减券，5.店铺新人满减券，6.店铺新人立减券，7.店铺满减券，8.商品满减券，9.商品立减券
     discountType() {
-      return this.item.discountType == 1 || this.item.discountType == 2 || this.item.discountType == 3 || this.item.discountType == 4 ? this.$t('platform_coupons') : this.$t('store_coupons');
+      if (this.item.discountType == 1) return this.$t('platform_newcomers_full_coupon');
+      if (this.item.discountType == 2) return this.$t('platform_newcomers_coupon');
+      if (this.item.discountType == 3) return this.$t('customer_full_coupon');
+      if (this.item.discountType == 4) return this.$t('customer_coupon');
+      if (this.item.discountType == 5) return this.$t('store_newcomers_full_coupon');
+      if (this.item.discountType == 6) return this.$t('store_newcomers_coupon');
+      if (this.item.discountType == 7) return this.$t('store_full_coupon');
+      if (this.item.discountType == 8) return this.$t('goods_full_coupon');
+      if (this.item.discountType == 9) return this.$t('goods_coupon');
+      // return this.item.discountType == 1 || this.item.discountType == 2 || this.item.discountType == 3 || this.item.discountType == 4 ? this.$t('platform_coupons') : this.$t('store_coupons');
     },
     isStoreCount() { // 是否是店铺券
       return this.item.discountType == 1 || this.item.discountType == 2 || this.item.discountType == 3 || this.item.discountType == 4 ? false : true;
@@ -99,6 +121,9 @@ export default {
     discountValidStartDate() { // 优惠券有效开始时间
       return this.pageType == 1 ? this.item.validStartTime : this.item.discountValidEndDate;
     },
+    isSelectedIcon() { // 店铺和平台未选中图标
+      return this.item.isSelected == 1 ? this.isStoreCount ? require('@/assets/images/icon/choose-red-icon.png') : require('@/assets/images/icon/choose-icon.png') : this.isStoreCount ? require('@/assets/images/icon/choose-red-default.png') : require('@/assets/images/icon/choose-green-default.png');
+    }
   },
   data() {
     return {
@@ -166,6 +191,9 @@ export default {
         this.$emit('onSelect', false); // 失败弹窗隐藏
         // this.$toast.clear();
       }
+    },
+    onChoose() { // 选中或取消当前优惠券
+      this.$emit('onChoose', this.item.isSelected == 1 ? 0 : 1);
     }
   }
 }
@@ -237,5 +265,10 @@ export default {
 .descript-container{
   margin-top: -10px;
   padding-top: 10px;
+}
+.coupon-choose{
+  position: absolute;
+  right: 18px;
+  top: 47px;
 }
 </style>

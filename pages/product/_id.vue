@@ -622,7 +622,6 @@ import shareInfo from '@/assets/images/icon/share-info.png';
 import shareLink from '@/assets/images/icon/share-link.png';
 import EmptyStatus from '@/components/EmptyStatus';
 import BmPreview from '@/components/_global/BmPreview';
-import { getCouponCenterList } from '@/api/coupon';
 import CouponScroll from '@/components/CouponScroll';
 
 export default {

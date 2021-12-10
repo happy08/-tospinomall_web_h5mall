@@ -297,3 +297,17 @@ export function getFreightPrice(data) {
     }
   })
 }
+
+/**
+ * 订单计算
+ */
+export function orderCalculation(data) {
+  return request({
+    url: '/product/goods/order/count',
+    method: 'post',
+    data: data,
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+}

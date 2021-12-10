@@ -746,7 +746,16 @@ const vi = {
   coupon_full_reduction: '满{replace_tip}减{replace_tip1}',
   coupon_received: '已领取',
   no_instructions_for_use: '暂无使用说明',
-  congratulation_successful_collection: '恭喜您，领取成功'
+  congratulation_successful_collection: '恭喜您，领取成功',
+  platform_newcomers_full_coupon: '平台新人满减券',
+  platform_newcomers_coupon: '平台新人立减券',
+  customer_full_coupon: '客服满减券',
+  customer_coupon: '客服立减券',
+  store_newcomers_full_coupon: '店铺新人满减券',
+  store_newcomers_coupon: '店铺新人立减券',
+  store_full_coupon: '店铺满减券',
+  goods_full_coupon: '商品满减券',
+  goods_coupon: '商品立减券',
 }
 
 export default vi;
