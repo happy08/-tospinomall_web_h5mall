@@ -680,7 +680,6 @@ export default {
       return transportMode == 1 ? 'plane-icon.png' : transportMode == 2 ? 'ship-icon.png' : 'truck-icon.png';
     },
     onCoupon(item) { // 领取优惠券
-      console.log('---------')
       this.couponStoreId = item.storeId;
       this.isCouponShow = true;
     }

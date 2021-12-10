@@ -24,7 +24,7 @@
           <!-- 开始时间-结束时间 -->
           <span class="fs-10 mt-4 w-145" v-else>{{ discountValidStartDate }}~{{ discountValidEndDate }}</span>
           <!-- 未领取,可领取 -->
-          <BmButton :class="{'fs-12 fw white round-100 plr-10 h-24': true, 'bg-dark-red-linear': isStoreCount, 'bg-green-linear': !isStoreCount}" v-if="item.isReceive == 0 || (item.isReceive == 3 && item.isH5CouponType)" @click="onReceive">{{ $t('coupon_get_it') }}</BmButton>
+          <BmButton :class="{'fs-12 fw white round-100 plr-10 h-24 ws-nowrap': true, 'bg-dark-red-linear': isStoreCount, 'bg-green-linear': !isStoreCount}" v-if="item.isReceive == 0 || (item.isReceive == 3 && item.isH5CouponType)" @click="onReceive">{{ $t('coupon_get_it') }}</BmButton>
           <!-- 立即使用 -->
           <BmButton :class="{'fs-12 fw white round-100 plr-10 h-24 ws-nowrap': true, 'bg-dark-red-linear': isStoreCount, 'bg-green-linear': !isStoreCount}" v-if="pageType == 1 && item.useStatus" @click="onReceive">{{ $t('coupon_use_it') }}</BmButton>
           <!-- 已领取 -->

@@ -125,7 +125,7 @@
             <!-- 订单合计 -->
             <van-cell-group class="plr-0" :border="false">
               <!-- 小计 -->
-              <van-cell :title="$t('subtotal')" :value="$store.state.rate.currency + productMapItem.sellerFreightAmount" title-class="color-black-85" class="plr-20 ptb-12" value-class="color-black-85" />
+              <van-cell :title="$t('subtotal')" :value="$store.state.rate.currency + productMapItem.productAmount" title-class="color-black-85" class="plr-20 ptb-12" value-class="color-black-85" />
               <!-- 运费 -->
               <van-cell :title="$t('total_freight')" :value="$store.state.rate.currency + productMapItem.sellerFreightAmount" title-class="color-black-85" class="plr-20 ptb-12" value-class="color-black-85" />
               <!-- 优惠券 -->
@@ -139,7 +139,7 @@
               <van-cell :border="false" class="plr-20 ptb-12">
                 <template #default>
                   <div class="color-black-85 tr">
-                    {{ $t('total') }}<span class="red">{{ $store.state.rate.currency }}{{ productMapItem.productAmount }}</span>
+                    {{ $t('total') }}<span class="red">{{ $store.state.rate.currency }}{{ productMapItem.payAmount }}</span>
                   </div>
                 </template>
               </van-cell>
@@ -160,11 +160,15 @@
     </div>
 
     <!-- 商品优惠券 -->
-    <van-popup v-model="isCouponShow" v-if="isCouponShow" style="height: 80%" position="bottom" class="round-tlr-12 bg-white coupon-popup pt-20" @click-overlay="$emit('onBeforeClose', false)">
+    <van-popup v-model="isCouponShow" v-if="isCouponShow" style="height: 80%" position="bottom" class="round-tlr-12 bg-white coupon-popup pt-20" :close-on-click-overlay="false" @click-overlay="onClickOverlay">
       <h3 class="black fs-18 pb-10 tc lh-20">{{ $t('coupon') }}</h3>
       <div class="container-absolute-height">
-        <empty-status v-if="this.detail.storeSaleInfoList[this.deliveryStoreIndex].deliveryTypeSkuItemMap[this.deliverySkuMapIndex].orderCouponsList.length === 0" :image="require('@/assets/images/empty/order.png')" :description="$t('empty')" />
-        <coupon-order-single v-else v-for="(item, index) in this.detail.storeSaleInfoList[this.deliveryStoreIndex].deliveryTypeSkuItemMap[this.deliverySkuMapIndex].orderCouponsList" :key="'good-coupon-' + index"  class="mb-10 mlr-10"  :item="item" @onReceive="item.isReceive = $event" :pageType="3" @onChoose="onChooseCoupon($event, index, item)"></coupon-order-single>
+        <empty-status v-if="couponList.length === 0" :image="require('@/assets/images/empty/order.png')" :description="$t('empty')" />
+        <coupon-order-single v-else v-for="(item, index) in couponList" :key="'good-coupon-' + index"  class="mb-10 mlr-10"  :item="item" @onReceive="item.isReceive = $event" :pageType="3" @onChoose="onChooseCoupon($event, index, item, 'store')"></coupon-order-single>
+        <!-- 确认 -->
+        <div class="mlr-20 mt-40 mb-20">
+          <BmButton class="fs-16 round-8 w-100 h-48" @btnClick="onConfirmCoupon">{{ $t('confirm') }}</BmButton>
+        </div>
       </div>
     </van-popup>
 
@@ -182,7 +186,7 @@
       </van-radio-group>
 
       <div class="mt-30 plr-20">
-        <BmButton class="round-8 w-100 h-48" @click="onChangeDistribution">{{ $t('confirm') }}</BmButton>
+        <BmButton class="round-8 w-100 h-48" @btnClick="onChangeDistribution">{{ $t('confirm') }}</BmButton>
       </div>
     </van-popup>
 
@@ -207,7 +211,7 @@ import { getSaleInfo } from '@/api/cart';
 import { getCurrentDefaultAddress } from '@/api/address';
 import OrderStoreSingle from '@/components/OrderStoreSingle';
 import CouponScroll from '@/components/CouponScroll';
-import { orderCalculation } from '@/api/order';
+import { orderCalculation, submitOrder } from '@/api/order';
 
 export default {
   components: {
@@ -236,7 +240,8 @@ export default {
       distributionShow: false,
       distributionRadio: 0,
       deliveryStoreIndex: 0,
-      deliverySkuMapIndex: 0
+      deliverySkuMapIndex: 0,
+      couponPopupList: []
     }
   },
   filters: {
@@ -246,11 +251,7 @@ export default {
   },
   activated() {
     // 获取收货地址
-    this.getCurrentDefaultAddress().then(() => {
-      // 获取销售信息
-      this.getSaleInfo();
-    });
-    
+    this.getCurrentDefaultAddress();
   },
   methods: {
     getSaleInfo(confirmTransportModes) { // 获取销售信息
@@ -279,10 +280,6 @@ export default {
         }
         
         this.detail = res.data;
-        if (this.$route.query.address) {
-          this.orderCalculation();
-          return false;
-        }
         this.$toast.clear();
       }).catch(error => {
         console.log(error)
@@ -298,8 +295,6 @@ export default {
         this.detail.address = JSON.parse(this.$route.query.address);
       } else {
         const addressData = await getCurrentDefaultAddress();
-        if (addressData.code != 0) return false;
-
         if (!addressData.data) { // 还没有设置地址
           this.$dialog.confirm({
             message: this.$t('go_set_address'),
@@ -320,6 +315,14 @@ export default {
           ...addressData.data,
           completeAddress: addressData.data.completeAddressDetail
         };
+      }
+      
+      // 已经获取过数据就直接进行订单计算，否则获取销售信息
+      if (this.detail.storeSaleInfoList) {
+        this.orderCalculation();
+      } else {
+        // 获取销售信息
+        this.getSaleInfo();
       }
     },
     leftClick() { // 页面回退
@@ -347,25 +350,105 @@ export default {
       return _type == 1 ? this.$t('air_freight') : _type == 2 ? this.$t('sea_transportation') : _type == 3 ? this.$t('land_transportation') : '';
     },
     goPay() { // 提交订单
+      // 加载图标
+      this.$toast.loading({
+        forbidClick: true,
+        loadingType: 'spinner',
+        duration: 0
+      });
 
+      let params = {
+        ...this.detail, 
+        isCart: this.$route.query.isCart ? 1 : 0, // 是否购物车购买：0->不是 1->是；
+        addressId: this.detail.address.id, 
+        paymentType: this.paymentRadio, // 选择的支付类型：1->在线支付；2->货到付款；默认是在线支付
+        sourceType: 3, // 订单来源：1->android，2->ios，3->h5 ,4->web商城,
+      }
+      submitOrder(params).then(res => {
+        if (this.paymentRadio == 2) { // 货到付款
+          this.$router.push({ // 校验之后成功跳转到订单支付结果页面
+            name: 'cart-order-confirm',
+            query: {
+              orderId: JSON.stringify({orderId: res.data.orderIds}),
+              isSuccess: 3
+            }
+          })
+          this.$toast.clear();
+          return false;
+        }
+        this.$router.push({
+          name: 'me-pay-payment',
+          query: {
+            type: 'order',
+            amount: this.detail.totalPayAmount,
+            orderIds: JSON.stringify({orderIds: res.data.orderIds}),
+            comfirmOrder: 1
+          }
+        })
+        this.$toast.clear();
+      }).catch(error => {
+        console.log(error);
+        this.$toast.fail(error.msg);
+      })
     },
     onChooseOrderCoupon(index, productMapIndex, orderItem) { // 打开优惠券选择弹窗
-      this.couponList = orderItem.orderCouponsList;
+      this.couponList = JSON.parse(JSON.stringify(orderItem.orderCouponsList)); // 优惠券弹窗数据
       this.deliveryStoreIndex = index; // 店铺索引
       this.deliverySkuMapIndex = productMapIndex; // 店铺下订单索引
       this.isCouponShow = true;
     },
-    onChooseCoupon(isSelected, couponIndex, item) { // 选择优惠券
-      console.log(isSelected, couponIndex, item)
-      // 当前优惠券反选
-      if (item.isSelected) {
-        item.isSelected = 0;
-      } else {
-        item.isSelected = 1;
-      }
-      if (item.isSelected == 0) { // 取消选中当前优惠券，其他优惠券的状态不变
+    onChooseCoupon(isSelected, couponIndex, item, type) { // 选择优惠券
+      // 该订单内优惠券的选择
+      if (type == 'store') {
+        // 当前优惠券反选
+        if (item.isSelected) {
+          item.isSelected = 0;
+        } else {
+          item.isSelected = 1;
+        }
+        // 取消选中当前优惠券，其他优惠券的状态不变
+        if (item.isSelected == 0) {
+          return false;
+        }
+        // 当前订单下所有的优惠券
+        // 平台券-取消其他[平台券,店铺券,商品券]选中
+        if (["1", "2", "3", "4"].includes(item.discountType)) {
+          this.couponList.forEach(cItem => {
+            // 其他优惠券都要取消选中
+            if (cItem.couponsId !== item.couponsId) {
+              cItem.isSelected = 0;
+            }
+          })
+        } else if (["5", "6", "7"].includes(item.discountType)) {
+          // 店铺券-取消所有平台券/当前店铺相同券
+          this.couponList.forEach(cItem => {
+            // 取消平台券
+            if (["1", "2", "3", "4"].includes(cItem.discountType)) {
+              cItem.isSelected = 0;
+            }
+            // 同一个店铺只可选择一张店铺券
+            if (cItem.couponsId !== item.couponsId && ["5", "6", "7"].includes(cItem.discountType)) {
+              cItem.isSelected = 0;
+            }
+          })
+        } else if (["8", "9"].includes(item.discountType)) {
+          // 商品券-取消其他[平台券,商品券,店铺券]选中
+          this.couponList.forEach(cItem => {
+            // 取消平台券
+            if (["1", "2", "3", "4"].includes(cItem.discountType)) {
+              cItem.isSelected = 0;
+            }
+            // 同一个店铺只可选择一张商品券
+            if (cItem.couponsId !== item.couponsId && ["8", "9"].includes(cItem.discountType)) {
+              cItem.isSelected = 0;
+            }
+          })
+          
+        }
         return false;
       }
+      console.log(isSelected, couponIndex, item)
+      
       // 活动类型：1.平台新人满减券，2.平台新人立减券，3.平台客服满减券，4.平台客服立减券，5.店铺新人满减券，6.店铺新人立减券，7.店铺满减券，8.商品满减券，9.商品立减券
       if (["1", "2", "3", "4"].includes(item.discountType)) {
         // 平台券-取消其他[平台券,店铺券,商品券]选中
@@ -374,7 +457,7 @@ export default {
             sItem.deliveryTypeSkuItemMap[i].orderCouponsList.forEach((cItem) => {
               if (["1", "2", "3", "4"].includes(cItem.discountType)) {
                 // 非同一店铺&&同一张平台券
-                if (sItem.storeId !== item.storeId && cItem.couponsId === item.couponsId) {
+                if (cItem.couponsId === item.couponsId) {
                   cItem.isSelected = 0;
                 }
               } else {
@@ -394,7 +477,11 @@ export default {
                 cItem.isSelected = 0;
               }
               // 取消当前店铺相同券
-              if (sItem.storeId === item.storeId && cItem.couponsId === item.couponsId && this.deliverySkuMapIndex !== i) {
+              if (cItem.couponsId === item.couponsId && this.deliverySkuMapIndex !== i) {
+                cItem.isSelected = 0;
+              }
+              // 同一个店铺只可选择一张店铺券
+              if (cItem.couponsId !== item.couponsId && this.deliverySkuMapIndex == i && ["5", "6", "7"].includes(cItem.discountType)) {
                 cItem.isSelected = 0;
               }
             });
@@ -413,6 +500,10 @@ export default {
               if (cItem.couponsId === item.couponsId && this.deliverySkuMapIndex !== i) {
                 cItem.isSelected = 0;
               }
+              // 同一个店铺只可选择一张商品券
+              if (cItem.couponsId !== item.couponsId && this.deliverySkuMapIndex === i && ["8", "9"].includes(cItem.discountType)) {
+                cItem.isSelected = 0;
+              }
             });
           }
         });
@@ -424,9 +515,6 @@ export default {
       this.deliverySkuMapIndex = productMapIndex; // 店铺下订单索引
       this.distributionRadio = this.detail.storeSaleInfoList[this.deliveryStoreIndex].deliveryTypeSkuItemMap[this.deliverySkuMapIndex].choiceSendType;
       console.log(this.detail.storeSaleInfoList[index].deliveryTypeSkuItemMap[productMapIndex])
-    },
-    onChangeCheck() { // 优惠券
-
     },
     onChangeDistribution() { // 确认修改配送方式
       this.detail.storeSaleInfoList[this.deliveryStoreIndex].deliveryTypeSkuItemMap[this.deliverySkuMapIndex].choiceSendType = this.distributionRadio;
@@ -457,6 +545,19 @@ export default {
     onDiscountPrice(productMapItem) {
       let total = parseFloat(productMapItem.goodsDisAmount) + parseFloat(productMapItem.storeDisAmount) + parseFloat(productMapItem.platformDisAmount);
       return '-' + this.$store.state.rate.currency + total;
+    },
+    onConfirmCoupon() { // 确认选择优惠券
+      this.detail.storeSaleInfoList[this.deliveryStoreIndex].deliveryTypeSkuItemMap[this.deliverySkuMapIndex].orderCouponsList = this.couponList;
+      this.detail.storeSaleInfoList[this.deliveryStoreIndex].deliveryTypeSkuItemMap[this.deliverySkuMapIndex].orderCouponsList.forEach((newItem, newIndex) => {
+        if (newItem.isSelected == 1) { // 选中状态
+          this.onChooseCoupon(newItem.isSelected, newIndex, newItem);
+        }
+      })
+      this.isCouponShow = false;
+      this.orderCalculation(); // 重新计算订单
+    },
+    onClickOverlay() { // 点击优惠券遮罩层,说明当前优惠券的选中没有变
+      this.isCouponShow = false;
     }
   }
 }

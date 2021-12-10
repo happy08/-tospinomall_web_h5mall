@@ -148,10 +148,10 @@ export default {
         params.couponType = this.tabActive;
       }
 
-      if (this.loading) {
-        return false;
-      }
-      this.loading = true;
+      // if (this.loading) {
+      //   return false;
+      // }
+      // this.loading = true;
 
       getCouponList(params).then(res => {
         couponList[0].records = couponList[0].pageNum == 1 ? res.data.records : couponList[0].records.concat(res.data.records);;
@@ -184,6 +184,7 @@ export default {
       }
     },
     onLoad() { // 滚动加载
+      console.log('===')
       let currentList = this.lists.filter(item => {
         return item.tabName == this.tabActive;
       })
