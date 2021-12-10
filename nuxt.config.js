@@ -41,7 +41,7 @@ export default {
       let oldRoutes = [];
       routes.forEach(ele => {
         let path = ele.path;
-        if (ele.name == 'login' || ele.name == 'home' || ele.name == 'cart' || ele.name == 'categories' || ele.name == 'me' || ele.name == 'product-id') {
+        if (ele.name == 'login' || ele.name == 'home' || ele.name == 'cart' || ele.name == 'categories' || ele.name == 'me' || ele.name == 'product-id' || ele.name == 'service-type') {
           // 因为要加.html如果路由名一样则会出现路由警告，所以原始的路由名改个名，通过name跳转时就跳转到有.html的路径
           oldRoutes.push({ 
             ...ele,
@@ -106,10 +106,11 @@ export default {
     '/api': {
       // target: 'http://192.168.2.34:9999', //120.78.145.142
       // target: 'http://192.168.2.70:9999',
-      target: 'https://tospinomallapi.fyynet.com',
+      // target: 'https://tospinomallapi.fyynet.com',
       // target: 'http://192.168.2.35:9999',
       //target: 'http://120.78.145.142:9999',
       // target: 'http://rnzsgf7l.dongtaiyuming.net',
+      target: 'http://192.168.2.11:9999',
       pathRewrite: {
         '^/api': '/'
       }

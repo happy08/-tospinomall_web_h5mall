@@ -283,6 +283,37 @@ export default ({ app }, inject) => {
           Authorization: app.$cookies.get('authToken')
         }
       })
+    },
+    getService(params) { // 查询服务信息
+      return app.$axios({
+        url: `${url}/basics/operateSinglePage/findByQuery`,
+        method: 'get',
+        params
+      })
+    },
+    getPlatformCouponList() { // 查询平台新人活动券列表
+      return app.$axios({
+        url: `${url}/discount/activity/find/platform/new/human/gift`,
+        method: 'get'
+      })
+    },
+    autoGetPlatformCoupon() { // 自动领取平台新人券
+      return app.$axios({
+        url: `${url}/discount/coupon/autoGetPlatformCoupon`,
+        method: 'get'
+      })
+    },
+    getCouponDescription() { // 优惠券使用说明
+      return app.$axios({
+        url: `${url}/discount/description/find/system/description`,
+        method: 'get'
+      })
+    },
+    getStoreCouponList(storeId) { // 查询店铺新人活动券信息
+      return app.$axios({
+        url: `${url}/discount/activity/find/shop/new/human/gift/${storeId}`,
+        method: 'get'
+      })
     }
   };
 

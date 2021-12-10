@@ -21,6 +21,9 @@ export const mutations = {
     state.authToken = token;
     if (token == null) {
       state.userInfo = null;
+      if (sessionStorage && sessionStorage.getItem('customerCouponLink')) {
+        sessionStorage.removeItem('customerCouponLink');
+      }
     }
     this.$cookies.set('authToken', token);
   },

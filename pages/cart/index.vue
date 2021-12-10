@@ -24,7 +24,7 @@
       <template v-else>
         <div class="pt-14 pb-12 bg-white" v-for="item in list" :key="item.id">
           <van-checkbox-group v-model="item.result" :ref="'checkboxGroup-' + item.id" @change="storeChangeCheck($event, item)">
-            <div class="flex vcenter pl-12">
+            <div class="flex vcenter pl-12 w-100 hidden-1">
               <BmImage
                 :url="item.isEmpty.length == item.products.length ? require('@/assets/images/icon/unchoose-icon.png') : item.isAll ? require('@/assets/images/icon/choose-icon.png') : require('@/assets/images/icon/choose-default-icon.png')"
                 :width="'0.32rem'" 
@@ -36,7 +36,10 @@
                 :alt="'choose icon'"
               />
               <!-- 店铺 -->
-              <OrderStoreSingle class="pl-16 pr-30" :logo="item.storeLogo" :name="item.storeName" @goStoreDetail="goStoreDetail(item)" />
+              <OrderStoreSingle class="pl-16 pr-16" :logo="item.storeLogo" :name="item.storeName" @goStoreDetail="goStoreDetail(item)">
+                <!-- 优惠券 -->
+                <span slot="coupon" class="plr-8 round-10 ptb-2 bg-dark-red-linear white fs-12 flex-shrink" v-if="item.isHaveCoupon == 1" @click="onCoupon(item)">{{ $t('coupon') }}</span>
+              </OrderStoreSingle>
             </div>
             <van-swipe-cell class="pl-12" v-for="singleItem in item.products" :key="'single-' + singleItem.id">
               <div class="flex vcenter">
@@ -198,6 +201,9 @@
     <!-- 产品规格 -->
     <ProductSku :productShow="productShow" :goodSpuVo="goodSpuVo" :initialSku="initialSku" :sku="sku" :type="'cart'" @onRefresh="$fetch()" />
 
+    <!-- 店铺优惠券 -->
+    <CouponScroll v-if="isCouponShow" :isShow="isCouponShow" :storeId="couponStoreId" :type="'cart'" @onBeforeClose="isCouponShow = $event"></CouponScroll>
+
     <!-- 底部 -->
     <BmTabbar v-if="!$route.query.isBar" />
   </div>
@@ -266,7 +272,9 @@ export default {
       selectSku: {},
       recommendList: [],
       loading: false,
-      finished: false
+      finished: false,
+      couponStoreId: '',
+      isCouponShow: false
     }
   },
   async fetch() {
@@ -697,6 +705,10 @@ export default {
     },
     onModeLabel(transportMode) {
       return transportMode == 1 ? 'plane-icon.png' : transportMode == 2 ? 'ship-icon.png' : 'truck-icon.png';
+    },
+    onCoupon(item) { // 领取优惠券
+      this.couponStoreId = item.storeId;
+      this.isCouponShow = true;
     }
   },
 }
