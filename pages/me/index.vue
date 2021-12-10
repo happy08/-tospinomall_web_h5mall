@@ -47,10 +47,16 @@
             <dd class="fs-12 grey mt-4">{{ $t('collection') }}</dd>
           </dl>
         </nuxt-link>
-        <nuxt-link :to="{ name: 'me-wallet' }">
+        <!-- <nuxt-link :to="{ name: 'me-wallet' }">
           <dl class="tc">
             <dt class="fs-24 black fw">{{ walletNum }}</dt>
             <dd class="fs-12 grey mt-4">{{ $t('wallet') }}</dd>
+          </dl>
+        </nuxt-link> -->
+        <nuxt-link :to="{ name: 'me-coupon' }">
+          <dl class="tc">
+            <dt class="fs-24 black fw">{{ $store.state.user.userInfo ? $store.state.user.userInfo.couponNum : 0 }}</dt>
+            <dd class="fs-12 grey mt-4">{{ $t('coupon') }}</dd>
           </dl>
         </nuxt-link>
         <!-- <dl class="tc">
