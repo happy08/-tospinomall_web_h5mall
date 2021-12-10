@@ -19,8 +19,8 @@
               finished-text=""
               @load="onLoad"
               class="bg-grey"
-              style="overflow-y: auto;"
               :immediate-check="false"
+              :offset="500"
             >
               <van-swipe-cell  v-for="(itemSingle, itemIndex) in item.records" :key="itemIndex">
                 <coupon-order-single class="mt-12" :item="itemSingle" :pageType="1"></coupon-order-single>

@@ -119,7 +119,7 @@ export default {
       return this.pageType == 1 ? this.item.validEndTime : this.item.discountValidEndDate;
     },
     discountValidStartDate() { // 优惠券有效开始时间
-      return this.pageType == 1 ? this.item.validStartTime : this.item.discountValidEndDate;
+      return this.pageType == 1 ? this.item.validStartTime : this.item.discountValidStartDate;
     },
     isSelectedIcon() { // 店铺和平台未选中图标
       return this.item.isSelected == 1 ? this.isStoreCount ? require('@/assets/images/icon/choose-red-icon.png') : require('@/assets/images/icon/choose-icon.png') : this.isStoreCount ? require('@/assets/images/icon/choose-red-default.png') : require('@/assets/images/icon/choose-green-default.png');
@@ -217,7 +217,7 @@ export default {
   }
   .coupon-orde-single__right{
     width: 244px;
-    padding: 14px 15px 8px 11px;
+    padding: 14px 12px 8px 11px;
   }
 }
 .h-24{
