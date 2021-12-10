@@ -50,7 +50,7 @@
               <!-- 成功/失败 金额 -->
               <div class="tr fm-helvetica">
                 <p class="grey-45 fs-14">{{ itemInfo.statusLabel }}</p>
-                <p class="mt-10 amount-color fs-12">{{ itemInfo.collectPaymentType == 1 ? '+' : '-' }}{{ $store.state.rate.currency }}{{ itemInfo.realAmount }}</p>
+                <p class="mt-10 amount-color fs-12">{{ itemInfo.collectPaymentType == 1 ? '+' : '-' }}{{ $store.state.rate.currency }}{{ itemInfo.realAmount || '0' }}</p>
               </div>
             </div>
           </nuxt-link>
