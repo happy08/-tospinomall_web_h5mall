@@ -416,15 +416,21 @@ export default {
         }
       })
     },
-    onTinggPay(params) { // tingg支付
+    onTinggPay(paramsData) { // tingg支付
       // const ivKey = 'wJf8Vjch2rbGmy47';
       // const secretKey = 'FtWH6ZGc2qQTMbvw';
       // const accessKey = '$2a$08$wvWtdcwhPCEK1lhWXuP8lO6qnx5Pw5XpxcwtAV0aGn9tXLcLMAxoi';
+      let params = {
+        ...paramsData,
+        ivKey: 'wJf8Vjch2rbGmy47',
+        secretKey: 'FtWH6ZGc2qQTMbvw',
+        accessKey: '$2a$08$wvWtdcwhPCEK1lhWXuP8lO6qnx5Pw5XpxcwtAV0aGn9tXLcLMAxoi'
+      }
       const algorithm = "aes-256-cbc";
 
       const encryption = new Encryption(params.ivKey, params.secretKey, algorithm);
-      const paymentWebhookUrl = url == '/api' ? 'https://tospinomallapi.fyynet.com' : url;
-      console.log(params.merchantTransactionID)
+      const paymentWebhookUrl = url == '/api' ? 'http://n8ftt1cp.dongtaiyuming.net' : url;
+      
       const payload = {
         merchantTransactionID: params.merchantTransactionID, // 最长是15位，无规则限制
         requestAmount: params.requestAmount,
@@ -445,7 +451,7 @@ export default {
         pendingRedirectUrl: location.href + `&tingg=pending`,
         paymentWebhookUrl: `${paymentWebhookUrl}/order/tinggPay/callback`
       }
-
+      console.log(paymentWebhookUrl)
       // 如果用户有绑定邮箱，则在参数中添加邮箱
       if (this.$store.state.user.userInfo.email && this.$store.state.user.userInfo.email != '') {
         payload.customerEmail = this.$store.state.user.userInfo.email;
@@ -647,7 +653,10 @@ export default {
       this.$api.checkPayOrder(this.$route.query.refNo).then(checkData => {
         num += 1;
         if (checkData.data != 1 && num <= 3) {
-          this.checkPayOrder();
+          let timer = setTimeout(() => {
+            this.checkPayOrder(num);
+            clearTimeout(timer);
+          }, 1000);
           return false;
         }
         if (this.$route.query.type == 'order') {
@@ -659,11 +668,13 @@ export default {
             }
           })
         } else {
-          this.$router.replace({
-            name: 'me-wallet'
+          this.$router.push({
+            name: 'me-wallet-bill'
           })
         }
         this.isWaittingPay = false;
+      }).catch(error => {
+        console.log(error);
       })
     }
   },
