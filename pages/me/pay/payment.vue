@@ -63,7 +63,7 @@
     </van-radio-group>
 
     <!-- tingg支付 -->
-    <button class="awesome-checkout-button" @click="onTinggPay"></button>
+    <!-- <button class="awesome-checkout-button" @click="onTinggPay"></button> -->
     <!-- brij钱包支付 -->
     <!-- <button class="plr-20 ptb-20 brij-checkout-button">Brij钱包支付</button> -->
     <!-- <button class="plr-20 ptb-20" @click="onPayswitch">Theteller 钱包支付</button> -->
