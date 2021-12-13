@@ -454,6 +454,9 @@ export default {
         //   this.finished = this.total == this.productList.length ? true : false;
         // })
       // }
+      // 获取店铺新人优惠券
+      const storeCoupons = await this.$api.getStoreCouponList(this.$route.params.id);
+      this.storeCoupons = storeCoupons.data;
       
       // 店铺组件数据,店铺有装修才可看
       const moduleData = await this.$api.getStoreIndex({shopId: this.$route.params.id});
@@ -477,10 +480,6 @@ export default {
       this.isTabbarShow = store_components.length > 1 ? true: false;
       this.tabbarActive = this.$route.query.tabbarActive ? parseFloat(this.$route.query.tabbarActive) : store_components.length > 1 ? 0 : 1;
       this.refreshing.isFresh = false;
-
-      // 获取店铺新人优惠券
-      const storeCoupons = await this.$api.getStoreCouponList(this.$route.params.id);
-      this.storeCoupons = storeCoupons.data;
     } catch (error) {
       console.log(error);
     }
