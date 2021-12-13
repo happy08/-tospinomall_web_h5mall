@@ -3,7 +3,7 @@
   <div class="bg-grey v-percent-100 pb-64 pt-46">
     <BmHeaderNav :left="{ isShow: true }" :title="$t('my_coupon')" fixed>
       <!-- 使用说明 -->
-      <nuxt-link slot="header-right" class="fs-16 green" :to="{ name: 'service-type', params: { type: 'coupon' }, query: { isH5: 1 } }">{{ $t('use_instruction') }}</nuxt-link>
+      <nuxt-link slot="header-right" class="fs-14 green" :to="{ name: 'service-type', params: { type: 'coupon' }, query: { isH5: 1 } }">{{ $t('use_instruction') }}</nuxt-link>
     </BmHeaderNav>
 
     <van-tabs sticky :offset-top="'0.92rem'" v-model="tabActive" color="#42B7AE" class="customs-van-tabs" @click="onChangeTab" :ellipsis="false">

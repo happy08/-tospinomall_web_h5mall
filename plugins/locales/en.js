@@ -750,14 +750,14 @@ const en = {
   coupon_use_it: 'Use',
   go_shopping: 'Go shopping',
   coupon_validity_day: 'Expires {replace_tip} days after receipt of coupon',
-  coupon: '优惠券',
+  coupon: 'Coupon',
   coupon_no_threshold: 'No restrictions',
-  coupon_use_instruction: '优惠券使用说明',
-  get_coupon: '领券',
+  coupon_use_instruction: 'Coupon instructions',
+  get_coupon: 'Collect',
   coupon_full_reduction: '{replace_tip}-{replace_tip1}',
   coupon_received: 'Received',
   no_instructions_for_use: 'No coupon description',
-  congratulation_successful_collection: '恭喜您，领取成功',
+  congratulation_successful_collection: 'Congratulations, successfully received',
   total_offers: 'Total offers'
 }
 

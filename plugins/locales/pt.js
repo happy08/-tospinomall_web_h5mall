@@ -751,12 +751,12 @@
   coupon_validity_day: 'Expira {replace_tip} dias após a recepção do voucher',
   coupon: '优惠券',
   coupon_no_threshold: 'Sem limiar',
-  coupon_use_instruction: '优惠券使用说明',
-  get_coupon: '领券',
+  coupon_use_instruction: 'Instruções de cupom',
+  get_coupon: 'Nhận được',
   coupon_full_reduction: '{replace_tip}-{replace_tip1}',
   coupon_received: 'Recebido',
   no_instructions_for_use: 'Sem descrição de cupom',
-  congratulation_successful_collection: '恭喜您，领取成功',
+  congratulation_successful_collection: 'Parabéns, recebido com sucesso',
   total_offers: 'Total de ofertas'
 }
 

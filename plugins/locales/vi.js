@@ -751,12 +751,12 @@ const vi = {
   coupon_validity_day: 'Phiếu giảm giá sau {replace_tip} ngày sẽ hết hiệu lực',
   coupon: '优惠券',
   coupon_no_threshold: 'Không có ngưỡng',
-  coupon_use_instruction: '优惠券使用说明',
-  get_coupon: '领券',
+  coupon_use_instruction: 'Hướng dẫn phiếu thưởng',
+  get_coupon: 'Obter',
   coupon_full_reduction: '{replace_tip}-{replace_tip1}',
   coupon_received: 'Nhận',
   no_instructions_for_use: 'Không có mô tả phiếu giảm giá',
-  congratulation_successful_collection: '恭喜您，领取成功',
+  congratulation_successful_collection: 'Xin chúc mừng, đã nhận thành công',
   total_offers: 'Tổng số phiếu mua hàng'
 }
 
