@@ -214,6 +214,7 @@ import CouponScroll from '@/components/CouponScroll';
 import { orderCalculation, submitOrder } from '@/api/order';
 
 export default {
+  middleware: 'authenticated',
   components: {
     vanCell: Cell,
     vanCellGroup: CellGroup,
@@ -234,7 +235,15 @@ export default {
       codeData: {},
       detail: {},
       address: {},
-      paymentRadio: '1'
+      paymentRadio: '1',
+      couponList: [],
+      isCouponShow: false,
+      distributionShow: false,
+      distributionRadio: 0,
+      deliveryStoreIndex: 0,
+      deliverySkuMapIndex: 0,
+      couponPopupList: []
+
     }
   },
   beforeRouteEnter (to, from, next) {
@@ -457,20 +466,28 @@ export default {
             sItem.deliveryTypeSkuItemMap[i].orderCouponsList.forEach((cItem) => {
               if (["1", "2", "3", "4"].includes(cItem.discountType)) {
                 //相同券&当前店铺&非当前订单（取消当前店铺非当前订单的相同券）
-                if (cItem.couponsId === item.couponsId && sItem.storeId === item.storeId && this.deliverySkuMapIndex !== i) {
-                  cItem.isSelected = 0;
-                }
+                // if (cItem.couponsId === item.couponsId && sItem.storeId === item.storeId && this.deliverySkuMapIndex !== i) {
+                //   cItem.isSelected = 0;
+                // }
                 //相同券&非当前店铺（取消其他店铺的相同券）
-                if (cItem.couponsId === item.couponsId && sItem.storeId !== item.storeId) {
+                if (cItem.couponsId === item.couponsId && sItem.storeId !== item.storeId && this.deliverySkuMapIndex !== i) {
                   cItem.isSelected = 0;
                 }
-                //当前店铺&非当前券&当前订单（一个订单只能用一张平台券）
+                // 当前店铺&非当前券&当前订单（一个订单只能用一张平台券）
                 if (sItem.storeId === item.storeId && cItem.couponsId !== item.couponsId && this.deliverySkuMapIndex === i) {
                   cItem.isSelected = 0;
                 }
               } else {
+                // //相同券&非当前店铺（取消其他店铺的相同券）
+                // if (cItem.couponsId === item.couponsId && sItem.storeId !== item.storeId && this.deliverySkuMapIndex !== i) {
+                //   cItem.isSelected = 0;
+                // }
+                //当前店铺&非当前券&当前订单（一个订单只能用一张平台券）
+                if (sItem.storeId === item.storeId && cItem.couponsId !== item.couponsId && this.deliverySkuMapIndex === i) {
+                  cItem.isSelected = 0;
+                }
                 // 其他非平台券
-                cItem.isSelected = 0;
+                // cItem.isSelected = 0;
               }
             });
           }
@@ -480,16 +497,16 @@ export default {
         this.detail.storeSaleInfoList.forEach((sItem) => {
           for (let i in sItem.deliveryTypeSkuItemMap) {
             sItem.deliveryTypeSkuItemMap[i].orderCouponsList.forEach((cItem) => {
-              // 取消所有平台券
-              if (["1", "2", "3", "4"].includes(cItem.discountType)) {
+              // 取消同订单下所有平台券
+              if (["1", "2", "3", "4"].includes(cItem.discountType) && this.deliverySkuMapIndex === i) {
                 cItem.isSelected = 0;
               }
-              // 取消当前店铺相同券
-              if (cItem.couponsId === item.couponsId && this.deliverySkuMapIndex !== i && sItem.storeId === item.storeId) {
+              //当前店铺&相同券&非当前订单（同一张券只能用于一个订单）
+              if (sItem.storeId === item.storeId && cItem.couponsId === item.couponsId && this.deliverySkuMapIndex !== i) {
                 cItem.isSelected = 0;
               }
-              // 同一个店铺只可选择一张店铺券
-              if (sItem.storeId === item.storeId && cItem.couponsId !== item.couponsId && this.deliverySkuMapIndex == i && ["5", "6", "7"].includes(cItem.discountType)) {
+              //当前店铺$非当前券&当前订单&订单券（一个订单只能用一张店铺券）
+              if (sItem.storeId === item.storeId && cItem.couponsId !== item.couponsId && this.deliverySkuMapIndex === i && ["5", "6", "7"].includes(item.discountType)) {
                 cItem.isSelected = 0;
               }
             });
@@ -501,7 +518,7 @@ export default {
           for (let i in sItem.deliveryTypeSkuItemMap) {
             sItem.deliveryTypeSkuItemMap[i].orderCouponsList.forEach((cItem) => {
               // 取消所有平台券
-              if (["1", "2", "3", "4"].includes(cItem.discountType)) {
+              if (["1", "2", "3", "4"].includes(cItem.discountType) && this.deliverySkuMapIndex === i) {
                 cItem.isSelected = 0;
               }
               // 取消所有当前商品券
