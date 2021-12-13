@@ -129,10 +129,10 @@
               <!-- 运费 -->
               <van-cell :title="$t('total_freight')" :value="$store.state.rate.currency + productMapItem.sellerFreightAmount" title-class="color-black-85" class="plr-20 ptb-12" value-class="color-black-85" />
               <!-- 优惠券 -->
-              <van-cell :title="$t('coupon')" class="plr-20 ptb-12" is-link title-class="color-black-85" value-class="color-black-85" :border="false" v-if="productMapItem.orderCouponsList.length > 0" @click="onChooseOrderCoupon(index, productMapIndex, productMapItem)">
+              <van-cell :title="$t('coupon')" class="plr-20 ptb-12" is-link title-class="color-black-85" value-class="color-black-85" :border="false" v-if="productMapItem.orderCouponsList.length > 0" @click="onChooseOrderCoupon(index, productMapIndex, productMapItem, item)">
                 <template #default>
                   <!-- 优惠金额 -->
-                  <span class="red" v-html="onDiscountPrice(productMapItem)">-{{ $store.state.rate.currency }}{{ productMapItem.goodsDisAmount }}</span>
+                  <span class="red" v-html="onDiscountPrice(productMapItem)"></span>
                 </template>
               </van-cell>
               <!-- 总计 -->
@@ -166,7 +166,7 @@
         <empty-status v-if="couponList.length === 0" :image="require('@/assets/images/empty/order.png')" :description="$t('empty')" />
         <coupon-order-single v-else v-for="(item, index) in couponList" :key="'good-coupon-' + index"  class="mb-10 mlr-10"  :item="item" @onReceive="item.isReceive = $event" :pageType="3" @onChoose="onChooseCoupon($event, index, item, 'store')"></coupon-order-single>
         <!-- 确认 -->
-        <div class="mlr-20 mt-40 mb-20">
+        <div class="plr-20 ptb-10 bg-white w-100 container-absolute-btn">
           <BmButton class="fs-16 round-8 w-100 h-48" @btnClick="onConfirmCoupon">{{ $t('confirm') }}</BmButton>
         </div>
       </div>
@@ -305,6 +305,7 @@ export default {
       } else {
         const addressData = await getCurrentDefaultAddress();
         if (!addressData.data) { // 还没有设置地址
+          this.$toast.clear();
           this.$dialog.confirm({
             message: this.$t('go_set_address'),
             confirmButtonText: this.$t('go_seeting'),
@@ -400,8 +401,14 @@ export default {
         this.$toast.fail(error.msg);
       })
     },
-    onChooseOrderCoupon(index, productMapIndex, orderItem) { // 打开优惠券选择弹窗
-      this.couponList = JSON.parse(JSON.stringify(orderItem.orderCouponsList)); // 优惠券弹窗数据
+    onChooseOrderCoupon(index, productMapIndex, orderItem, storeItem) { // 打开优惠券选择弹窗
+      let list = orderItem.orderCouponsList.map(couponItem => {
+        return {
+          ...couponItem,
+          storeId: storeItem.storeId
+        }
+      })
+      this.couponList = JSON.parse(JSON.stringify(list)); // 优惠券弹窗数据
       this.deliveryStoreIndex = index; // 店铺索引
       this.deliverySkuMapIndex = productMapIndex; // 店铺下订单索引
       this.isCouponShow = true;
@@ -465,18 +472,22 @@ export default {
           for (let i in sItem.deliveryTypeSkuItemMap) {
             sItem.deliveryTypeSkuItemMap[i].orderCouponsList.forEach((cItem) => {
               if (["1", "2", "3", "4"].includes(cItem.discountType)) {
-                //相同券&当前店铺&非当前订单（取消当前店铺非当前订单的相同券）
-                // if (cItem.couponsId === item.couponsId && sItem.storeId === item.storeId && this.deliverySkuMapIndex !== i) {
-                //   cItem.isSelected = 0;
-                // }
-                //相同券&非当前店铺（取消其他店铺的相同券）
-                if (cItem.couponsId === item.couponsId && sItem.storeId !== item.storeId && this.deliverySkuMapIndex !== i) {
+                // 相同券&当前店铺&非当前订单（取消当前店铺非当前订单的相同券）
+                if (cItem.couponsId === item.couponsId && sItem.storeId === item.storeId && this.deliverySkuMapIndex !== i) {
+                  cItem.isSelected = 0;
+                }
+                // 相同券&非当前店铺（取消其他店铺的相同券）
+                if (cItem.couponsId === item.couponsId && sItem.storeId !== item.storeId) {
                   cItem.isSelected = 0;
                 }
                 // 当前店铺&非当前券&当前订单（一个订单只能用一张平台券）
                 if (sItem.storeId === item.storeId && cItem.couponsId !== item.couponsId && this.deliverySkuMapIndex === i) {
                   cItem.isSelected = 0;
                 }
+                // 
+                // if (sItem.storeId !== item.storeId && cItem.couponsId === item.couponsId && this.deliverySkuMapIndex === i) {
+                //   cItem.isSelected = 0;
+                // }
               } else {
                 // //相同券&非当前店铺（取消其他店铺的相同券）
                 // if (cItem.couponsId === item.couponsId && sItem.storeId !== item.storeId && this.deliverySkuMapIndex !== i) {
@@ -569,13 +580,16 @@ export default {
     },
     onDiscountPrice(productMapItem) {
       let total = parseFloat(productMapItem.goodsDisAmount) + parseFloat(productMapItem.storeDisAmount) + parseFloat(productMapItem.platformDisAmount);
-      return '-' + this.$store.state.rate.currency + total;
+      if (total > 0) return '-' + this.$store.state.rate.currency + total;
+      return this.$store.state.rate.currency + total;
     },
     onConfirmCoupon() { // 确认选择优惠券
       this.detail.storeSaleInfoList[this.deliveryStoreIndex].deliveryTypeSkuItemMap[this.deliverySkuMapIndex].orderCouponsList = this.couponList;
       this.detail.storeSaleInfoList[this.deliveryStoreIndex].deliveryTypeSkuItemMap[this.deliverySkuMapIndex].orderCouponsList.forEach((newItem, newIndex) => {
         if (newItem.isSelected == 1) { // 选中状态
           this.onChooseCoupon(newItem.isSelected, newIndex, newItem);
+          console.log(newItem)
+          console.log('===')
         }
       })
       this.isCouponShow = false;
@@ -638,6 +652,12 @@ export default {
 .container-absolute-height{
   height: calc(100% - 30px);
   overflow: scroll;
+  padding-bottom: 68px;
+  .container-absolute-btn{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+  }
 }
 </style>
 
