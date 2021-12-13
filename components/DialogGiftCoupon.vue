@@ -108,8 +108,8 @@ export default {
           this.$toast(this.$t('receive_success'));
           this.$emit('onBeforeClose', false);
         }).catch(error => {
+          this.$emit('onBeforeClose', false);
           console.log(error);
-          this.$toast.clear();
         })
         return false;
       }

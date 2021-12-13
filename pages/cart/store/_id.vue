@@ -281,6 +281,7 @@
         :loadUrl="require('@/assets/images/product-bgd-90.png')"
         :errorUrl="require('@/assets/images/product-bgd-90.png')"
         :fit="'cover'"
+        :width="'1.72rem'"
         :height="'1.36rem'"
         class="round-8 hidden"
         :alt="'TospinoMall'"
