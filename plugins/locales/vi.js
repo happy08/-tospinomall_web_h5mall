@@ -750,14 +750,14 @@ const vi = {
   go_shopping: 'Dạo',
   coupon_validity_day: 'Phiếu giảm giá sau {replace_tip} ngày sẽ hết hiệu lực',
   coupon: '优惠券',
-  coupon_no_threshold: '无门槛',
+  coupon_no_threshold: 'Không có ngưỡng',
   coupon_use_instruction: '优惠券使用说明',
   get_coupon: '领券',
-  coupon_full_reduction: '满{replace_tip}减{replace_tip1}',
-  coupon_received: '已领取',
-  no_instructions_for_use: '暂无使用说明',
+  coupon_full_reduction: '{replace_tip}-{replace_tip1}',
+  coupon_received: 'Nhận',
+  no_instructions_for_use: 'Không có mô tả phiếu giảm giá',
   congratulation_successful_collection: '恭喜您，领取成功',
-  total_offers: '优惠合计'
+  total_offers: 'Tổng số phiếu mua hàng'
 }
 
 export default vi;

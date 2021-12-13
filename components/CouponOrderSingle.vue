@@ -8,7 +8,7 @@
           <span class="fs-22 fm-din">{{ item.subtractAmount }}</span>
         </div>
         <!-- 满减券 -->
-        <div class="fs-10 mt-6 hidden-2 fm-pf-r" v-if="isFullDiscount">{{ $t('coupon_full_reduction', { replace_tip: item.satisfyAmount , replace_tip1: item.subtractAmount }) }}</div>
+        <div class="fs-10 mt-6 hidden-2 fm-pf-r" v-if="isFullDiscount">{{ $t('coupon_full_reduction', { replace_tip: $store.state.rate.currency + '' + item.satisfyAmount , replace_tip1: item.subtractAmount }) }}</div>
         <!-- 无门槛 -->
         <!-- <p :class="{'fs-10 lh-12 mt-6': true, 'dark-green': type == 0, 'light-grey': type != 0}" v-else>{{ $t('coupon_no_threshold') }}</p> -->
         <p :class="{'fs-10 fm-pf-r lh-12 mt-6': true}" v-else>{{ $t('coupon_no_threshold') }}</p>

@@ -750,14 +750,14 @@
   go_shopping: 'Ir às compras',
   coupon_validity_day: 'Expira {replace_tip} dias após a recepção do voucher',
   coupon: '优惠券',
-  coupon_no_threshold: '无门槛',
+  coupon_no_threshold: 'Sem limiar',
   coupon_use_instruction: '优惠券使用说明',
   get_coupon: '领券',
-  coupon_full_reduction: '满{replace_tip}减{replace_tip1}',
-  coupon_received: '已领取',
-  no_instructions_for_use: '暂无使用说明',
+  coupon_full_reduction: '{replace_tip}-{replace_tip1}',
+  coupon_received: 'Recebido',
+  no_instructions_for_use: 'Sem descrição de cupom',
   congratulation_successful_collection: '恭喜您，领取成功',
-  total_offers: '优惠合计'
+  total_offers: 'Total de ofertas'
 }
 
 export default por;
