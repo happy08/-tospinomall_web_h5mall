@@ -166,11 +166,11 @@ export default {
           name: 'me-wallet',
           icon: 'my-wallet'
         },
-        {
-          text: 'my_coupon', // 钱包
-          name: 'me-coupon',
-          icon: 'my-wallet'
-        },
+        // {
+        //   text: 'my_coupon', // 我的优惠券
+        //   name: 'me-coupon',
+        //   icon: 'my-wallet'
+        // },
         {
           text: 'address_management', // 地址管理
           name: 'me-address',
