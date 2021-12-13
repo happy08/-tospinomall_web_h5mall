@@ -24,18 +24,19 @@
           <!-- 开始时间-结束时间 -->
           <span class="fs-10 mt-4 w-145" v-else>{{ discountValidStartDate }}~{{ discountValidEndDate }}</span>
           <!-- 未领取,可领取 -->
-          <BmButton :class="{'fs-12 fw white round-100 plr-10 h-24 ws-nowrap': true, 'bg-dark-red-linear': isStoreCount, 'bg-green-linear': !isStoreCount}" v-if="item.isReceive == 0 || (item.isReceive == 3 && item.isH5CouponType)" @click="onReceive">{{ $t('coupon_get_it') }}</BmButton>
+          <BmButton :class="{'fs-12 fw white round-100 plr-10 h-24 ws-nowrap': true, 'bg-dark-red-linear': isStoreCount, 'bg-green-linear': !isStoreCount}" v-if="item.isReceive == 0 || (item.isReceive == 3 && pageType == 4) || !$store.state.user.authToken" @click="onReceive">{{ $t('coupon_get_it') }}</BmButton>
           <!-- 立即使用 -->
           <BmButton :class="{'fs-12 fw white round-100 plr-10 h-24 ws-nowrap': true, 'bg-dark-red-linear': isStoreCount, 'bg-green-linear': !isStoreCount}" v-if="pageType == 1 && item.useStatus" @click="onReceive">{{ $t('coupon_use_it') }}</BmButton>
           <!-- 已领取 -->
           <div class="tc fs-12 lh-20 coupon-status" v-if="item.isReceive == 1">
             <p class="coupon-status__tip">{{ $t('coupon_received') }}</p>
             <BmImage
-              :url="require('@/assets/images/coupon/store-collected.png')"
+              :url="isStoreCount ? require('@/assets/images/coupon/store-collected.png') : require('@/assets/images/coupon/platform-collected.png')"
               :height="'0.9rem'"
+              :width="'auto'"
               :isLazy="false"
               :isShow="true"
-              :fit="'cover'"
+              :fit="'contain'"
             />
           </div>
           <!-- 选择优惠券 -->
@@ -66,7 +67,7 @@ export default {
   props: {
     pageType: {
       type: Number,
-      default: 0 // 1我的优惠券 2领券中心 3确认订单
+      default: 0 // 1我的优惠券 2领券中心 3确认订单 4 客服链接券
     },
     type: { // 优惠券状态 0未使用 1已使用 2 已过期 3用完 -1可领取
       type: Number,
@@ -87,7 +88,6 @@ export default {
         satisfyAmount: null, // 满多少面额(门槛)
         subtractAmount: null, // 减多少面额
         validTimeType: null, // 有效时间类型 0->领取后x天有效 1->固定的有效期
-        isH5CouponType: null, // h5链接客服券
         isSelected: null, // 是否选中 0:未选中;1:已选中
       }
     }
@@ -140,7 +140,7 @@ export default {
       }
 
        // 已领取 || h5链接客服券且不可领取
-      if (this.item.isReceive == 1 || (this.item.isReceive == 2 && this.item.isH5CouponType)) {
+      if (this.item.isReceive == 1 || (this.item.isReceive == 2 && this.pageType == 4)) {
         return false;
       }
       // 已领取-立即使用
@@ -178,11 +178,11 @@ export default {
         duration: 0
       });
       try {
-        let receiveData = this.isH5CouponType ? await getLinkCoupon({ linkCouponId: this.$route.query.linkCouponId }) : await receiveCoupon({ discountId: this.item.discountId });
+        let receiveData = this.pageType == 4 ? await getLinkCoupon({ linkCouponId: this.$route.query.linkCouponId }) : await receiveCoupon({ discountId: this.item.discountId });
 
         this.$toast.clear();
         this.$toast({
-          message: this.isH5CouponType ? this.$t('congratulation_successful_collection') : this.$t('receive_success'),
+          message: this.pageType == 4 ? this.$t('congratulation_successful_collection') : this.$t('receive_success'),
           duration: 3000
         });
         this.$emit('onSelect', false); // 已领取弹窗隐藏
@@ -248,6 +248,7 @@ export default {
   right: 12px;
   bottom: 20px;
   transform: rotate(-21deg);
+  max-width: 76px;
   .coupon-status__tip{
     position: absolute;
     left: 50%;

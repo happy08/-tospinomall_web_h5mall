@@ -1,7 +1,7 @@
 <template>
   <!-- 客服优惠券领取页面 -->
   <div class="bg-grey m-375 m-auto vh-100 pt-10 plr-10" v-if="isShowLink">
-    <coupon-order-single v-for="(item, index) in couponList" :key="'good-coupon-' + index" :item="item" @onReceive="item.isReceive = $event"></coupon-order-single>
+    <coupon-order-single v-for="(item, index) in couponList" :key="'good-coupon-' + index" :item="item" @onReceive="item.isReceive = $event" :pageType="4"></coupon-order-single>
   </div>
 </template>
 
@@ -43,7 +43,6 @@ export default {
       this.isShowLink = true;
       this.couponList = res.data ? [{
         ...res.data,
-        isH5CouponType: 1, // 客服链接优惠券
         isReceive: res.data.receiveStatus
       }]: [];
     }).catch(error => {
