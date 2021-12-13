@@ -749,7 +749,7 @@
   coupon_use_it: 'Usar',
   go_shopping: 'Ir às compras',
   coupon_validity_day: 'Expira {replace_tip} dias após a recepção do voucher',
-  coupon: '优惠券',
+  coupon: 'Cupom',
   coupon_no_threshold: 'Sem limiar',
   coupon_use_instruction: 'Instruções de cupom',
   get_coupon: 'Nhận được',

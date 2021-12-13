@@ -749,7 +749,7 @@ const vi = {
   coupon_use_it: 'Sử dụng',
   go_shopping: 'Dạo',
   coupon_validity_day: 'Phiếu giảm giá sau {replace_tip} ngày sẽ hết hiệu lực',
-  coupon: '优惠券',
+  coupon: 'Phiếu mua hàng',
   coupon_no_threshold: 'Không có ngưỡng',
   coupon_use_instruction: 'Hướng dẫn phiếu thưởng',
   get_coupon: 'Obter',
