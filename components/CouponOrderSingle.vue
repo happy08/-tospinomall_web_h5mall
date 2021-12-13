@@ -17,16 +17,16 @@
         <!-- 规则的展开与隐藏 -->
         <BmIcon :name="type == 1 ? 'collapsed' : isStoreCount ? 'collapse-red' : 'collapse'" :width="'0.28rem'" :height="'0.28rem'" @iconClick="isOpenCollapse = !isOpenCollapse" class="coupon-collapse"></BmIcon>
         <h2 class="fs-14 hidden-1">{{ discountType }}</h2>
-        <p class="fs-12 mt-6 hidden-1">{{ discountName }}</p>
+        <p class="fs-12 mt-6 hidden-1" v-if="discountName">{{ discountName }}</p>
         <div class="flex between mt-12">
           <!-- 领取后x天有效 -->
-          <span class="fs-10 mt-4 w-145" v-if="item.discountValidDate && item.discountValidDate != ''">{{ $t('coupon_validity_day', { replace_tip: item.discountValidDate }) }}</span>
+          <span class="fs-10 mt-4" v-if="item.discountValidDate && item.discountValidDate != ''">{{ $t('coupon_validity_day', { replace_tip: item.discountValidDate }) }}</span>
           <!-- 开始时间-结束时间 -->
-          <span class="fs-10 mt-4 w-145" v-else>{{ discountValidStartDate }}~{{ discountValidEndDate }}</span>
+          <span class="fs-10 mt-4" v-else>{{ discountValidStartDate }}~{{ discountValidEndDate }}</span>
           <!-- 未领取,可领取 -->
-          <BmButton :class="{'fs-12 fw white round-100 plr-10 h-24 ws-nowrap': true, 'bg-dark-red-linear': isStoreCount, 'bg-green-linear': !isStoreCount}" v-if="item.isReceive == 0 || (item.isReceive == 3 && pageType == 4) || !$store.state.user.authToken" @click="onReceive">{{ $t('coupon_get_it') }}</BmButton>
+          <BmButton :class="{'fs-12 fw white round-100 plr-10 h-24 ws-nowrap': true, 'bg-dark-red-linear': isStoreCount, 'bg-green-linear': !isStoreCount}" v-if="item.isReceive == 0 || (item.isReceive == 3 && pageType == 4) || !$store.state.user.authToken" @btnClick="onReceive">{{ $t('coupon_get_it') }}</BmButton>
           <!-- 立即使用 -->
-          <BmButton :class="{'fs-12 fw white round-100 plr-10 h-24 ws-nowrap': true, 'bg-dark-red-linear': isStoreCount, 'bg-green-linear': !isStoreCount}" v-if="pageType == 1 && item.useStatus" @click="onReceive">{{ $t('coupon_use_it') }}</BmButton>
+          <BmButton :class="{'fs-12 fw white round-100 plr-10 h-24 ws-nowrap': true, 'bg-dark-red-linear': isStoreCount, 'bg-green-linear': !isStoreCount}" v-if="pageType == 1 && item.useStatus" @btnClick="onReceive">{{ $t('coupon_use_it') }}</BmButton>
           <!-- 已领取 -->
           <div class="tc fs-12 lh-20 coupon-status" v-if="item.isReceive == 1">
             <p class="coupon-status__tip">{{ $t('coupon_received') }}</p>
@@ -95,16 +95,9 @@ export default {
   computed: {
     // 活动类型：1.平台新人满减券，2.平台新人立减券，3.客服满减券，4.客服立减券，5.店铺新人满减券，6.店铺新人立减券，7.店铺满减券，8.商品满减券，9.商品立减券
     discountType() {
-      if (this.item.discountType == 1) return this.$t('platform_newcomers_full_coupon');
-      if (this.item.discountType == 2) return this.$t('platform_newcomers_coupon');
-      if (this.item.discountType == 3) return this.$t('customer_full_coupon');
-      if (this.item.discountType == 4) return this.$t('customer_coupon');
-      if (this.item.discountType == 5) return this.$t('store_newcomers_full_coupon');
-      if (this.item.discountType == 6) return this.$t('store_newcomers_coupon');
-      if (this.item.discountType == 7) return this.$t('store_full_coupon');
-      if (this.item.discountType == 8) return this.$t('goods_full_coupon');
-      if (this.item.discountType == 9) return this.$t('goods_coupon');
-      // return this.item.discountType == 1 || this.item.discountType == 2 || this.item.discountType == 3 || this.item.discountType == 4 ? this.$t('platform_coupons') : this.$t('store_coupons');
+      if (this.item.discountType == 1 || this.item.discountType == 2 || this.item.discountType == 3 || this.item.discountType == 4) return this.$t('platform_coupons');
+      if (this.item.discountType == 5 || this.item.discountType == 6 || this.item.discountType == 7) return this.$t('store_coupons');
+      if (this.item.discountType == 8 || this.item.discountType == 9) return this.$t('product_coupons');
     },
     isStoreCount() { // 是否是店铺券
       return this.item.discountType == 1 || this.item.discountType == 2 || this.item.discountType == 3 || this.item.discountType == 4 ? false : true;
@@ -113,13 +106,13 @@ export default {
       return this.item.discountType == 1 || this.item.discountType == 3 || this.item.discountType == 5 || this.item.discountType == 7 || this.item.discountType == 8 ? true : false;
     },
     discountName() { // 优惠券名称
-      return this.pageType == 1 ? this.item.couponName : this.item.discountName;
+      return this.pageType == 1 || this.pageType == 3 ? this.item.couponName : this.item.discountName;
     },
     discountValidEndDate() { // 优惠券有效结束时间
-      return this.pageType == 1 ? this.item.validEndTime : this.item.discountValidEndDate;
+      return this.pageType == 1 || this.pageType == 3 ? this.item.validEndTime : this.item.discountValidEndDate;
     },
     discountValidStartDate() { // 优惠券有效开始时间
-      return this.pageType == 1 ? this.item.validStartTime : this.item.discountValidStartDate;
+      return this.pageType == 1 || this.pageType == 3 ? this.item.validStartTime : this.item.discountValidStartDate;
     },
     isSelectedIcon() { // 店铺和平台未选中图标
       return this.item.isSelected == 1 ? this.isStoreCount ? require('@/assets/images/icon/choose-red-icon.png') : require('@/assets/images/icon/choose-icon.png') : this.isStoreCount ? require('@/assets/images/icon/choose-red-default.png') : require('@/assets/images/icon/choose-green-default.png');
@@ -201,6 +194,7 @@ export default {
 
 <style lang="less" scoped>
 .coupon-orde-single{
+  width: 100%;
   background-image: url('../assets/images/coupon/coupon-green-bgd.png');
   background-size: 100% 100%;
   background-repeat: no-repeat;
@@ -212,11 +206,13 @@ export default {
     background-image: url('../assets/images/coupon/coupon-grey-bgd.png');
   }
   .coupon-orde-single__left{
-    width: 111px;
+    // width: 111px;
+    width: 32%;
     padding: 20px 6px 14px 12px;
   }
   .coupon-orde-single__right{
-    width: 244px;
+    // width: 244px;
+    width: 68%;
     padding: 14px 12px 8px 11px;
   }
 }
@@ -266,6 +262,8 @@ export default {
 .descript-container{
   margin-top: -10px;
   padding-top: 10px;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
 }
 .coupon-choose{
   position: absolute;

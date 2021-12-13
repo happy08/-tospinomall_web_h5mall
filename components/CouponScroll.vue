@@ -1,7 +1,7 @@
 <template>
   <!-- 商品优惠券弹窗 -->
-  <van-popup v-model="isCouponShow" style="height: 80%" position="bottom" class="round-tlr-12 bg-white coupon-popup pt-20" @click-overlay="$emit('onBeforeClose', false)">
-    <h3 class="black fs-18 pb-10 tc lh-20">{{ $t('coupon') }}</h3>
+  <van-popup v-model="isCouponShow" style="height: 80%" position="bottom" class="round-tlr-12 bg-grey coupon-popup pt-20" @click-overlay="$emit('onBeforeClose', false)">
+    <h3 class="black fs-18 pb-10 bg-white tc lh-20">{{ $t('coupon') }}</h3>
     <div class="container-absolute-height">
       <empty-status v-if="couponList.length === 0" :image="require('@/assets/images/empty/order.png')" :description="$t('empty')" />
       <van-list
