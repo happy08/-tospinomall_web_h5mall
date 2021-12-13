@@ -5,7 +5,7 @@
 
     <div class="bg-white">
       <!-- 账户信息信息 -->
-      <van-cell class="ptb-20 plr-20" center is-link title-class="black" :to="{ name: 'me-account-userinfo' }">
+      <van-cell class="ptb-20 plr-20" center is-link title-class="w-100 black" :to="{ name: 'me-account-userinfo' }">
         <template #title>
           <div class="flex vcenter">
             <!-- 头像 -->
@@ -17,10 +17,11 @@
               :isShow="false"
               :round="true"
               :alt="'TospinoMall'"
+              class="flex-shrink"
             />
             <!-- 姓名、id -->
             <dl class="ml-10">
-              <dt class="fs-18 black fw">{{ $store.state.user.userInfo && $store.state.user.userInfo.nickname != '' ? $store.state.user.userInfo.nickname : '--' }}</dt>
+              <dt class="fs-18 black fw m-250 hidden-1">{{ $store.state.user.userInfo && $store.state.user.userInfo.nickname != '' ? $store.state.user.userInfo.nickname : '--' }}</dt>
               <dd class="fs-12 grey mt-8 lh-1">{{ $store.state.user.userInfo ? 'ID: ' + $store.state.user.userInfo.id : '--' }}</dd>
             </dl>
           </div>
@@ -75,5 +76,8 @@ export default {
   height: 50px!important;
   border-color: #EEEEEE!important;
   background-color: transparent!important;
+}
+.m-250{
+  max-width: 250px;
 }
 </style>
