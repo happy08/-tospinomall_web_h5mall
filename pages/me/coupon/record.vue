@@ -107,7 +107,7 @@ export default {
         pageSize: this.recordPageSize
       }
       if (this.recordTabActive != '100') {
-        params.couponActivityType = this.recordTabActive;
+        params.couponStatus = this.recordTabActive;
       }
       // if (this.loading) {
       //   return false;
