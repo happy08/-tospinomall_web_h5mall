@@ -113,17 +113,6 @@ export function operateFeedback(data) {
 }
 
 /**
- * 查询服务信息
- */
-export function getService(params) {
-  return request({
-    url: '/basics/operateSinglePage/findByQuery',
-    method: 'get',
-    params
-  })
-}
-
-/**
  * 商品详情获取分享内容
  */
 export function getShareDetail(goodsId) {

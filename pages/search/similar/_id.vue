@@ -29,7 +29,7 @@
           >
             <ProductTopBtmSingle 
               :img="{ url: item.mainPictureUrl, width: '3.4rem', height: '3.4rem', loadImage: require('@/assets/images/product-bgd-170.png') }" 
-              :detail="{ desc: item.productTitle, price: parseFloat(item.minPrice), rate: parseFloat(item.starLevel), volumn: parseFloat(item.saleCount), ellipsis: 2, country: item.supplyCountryName, country_url: item.supplyCountryIcon, stock: item.stock }"
+              :detail="{ desc: item.productTitle, price: parseFloat(item.minPrice), rate: parseFloat(item.starLevel), volumn: parseFloat(item.saleCount), ellipsis: 2, /*country: item.supplyCountryName, country_url: item.supplyCountryIcon, */stock: item.stock }"
               class="mt-12"
             />
           </nuxt-link>

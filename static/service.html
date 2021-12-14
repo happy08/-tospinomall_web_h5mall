@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TospinoMall</title>
+  <style>
+    body{
+      margin: 0;
+      padding: 0;
+    }
+    #content{
+      font-size: 14px;
+      margin-left: 20px;
+      margin-right: 20px;
+      margin-top: 20px;
+      padding-bottom: 20px;
+      line-height: 20px;
+      word-break: break-word;
+    }
+  </style>
+</head>
+<body>
+  <!-- 协议-供app使用 -->
+  <div id="content"></div>
+
+  <script>
+    // 获取location.search参数
+    function getQueryVariable(variable) {
+      let query = window.location.search.substring(1);
+      let vars = query.split('&');
+      for (var i = 0; i < vars.length; i++) {
+        var pair = vars[i].split('=');
+        if (decodeURIComponent(pair[0]) == variable) {
+          return decodeURIComponent(pair[1]);
+        }
+      }
+      return '';
+    }
+
+    let _type;
+    let router_type = getQueryVariable('type');
+    if (router_type == 'privacy') { // 隐私政策
+      _type = 1;
+    }
+    if (router_type == 'serve') { // 服务协议
+      _type = 2;
+    }
+    if (router_type == 'copyright') { // 版权信息
+      _type = 3;
+    }
+    if (router_type == 'evaluation') { // 评价规则
+      _type = 6;
+    }
+    if (router_type == 'aftersale') { // 退货/退款说明
+      _type = 7;
+    }
+    if (router_type == 'take') { // 上门取件
+      _type = 8;
+    }
+
+    if (router_type == 'coupon') { // 优惠券说明
+      fetch(`https://tospinomallapi.fyynet.com/discount/description/find/system/description`).then(res => {
+        return res.json();
+      }).then(response => {
+        if (response.data) {
+          document.getElementById('content').innerHTML = response.data.discountDescription;
+          // document.title = response.data.name;
+        }
+      }).catch(error => {
+        console.log(error);
+      })
+    } else {
+      fetch(`https://tospinomallapi.fyynet.com/basics/operateSinglePage/findByQuery?platform=1&type=${_type}`).then(res => {
+        return res.json();
+      }).then(response => {
+        if (response.data) {
+          document.getElementById('content').innerHTML = response.data.content;
+          document.title = response.data.name;
+        }
+      }).catch(error => {
+        console.log(error);
+      })
+    }
+  </script>
+</body>
+</html>

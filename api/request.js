@@ -36,14 +36,14 @@ const tip = msg => {
     // case 401:
     //   // redirect('/login');
     //   break;
-    case 403:
-      store.commit('user/SET_TOKEN', null);
+    // case 403:
+    //   store.commit('user/SET_TOKEN', null);
       // tip('登录过期，请重新登录');
       // store.commit('setToken', ''); // 清除token并跳转登录页
       // setTimeout(() => {
       //   redirect('/login');
       // }, 1000);
-      break;
+      // break;
     case 404:
       tip($nuxt._i18n.t('axios_tip_404'));
       break;
