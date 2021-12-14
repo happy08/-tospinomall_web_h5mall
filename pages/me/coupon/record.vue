@@ -1,31 +1,29 @@
 <template>
   <!-- 我的-优惠券领券中心 -->
-  <div class="bg-grey v-percent-100 pb-64">
-    <van-sticky>
-      <BmHeaderNav :left="{ isShow: true }" :title="$t('my_coupon')"></BmHeaderNav>
+  <div class="bg-grey v-percent-100 pt-46 pb-64">
+    <BmHeaderNav :left="{ isShow: true }" :fixed="true" :title="$t('my_coupon')"></BmHeaderNav>
 
-      <van-tabs v-model="recordTabActive" color="#42B7AE" class="customs-van-tabs"  @click="onChangeTab" :ellipsis="false">
-        <van-tab :title="item.tab" :name="item.tabName" v-for="(item, index) in recordLists" :key="index">
-          <PullRefresh :refreshing="refreshing" @refresh="onRefresh" class="custom-min-height-94">
-            <div class="pb-20 bg-grey mlr-10">
-              <!-- 空列表 -->
-              <empty-status v-if="item.records.length === 0" :image="require('@/assets/images/empty/order.png')" :description="$t('empty')" />
-              <van-list
-                v-else
-                v-model="loading"
-                :finished="finished"
-                finished-text=""
-                @load="onLoad"
-                class="bg-grey"
-                :immediate-check="false"
-              >
-                <coupon-order-single class="mt-12"  v-for="(item, itemIndex) in item.records" :key="'coupon-center' + itemIndex" :item="item" :pageType="1" :type="1"></coupon-order-single>
-              </van-list>
-            </div>
-          </PullRefresh>
-        </van-tab>
-      </van-tabs>
-    </van-sticky>
+    <van-tabs v-model="recordTabActive" sticky :offset-top="'0.92rem'" color="#42B7AE" class="customs-van-tabs"  @click="onChangeTab" :ellipsis="false">
+      <van-tab :title="item.tab" :name="item.tabName" v-for="(item, index) in recordLists" :key="index">
+        <PullRefresh :refreshing="refreshing" @refresh="onRefresh" class="custom-min-height-94">
+          <div class="pb-20 bg-grey mlr-10">
+            <!-- 空列表 -->
+            <empty-status v-if="item.records.length === 0" :image="require('@/assets/images/empty/order.png')" :description="$t('empty')" />
+            <van-list
+              v-else
+              v-model="loading"
+              :finished="finished"
+              finished-text=""
+              @load="onLoad"
+              class="bg-grey"
+              :immediate-check="false"
+            >
+              <coupon-order-single class="mt-12"  v-for="(item, itemIndex) in item.records" :key="'coupon-center' + itemIndex" :item="item" :pageType="1" :type="1"></coupon-order-single>
+            </van-list>
+          </div>
+        </PullRefresh>
+      </van-tab>
+    </van-tabs>
   </div>
 </template>
 
