@@ -57,6 +57,13 @@ svg {
   margin-top: 0!important;
   margin-bottom: 0!important;
 }
+.mt-2 {
+  margin-top: 2px;
+}
+.ptb-2 {
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
 .pt-4 {
   padding-top: 4px !important;
 }
@@ -109,6 +116,9 @@ svg {
 .pb-8 {
   padding-bottom: 8px!important;
 }
+.pt-8 {
+  padding-top: 8px!important;
+}
 .mr-8 {
   margin-right: 8px!important;
 }
@@ -121,6 +131,9 @@ svg {
 .plr-8 {
   padding-left: 8px!important;
   padding-right: 8px!important;
+}
+.pr-8 {
+  padding-right: 8px;
 }
 .pt-10 {
   padding-top: 10px !important;
@@ -250,6 +263,9 @@ svg {
 .pl-16 {
   padding-left: 16px!important;
 }
+.pr-16 {
+  padding-right: 16px;
+}
 .pt-20 {
   padding-top: 20px !important;
 }
@@ -368,6 +384,9 @@ svg {
 .mt-60 {
   margin-top: 60px!important;
 }
+.pt-60 {
+  padding-top: 60px;
+}
 .pb-60 {
   padding-bottom: 60px!important;
 }
@@ -399,6 +418,10 @@ svg {
 }
 .round-50 {
   border-radius: 50%;
+}
+.round-tlr-12{
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
 }
 
 /* 字号大小*/
@@ -474,7 +497,10 @@ svg {
   justify-content: flex-start!important;
 }
 .hend {
-  justify-content: flex-end;
+  justify-content: flex-end!important;
+}
+.vfend {
+  align-items: flex-end;
 }
 .vcenter {
   align-items: center;
@@ -519,11 +545,17 @@ svg {
 .red {
   color: #ff6666!important;
 }
+.dark-red {
+  color: #E53852!important;
+}
 .orange {
   color: #ff8248!important;
 }
 .green {
   color: #42b7ae!important;
+}
+.dark-green {
+  color: #3EB7AE!important;
 }
 .black {
   color: #383838!important;
@@ -565,6 +597,9 @@ svg {
 .bg-green-linear {
   background: linear-gradient(270deg, #3eb5ae 0%, #70ceb6 100%);
 }
+.bg-dark-red-linear {
+  background: linear-gradient(270deg, #F9083B 0%, #FB6028 100%)!important;
+}
 .bg-white {
   background-color: #ffffff!important;
 }
@@ -577,6 +612,9 @@ svg {
 .bg-green {
   background: #42B7AE!important;
 }
+.bg-dark-green {
+  background-color: #3EB7AE!important;
+}
 .bg-red {
   background-color: #FF6666!important;
 }
@@ -588,7 +626,10 @@ svg {
 }
 
 .border {
-  border: solid 1px #E5E5E5!important;
+  border: 1px solid #E5E5E5!important;
+}
+.border-red {
+  border: 1px solid #FF6666!important;
 }
 .border-b{
   position: relative;
@@ -655,6 +696,9 @@ svg {
 }
 .fm-din-alternate {
   font-family: 'DIN Alternate Bold';
+}
+.fm-noto-sans {
+  font-family: 'Source Han Sans CN';
 }
 /*溢出1、2行隐藏*/
 .hidden-1 {
@@ -880,4 +924,13 @@ html, body, #__nuxt, #__layout{
   // .custom-min-height-128{
   //   min-height: calc(100vh - 128px - 30px - 44px);
   // }
+}
+
+// 优惠券弹窗样式
+.coupon-popup{
+  // position: relative;
+  .coupon-popup__bottom{
+    height: calc(100% - 113px);
+    overflow-y: auto;
+  }
 }

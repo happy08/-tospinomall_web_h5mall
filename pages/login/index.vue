@@ -180,6 +180,16 @@ export default {
         setTimeout(() => {
           this.account = '';
           this.password = '';
+          // 客服券链接标记时要跳转到客服券领取页面
+          if (sessionStorage.getItem('customerCouponLink')) {
+            this.$router.push({
+              name: 'me-coupon-customer',
+              query: {
+                linkCouponId: sessionStorage.getItem('customerCouponLink')
+              }
+            })
+            return false;
+          }
           this.$router.push({
             path: '/home.html'
           })
@@ -285,6 +295,16 @@ export default {
         setTimeout(() => {
           this.account = '';
           this.password = '';
+          // 客服券链接标记时要跳转到客服券领取页面
+          if (sessionStorage.getItem('customerCouponLink')) {
+            this.$router.push({
+              name: 'me-coupon-customer',
+              query: {
+                linkCouponId: sessionStorage.getItem('customerCouponLink')
+              }
+            })
+            return false;
+          }
           this.$router.push({
             path: '/home.html'
           })

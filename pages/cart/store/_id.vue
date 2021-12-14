@@ -25,7 +25,7 @@
             </template>   
           </van-search>
         </div>
-        <van-sticky offset-top="0" @scroll="onScroll">
+        <van-sticky offset-top="0" @scroll="onScroll" ref="vanSticky">
           <div :class="{'store-container-headr': scrollTop > 40 && storeBgdUrl != '', 'h-68': scrollTop > 40, 'bg-black': scrollTop > 40 && storeBgdUrl == ''}" :style="scrollTop > 40 && storeBgdUrl != '' ? 'background-image: url(' + storeBgdUrl + ')' : ''">
             <div :class="{'w-100 flex between plr-12 ptb-10 vcenter': true, 'bg-black-65': scrollTop > 40 && storeBgdUrl != ''}">
               <div class="flex vcenter mr-12 w-100 hidden-1">
@@ -127,7 +127,7 @@
     </div> -->
     
     <!-- 店铺首页热图 -->
-    <PullRefresh :refreshing="refreshing" @refresh="onRefresh" class="pb-20">
+    <PullRefresh :refreshing="refreshing" @refresh="onRefresh" class="pb-30" ref="storeContainer">
       <div v-if="tabbarActive == 1 && scrollTop < 40" class="h-50"></div>
       <template v-if="tabbarActive == 0">
         <div v-for="(moduleItem, moduleIndex) in moduleData" :key="'module-data-' + moduleIndex">
@@ -274,6 +274,25 @@
       </template>
     </PullRefresh>
 
+    <!-- 店铺新人券标识 -->
+    <div class="store-coupon-logo" v-if="storeCoupons.length > 0">
+      <BmImage
+        :url="require('@/assets/images/coupon/store-coupon-logo.png')"
+        :loadUrl="require('@/assets/images/product-bgd-90.png')"
+        :errorUrl="require('@/assets/images/product-bgd-90.png')"
+        :fit="'cover'"
+        :width="'1.72rem'"
+        :height="'1.36rem'"
+        class="round-8 hidden"
+        :alt="'TospinoMall'"
+        :isClip="0"
+        @onClick="isNewCoupon = true"
+      />
+    </div>
+
+    <!-- 店铺新人红包 -->
+    <dialog-gift-coupon :lists="storeCoupons" :isGiftShow="isNewCoupon" @onBeforeClose="isNewCoupon = $event" :type="1"></dialog-gift-coupon>
+
     <!-- 底部标签栏 -->
     <van-tabbar v-model="tabbarActive" active-color="#FA2A32" inactive-color="#DBDBDB" v-if="isTabbarShow">
       <van-tabbar-item>
@@ -300,6 +319,7 @@ import EmptyStatus from '@/components/EmptyStatus';
 import 'swiper/css/swiper.css';
 import { Swiper, SwiperSlide } from 'vue-awesome-swiper';
 import PullRefresh from '@/components/PullRefresh';
+import DialogGiftCoupon from '@/components/DialogGiftCoupon';
 
 // let searchClient;
 // let client;
@@ -320,7 +340,8 @@ export default {
     EmptyStatus,
     swiper: Swiper,
     swiperSlide: SwiperSlide,
-    PullRefresh
+    PullRefresh,
+    DialogGiftCoupon
   },
   data() {
     return {
@@ -373,6 +394,8 @@ export default {
       refreshing: {
         isFresh: false
       },
+      storeCoupons: [],
+      isNewCoupon: false
     }
   },
   async fetch() {
@@ -432,6 +455,9 @@ export default {
         //   this.finished = this.total == this.productList.length ? true : false;
         // })
       // }
+      // 获取店铺新人优惠券
+      const storeCoupons = await this.$api.getStoreCouponList(this.$route.params.id);
+      this.storeCoupons = storeCoupons.data;
       
       // 店铺组件数据,店铺有装修才可看
       const moduleData = await this.$api.getStoreIndex({shopId: this.$route.params.id});
@@ -453,7 +479,7 @@ export default {
         return item.type == 2;
       })
       this.isTabbarShow = store_components.length > 1 ? true: false;
-      this.tabbarActive = this.$route.query.tabbarActive ? this.$route.query.tabbarActive : store_components.length > 1 ? 0 : 1;
+      this.tabbarActive = this.$route.query.tabbarActive ? parseFloat(this.$route.query.tabbarActive) : store_components.length > 1 ? 0 : 1;
       this.refreshing.isFresh = false;
     } catch (error) {
       console.log(error);
@@ -463,6 +489,9 @@ export default {
     this.isTabbarShow = false;
     // if (this.$route.query.tabbarActive) this.tabbarActive = parseFloat(this.$route.query.tabbarActive);
     this.$fetch();
+    document.addEventListener('scroll', () => {
+      console.log(this.$refs.storeContainer.$el.offsetTop)
+    })
   },
   methods: {
     onSubscribe(flag) { // 订阅/取消订阅 flag: true 订阅 false 取消订阅
@@ -470,7 +499,7 @@ export default {
         this.$router.push({
           path: '/login.html'
         })
-        return false;
+         return false;
       }
 
       let _detailParams = {};
@@ -827,6 +856,12 @@ export default {
     background-color: rgba(0, 0, 0, 0.65);
     z-index: 1;
   }
+}
+.store-coupon-logo{
+  position: fixed;
+  right: 0;
+  z-index: 1000;
+  bottom: 179px;
 }
 </style>
 

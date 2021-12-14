@@ -5,27 +5,27 @@
     <div class="bg-white plr-12 account-top">
       <div class="flex between vcenter">
         <!-- 头像信息 -->
-        <div class="flex between vcenter">
+        <div class="flex between vcenter hidden-1">
           <!-- 头像 -->
-          <div @click="goAccount">
-            <BmImage 
-              :url="$store.state.user.userInfo && $store.state.user.userInfo.headPictureUrl.length > 0 ? $store.state.user.userInfo.headPictureUrl : require('@/assets/images/icon/user-icon.png')"
-              :width="'1.04rem'" 
-              :height="'1.04rem'"
-              :isLazy="false"
-              :isShow="false"
-              :round="true"
-              :alt="'TospinoMall'"
-            />
-          </div>
+          <BmImage 
+            :url="$store.state.user.userInfo && $store.state.user.userInfo.headPictureUrl.length > 0 ? $store.state.user.userInfo.headPictureUrl : require('@/assets/images/icon/user-icon.png')"
+            :width="'1.04rem'" 
+            :height="'1.04rem'"
+            :isLazy="false"
+            :isShow="false"
+            :round="true"
+            :alt="'TospinoMall'"
+            class="flex-shrink"
+            @onClick="goAccount"
+          />
           <!-- 姓名、id -->
-          <dl class="ml-10" v-if="$store.state.user.authToken" @click="goAccount">
-            <dt class="fs-18 green fw" v-if="$store.state.user.userInfo">{{ $store.state.user.userInfo.nickname == '' ? '--': $store.state.user.userInfo.nickname }}</dt>
+          <dl class="ml-10 hidden-1" v-if="$store.state.user.authToken" @click="goAccount">
+            <dt class="fs-18 green fw hidden-1" v-if="$store.state.user.userInfo">{{ $store.state.user.userInfo.nickname == '' ? '--': $store.state.user.userInfo.nickname }}</dt>
             <dd class="fs-12 grey mt-8" v-if="$store.state.user.userInfo">ID: {{ $store.state.user.userInfo.id }}</dd>
           </dl>
           <div v-else class="ml-10 fs-16" @click="goLogin">{{ $t('login_register') }}</div>
         </div>
-        <nuxt-link :to="{ name: 'me-message' }">
+        <nuxt-link :to="{ name: 'me-message' }" class="flex-shrink">
           <van-badge :dot="$store.state.user.isNewMessage" class="custom-me-dot">
             <BmImage
               :url="require('@/assets/images/message-icon.png')"
@@ -47,10 +47,16 @@
             <dd class="fs-12 grey mt-4">{{ $t('collection') }}</dd>
           </dl>
         </nuxt-link>
-        <nuxt-link :to="{ name: 'me-wallet' }">
+        <!-- <nuxt-link :to="{ name: 'me-wallet' }">
           <dl class="tc">
             <dt class="fs-24 black fw">{{ walletNum }}</dt>
             <dd class="fs-12 grey mt-4">{{ $t('wallet') }}</dd>
+          </dl>
+        </nuxt-link> -->
+        <nuxt-link :to="{ name: 'me-coupon' }">
+          <dl class="tc">
+            <dt class="fs-24 black fw">{{ $store.state.user.userInfo ? $store.state.user.userInfo.couponNum : 0 }}</dt>
+            <dd class="fs-12 grey mt-4">{{ $t('coupon') }}</dd>
           </dl>
         </nuxt-link>
         <!-- <dl class="tc">
@@ -160,6 +166,11 @@ export default {
           name: 'me-wallet',
           icon: 'my-wallet'
         },
+        // {
+        //   text: 'my_coupon', // 我的优惠券
+        //   name: 'me-coupon',
+        //   icon: 'my-wallet'
+        // },
         {
           text: 'address_management', // 地址管理
           name: 'me-address',
