@@ -6,9 +6,9 @@
     <!-- 选择-单选 -->
     <van-radio-group v-model="payRadio" v-if="list.length > 0" class="mlr-12">
       <van-cell-group v-for="(item, index) in list" :key="index" class="bg-white">
-        <van-cell class="ptb-10 mt-12 vcenter pl-6 pr-12" clickable @click="onChangePayment(item)" :border="false" :is-link="item.label == 'Brij'">
+        <van-cell class="ptb-10 mt-12 vcenter pl-6 pr-12" clickable @click="onChangePayment(item)" :border="false" :is-link="item.label == 'Brij' || item.label == 'Paystack'">
           <!-- 左侧图标 -->
-          <template #icon>
+          <template #icon v-if="item.label != 'Paystack'">
             <BmImage
               :url="require('@/assets/images/icon/'+ (item.label) +'.png')"
               :width="'0.8rem'" 
@@ -28,7 +28,7 @@
             <span class="fs-16 fw tr black pr-10">{{ $store.state.rate.currency }}{{ balance }}</span>
           </template>
           <!-- 右侧图标-单选图标 -->
-          <template #right-icon v-if="item.label != 'Brij'">
+          <template #right-icon v-if="item.label != 'Brij' && item.label != 'Paystack'">
             <van-radio :name="item.label" icon-size="0.48rem">
               <template #icon="props">
                 <BmImage
@@ -50,7 +50,7 @@
           :class="{'field-container phone-code-field pt-0 pb-20': true, 'is-active': payRadio == item.label}"
           type="number"
           maxlength="20"
-          v-if="item.label != 'Balances' && item.label != 'Brij'"
+          v-if="item.label != 'Balances' && item.label != 'Brij' && item.label != 'Paystack'"
         >
           <template #label>
             <span @click="$router.push({ name: 'me-address-areacode', query: { ...$route.query, payment: item.label } })" class="iblock fs-14 black lh-20 pl-4">
@@ -166,7 +166,8 @@ export default {
   head: {
     script: [
       { src: 'https://developer.tingg.africa/checkout/v2/tingg-checkout.js', type: 'text/javascript', charset: 'utf-8' },
-      // { src: 'https://test.theteller.net/checkout/resource/api/inline/theteller_inline.js', type: 'text/javascript', charset: 'utf-8' }
+      // { src: 'https://test.theteller.net/checkout/resource/api/inline/theteller_inline.js', type: 'text/javascript', charset: 'utf-8' },
+      { src: 'https://js.paystack.co/v2/inline.js' }
     ]
   },
   async fetch() {
@@ -194,7 +195,13 @@ export default {
       this.checkPayOrder(0);
     }
     
-    this.list = [];
+    this.list = [
+      {
+        label: 'Paystack',
+        phone: '',
+        desc: this.$t('tospinomall_wallet')
+      }
+    ];
     if (this.$route.query.type == 'order') { // 说明是从订单结算页面跳转过来的，支付方式就有余额
       this.list.push({
         label: 'Balances',
@@ -645,6 +652,31 @@ export default {
             payWay: 'Brij',
           }
         })
+        return false;
+      }
+      // Paystack支付
+      if (item.label == 'Paystack') {
+        const paystack = new PaystackPop();
+        paystack.newTransaction({
+          key: 'pk_test_e9a02bcd6cf719716299b9d4c9a0d405c07974d7', // pbulic key
+          email: '150@email.com', // 邮箱
+          amount: 10000, // 实际金额 * 100
+          onSuccess: (transaction) => {
+            console.log('成功')
+            console.log(transaction) 
+            // transaction = { message: "Approved"
+                // reference: "T976710416254897"
+                // status: "success"
+                // trans: "1506044009"
+                // transaction: "1506044009"
+                // trxref: "T976710416254897"}
+            // Payment complete! Reference: transaction.reference 
+          },
+          onCancel: () => {
+            console.log('取消')
+            // user closed popup
+          }
+        });
         return false;
       }
       this.payRadio = item.label;
