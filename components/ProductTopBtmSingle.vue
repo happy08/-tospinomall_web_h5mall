@@ -40,7 +40,7 @@
       <div :class="{ 'h-40': isHeight && detail.ellipsis === 2 ? true: false }">
         <p class="fs-14 black fm-pf-r lh-20" v-if="detail.desc" v-html="detail.desc" :class="{ 'hidden-1': detail.ellipsis === 1, 'hidden-2': detail.ellipsis === 2 }"></p>
       </div>
-      <div class="m-100 flex mt-8 vcenter hidden-1 round-4 product-tag" v-if="detail.transportMode && detail.supplyCountryName">
+      <div class="m-100 flex vcenter mt-8 round-4 product-tag" v-if="detail.transportMode && detail.supplyCountryName">
         <!-- 运输方式 1空运 2海运 3 陆运 -->
         <BmImage
           :url="require('@/assets/images/icon/'+ modeLabel)" 
@@ -137,8 +137,6 @@ export default {
 }
 .soldout-container{
   position: relative;
-  // width: 100%;
-  // height: 100%;
   .soldout-container__tip{
     position: absolute;
     width: 70px;
@@ -154,8 +152,18 @@ export default {
 .product-tag{
   height: 18px;
   position: relative;
-  border: 1px solid #42b7ae;
   width: fit-content;
+  &::before{
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    display: block;
+    border: 1px solid #42b7ae;
+    border-radius: 4px;
+  }
 }
 .m-100{
   max-width: 100%;
