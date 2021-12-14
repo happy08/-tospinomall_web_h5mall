@@ -597,6 +597,12 @@ export default {
     },
     onClickOverlay() { // 点击优惠券遮罩层,说明当前优惠券的选中没有变
       this.isCouponShow = false;
+    },
+    onChangePayWay(paymentRadio) { // 修改支付方式
+      if (this.detail.isCashDelivery != 1 && paymentRadio == '2') {
+        return false;
+      }
+      this.paymentRadio = paymentRadio;
     }
   }
 }
