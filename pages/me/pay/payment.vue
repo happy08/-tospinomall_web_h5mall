@@ -63,7 +63,7 @@
     </van-radio-group>
 
     <!-- tingg支付 -->
-    <button class="awesome-checkout-button" @click="onTinggPay"></button>
+    <!-- <button class="awesome-checkout-button" @click="onTinggPay"></button> -->
     <!-- brij钱包支付 -->
     <!-- <button class="plr-20 ptb-20 brij-checkout-button">Brij钱包支付</button> -->
     <!-- <button class="plr-20 ptb-20" @click="onPayswitch">Theteller 钱包支付</button> -->
@@ -165,7 +165,7 @@ export default {
   },
   head: {
     script: [
-      { src: 'https://developer.tingg.africa/checkout/v2/tingg-checkout.js', type: 'text/javascript', charset: 'utf-8' },
+      // { src: 'https://developer.tingg.africa/checkout/v2/tingg-checkout.js', type: 'text/javascript', charset: 'utf-8' },
       // { src: 'https://test.theteller.net/checkout/resource/api/inline/theteller_inline.js', type: 'text/javascript', charset: 'utf-8' }
     ]
   },
@@ -179,20 +179,20 @@ export default {
     });
 
     // this.isTinggPay = false;
-    if (this.$route.query.tingg && (this.$route.query.tingg == 'success' || this.$route.query.tingg == 'failed')) { // 只有成功和失败时才调取接口
-      this.isWaittingPay = true;
-      if (this.$route.query.tingg == 'failed') {
-        this.$dialog.confirm({
-          title: this.$t('payment_failed'),
-          message: this.$t('order_payment_failed_tips'),
-          confirmButtonText: this.$t('pay_again')
-        }).then(() => {
-          this.onPay();
-        })
-        return false;
-      }
-      this.checkPayOrder(0);
-    }
+    // if (this.$route.query.tingg && (this.$route.query.tingg == 'success' || this.$route.query.tingg == 'failed')) { // 只有成功和失败时才调取接口
+    //   this.isWaittingPay = true;
+    //   if (this.$route.query.tingg == 'failed') {
+    //     this.$dialog.confirm({
+    //       title: this.$t('payment_failed'),
+    //       message: this.$t('order_payment_failed_tips'),
+    //       confirmButtonText: this.$t('pay_again')
+    //     }).then(() => {
+    //       this.onPay();
+    //     })
+    //     return false;
+    //   }
+    //   this.checkPayOrder(0);
+    // }
     
     this.list = [];
     if (this.$route.query.type == 'order') { // 说明是从订单结算页面跳转过来的，支付方式就有余额
