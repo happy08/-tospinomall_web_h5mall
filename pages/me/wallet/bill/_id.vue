@@ -19,7 +19,7 @@
     <!-- 详情 -->
     <van-cell-group>
       <!-- 退款原因(退款账单才显示)  -->
-      <van-cell center v-if="detail.type == 3" class="ptb-20 plr-20" :title="$t('refund_reason')" label="Wrong color.wrong size. Wrong color,wrong size and lesson" />
+      <van-cell center v-if="detail.type == 3" class="ptb-20 plr-20" :title="$t('refund_reason')" :label="detail.voucherExplain" />
       <!-- 订单账单 -->
       <!-- <van-cell v-if="detail.type == 2" class="ptb-20 plr-20" :title="$t('commodity')" is-link>
         <template #label>
