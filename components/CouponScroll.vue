@@ -84,7 +84,7 @@ export default {
         pageNum: this.couponPageNum,
         pageSize: this.couponPageSize,
         listType: this.type,
-        buyerId: this.$store.state.user.authToken ? this.$store.state.user.userInfo.id : ''
+        buyerId: this.$store.state.user.userInfo ? this.$store.state.user.userInfo.id : ''
       }
       if (this.type == 'goodsDetails') { // 商品详情需要商品id
         params.goodsId = this.goodId;
