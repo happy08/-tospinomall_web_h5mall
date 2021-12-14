@@ -269,6 +269,7 @@ export default {
       if (addressData.code != 0) return false;
 
       if (!addressData.data) { // 还没有设置地址
+        this.$toast.clear();
         this.$dialog.confirm({
           message: this.$t('go_set_address'),
           confirmButtonText: this.$t('go_seeting'),
