@@ -97,7 +97,7 @@ export default {
       }
       
       if (num == -1 && !this.$route.query.paywait) { // 点击完成
-          this.countdown = 1 * 2 * 60 * 1000;
+          this.countdown = 1 * 3 * 60 * 1000;
           this.$router.push({
               name: 'me-pay-wait',
               query: {
@@ -138,7 +138,7 @@ export default {
           // 钱包支付：0->失败 1->已经支付 2->待支付 3->已取消
             this.$toast.clear();
             if (num == 1) { // 倒计时开始
-              this.countdown = 1 * 2 * 60 * 1000;
+              this.countdown = 1 * 3 * 60 * 1000;
               this.onPayCompleted(num);
               return false;
             }
