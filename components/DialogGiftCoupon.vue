@@ -35,7 +35,7 @@
 
           <div class="gift-container__top--single">
             <div class="m-auto mt-10 center coupon-gift-single2" v-for="item, index in lists" :key="'gift-' + index">
-              <div class="tc pt-22 white flex vfend hcenter">
+              <div class="tc pt-24 white flex vfend hcenter">
                 <span class="fs-24">{{ $store.state.rate.currency }}</span>
                 <span class="fs-28 fm-din">{{ item.subtractAmount }}</span>
               </div>
