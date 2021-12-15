@@ -274,6 +274,7 @@
             :finished="finished"
             @load="onLoad"
             class="plr-12 pb-10"
+            :immediate-check="false"
           >
             <!-- 加载中提示 -->
             <!-- <template #loading>
@@ -476,6 +477,7 @@ export default {
       //   })
       // } else {
         const searchList = await this.$api.getProductSearch({ /*pageSize: this.pageSize,*/ pageIndex: 0 }); // 搜索商品列表
+        
         this.refreshing.isFresh = false;
         if (!searchList.data) return false;
         
@@ -487,6 +489,7 @@ export default {
             minPrice: parseFloat(item.minPrice)
           }
         })
+        
         this.categoryList[0].items = list;
         this.categoryList[0].total = searchList.data.total;
         this.finished = list.length == searchList.data.total ? true : false;
