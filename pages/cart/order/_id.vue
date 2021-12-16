@@ -129,7 +129,7 @@
               <!-- 运费 -->
               <van-cell :title="$t('total_freight')" :value="$store.state.rate.currency + productMapItem.sellerFreightAmount" title-class="color-black-85" class="plr-20 ptb-12" value-class="color-black-85" />
               <!-- 优惠券 -->
-              <van-cell :title="$t('coupon')" class="plr-20 ptb-12" is-link title-class="color-black-85" value-class="color-black-85" :border="false" v-if="productMapItem.orderCouponsList.length > 0" @click="onChooseOrderCoupon(index, productMapIndex, productMapItem, item)">
+              <van-cell :title="$t('coupon')" class="plr-20 ptb-12" is-link title-class="color-black-85" value-class="color-black-85" :border="false" v-if="productMapItem.orderCouponsList && productMapItem.orderCouponsList.length > 0" @click="onChooseOrderCoupon(index, productMapIndex, productMapItem, item)">
                 <template #default>
                   <!-- 优惠金额 -->
                   <span class="red" v-html="onDiscountPrice(productMapItem)"></span>
