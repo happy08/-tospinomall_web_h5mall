@@ -11,6 +11,7 @@
         :finished="finished"
         finished-text=""
         @load="onLoad"
+        :immediate-check="false"
       >
         <div 
           class="mx-auto my-2 plr-12"

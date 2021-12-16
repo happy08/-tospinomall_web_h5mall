@@ -58,6 +58,7 @@ export const actions = {
   async nuxtServerInit ({ commit }, { $cookies, $api }) {
     try {
       const authToken = $cookies.get('authToken'); // 用户token
+
       console.log('持久化')
       // console.log(authToken)
       
@@ -96,25 +97,37 @@ export const actions = {
 
       // 如果有token获取用户信息
       // 如果已经登录，每次刷新页面时先重新获取token
-      if (authToken) { 
+      if (authToken) {
         console.log('已登录')
-        const authTokenData = await $api.refreshToken();
-        if (authTokenData.code != 0) {
-          commit('user/SET_TOKEN', null);
-        } else {
-          commit('user/SET_TOKEN', authTokenData.data.token_type + ' ' + authTokenData.data.access_token);
-          commit('user/SET_REFRESHTOKEN', authTokenData.data.refresh_token);
-          commit('user/SET_SCOPE', authTokenData.data.scope);
-          // 获取用户信息
-          const userInfo = await $api.getUserInfo();
-          commit('user/SET_USERINFO', userInfo.data);
-          commit('user/SET_NOWTIME', userInfo.data.nowTime);
+        commit('user/SET_TOKEN', authToken);
+        commit('user/SET_REFRESHTOKEN', $cookies.get('refreshToken'));
+        // 获取用户信息
+        const userInfo = await $api.getUserInfo();
+        commit('user/SET_USERINFO', userInfo.data);
+        commit('user/SET_NOWTIME', userInfo.data.nowTime);
+        // 获取消息
+        commit('user/SET_WEBSOCKET', $cookies.get('websocketMsg'));
+        // 当前账户
+        commit('user/SET_ACCOUNT', { email: userInfo.data.email, phone: $cookies.get('account_phone') });
+        // 刷新token暂时隐藏,因为刷新token时有时接口返回慢会导致退出登录
+        // const authTokenData = await $api.refreshToken();
+        // console.log(authTokenData.data)
+        // if (authTokenData.code != 0) {
+        //   commit('user/SET_TOKEN', null);
+        // } else {
+        //   commit('user/SET_TOKEN', authTokenData.data.token_type + ' ' + authTokenData.data.access_token);
+        //   commit('user/SET_REFRESHTOKEN', authTokenData.data.refresh_token);
+        //   commit('user/SET_SCOPE', authTokenData.data.scope);
+        //   // 获取用户信息
+        //   const userInfo = await $api.getUserInfo();
+        //   commit('user/SET_USERINFO', userInfo.data);
+        //   commit('user/SET_NOWTIME', userInfo.data.nowTime);
 
-          // 消息信息
-          commit('user/SET_WEBSOCKET', $cookies.get('websocketMsg'));
-          // 当前账户名
-          commit('user/SET_ACCOUNT', { email: authTokenData.data.user_info.email, phone: authTokenData.data.user_info.phone });
-        }
+        //   // 消息信息
+        //   commit('user/SET_WEBSOCKET', $cookies.get('websocketMsg'));
+        //   // 当前账户名
+        //   commit('user/SET_ACCOUNT', { email: authTokenData.data.user_info.email, phone: authTokenData.data.user_info.phone });
+        // }
       }
 
       // 获取国家名称和国家图片
