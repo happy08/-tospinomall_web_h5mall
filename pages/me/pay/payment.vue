@@ -281,8 +281,25 @@ export default {
       }
 
       // 买家充值
-      buyerRecharge({ amount: parseFloat(this.$route.query.amount), msisdn: phone, platformPayType: this.payRadio, type: this.$route.query.type }).then(res => {
+      buyerRecharge({ amount: parseFloat(this.$route.query.amount), type: this.$route.query.type, platformPayType: this.payRadio, payType: 3, platformPayTypeName: name }).then(res => {
         if (res.code != 0) return false;
+        // brij有具体的支付方式选择页面，故不在这里调用
+
+        // tingg支付
+        if (this.payRadio == 'Tingg') {
+          Tingg.renderPayButton({ // 按钮初始化
+            className: 'pay-content__btn--pay', 
+            checkoutType: 'redirect' // or 'modal'
+          });
+          
+          this.onTinggPay({ ...res.data, phone: phone, phonePrefix: phonePrefix });
+          return false;
+        }
+        // Payswitch支付
+        if (this.payRadio == 'Payswitch') {
+          this.onPayswitch();
+          return false;
+        }
         this.$router.push({
           name: 'me-pay-wait',
           query: {
@@ -292,8 +309,10 @@ export default {
             refNo: res.data.refNo
           }
         })
+        this.$toast.clear();
       }).catch(error => {
         console.log(error);
+        this.$toast.clear();
       })
     },
     leftClick() {
@@ -437,7 +456,7 @@ export default {
 
       const encryption = new Encryption(params.ivKey, params.secretKey, algorithm);
       const paymentWebhookUrl = url == '/api' ? 'http://n8ftt1cp.dongtaiyuming.net' : url;
-      
+
       const payload = {
         merchantTransactionID: params.merchantTransactionID, // 最长是15位，无规则限制
         requestAmount: params.requestAmount,
@@ -699,7 +718,7 @@ export default {
               isSuccess: checkData.data == 1 ? 0 : 2
             }
           })
-        } else {
+        } else { // 帐单列表
           this.$router.push({
             name: 'me-wallet-bill'
           })
