@@ -59,6 +59,7 @@ export const mutations = {
   SET_ACCOUNT(state, account) {
     state.account_email = account.email;
     state.account_phone = account.phone;
+    this.$cookies.set('account_phone', account.phone);
   },
   SET_NOWTIME(state, nowTime) {
     state.nowTime = nowTime;
