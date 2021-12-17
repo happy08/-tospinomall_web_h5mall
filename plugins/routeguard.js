@@ -1,6 +1,6 @@
 // 路由守卫
 export default ({app, store, redirect}) => {
-
+  
   app.router.beforeEach((to, from, next) => {
     // 白名单
     const whiteList = [ 'login', 'login-old', 'login-code', 'login-code-old', 'register', 'register-changePwd', 'register-password' ];
@@ -16,7 +16,7 @@ export default ({app, store, redirect}) => {
     }
     
     // 如果输入的路由不存在跳回首页
-    if (to.name === null) {
+    if (to.name === null && to.path != '/payment-middle.html' && to.path != '/service.html') {
       redirect({
         path: '/home.html'
       });

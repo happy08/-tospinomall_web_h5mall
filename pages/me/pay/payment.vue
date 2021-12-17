@@ -178,7 +178,7 @@ export default {
       loadingType: 'spinner',
       duration: 0
     });
-    
+
     // this.isTinggPay = false;
     if (this.$route.query.tingg && (this.$route.query.tingg == 'success' || this.$route.query.tingg == 'failed') || (Array.isArray(this.$route.query.tingg) && (this.$route.query.tingg.indexOf('success') > 0 || this.$route.query.tingg.indexOf('failed') > 0))) { // 只有成功和失败时才调取接口
       this.isWaittingPay = true;
@@ -472,51 +472,34 @@ export default {
         // customerFirstName: "John",
         // customerLastName: "Smith",
         // customerEmail: "john.smith@example.com",
-        successRedirectUrl: location.href + `&refNo=${params.merchantTransactionID}&orderId=${params.orderId}&tingg=success`,
-        failRedirectUrl: location.href + `&refNo=${params.merchantTransactionID}&orderId=${params.orderId}&tingg=failed`,
-        pendingRedirectUrl: location.href + `&tingg=pending`,
+        // successRedirectUrl: location.href + `&refNo=${params.merchantTransactionID}&orderId=${params.orderId}&tingg=success`,
+        // failRedirectUrl: location.href + `&refNo=${params.merchantTransactionID}&orderId=${params.orderId}&tingg=failed`,
+        // pendingRedirectUrl: location.href + `&tingg=pending`,
+        successRedirectUrl: 'http://192.168.2.45:8000/payment-middle.html?tingg=success',
+        failRedirectUrl: 'http://192.168.2.45:8000/payment-middle.html?tingg=fail',
+        pendingRedirectUrl: 'http://192.168.2.45:8000/payment-middle.html?tingg=pending',
         paymentWebhookUrl: `${paymentWebhookUrl}/order/tinggPay/callback`
       }
-      console.log(paymentWebhookUrl)
+      
       // 如果用户有绑定邮箱，则在参数中添加邮箱
       if (this.$store.state.user.userInfo.email && this.$store.state.user.userInfo.email != '') {
         payload.customerEmail = this.$store.state.user.userInfo.email;
       }
 
       let payloadString = JSON.stringify(payload).replace(/\//g, '\\/');
-      // location.href = `https://developer.tingg.africa/checkout/v2/express/?accessKey=${params.accessKey}&params=${encryption.encrypt(payloadString)}&countryCode=${payload.countryCode}`;
+      location.href = `https://developer.tingg.africa/checkout/v2/express/?accessKey=${params.accessKey}&params=${encryption.encrypt(payloadString)}&countryCode=${payload.countryCode}`;
       // this.$toast.clear();
       // let tinggSrc = `https://developer.tingg.africa/checkout/v2/modal/?accessKey=${params.accessKey}&params=${encryption.encrypt(payloadString)}&countryCode=${payload.countryCode}`;
 
-      // this.isTinggPay = true;
-      // setTimeout(() => {
-      //   document.getElementById('tinggIframe').setAttribute('src', tinggSrc);
-      //   document.getElementById('tinggIframe').setAttribute('height', document.body.clientHeight + 'px');
-      // }, 300)
-      
-      
-      // fetch(`https://developer.tingg.africa/checkout/v2/express/?accessKey=${params.accessKey}&params=${encryption.encrypt(payloadString)}&countryCode=${payload.countryCode}`, {
-      //   method: 'GET',
-      //   mode: 'no-cors'
-      // })
-      // .then(res => {
-      //   return res;
-      // })
-      // .then(response => {
-      //   this.$toast.clear();
-      //   console.log(response);
-      // }).catch(() => {
-      //   this.$toast.clear();
-      // })
       // 发起结账请求
-      Tingg.renderCheckout({
-          checkoutType: 'redirect', // or 'modal'
-          merchantProperties: {
-            params: encryption.encrypt(payloadString),
-            accessKey: params.accessKey,
-            countryCode: payload.countryCode
-          }
-      })
+      // Tingg.renderCheckout({
+      //   checkoutType: 'redirect', // or 'modal'
+      //   merchantProperties: {
+      //     params: encryption.encrypt(payloadString),
+      //     accessKey: params.accessKey,
+      //     countryCode: payload.countryCode
+      //   }
+      // })
     },
     onPayswitch() { // Payswitch支付
       // let paySwitch = document.createElement('form');
