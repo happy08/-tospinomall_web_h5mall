@@ -122,7 +122,7 @@
 
 <script>
 import { RadioGroup, Radio, Cell, CellGroup, Field, Popup, Picker, NumberKeyboard, PasswordInput } from 'vant';
-import { getAvailable, buyerRecharge, payOrder, getAllPayments, getRechargeCard } from '@/api/pay';
+import { getAvailable, buyerRecharge, payOrder, getAllPayments, getRechargeCard, checkBuyerRecharge } from '@/api/pay';
 const Encryption = require('@/assets/js/encryption');
 import { url } from '@/api/config'; // 导入配置域名
 
@@ -178,9 +178,9 @@ export default {
       loadingType: 'spinner',
       duration: 0
     });
-
+    
     // this.isTinggPay = false;
-    if (this.$route.query.tingg && (this.$route.query.tingg == 'success' || this.$route.query.tingg == 'failed')) { // 只有成功和失败时才调取接口
+    if (this.$route.query.tingg && (this.$route.query.tingg == 'success' || this.$route.query.tingg == 'failed') || (Array.isArray(this.$route.query.tingg) && (this.$route.query.tingg.indexOf('success') > 0 || this.$route.query.tingg.indexOf('failed') > 0))) { // 只有成功和失败时才调取接口
       this.isWaittingPay = true;
       if (this.$route.query.tingg == 'failed') {
         this.$dialog.confirm({
@@ -284,15 +284,15 @@ export default {
       buyerRecharge({ amount: parseFloat(this.$route.query.amount), type: this.$route.query.type, platformPayType: this.payRadio, payType: 3, platformPayTypeName: name }).then(res => {
         if (res.code != 0) return false;
         // brij有具体的支付方式选择页面，故不在这里调用
-
+      
         // tingg支付
         if (this.payRadio == 'Tingg') {
           Tingg.renderPayButton({ // 按钮初始化
             className: 'pay-content__btn--pay', 
             checkoutType: 'redirect' // or 'modal'
           });
-          
-          this.onTinggPay({ ...res.data, phone: phone, phonePrefix: phonePrefix });
+          alert(res.data.refNo)
+          this.onTinggPay({ ...res.data, phone: phone, phonePrefix: phonePrefix, merchantTransactionID: 'TUFSN2021121601007', requestAmount: parseFloat(this.$route.query.amount) });
           return false;
         }
         // Payswitch支付
@@ -443,14 +443,14 @@ export default {
       })
     },
     onTinggPay(paramsData) { // tingg支付
-      // const ivKey = 'wJf8Vjch2rbGmy47';
-      // const secretKey = 'FtWH6ZGc2qQTMbvw';
-      // const accessKey = '$2a$08$wvWtdcwhPCEK1lhWXuP8lO6qnx5Pw5XpxcwtAV0aGn9tXLcLMAxoi';
+      console.log(paramsData)
       let params = {
         ...paramsData,
         ivKey: 'wJf8Vjch2rbGmy47',
         secretKey: 'FtWH6ZGc2qQTMbvw',
-        accessKey: '$2a$08$wvWtdcwhPCEK1lhWXuP8lO6qnx5Pw5XpxcwtAV0aGn9tXLcLMAxoi'
+        accessKey: '$2a$08$wvWtdcwhPCEK1lhWXuP8lO6qnx5Pw5XpxcwtAV0aGn9tXLcLMAxoi',
+        serviceCode: 'TOSDEV2425',
+        accountNumber: 'TOSDEV2425'
       }
       const algorithm = "aes-256-cbc";
 
@@ -700,8 +700,15 @@ export default {
       }
       this.payRadio = item.label;
     },
-    checkPayOrder(num) {
-      this.$api.checkPayOrder(this.$route.query.refNo).then(checkData => {
+    async checkPayOrder(num) {
+      try {
+        let checkData;
+        if (this.$route.query.type == 'order') { // 确认订单是否支付
+          checkData = await this.$api.checkPayOrder(this.$route.query.refNo);
+        } else {
+          checkData = await checkBuyerRecharge(this.$route.query.refNo); // 判断买家充值是否成功
+        }
+        
         num += 1;
         if (checkData.data != 1 && num <= 3) {
           let timer = setTimeout(() => {
@@ -724,9 +731,10 @@ export default {
           })
         }
         this.isWaittingPay = false;
-      }).catch(error => {
+      } catch (error) {
         console.log(error);
-      })
+      }
+      
     }
   },
 }
