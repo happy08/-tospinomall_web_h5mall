@@ -6,9 +6,9 @@
     <!-- 选择-单选 -->
     <van-radio-group v-model="payRadio" v-if="list.length > 0" class="mlr-12">
       <van-cell-group v-for="(item, index) in list" :key="index" class="bg-white">
-        <van-cell class="ptb-10 mt-12 vcenter pl-6 pr-12" clickable @click="onChangePayment(item)" :border="false" :is-link="item.label == 'Brij'">
+        <van-cell class="ptb-10 mt-12 vcenter pl-6 pr-12" clickable @click="onChangePayment(item)" :border="false" :is-link="item.label == 'Brij' || item.label == 'Paystack'">
           <!-- 左侧图标 -->
-          <template #icon>
+          <template #icon v-if="item.label != 'Paystack'">
             <BmImage
               :url="require('@/assets/images/icon/'+ (item.label) +'.png')"
               :width="'0.8rem'" 
@@ -28,7 +28,7 @@
             <span class="fs-16 fw tr black pr-10">{{ $store.state.rate.currency }}{{ balance }}</span>
           </template>
           <!-- 右侧图标-单选图标 -->
-          <template #right-icon v-if="item.label != 'Brij'">
+          <template #right-icon v-if="item.label != 'Brij' && item.label != 'Paystack'">
             <van-radio :name="item.label" icon-size="0.48rem">
               <template #icon="props">
                 <BmImage
@@ -50,7 +50,7 @@
           :class="{'field-container phone-code-field pt-0 pb-20': true, 'is-active': payRadio == item.label}"
           type="number"
           maxlength="20"
-          v-if="item.label != 'Balances' && item.label != 'Brij'"
+          v-if="item.label != 'Balances' && item.label != 'Brij' && item.label != 'Paystack'"
         >
           <template #label>
             <span @click="$router.push({ name: 'me-address-areacode', query: { ...$route.query, payment: item.label } })" class="iblock fs-14 black lh-20 pl-4">
@@ -122,7 +122,7 @@
 
 <script>
 import { RadioGroup, Radio, Cell, CellGroup, Field, Popup, Picker, NumberKeyboard, PasswordInput } from 'vant';
-import { getAvailable, buyerRecharge, payOrder, getAllPayments, getRechargeCard } from '@/api/pay';
+import { getAvailable, buyerRecharge, payOrder, getAllPayments, getRechargeCard, checkBuyerRecharge } from '@/api/pay';
 const Encryption = require('@/assets/js/encryption');
 import { url } from '@/api/config'; // 导入配置域名
 
@@ -165,8 +165,9 @@ export default {
   },
   head: {
     script: [
-      // { src: 'https://developer.tingg.africa/checkout/v2/tingg-checkout.js', type: 'text/javascript', charset: 'utf-8' },
-      // { src: 'https://test.theteller.net/checkout/resource/api/inline/theteller_inline.js', type: 'text/javascript', charset: 'utf-8' }
+      { src: 'https://developer.tingg.africa/checkout/v2/tingg-checkout.js', type: 'text/javascript', charset: 'utf-8' },
+      // { src: 'https://test.theteller.net/checkout/resource/api/inline/theteller_inline.js', type: 'text/javascript', charset: 'utf-8' },
+      { src: 'https://js.paystack.co/v2/inline.js' }
     ]
   },
   async fetch() {
@@ -179,22 +180,30 @@ export default {
     });
 
     // this.isTinggPay = false;
-    // if (this.$route.query.tingg && (this.$route.query.tingg == 'success' || this.$route.query.tingg == 'failed')) { // 只有成功和失败时才调取接口
-    //   this.isWaittingPay = true;
-    //   if (this.$route.query.tingg == 'failed') {
-    //     this.$dialog.confirm({
-    //       title: this.$t('payment_failed'),
-    //       message: this.$t('order_payment_failed_tips'),
-    //       confirmButtonText: this.$t('pay_again')
-    //     }).then(() => {
-    //       this.onPay();
-    //     })
-    //     return false;
-    //   }
-    //   this.checkPayOrder(0);
-    // }
+    if (this.$route.query.tingg && (this.$route.query.tingg == 'success' || this.$route.query.tingg == 'failed') || (Array.isArray(this.$route.query.tingg) && (this.$route.query.tingg.indexOf('success') > 0 || this.$route.query.tingg.indexOf('failed') > 0))) { // 只有成功和失败时才调取接口
+      this.isWaittingPay = true;
+      // 失败
+      if (this.$route.query.tingg == 'failed') {
+        this.$dialog.confirm({
+          title: this.$t('payment_failed'),
+          message: this.$t('order_payment_failed_tips'),
+          confirmButtonText: this.$t('pay_again')
+        }).then(() => {
+          this.onPay();
+        })
+        return false;
+      }
+      // 成功,校验订单是否支付成功
+      this.checkPayOrder(0);
+    }
     
-    this.list = [];
+    this.list = [
+      {
+        label: 'Paystack',
+        phone: '',
+        desc: this.$t('tospinomall_wallet')
+      }
+    ];
     if (this.$route.query.type == 'order') { // 说明是从订单结算页面跳转过来的，支付方式就有余额
       this.list.push({
         label: 'Balances',
@@ -274,8 +283,25 @@ export default {
       }
 
       // 买家充值
-      buyerRecharge({ amount: parseFloat(this.$route.query.amount), msisdn: phone, platformPayType: this.payRadio, type: this.$route.query.type }).then(res => {
+      buyerRecharge({ amount: parseFloat(this.$route.query.amount), type: this.$route.query.type, platformPayType: this.payRadio, payType: 3, platformPayTypeName: name }).then(res => {
         if (res.code != 0) return false;
+        // brij有具体的支付方式选择页面，故不在这里调用
+      
+        // tingg支付
+        if (this.payRadio == 'Tingg') {
+          Tingg.renderPayButton({ // 按钮初始化
+            className: 'pay-content__btn--pay', 
+            checkoutType: 'redirect' // or 'modal'
+          });
+          
+          this.onTinggPay({ ...res.data, phone: phone, phonePrefix: phonePrefix, merchantTransactionID: res.data.refNo, requestAmount: parseFloat(this.$route.query.amount) });
+          return false;
+        }
+        // Payswitch支付
+        if (this.payRadio == 'Payswitch') {
+          this.onPayswitch();
+          return false;
+        }
         this.$router.push({
           name: 'me-pay-wait',
           query: {
@@ -285,8 +311,10 @@ export default {
             refNo: res.data.refNo
           }
         })
+        this.$toast.clear();
       }).catch(error => {
         console.log(error);
+        this.$toast.clear();
       })
     },
     leftClick() {
@@ -366,7 +394,7 @@ export default {
             checkoutType: 'redirect' // or 'modal'
           });
           
-          this.onTinggPay({ ...res.data.tinggPayInfo, phone: params.phone, phonePrefix: params.phonePrefix, orderId: JSON.stringify({orderId: res.data.orderIds})});
+          this.onTinggPay({ ...res.data.payInfo, phone: params.phone, phonePrefix: params.phonePrefix, orderId: JSON.stringify({orderId: res.data.orderIds})});
           return false;
         }
         this.$toast.clear();
@@ -416,15 +444,21 @@ export default {
         }
       })
     },
-    onTinggPay(params) { // tingg支付
-      // const ivKey = 'wJf8Vjch2rbGmy47';
-      // const secretKey = 'FtWH6ZGc2qQTMbvw';
-      // const accessKey = '$2a$08$wvWtdcwhPCEK1lhWXuP8lO6qnx5Pw5XpxcwtAV0aGn9tXLcLMAxoi';
+    onTinggPay(paramsData) { // tingg支付
+      console.log(paramsData)
+      let params = {
+        ...paramsData,
+        ivKey: 'wJf8Vjch2rbGmy47',
+        secretKey: 'FtWH6ZGc2qQTMbvw',
+        accessKey: '$2a$08$wvWtdcwhPCEK1lhWXuP8lO6qnx5Pw5XpxcwtAV0aGn9tXLcLMAxoi',
+        serviceCode: 'TOSDEV2425',
+        accountNumber: 'TOSDEV2425'
+      }
       const algorithm = "aes-256-cbc";
 
       const encryption = new Encryption(params.ivKey, params.secretKey, algorithm);
-      const paymentWebhookUrl = url == '/api' ? 'https://tospinomallapi.fyynet.com' : url;
-      console.log(params.merchantTransactionID)
+      const paymentWebhookUrl = url == '/api' ? 'http://n8ftt1cp.dongtaiyuming.net' : url;
+
       const payload = {
         merchantTransactionID: params.merchantTransactionID, // 最长是15位，无规则限制
         requestAmount: params.requestAmount,
@@ -443,9 +477,12 @@ export default {
         successRedirectUrl: location.href + `&refNo=${params.merchantTransactionID}&orderId=${params.orderId}&tingg=success`,
         failRedirectUrl: location.href + `&refNo=${params.merchantTransactionID}&orderId=${params.orderId}&tingg=failed`,
         pendingRedirectUrl: location.href + `&tingg=pending`,
-        paymentWebhookUrl: `${paymentWebhookUrl}/order/tinggPay/callback`
+        // successRedirectUrl: 'http://192.168.2.45:8000/payment-middle.html?tingg=success',
+        // failRedirectUrl: 'http://192.168.2.45:8000/payment-middle.html?tingg=fail',
+        // pendingRedirectUrl: 'http://192.168.2.45:8000/payment-middle.html?tingg=pending',
+        paymentWebhookUrl: params.webhookUrl
       }
-
+      
       // 如果用户有绑定邮箱，则在参数中添加邮箱
       if (this.$store.state.user.userInfo.email && this.$store.state.user.userInfo.email != '') {
         payload.customerEmail = this.$store.state.user.userInfo.email;
@@ -456,34 +493,14 @@ export default {
       // this.$toast.clear();
       // let tinggSrc = `https://developer.tingg.africa/checkout/v2/modal/?accessKey=${params.accessKey}&params=${encryption.encrypt(payloadString)}&countryCode=${payload.countryCode}`;
 
-      // this.isTinggPay = true;
-      // setTimeout(() => {
-      //   document.getElementById('tinggIframe').setAttribute('src', tinggSrc);
-      //   document.getElementById('tinggIframe').setAttribute('height', document.body.clientHeight + 'px');
-      // }, 300)
-      
-      
-      // fetch(`https://developer.tingg.africa/checkout/v2/express/?accessKey=${params.accessKey}&params=${encryption.encrypt(payloadString)}&countryCode=${payload.countryCode}`, {
-      //   method: 'GET',
-      //   mode: 'no-cors'
-      // })
-      // .then(res => {
-      //   return res;
-      // })
-      // .then(response => {
-      //   this.$toast.clear();
-      //   console.log(response);
-      // }).catch(() => {
-      //   this.$toast.clear();
-      // })
       // 发起结账请求
       Tingg.renderCheckout({
-          checkoutType: 'redirect', // or 'modal'
-          merchantProperties: {
-            params: encryption.encrypt(payloadString),
-            accessKey: params.accessKey,
-            countryCode: payload.countryCode
-          }
+        checkoutType: 'redirect', // or 'modal'
+        merchantProperties: {
+          params: encryption.encrypt(payloadString),
+          accessKey: params.accessKey,
+          countryCode: payload.countryCode
+        }
       })
     },
     onPayswitch() { // Payswitch支付
@@ -641,13 +658,48 @@ export default {
         })
         return false;
       }
+      // Paystack支付
+      if (item.label == 'Paystack') {
+        const paystack = new PaystackPop();
+        paystack.newTransaction({
+          key: 'pk_test_e9a02bcd6cf719716299b9d4c9a0d405c07974d7', // pbulic key
+          email: '150@email.com', // 邮箱
+          amount: 10000, // 实际金额 * 100
+          onSuccess: (transaction) => {
+            console.log('成功')
+            console.log(transaction) 
+            // transaction = { message: "Approved"
+                // reference: "T976710416254897"
+                // status: "success"
+                // trans: "1506044009"
+                // transaction: "1506044009"
+                // trxref: "T976710416254897"}
+            // Payment complete! Reference: transaction.reference 
+          },
+          onCancel: () => {
+            console.log('取消')
+            // user closed popup
+          }
+        });
+        return false;
+      }
       this.payRadio = item.label;
     },
-    checkPayOrder(num) {
-      this.$api.checkPayOrder(this.$route.query.refNo).then(checkData => {
+    async checkPayOrder(num) {
+      try {
+        let checkData;
+        if (this.$route.query.type == 'order') { // 确认订单是否支付
+          checkData = await this.$api.checkPayOrder(this.$route.query.refNo);
+        } else {
+          checkData = await checkBuyerRecharge(this.$route.query.refNo); // 判断买家充值是否成功
+        }
+        
         num += 1;
         if (checkData.data != 1 && num <= 3) {
-          this.checkPayOrder();
+          let timer = setTimeout(() => {
+            this.checkPayOrder(num);
+            clearTimeout(timer);
+          }, 1000);
           return false;
         }
         if (this.$route.query.type == 'order') {
@@ -658,13 +710,15 @@ export default {
               isSuccess: checkData.data == 1 ? 0 : 2
             }
           })
-        } else {
-          this.$router.replace({
-            name: 'me-wallet'
+        } else { // 帐单列表
+          this.$router.push({
+            name: 'me-wallet-bill'
           })
         }
         this.isWaittingPay = false;
-      })
+      } catch (error) {
+        console.log(error);
+      }
     }
   },
 }

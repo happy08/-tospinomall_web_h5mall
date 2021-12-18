@@ -12,7 +12,7 @@ export default ({app, store, redirect}) => {
     }
     
     // 如果输入的路由不存在跳回首页
-    if (to.name === null) {
+    if (to.name === null && to.path != '/payment-middle.html' && to.path != '/service.html') {
       redirect({
         path: '/home.html'
       });
