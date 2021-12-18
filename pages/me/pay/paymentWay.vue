@@ -145,7 +145,6 @@ export default {
       buyerRecharge({ amount: parseFloat(this.$route.query.amount), type: this.$route.query.type, platformPayType: this.payRadio, payType: payType, platformPayTypeName: name }).then(res => {
         if (res.code != 0) return false;
         if (this.$route.query.payWay == 'Brij') {
-          // refNo = res.data.brijPayInfo.transactionId;
           this.onBrijPay({ ...res.data, amount: res.data.balance, transactionId: res.data.refNo, phone: phone, phonePrefix: phonePrefix, iconUrl: JSON.stringify({ iconUrl: iconUrl }), name: name});
           return false;
         }
