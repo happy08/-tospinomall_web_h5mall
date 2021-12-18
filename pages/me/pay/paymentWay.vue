@@ -207,7 +207,6 @@ export default {
       payBrij({
         amount: params.amount,
         currency: this.$store.state.rate.payParamObj.currencyCode || 'GHS',
-        paymentDetails: { momo_number: params.phonePrefix.split('+')[1] + '' + params.phone },
         paymentMethodId: this.payRadio,
         transactionId: params.transactionId,
         name: params.name,
