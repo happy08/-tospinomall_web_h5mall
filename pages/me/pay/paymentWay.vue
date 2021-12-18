@@ -210,7 +210,9 @@ export default {
         paymentDetails: { momo_number: params.phonePrefix.split('+')[1] + '' + params.phone },
         paymentMethodId: this.payRadio,
         transactionId: params.transactionId,
-        name: params.name
+        name: params.name,
+        phone: params.phone,
+        phonePrefix: params.phonePrefix
       }).then(res => {
         if (res.code != 0) {
           // 支付失败

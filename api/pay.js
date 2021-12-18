@@ -207,7 +207,7 @@ export function getAllPayments() {
  */
 export function payBrij(data) {
   return request({
-    url: '/order/brijPay/pay',
+    url: '/order/brijPay/pay/v1.1',
     method: 'post',
     data,
     headers: {
