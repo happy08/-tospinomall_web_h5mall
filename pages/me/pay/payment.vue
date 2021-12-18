@@ -110,12 +110,6 @@
       <p class="black fs-14 pb-24">{{ $t('wait_pay_result') }}</p>
       <van-loading type="spinner" color="#42b7ae" />
     </van-dialog>
-
-    <!-- <van-dialog v-model="isTinggPay" title="" :showConfirmButton="false" :style="{ width: '100%' }">
-      <div class="w-100 vh-100">
-        <iframe id="tinggIframe" name="mainFrame" scrolling="auto" frameborder="no" width="100%" title="mainFrame"></iframe>
-      </div>
-    </van-dialog> -->
     
   </div>
 </template>
@@ -148,7 +142,6 @@ export default {
       payPwd: '',
       isWaittingPay: false,
       balance: 0
-      // isTinggPay: false
     }
   },
   beforeRouteEnter(to, from, next) { // 从初始页面进入重置值为空
@@ -179,7 +172,6 @@ export default {
       duration: 0
     });
 
-    // this.isTinggPay = false;
     if (this.$route.query.tingg && (this.$route.query.tingg == 'success' || this.$route.query.tingg == 'failed') || (Array.isArray(this.$route.query.tingg) && (this.$route.query.tingg.indexOf('success') > 0 || this.$route.query.tingg.indexOf('failed') > 0))) { // 只有成功和失败时才调取接口
       this.isWaittingPay = true;
       // 失败
@@ -215,11 +207,13 @@ export default {
       this.balanceShow = false;
     }
 
+    // 获取余额
     getRechargeCard().then(res => {
       this.balance = res.data.balance
     }).catch(error => {
       console.log(error);
     })
+    // 获取所有支付方式
     getAllPayments().then(res => {
       let list = res.data.map(item => {
         return {
@@ -457,7 +451,6 @@ export default {
       const algorithm = "aes-256-cbc";
 
       const encryption = new Encryption(params.ivKey, params.secretKey, algorithm);
-      const paymentWebhookUrl = url == '/api' ? 'http://n8ftt1cp.dongtaiyuming.net' : url;
 
       const payload = {
         merchantTransactionID: params.merchantTransactionID, // 最长是15位，无规则限制
@@ -477,9 +470,6 @@ export default {
         successRedirectUrl: location.href + `&refNo=${params.merchantTransactionID}&orderId=${params.orderId}&tingg=success`,
         failRedirectUrl: location.href + `&refNo=${params.merchantTransactionID}&orderId=${params.orderId}&tingg=failed`,
         pendingRedirectUrl: location.href + `&tingg=pending`,
-        // successRedirectUrl: 'http://192.168.2.45:8000/payment-middle.html?tingg=success',
-        // failRedirectUrl: 'http://192.168.2.45:8000/payment-middle.html?tingg=fail',
-        // pendingRedirectUrl: 'http://192.168.2.45:8000/payment-middle.html?tingg=pending',
         paymentWebhookUrl: params.webhookUrl
       }
       
@@ -490,8 +480,6 @@ export default {
 
       let payloadString = JSON.stringify(payload).replace(/\//g, '\\/');
       // location.href = `https://developer.tingg.africa/checkout/v2/express/?accessKey=${params.accessKey}&params=${encryption.encrypt(payloadString)}&countryCode=${payload.countryCode}`;
-      // this.$toast.clear();
-      // let tinggSrc = `https://developer.tingg.africa/checkout/v2/modal/?accessKey=${params.accessKey}&params=${encryption.encrypt(payloadString)}&countryCode=${payload.countryCode}`;
 
       // 发起结账请求
       Tingg.renderCheckout({
