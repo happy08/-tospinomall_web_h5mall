@@ -158,9 +158,9 @@ export default {
   },
   head: {
     script: [
-      { src: 'https://developer.tingg.africa/checkout/v2/tingg-checkout.js', type: 'text/javascript', charset: 'utf-8' },
+      // { src: 'https://developer.tingg.africa/checkout/v2/tingg-checkout.js', type: 'text/javascript', charset: 'utf-8' },
       // { src: 'https://test.theteller.net/checkout/resource/api/inline/theteller_inline.js', type: 'text/javascript', charset: 'utf-8' },
-      { src: 'https://js.paystack.co/v2/inline.js' }
+      // { src: 'https://js.paystack.co/v2/inline.js' }
     ]
   },
   async fetch() {
@@ -283,10 +283,10 @@ export default {
       
         // tingg支付
         if (this.payRadio == 'Tingg') {
-          Tingg.renderPayButton({ // 按钮初始化
-            className: 'pay-content__btn--pay', 
-            checkoutType: 'redirect' // or 'modal'
-          });
+          // Tingg.renderPayButton({ // 按钮初始化
+          //   className: 'pay-content__btn--pay', 
+          //   checkoutType: 'redirect' // or 'modal'
+          // });
           
           this.onTinggPay({ ...res.data, phone: phone, phonePrefix: phonePrefix, merchantTransactionID: res.data.refNo, requestAmount: parseFloat(this.$route.query.amount) });
           return false;
@@ -383,12 +383,12 @@ export default {
         // }
         // tingg支付
         if (params.payType == 3) {
-          Tingg.renderPayButton({ // 按钮初始化
-            className: 'pay-content__btn--pay', 
-            checkoutType: 'redirect' // or 'modal'
-          });
+          // Tingg.renderPayButton({ // 按钮初始化
+          //   className: 'pay-content__btn--pay', 
+          //   checkoutType: 'redirect' // or 'modal'
+          // });
           
-          this.onTinggPay({ ...res.data.payInfo, phone: params.phone, phonePrefix: params.phonePrefix, orderId: JSON.stringify({orderId: res.data.orderIds})});
+          this.onTinggPay({ ...res.data.payInfo, phone: params.phone, phonePrefix: params.phonePrefix, orderId: JSON.stringify({ orderId: res.data.orderIds }) });
           return false;
         }
         this.$toast.clear();
@@ -448,11 +448,11 @@ export default {
         serviceCode: 'TOSDEV2425',
         accountNumber: 'TOSDEV2425'
       }
-      const algorithm = "aes-256-cbc";
+      const algorithm = 'aes-256-cbc';
 
       const encryption = new Encryption(params.ivKey, params.secretKey, algorithm);
 
-      const payload = {
+      let payload = {
         merchantTransactionID: params.merchantTransactionID, // 最长是15位，无规则限制
         requestAmount: params.requestAmount,
         currencyCode: this.$store.state.rate.payParamObj.currencyCode || "GHS",
@@ -479,17 +479,17 @@ export default {
       }
 
       let payloadString = JSON.stringify(payload).replace(/\//g, '\\/');
-      // location.href = `https://developer.tingg.africa/checkout/v2/express/?accessKey=${params.accessKey}&params=${encryption.encrypt(payloadString)}&countryCode=${payload.countryCode}`;
+      location.href = `https://developer.tingg.africa/checkout/v2/express/?accessKey=${params.accessKey}&params=${encryption.encrypt(payloadString)}&countryCode=${payload.countryCode}`;
 
       // 发起结账请求
-      Tingg.renderCheckout({
-        checkoutType: 'redirect', // or 'modal'
-        merchantProperties: {
-          params: encryption.encrypt(payloadString),
-          accessKey: params.accessKey,
-          countryCode: payload.countryCode
-        }
-      })
+      // Tingg.renderCheckout({
+      //   checkoutType: 'redirect', // or 'modal'
+      //   merchantProperties: {
+      //     params: encryption.encrypt(payloadString),
+      //     accessKey: params.accessKey,
+      //     countryCode: payload.countryCode
+      //   }
+      // })
     },
     onPayswitch() { // Payswitch支付
       // let paySwitch = document.createElement('form');
