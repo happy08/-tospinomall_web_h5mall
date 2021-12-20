@@ -731,7 +731,8 @@ const en = {
   wallet_no_pay: "Please check the bill status in the recharge details or contact online customer service",
   wallet_timeout: 'Payment timeout',
   please_evalution_rating: 'Rate the star and submit the review',
-  out_of_stock: 'Out of stock'
+  out_of_stock: 'Out of stock',
+  order_unpaid: 'Your order has not been paid, you can repay'
 }
 
 export default en;

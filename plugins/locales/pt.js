@@ -730,7 +730,8 @@
   wallet_no_pay: "Verifique o estado da conta nos detalhes da recarga ou contacte o serviço ao cliente online",
   wallet_timeout: 'Tempo limite de pagamento',
   please_evalution_rating: 'Avalie a avaliação com estrelas e envie um comentário',
-  out_of_stock: 'Fora de estoque'
+  out_of_stock: 'Fora de estoque',
+  order_unpaid: 'Seu pedido não foi pago, você pode reembolsar'
 }
 
 export default por;

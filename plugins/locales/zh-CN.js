@@ -731,7 +731,8 @@ const cn = {
   wallet_no_pay: "请到充值明细中查看账单情况或联系在线客服",
   wallet_timeout: '支付超时',
   please_evalution_rating: '请评价星级并提交评论',
-  out_of_stock: '缺货'
+  out_of_stock: '缺货',
+  order_unpaid: '您的订单未支付，可重新支付'
 }
 
 export default cn;

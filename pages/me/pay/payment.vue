@@ -141,18 +141,23 @@ export default {
       balanceShow: false,
       payPwd: '',
       isWaittingPay: false,
-      balance: 0
+      balance: 0,
+      is_first: true
     }
   },
   beforeRouteEnter(to, from, next) { // 从初始页面进入重置值为空
     next(vm => {
-      if (from.name === 'me-wallet' || from.name == 'me-order' || from.name == 'cart-order-id') {
+      if (from.name === 'me-wallet' || from.name == 'me-order' || from.name == 'cart-order-id' || from.name == 'me-order-detail-id') {
         vm.payRadio = 100;
         vm.isBackDialog = false;
         vm.payPwd = '';
         vm.balanceShow = false;
+        vm.is_first = true;
       } else if (from.name === 'me-pay-wait') { // 从确认订单页面回来
         vm.isBackDialog = true;
+        vm.is_first = false;
+      } else if (from.name === 'me-address-areacode') {
+        vm.is_first = false;
       }
     });
   },
@@ -166,35 +171,32 @@ export default {
   async fetch() {
   },
   activated() {
-    this.$toast.loading({
-      forbidClick: true,
-      loadingType: 'spinner',
-      duration: 0
-    });
-
-    if (this.$route.query.tingg && (this.$route.query.tingg == 'success' || this.$route.query.tingg == 'failed') || (Array.isArray(this.$route.query.tingg) && (this.$route.query.tingg.indexOf('success') > 0 || this.$route.query.tingg.indexOf('failed') > 0))) { // 只有成功和失败时才调取接口
-      this.isWaittingPay = true;
-      // 失败
-      if (this.$route.query.tingg == 'failed') {
-        this.$dialog.confirm({
-          title: this.$t('payment_failed'),
-          message: this.$t('order_payment_failed_tips'),
-          confirmButtonText: this.$t('pay_again')
-        }).then(() => {
-          this.onPay();
-        })
-        return false;
-      }
-      // 成功,校验订单是否支付成功
-      this.checkPayOrder(0);
+    if (!this.is_first) { // 首次进入才重新获取数据
+      this.list = this.list.map(item => {
+        return {
+          ...item,
+          prefixCode: this.payRadio == item.label && this.$route.query.phonePrefix ? this.$route.query.phonePrefix : this.$t('prefix_tip')
+        }
+      })
+      return false;
+    }
+    // 是否是tingg支付
+    let is_tingg = (this.$route.query.tingg && (this.$route.query.tingg == 'success' || this.$route.query.tingg == 'failed' || this.$route.query.tingg == 'pending')) || (Array.isArray(this.$route.query.tingg) && (this.$route.query.tingg.indexOf('success') > -1 || this.$route.query.tingg.indexOf('failed') > -1 || this.$route.query.tingg.indexOf('pending') > -1));
+    // 不是tingg支付页面返回来时展示loading获取数据
+    if (!is_tingg) {
+      this.$toast.loading({
+        forbidClick: true,
+        loadingType: 'spinner',
+        duration: 0
+      });
     }
     
     this.list = [
-      {
-        label: 'Paystack',
-        phone: '',
-        desc: this.$t('tospinomall_wallet')
-      }
+      // {
+      //   label: 'Paystack',
+      //   phone: '',
+      //   desc: this.$t('tospinomall_wallet')
+      // }
     ];
     if (this.$route.query.type == 'order') { // 说明是从订单结算页面跳转过来的，支付方式就有余额
       this.list.push({
@@ -220,8 +222,8 @@ export default {
           ...item,
           label: item.value,
           desc: item.label,
-          phone: '',
-          prefixCode: this.$route.query.phonePrefix && item == this.$route.query.payment ? this.$route.query.phonePrefix : this.$t('prefix_tip')
+          phone: is_tingg ? this.$route.query.phone : '',
+          prefixCode: (this.$route.query.phonePrefix && item == this.$route.query.payment || is_tingg) ? this.$route.query.phonePrefix : this.$t('prefix_tip')
         }
       });
       this.list = this.list.concat(list);
@@ -230,6 +232,28 @@ export default {
       console.log(error);
       this.$toast.clear();
     })
+
+    if (is_tingg) { // 只有成功和失败时才调取接口
+      // 失败
+      let pay_fail = this.$route.query.tingg == 'failed' || this.$route.query.tingg.indexOf('failed') > -1;
+      let pay_pending = this.$route.query.tingg == 'pending' || this.$route.query.tingg.indexOf('pending') > -1;
+      this.payRadio = 'Tingg';
+      if (pay_fail || pay_pending) {
+        this.$dialog.confirm({
+          title: this.$t('payment_failed'),
+          message: pay_fail ? this.$t('order_payment_failed_tips') : this.$t('order_unpaid'),
+          confirmButtonText: this.$t('pay_again')
+        }).then(() => {
+          this.onPay();
+        }).catch(() => {
+          this.is_first = false;
+        })
+        return false;
+      }
+      // 成功,校验订单是否支付成功
+      this.isWaittingPay = true;
+      this.checkPayOrder(0);
+    }
   },
   methods: {
     onPay() { // 提交支付,成功跳转到确认订单页面
@@ -276,8 +300,13 @@ export default {
         return false;
       }
 
+      // payType 支付方式：0:系统支付， 1:余额支付，2:UniwalletPay支付 3 TINGG支付 4:brij 支付 5, 货到付款签收支付 6, paySwitch 支付
+      let payType = 1;
+      if (this.payRadio == 'Tingg') {
+        payType = 3;
+      }
       // 买家充值
-      buyerRecharge({ amount: parseFloat(this.$route.query.amount), type: this.$route.query.type, platformPayType: this.payRadio, payType: 3, platformPayTypeName: name }).then(res => {
+      buyerRecharge({ amount: parseFloat(this.$route.query.amount), type: this.$route.query.type, platformPayType: this.payRadio, payType: payType }).then(res => {
         if (res.code != 0) return false;
         // brij有具体的支付方式选择页面，故不在这里调用
       
@@ -288,7 +317,7 @@ export default {
           //   checkoutType: 'redirect' // or 'modal'
           // });
           
-          this.onTinggPay({ ...res.data, phone: phone, phonePrefix: phonePrefix, merchantTransactionID: res.data.refNo, requestAmount: parseFloat(this.$route.query.amount) });
+          this.onTinggPay({ ...res.data, phone: phone, phonePrefix: phonePrefix, merchantTransactionID: res.data.refNo, requestAmount: res.data.balance });
           return false;
         }
         // Payswitch支付
@@ -439,24 +468,24 @@ export default {
       })
     },
     onTinggPay(paramsData) { // tingg支付
-      console.log(paramsData)
       let params = {
         ...paramsData,
         ivKey: 'wJf8Vjch2rbGmy47',
         secretKey: 'FtWH6ZGc2qQTMbvw',
         accessKey: '$2a$08$wvWtdcwhPCEK1lhWXuP8lO6qnx5Pw5XpxcwtAV0aGn9tXLcLMAxoi',
-        serviceCode: 'TOSDEV2425',
-        accountNumber: 'TOSDEV2425'
+        serviceCode: 'TOSDEV2425'
       }
       const algorithm = 'aes-256-cbc';
 
       const encryption = new Encryption(params.ivKey, params.secretKey, algorithm);
-
+      // 回调Url
+      let current_url = `${location.origin}${location.pathname}?type=${this.$route.query.type}&amount=${this.$route.query.amount}&orderIds=${this.$route.query.orderIds}&comfirmOrder=${this.$route.query.comfirmOrder}`;
+      
       let payload = {
         merchantTransactionID: params.merchantTransactionID, // 最长是15位，无规则限制
         requestAmount: params.requestAmount,
         currencyCode: this.$store.state.rate.payParamObj.currencyCode || "GHS",
-        accountNumber: params.accountNumber,
+        accountNumber: params.accountNumber, // 订单id
         serviceCode: params.serviceCode,
         // dueDate: "2019-06-01 23:59:59", //Must be a future date
         // requestDescription: "Dummy merchant transaction",
@@ -467,16 +496,15 @@ export default {
         // customerFirstName: "John",
         // customerLastName: "Smith",
         // customerEmail: "john.smith@example.com",
-        successRedirectUrl: location.href + `&refNo=${params.merchantTransactionID}&orderId=${params.orderId}&tingg=success`,
-        failRedirectUrl: location.href + `&refNo=${params.merchantTransactionID}&orderId=${params.orderId}&tingg=failed`,
-        pendingRedirectUrl: location.href + `&tingg=pending`,
+        successRedirectUrl: current_url + `&refNo=${params.merchantTransactionID}&orderId=${params.orderId}&tingg=success&phone=${params.phone}&phonePrefix=${params.phonePrefix}`,
+        failRedirectUrl: current_url + `&refNo=${params.merchantTransactionID}&orderId=${params.orderId}&tingg=failed&phone=${params.phone}&phonePrefix=${params.phonePrefix}`,
+        pendingRedirectUrl: current_url + `&tingg=pending&phone=${params.phone}&phonePrefix=${params.phonePrefix}`,
         paymentWebhookUrl: params.webhookUrl
       }
-      
       // 如果用户有绑定邮箱，则在参数中添加邮箱
-      if (this.$store.state.user.userInfo.email && this.$store.state.user.userInfo.email != '') {
-        payload.customerEmail = this.$store.state.user.userInfo.email;
-      }
+      // if (this.$store.state.user.userInfo.email && this.$store.state.user.userInfo.email != '') {
+      //   payload.customerEmail = this.$store.state.user.userInfo.email;
+      // }
 
       let payloadString = JSON.stringify(payload).replace(/\//g, '\\/');
       location.href = `https://developer.tingg.africa/checkout/v2/express/?accessKey=${params.accessKey}&params=${encryption.encrypt(payloadString)}&countryCode=${payload.countryCode}`;
@@ -683,7 +711,16 @@ export default {
         }
         
         num += 1;
+        // 订单支付：0->未支付 1->已经支付
+        // 钱包支付：0->失败 1->已经支付 2->待支付 3->已取消
         if (checkData.data != 1 && num <= 3) {
+          // 钱包充值--支付失败
+          if (checkData.data == 0 && (!this.$route.query.type || this.$route.query.type && this.$route.query.type != 'order')) {
+            this.$router.push({
+              name: 'me-wallet-bill'
+            })
+            return false;
+          }
           let timer = setTimeout(() => {
             this.checkPayOrder(num);
             clearTimeout(timer);

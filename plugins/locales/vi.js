@@ -730,7 +730,8 @@ const vi = {
   wallet_no_pay: "Vui lòng kiểm tra trạng thái hóa đơn trong chi tiết nạp tiền hoặc liên hệ chăm sóc khách hàng trực tuyến",
   wallet_timeout: 'Thanh toán ngoài giờ',
   please_evalution_rating: 'Với lòng đánh giá và gửi bình luận',
-  out_of_stock: 'Hết hàng'
+  out_of_stock: 'Hết hàng',
+  order_unpaid: 'Đơn hàng của bạn chưa được thanh toán, bạn có thể trả lại'
 }
 
 export default vi;
