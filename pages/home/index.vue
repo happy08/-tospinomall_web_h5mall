@@ -104,7 +104,7 @@
                 :isClip="0"
               />
               <!-- 图片坐标 -->
-              <div class="bg-white hot-container__position" :style="hotStyle(slideItem, 'swiperFullScreenRef' + moduleIndex + slideIndex, 'swiperFullScreenRef' + moduleIndex)" @click="onHotDetail(slideItem)"></div>
+              <div class="hot-container__position" style="left:0;top:0;bottom:0;right:0" @click="onHotDetail(slideItem)"></div>
             </swiper-slide>
             <div class="swiper-pagination swiper-full-pagination" slot="pagination"></div>
           </swiper>
@@ -597,7 +597,7 @@ export default {
     },
     onHotDetail(hotDetail) { // 点击热区图进行跳转 imageLinkType: 0:商品链接(商品详情页)，跳转到搜索页(1:前端分类id，2:后端分类id，3:品牌，4:FBT，5:FBM，) 6:外部链接(直接打开)
       if (hotDetail.imageLinkType == 6) { // 打开外部链接
-        location.href = hotDetail.outerLink;
+        window.open(hotDetail.outerLink);
         return false;
       }
       
