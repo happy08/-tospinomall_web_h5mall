@@ -8,14 +8,15 @@ import zhCNLocale from 'vant/lib/locale/lang/zh-CN';
 // import esLocale from 'vant/lib/locale/lang/es-ES'; // 西班牙语
 import viLocale from './locales/vant-vi'; // vant ui 越南语
 import ptLocale from './locales/vant-pt'; // vant ui 葡萄牙语
+import msLocale from './locales/vant-ms'; // vant ui 马来语
 import en from './locales/en.js';
 import zhCN from './locales/zh-CN.js';
 // import zhTW from './locales/zh-TW.js'; // 中文繁体
 // import fr from './locales/fr.js'; // 法语
 // import es from './locales/es.js'; // 西班牙语
-// import ms from './locales/ms.js'; // 马来西亚语
-import vi from './locales/vi.js';
-import pt from './locales/pt.js';
+import ms from './locales/ms.js'; // 马来西亚语
+import vi from './locales/vi.js'; // 越南语
+import pt from './locales/pt.js'; // 葡萄牙语
 
 Vue.use(VueI18n);
 
@@ -24,7 +25,7 @@ Vue.use(VueI18n);
 export function vantLocales(lang) {
   if (lang === 'en') {
     Locale.use(lang, enLocale);
-  } else if (lang === 'zh-CN') {
+  } else if (lang === 'zh-CN') { 
     Locale.use(lang, zhCNLocale);
   } /*else if (lang === 'zh-TW') {
     Locale.use(lang, zhTWLocale);
@@ -32,9 +33,9 @@ export function vantLocales(lang) {
     Locale.use(lang, esLocale);
   } else if (lang === 'es') {
     Locale.use(lang, esLocale);
-  } else if (lang === 'ms') {
-    Locale.use(lang, esLocale);
-  } */else if (lang === 'vi') {
+  } */else if (lang === 'ms') {
+    Locale.use(lang, msLocale);
+  } else if (lang === 'vi') {
     Locale.use(lang, viLocale);
   } else if (lang === 'pt') {
     Locale.use(lang, ptLocale);
@@ -67,10 +68,10 @@ export default async ({ app, store }) => {
       //   ...esLocale,
       //   ...es
       // },
-      // 'ms': {
-      //   ...esLocale,
-      //   ...ms
-      // },
+      'ms': {
+        ...msLocale,
+        ...ms
+      },
       'vi': {
         ...viLocale,
         ...vi

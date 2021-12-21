@@ -1,7 +1,7 @@
 /**
  * 马来西亚语
  */
- const my = {
+ const ms = {
   collect: 'Koleksi',
   open_by_browser: 'Buka dengan pelayar',
   refresh: 'Muat semula',
@@ -735,4 +735,4 @@
   order_unpaid: 'Pesanan anda belum dibayar, anda boleh membayar balik'
 }
 
-export default my;
+export default ms;
