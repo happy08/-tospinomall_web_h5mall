@@ -537,6 +537,8 @@ export default {
     next(vm => {
       if (from.name == 'login' || from.name == 'login-old') { // 从登录页返回要更新数据
         vm.isFromLogin = true;
+      } else {
+        vm.isFromLogin = false;
       }
     });
   },
