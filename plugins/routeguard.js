@@ -9,8 +9,8 @@ export default ({app, store, redirect}) => {
       store.commit('user/SET_TOKEN', app.$cookies.get('authToken'));
     }
     // 如果已经登录就不应该访问登录注册页面
-    if (store.state.user.authToken) {
-      if (whiteList.includes(to.name) && history) { // 已登录就可以不访问了
+    if (store.state.user.authToken && process.client) {
+      if (whiteList.includes(to.name) && window.history) { // 已登录就可以不访问了
         history.go(-1);
       }
     }
