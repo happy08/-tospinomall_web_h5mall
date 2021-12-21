@@ -419,7 +419,7 @@ export default {
       // 获取售后信息
       this.detail = {
         ...res.data.order,
-        returnAmount: res.data.order.status == 1 ? res.data.order.payAmount : res.data.orderItemList[0].canAfterApplyNum * res.data.orderItemList[0].realPrice,
+        returnAmount: res.data.order.status == 1 ? res.data.order.payAmount : res.data.orderItemList[0].canAfterApplyNum * (res.data.orderItemList[0].realPrice * 100) / 100,
         realPrice: res.data.orderItemList[0].realPrice
       };
       this.applyNum = res.data.orderItemList[0].canAfterApplyNum;
@@ -639,11 +639,16 @@ export default {
         _data.orderItemId = this.$route.query.itemId;
       }
 
-      if (this.detail.status != 1) { // 整批退的时候不传商品数量
+      if (this.detail.status != 1) { // 商品数量可修改时，取修改的商品数量
         if (this.orderList.length > 1) { // 多个商品取总值
           _data.productQuantity = this.detail.totalQuantity;
         } else { // 一个商品取她本身的数量
-          _data.productQuantity = this.orderList[0].canAfterApplyNum;
+          // _data.productQuantity = this.orderList[0].canAfterApplyNum;
+          _data.productQuantity = this.applyNum;
+        }
+      } else { // 整批退
+        if (this.applyType == 1) { // 退货退款
+          _data.productQuantity = this.orderList[0].returnQuantity;
         }
       }
 
@@ -652,10 +657,6 @@ export default {
         loadingType: 'spinner',
         duration: 0
       })
-
-      if (this.applyType == 1) { // 退货退款
-        _data.productQuantity = this.orderList[0].returnQuantity;
-      }
       
       // edit 存在表示修改申请 isBatchReturn:是否整批退 0否1是
       let _ajax = this.$route.query.edit ? updateApply(_data) : applyAfterSale({ ..._data, isBatchReturn: this.detail.status == 1 ? 1 : 0});
