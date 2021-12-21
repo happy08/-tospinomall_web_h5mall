@@ -40,6 +40,7 @@ export default {
       this.$store.commit('SET_LANGLIST', res.data.localeList.map(item => {
         return item.value;
       }));
+      this.locale = this.$store.state.locale || res.data.defaultLocale;
     }).catch(error => {
       console.log(error);
     })
