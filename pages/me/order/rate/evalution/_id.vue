@@ -126,7 +126,10 @@ export default {
     onConfirm() { // 提交评价
       // 评分不能为0
       if (!this.goodsScores || !this.logisticsScores || !this.distServiceScores || !this.expressPackingScores) {
-        this.$toast(this.$t('please_evalution_rating'));
+        this.$dialog.alert({
+          message: this.$t('please_evalution_rating'),
+          confirmButtonColor: '#42b7ae'
+        })
         return false;
       }
       let _data = {

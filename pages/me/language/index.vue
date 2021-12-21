@@ -48,8 +48,7 @@ export default {
   methods: {
     onConfirm() { // 切换语言
       this.$cookies.set('lang', this.locale);
-      // this.$store.commit('SET_LANG', this.locale);
-      location.href = '/';
+      this.$router.push('/');
     }
   },
 }
