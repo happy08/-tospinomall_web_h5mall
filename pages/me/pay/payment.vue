@@ -311,7 +311,14 @@ export default {
         payType = 3;
       }
       // 买家充值
-      buyerRecharge({ amount: parseFloat(this.$route.query.amount), type: this.$route.query.type, platformPayType: this.payRadio, payType: payType }).then(res => {
+      buyerRecharge({ 
+        amount: parseFloat(this.$route.query.amount), 
+        type: this.$route.query.type, 
+        platformPayType: this.payRadio, 
+        payType: payType, 
+        countryCode: this.$store.state.rate.payParamObj.countryCode || "GH" 
+      })
+      .then(res => {
         if (res.code != 0) return false;
         // brij有具体的支付方式选择页面，故不在这里调用
       
@@ -412,7 +419,10 @@ export default {
         loadingType: 'spinner',
         duration: 0
       });
-      payOrder(params).then(res => {
+      payOrder({
+        ...params,
+        countryCode: this.$store.state.rate.payParamObj.countryCode || "GH"
+      }).then(res => {
         if (res.code != 0) return false;
 
         // if (this.payRadio == 'Payswitch') {

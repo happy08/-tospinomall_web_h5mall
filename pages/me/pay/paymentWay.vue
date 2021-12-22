@@ -142,7 +142,14 @@ export default {
         payType = 4;
       }
       // 买家充值
-      buyerRecharge({ amount: parseFloat(this.$route.query.amount), type: this.$route.query.type, platformPayType: this.payRadio, payType: payType, platformPayTypeName: name }).then(res => {
+      buyerRecharge({ 
+        amount: parseFloat(this.$route.query.amount), 
+        type: this.$route.query.type, 
+        platformPayType: this.payRadio, 
+        payType: payType, 
+        platformPayTypeName: name, 
+        countryCode: this.$store.state.rate.payParamObj.countryCode || "GH" 
+      }).then(res => {
         if (res.code != 0) return false;
         if (this.$route.query.payWay == 'Brij') {
           this.onBrijPay({ ...res.data, amount: res.data.balance, transactionId: res.data.refNo, phone: phone, phonePrefix: phonePrefix, iconUrl: JSON.stringify({ iconUrl: iconUrl }), name: name});
@@ -174,7 +181,8 @@ export default {
         payType: params.payType,
         // phone: params.phone,
         // phonePrefix: params.phonePrefix,
-        sourceType: params.sourceType
+        sourceType: params.sourceType,
+        countryCode: this.$store.state.rate.payParamObj.countryCode || "GH"
       }).then(res => {
         if (res.code != 0) return false;
 
