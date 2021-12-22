@@ -502,7 +502,7 @@ export default {
         currencyCode: this.$store.state.rate.payParamObj.currencyCode || "GHS",
         accountNumber: params.accountNumber, // 订单id
         serviceCode: params.serviceCode,
-        // dueDate: "2019-06-01 23:59:59", //Must be a future date
+        dueDate: params.dueDate, //Must be a future date
         // requestDescription: "Dummy merchant transaction",
         countryCode: this.$store.state.rate.payParamObj.countryCode || "GH",
         languageCode: this.$store.state.rate.payParamObj.languageCode || "en",
