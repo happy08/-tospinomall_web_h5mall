@@ -142,7 +142,8 @@ export default {
       payPwd: '',
       isWaittingPay: false,
       balance: 0,
-      is_first: true
+      is_first: true,
+      back_name: null
     }
   },
   beforeRouteEnter(to, from, next) { // 从初始页面进入重置值为空
@@ -153,6 +154,7 @@ export default {
         vm.payPwd = '';
         vm.balanceShow = false;
         vm.is_first = true;
+        vm.back_name = from.fullPath;
       } else if (from.name === 'me-pay-wait') { // 从确认订单页面回来
         vm.isBackDialog = true;
         vm.is_first = false;
@@ -171,6 +173,9 @@ export default {
   async fetch() {
   },
   activated() {
+    if (this.back_name) {
+      this.$cookies.set('paymentBackName', this.back_name);
+    }
     if (!this.is_first) { // 首次进入才重新获取数据
       this.list = this.list.map(item => {
         return {
@@ -314,7 +319,7 @@ export default {
         if (this.payRadio == 'Tingg') {
           // Tingg.renderPayButton({ // 按钮初始化
           //   className: 'pay-content__btn--pay', 
-          //   checkoutType: 'redirect' // or 'modal'
+          //   checkoutType: 'modal' // redirect or 'modal'
           // });
           
           this.onTinggPay({ ...res.data, phone: phone, phonePrefix: phonePrefix, merchantTransactionID: res.data.refNo, requestAmount: res.data.balance });
@@ -362,8 +367,12 @@ export default {
         return false;
       }
 
-      if (!this.isBackDialog) { // 充值 等待支付
-        history.back();
+      // if (!this.isBackDialog) { // 充值 等待支付
+      //   this.$router.go(-1);
+      //   return false;
+      // }
+      if (this.$cookies.get('paymentBackName')) {
+        this.$router.push(this.$cookies.get('paymentBackName'));
         return false;
       }
 
@@ -479,7 +488,13 @@ export default {
 
       const encryption = new Encryption(params.ivKey, params.secretKey, algorithm);
       // 回调Url
-      let current_url = `${location.origin}${location.pathname}?type=${this.$route.query.type}&amount=${this.$route.query.amount}&orderIds=${this.$route.query.orderIds}&comfirmOrder=${this.$route.query.comfirmOrder}`;
+      let current_url = `${location.origin}${location.pathname}?type=${this.$route.query.type}&amount=${this.$route.query.amount}`;
+      if (this.$route.query.orderIds) {
+        current_url = `${current_url}&orderIds=${this.$route.query.orderIds}`;
+      }
+      if (this.$route.query.comfirmOrder) {
+        current_url = `${current_url}&comfirmOrder=${this.$route.query.comfirmOrder}`;
+      }
       
       let payload = {
         merchantTransactionID: params.merchantTransactionID, // 最长是15位，无规则限制
@@ -511,7 +526,7 @@ export default {
 
       // 发起结账请求
       // Tingg.renderCheckout({
-      //   checkoutType: 'redirect', // or 'modal'
+      //   checkoutType: 'redirect', // redirect or 'modal'
       //   merchantProperties: {
       //     params: encryption.encrypt(payloadString),
       //     accessKey: params.accessKey,
