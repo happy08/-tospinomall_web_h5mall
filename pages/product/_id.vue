@@ -428,7 +428,7 @@
         <div class="mt-12 bg-white ptb-20">
           <h3 class="black flex between vcenter plr-20 fn fm-helvetica">
             <span class="fs-16">{{ $t("just_for_you") }}</span>
-            <nuxt-link class="fs-14" :to="{ name: 'cart-store-id', params: { id: storeInfo.storeId }, query: { tabbarActive: 1 } }">{{ $t("more") }}</nuxt-link>
+            <nuxt-link class="fs-14" :to="{ name: 'cart-store-id', params: { id: storeInfo.storeId }, query: { tabbarActive: 1, isLoad: 1 } }">{{ $t("more") }}</nuxt-link>
           </h3>
           <!-- 推荐商品 -->
           <div>

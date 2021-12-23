@@ -85,7 +85,7 @@ export default {
       if (this.$store.state.user.userInfo) {
         _detailParams.userId = this.$store.state.user.userInfo.id;
       }
-      const detailData = await this.$api.getStoreInfo({ sellerId: this.$route.query.sellerId, storeId: this.$route.params.id, ..._detailParams });
+      const detailData = await this.$api.getStoreInfo({ storeId: this.$route.params.id, ..._detailParams });
       this.isFlag = false;
       if (!detailData.data) return false;
 
@@ -113,7 +113,7 @@ export default {
         return false;
       }
       this.isFlag = true;
-      let _axios = flag ? storeFollow({ sellerId: this.$route.query.sellerId, storeId: this.$route.params.id }) : storeCancelFollow([this.$route.params.id]);
+      let _axios = flag ? storeFollow({ storeId: this.$route.params.id }) : storeCancelFollow([this.$route.params.id]);
       _axios.then(() => {
         this.detailData.isAttention = this.detailData.isAttention == 1 ? 0 : 1;
         this.isFlag = false;

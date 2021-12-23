@@ -294,7 +294,7 @@
     <dialog-gift-coupon :lists="storeCoupons" :isGiftShow="isNewCoupon" @onBeforeClose="isNewCoupon = $event" :type="1"></dialog-gift-coupon>
 
     <!-- 底部标签栏 -->
-    <van-tabbar v-model="tabbarActive" active-color="#FA2A32" inactive-color="#DBDBDB" v-if="isTabbarShow">
+    <van-tabbar v-model="tabbarActive" active-color="#FA2A32" inactive-color="#DBDBDB" v-if="isTabbarShow" @change="onTabbarChange">
       <van-tabbar-item>
         <template #icon="props">
           <img :src="props.active ? require('@/assets/images/icon/store-tab-1-active.png') : require('@/assets/images/icon/store-tab-1.png')" alt="store-tab" />
@@ -404,12 +404,17 @@ export default {
       //   client = algoliasearch('62MLEBY33X','7a8da9a5fd3f8137ea8cb70b60806e8d');
       //   searchClient = client.initIndex('tospinoMall');
       // }
+      this.$toast.loading({
+        forbidClick: true,
+        loadingType: 'spinner',
+        duration: 0
+      });
       // 获取店铺详情
       let _detailParams = {};
       if (this.$store.state.user.userInfo) {
         _detailParams.userId = this.$store.state.user.userInfo.id
       }
-      const detailData = await this.$api.getStoreInfo({ sellerId: this.$route.query.sellerId, storeId: this.$route.params.id, ..._detailParams });
+      const detailData = await this.$api.getStoreInfo({ storeId: this.$route.params.id, ..._detailParams });
       if (!detailData.data) {
         this.detailData = { // 店铺详情
           storeLogoUrl: ''
@@ -420,6 +425,7 @@ export default {
           collectNum: detailData.data.collectNum == '' ? 0 : detailData.data.collectNum
         };
       }
+      this.tabbarActive = this.$route.query.tabbarActive ? parseFloat(this.$route.query.tabbarActive) : 0;
       
       // 商品列表数据
       // if (this.$store.state.searchType == 0) { // 阿里搜索
@@ -466,6 +472,7 @@ export default {
         this.isTabbarShow = false;
         this.storeBgdUrl = '';
         this.moduleData = [];
+        this.$toast.clear();
         return false;
       };
       this.moduleData = moduleData.data.components;
@@ -479,19 +486,31 @@ export default {
         return item.type == 2;
       })
       this.isTabbarShow = store_components.length > 1 ? true: false;
-      this.tabbarActive = this.$route.query.tabbarActive ? parseFloat(this.$route.query.tabbarActive) : store_components.length > 1 ? 0 : 1;
+      if (store_components.length == 0) {
+        this.tabbarActive = 1;
+      }
       this.refreshing.isFresh = false;
+      this.$toast.clear();
     } catch (error) {
       console.log(error);
+      this.$toast.clear();
     }
   },
-  activated() {
-    this.isTabbarShow = false;
-    // if (this.$route.query.tabbarActive) this.tabbarActive = parseFloat(this.$route.query.tabbarActive);
-    this.$fetch();
-    document.addEventListener('scroll', () => {
-      console.log(this.$refs.storeContainer.$el.offsetTop)
+  beforeRouteEnter (to, from, next) {
+    next(vm => {
+      if (from.name == 'cart-store-detail-id' || from.name == 'me-coupon') {
+        vm.detailData = {};
+        vm.moduleData = {};
+        vm.productList = [];
+      }
     })
+  },
+  activated() {
+    if (!this.$route.query.isLoad && this.$route.query.tabbarActive && this.$route.query.tabbarActive == 1 && this.detailData.id == this.$route.params.id) {
+      return false;
+    }
+    this.isTabbarShow = false;
+    this.$fetch();
   },
   methods: {
     onSubscribe(flag) { // 订阅/取消订阅 flag: true 订阅 false 取消订阅
@@ -512,11 +531,11 @@ export default {
       }
       this.isFlag = true;
 
-      let _axios = flag ? storeFollow({ sellerId: this.$route.query.sellerId, storeId: this.$route.params.id }) : storeCancelFollow([this.$route.params.id]);
+      let _axios = flag ? storeFollow({ storeId: this.$route.params.id }) : storeCancelFollow([this.$route.params.id]);
       _axios.then(() => {
         this.detailData.isAttention = this.detailData.isAttention == 1 ? 0 : 1;
         this.isFlag = false;
-        this.$api.getStoreInfo({ sellerId: this.$route.query.sellerId, storeId: this.$route.params.id, ..._detailParams }).then(res => {
+        this.$api.getStoreInfo({ storeId: this.$route.params.id, ..._detailParams }).then(res => {
           this.detailData = {
             ...res.data,
             collectNum: res.data.collectNum == '' ? 0 : res.data.collectNum
@@ -738,7 +757,7 @@ export default {
         if (this.$store.state.user.userInfo) {
           _detailParams.userId = this.$store.state.user.userInfo.id
         }
-        const detailData = await this.$api.getStoreInfo({ sellerId: this.$route.query.sellerId, storeId: this.$route.params.id, ..._detailParams });
+        const detailData = await this.$api.getStoreInfo({ storeId: this.$route.params.id, ..._detailParams });
         if (!detailData.data) {
           this.detailData = { // 店铺详情
             storeLogoUrl: ''
@@ -775,6 +794,18 @@ export default {
         }
       }
       this.refreshing.isFresh = false;
+    },
+    onTabbarChange(active) {
+      let _route = {
+        name: this.$route.name,
+        params: this.$route.params,
+      }
+      if (active == 1) {
+        _route.query = {
+          tabbarActive: 1
+        }
+      }
+      this.$router.replace(_route);
     }
   },
   deactivated() {
