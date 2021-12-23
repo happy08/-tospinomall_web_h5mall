@@ -428,7 +428,7 @@
         <div class="mt-12 bg-white ptb-20">
           <h3 class="black flex between vcenter plr-20 fn fm-helvetica">
             <span class="fs-16">{{ $t("just_for_you") }}</span>
-            <nuxt-link class="fs-14" :to="{ name: 'cart-store-id', params: { id: storeInfo.storeId }, query: { sellerId: storeInfo.sellerId, tabbarActive: 1 } }">{{ $t("more") }}</nuxt-link>
+            <nuxt-link class="fs-14" :to="{ name: 'cart-store-id', params: { id: storeInfo.storeId }, query: { tabbarActive: 1 } }">{{ $t("more") }}</nuxt-link>
           </h3>
           <!-- 推荐商品 -->
           <div>
@@ -573,7 +573,7 @@
           @click="qimoChatClick()"
         />
         <!-- 店铺 -->
-        <nuxt-link :to="{ name: 'cart-store-id', params: { id: storeInfo.storeId }, query: { sellerId: storeInfo.sellerId, tabbarActive: 0} }">
+        <nuxt-link :to="{ name: 'cart-store-id', params: { id: storeInfo.storeId } }">
           <van-icon :name="require('@/assets/images/icon/store-icon.png')" size="0.6rem" />
         </nuxt-link>
         <!-- 收藏 0未关注 1已关注 -->

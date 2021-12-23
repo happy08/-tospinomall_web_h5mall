@@ -151,10 +151,7 @@ export default {
             name: 'cart-store-id', 
             params: { 
               id: this.item.storeId
-            }, 
-            query: {
-              sellerId: this.item.sellerId
-            } 
+            }
           });
         }
 

@@ -634,10 +634,6 @@ export default {
         name: 'cart-store-id',
         params: {
           id: storeItem.storeId
-        },
-        query: {
-          tabbarActive: 0,
-          sellerId: storeItem.sellerId
         }
       })
     }

@@ -8,7 +8,7 @@
 
     <div class="bg-white">
       <!-- 未登录,购物车为空时展示 -->
-      <empty-status v-if="!$store.state.user.authToken" :image="require('@/assets/images/empty/cart.png')" :btn="{ btn: '去登录', isEmit: true }" @emptyClick="onLogin" />
+      <empty-status v-if="!$store.state.user.authToken" :image="require('@/assets/images/empty/cart.png')" :btn="{ btn: $t('login_register'), isEmit: true }" @emptyClick="this.$router.push({ path: '/login.html' })" />
       <!-- 分类TAB -->
       <van-sticky v-else :offset-top="'0.92rem'">
         <van-tabs sticky animated color="#42B7AE" class="bg-white customs-van-tabs" :ellipsis="false" @change="getList" v-model="tabActive" line-height="0">
@@ -436,22 +436,14 @@ export default {
 
       })
     },
-    onLogin() { // 去登录
-      this.$router.push({
-        path: '/login.html'
-      })
-    },
     goStoreDetail(storeInfo) { // 跳转到店铺详情
-      if (!storeInfo.sellerId || !storeInfo.storeId) {
+      if (!storeInfo.storeId) {
         return false;
       }
       this.$router.push({
         name: 'cart-store-id',
         params: {
           id: storeInfo.storeId
-        },
-        query: {
-          sellerId: storeInfo.sellerId
         }
       })
     },

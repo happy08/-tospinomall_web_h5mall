@@ -51,7 +51,7 @@
                   <!-- 左滑单元格 -->
                   <van-swipe-cell :disabled="edit">
                     <!-- 店铺的样式 -->
-                    <nuxt-link class="flex pl-30 ptb-20" v-if="active == 1" tag="div" :to="{ name: 'cart-store-id', params: { id: item.storeId }, query: { sellerId: item.sellerId, tabbarActive: 0 } }">
+                    <nuxt-link class="flex pl-30 ptb-20" v-if="active == 1" tag="div" :to="{ name: 'cart-store-id', params: { id: item.storeId } }">
                       <BmImage 
                         :url="item.storeLogoUrl"
                         :width="'1.12rem'" 
