@@ -498,7 +498,7 @@ export default {
   },
   beforeRouteEnter (to, from, next) {
     next(vm => {
-      if (from.name == 'cart-store-detail-id' || from.name == 'me-coupon') {
+      if (from.name == 'cart-store-detail-id' || from.name == 'me-coupon' || from.name == 'me-order' || from.name == 'cart') {
         vm.detailData = {};
         vm.moduleData = {};
         vm.productList = [];
