@@ -19,7 +19,7 @@ const ms = {
     confirm: 'Pasti',
     startEnd: 'Mulakan/Selesai',
     weekdays: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-    monthTitle: (year, month) => `${year} ano ${month}月`,
+    monthTitle: (year, month) => `${year}/${month}`,
     rangePrompt: maxRange => `Bilangan hari yang dipilih tidak boleh melebihi ${maxRange} hari`,
   },
   vanCascader: {

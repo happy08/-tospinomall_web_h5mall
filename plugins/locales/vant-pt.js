@@ -19,7 +19,7 @@ const pt = {
     confirm: 'Certo',
     startEnd: 'Começar/Terminar',
     weekdays: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-    monthTitle: (year, month) => `${year} ano ${month}月`,
+    monthTitle: (year, month) => `${year}/${month}`,
     rangePrompt: (maxRange) => `O número de dias selecionados não pode exceder ${maxRange} dias`,
   },
   vanCascader: {

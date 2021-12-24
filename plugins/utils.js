@@ -66,8 +66,8 @@ const utils = {
   // 图片压缩
   compressImg(file) {
     var fileSize = parseFloat(parseInt(file['size']) / 1024 / 1024).toFixed(2);
-    var read = new FileReader()
-    read.readAsDataURL(file)
+    var read = new FileReader();
+    read.readAsDataURL(file);
     return new Promise(function(resolve, reject) {
       read.onload = function(e) {
         let img = new Image();
@@ -102,7 +102,7 @@ const utils = {
             base64 = canvas.toDataURL(file['type'], 0.4);
           }
           // 回调函数返回file的值（将base64编码转成file）
-          resolve(base64)
+          resolve(base64);
         }
       }
     })
